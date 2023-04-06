@@ -22,45 +22,52 @@ export function City() {
 
   return (
     <Wrap $wrapperWidth={wrapperWidth} $gap={gap}>
-      {cityArrangement.map((grid, index: number) => {
-        return (
-          <Grid
-            $gridWidth={gridWidth}
-            $status={gridsStatus[index]}
-            key={index}
-            // ref={testRef}
-            // onDragEnter={(e) => {
-            // }}
-            onDragLeave={(e) => dispatch(dragLightOff())}
-            onDragOver={(e) => {
-              e.preventDefault();
-              dispatch(dragLightOn({ index: index }));
-            }}
-            onDrop={(e) => {
-              console.log('onDrop');
-              // setTarget(0);
-              dispatch(dropHouse({ index: index }));
-              dispatch(dragLightOff());
-            }}
-            // onClick={() => dispatch(shiftPosition())}
-          >
-            {grid !== 0 && (
-              <House
-                draggable={true}
-                onDragStart={(e: any) => {
-                  //TODO any!?
-                  e.target.style.opacity = '0.01';
-                  dispatch(dragHouseStart({ target: grid, pastIndex: index }));
-                }}
-                onDragEnd={(e: any) => {
-                  e.target.style.opacity = '1';
-                }}
-                $type={grid}
-              ></House>
-            )}
-          </Grid>
-        );
-      })}
+      {cityArrangement.map((row, yIndex) =>
+        row.map((grid, xIndex) => {
+          return (
+            <Grid
+              $gridWidth={gridWidth}
+              $status={gridsStatus[yIndex][xIndex]}
+              key={xIndex}
+              // ref={testRef}
+              // onDragEnter={(e) => {
+              // }}
+              onDragLeave={(e) => dispatch(dragLightOff())}
+              onDragOver={(e) => {
+                e.preventDefault();
+                dispatch(dragLightOn({ xIndex: xIndex, yIndex: yIndex }));
+              }}
+              onDrop={(e) => {
+                console.log('onDrop');
+                // setTarget(0);
+                dispatch(dropHouse({ xIndex: xIndex, yIndex: yIndex }));
+                dispatch(dragLightOff());
+              }}
+              // onClick={() => dispatch(shiftPosition())}
+            >
+              {grid !== 0 && (
+                <House
+                  draggable={true}
+                  onDragStart={(e: any) => {
+                    //TODO any!?
+                    e.target.style.opacity = '0.01';
+                    dispatch(
+                      dragHouseStart({
+                        target: grid,
+                        pastIndex: { xIndex: xIndex, yIndex: yIndex },
+                      })
+                    );
+                  }}
+                  onDragEnd={(e: any) => {
+                    e.target.style.opacity = '1';
+                  }}
+                  $type={grid}
+                ></House>
+              )}
+            </Grid>
+          );
+        })
+      )}
     </Wrap>
   );
 }
