@@ -2,11 +2,13 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import {
-  loadCityAsync,
+  fetchCityAsync,
+  saveCityAsync,
   dropHouse,
   dragHouseStart,
   dragLightOn,
   dragLightOff,
+  draggableSwitch,
 } from './citySlice';
 // import { getHouses } from './cityAPI';
 
@@ -17,68 +19,85 @@ export function City() {
   const gridsStatus = useAppSelector(
     (state) => state.cityArrangement.gridsStatus
   );
+  const isHouseDraggable = useAppSelector(
+    (state) => state.cityArrangement.isHouseDraggable
+  );
   const dispatch = useAppDispatch();
   const wrapperWidth = 600;
   const gap = 20;
   const gridWidth = 150;
 
   useEffect(() => {
-    dispatch(loadCityAsync());
+    dispatch(fetchCityAsync());
 
     // getHouses();
   }, []);
 
   return (
-    <Wrap $wrapperWidth={wrapperWidth} $gap={gap}>
-      {cityArrangement.map((row, yIndex) =>
-        row.map((grid, xIndex) => {
-          return (
-            <Grid
-              $gridWidth={gridWidth}
-              $status={gridsStatus[yIndex][xIndex]}
-              key={xIndex}
-              // ref={testRef}
-              // onDragEnter={(e) => {
-              // }}
-              onDragLeave={(e) => dispatch(dragLightOff())}
-              onDragOver={(e) => {
-                e.preventDefault();
-                dispatch(dragLightOn({ xIndex: xIndex, yIndex: yIndex }));
-              }}
-              onDrop={(e) => {
-                console.log('onDrop');
-                // setTarget(0);
-                dispatch(dropHouse({ xIndex: xIndex, yIndex: yIndex }));
-                dispatch(dragLightOff());
-              }}
-              // onClick={() => dispatch(shiftPosition())}
-            >
-              {grid !== 0 && (
-                <House
-                  draggable={true}
-                  onDragStart={(e: any) => {
-                    //TODO any!?
-                    e.target.style.opacity = '0.01';
-                    dispatch(
-                      dragHouseStart({
-                        target: grid,
-                        pastIndex: { xIndex: xIndex, yIndex: yIndex },
-                      })
-                    );
-                  }}
-                  onDragEnd={(e: any) => {
-                    e.target.style.opacity = '1';
-                  }}
-                  $type={grid}
-                >
-                  {grid}
-                </House>
-              )}
-            </Grid>
-          );
-        })
-      )}
-    </Wrap>
+    <>
+      <Wrap $wrapperWidth={wrapperWidth} $gap={gap}>
+        {cityArrangement.map((row, yIndex) =>
+          row.map((house, xIndex) => {
+            return (
+              <Grid
+                $gridWidth={gridWidth}
+                $status={gridsStatus[yIndex][xIndex]}
+                key={xIndex}
+                // ref={testRef}
+                // onDragEnter={(e) => {
+                // }}
+                onDragLeave={(e) => dispatch(dragLightOff())}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  dispatch(dragLightOn({ xIndex: xIndex, yIndex: yIndex }));
+                }}
+                onDrop={(e) => {
+                  console.log('onDrop');
+                  // setTarget(0);
+                  dispatch(dropHouse({ xIndex: xIndex, yIndex: yIndex }));
+                  dispatch(dragLightOff());
+                }}
+                // onClick={() => dispatch(shiftPosition())}
+              >
+                {house !== 0 && (
+                  <House
+                    draggable={isHouseDraggable}
+                    onDragStart={(e: any) => {
+                      //TODO any!?
+                      if (isHouseDraggable) {
+                        e.target.style.opacity = '0.01';
+                        dispatch(
+                          dragHouseStart({
+                            target: house,
+                            pastIndex: { xIndex: xIndex, yIndex: yIndex },
+                          })
+                        );
+                      }
+                    }}
+                    onDragEnd={(e: any) => {
+                      e.target.style.opacity = '1';
+                    }}
+                    $type={house}
+                  >
+                    {house}
+                  </House>
+                )}
+              </Grid>
+            );
+          })
+        )}
+      </Wrap>
+      <button
+        onClick={() => {
+          isHouseDraggable
+            ? dispatch(saveCityAsync())
+            : dispatch(draggableSwitch());
+          // console.log(isHouseDraggable);
+        }}
+      >
+        {isHouseDraggable ? '儲存' : '街道重建'}
+      </button>
+    </>
   );
 }
 
@@ -122,4 +141,7 @@ const House = styled.div<HouseProps>`
   height: 130px;
   background-color: ${({ $type }) =>
     $type === 1 ? 'skyblue' : $type === 2 ? 'pink' : 'brown'};
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;

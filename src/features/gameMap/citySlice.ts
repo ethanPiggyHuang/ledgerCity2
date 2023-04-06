@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { fetchCity } from './cityAPI';
+import { fetchCity, saveCity } from './cityAPI';
 
 export interface CityState {
   housesPosition: number[][];
   gridsStatus: number[][];
   dragInfo: { target: number; pastIndex: { xIndex: number; yIndex: number } };
   status: 'idle' | 'loading' | 'failed';
+  isHouseDraggable: boolean;
 }
 
 const initialState: CityState = {
@@ -21,10 +22,17 @@ const initialState: CityState = {
   ],
   dragInfo: { target: 0, pastIndex: { xIndex: 0, yIndex: 0 } },
   status: 'idle',
+  isHouseDraggable: false,
 };
 
-export const loadCityAsync = createAsyncThunk('city/fetchCity', async () => {
+export const fetchCityAsync = createAsyncThunk('city/fetchCity', async () => {
   const response = await fetchCity();
+  // The value we return becomes the `fulfilled` action payload
+  return response.data;
+});
+
+export const saveCityAsync = createAsyncThunk('city/saveCity', async () => {
+  const response = await saveCity();
   // The value we return becomes the `fulfilled` action payload
   return response.data;
 });
@@ -94,13 +102,17 @@ export const cityArrangement = createSlice({
       ];
       return state;
     },
+    draggableSwitch: (state) => {
+      state.isHouseDraggable = !state.isHouseDraggable;
+      return state;
+    },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(loadCityAsync.pending, (state) => {
+      .addCase(fetchCityAsync.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(loadCityAsync.fulfilled, (state, action) => {
+      .addCase(fetchCityAsync.fulfilled, (state, action) => {
         action.payload.forEach((house) => {
           let type: number = 0;
           switch (house.type) {
@@ -117,17 +129,34 @@ export const cityArrangement = createSlice({
               break;
           }
           state.housesPosition[house.position.y][house.position.x] = type; //TODO FIX typescript
-          // console.log(house);
+          console.log(house);
         });
-        state = state;
+        state.status = 'idle';
+        return state;
       })
-      .addCase(loadCityAsync.rejected, (state) => {
+      .addCase(fetchCityAsync.rejected, (state) => {
+        state.status = 'failed';
+      })
+      .addCase(saveCityAsync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(saveCityAsync.fulfilled, (state, action) => {
+        state.status = 'idle';
+        alert('城市重建結果已紀錄');
+        return state;
+      })
+      .addCase(saveCityAsync.rejected, (state) => {
         state.status = 'failed';
       });
   },
 });
 
-export const { dropHouse, dragHouseStart, dragLightOn, dragLightOff } =
-  cityArrangement.actions;
+export const {
+  dropHouse,
+  dragHouseStart,
+  dragLightOn,
+  dragLightOff,
+  draggableSwitch,
+} = cityArrangement.actions;
 
 export default cityArrangement.reducer;
