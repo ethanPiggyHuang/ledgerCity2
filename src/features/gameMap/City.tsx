@@ -6,7 +6,7 @@ import {
   dragHouseStart,
   dragLightOn,
   dragLightOff,
-} from './xitySlice';
+} from './citySlice';
 import { getHouses } from './cityAPI';
 
 export function City() {
