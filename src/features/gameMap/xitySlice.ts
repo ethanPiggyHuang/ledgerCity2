@@ -10,7 +10,7 @@ const initialState: cityState = {
   housesPosition: [
     [1, 2, 0],
     [0, 0, 0],
-    [0, 0, 0],
+    [0, 3, 0],
   ],
   gridsStatus: [
     [0, 0, 0],

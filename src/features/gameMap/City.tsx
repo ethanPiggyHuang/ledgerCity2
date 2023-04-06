@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import {
@@ -6,7 +6,8 @@ import {
   dragHouseStart,
   dragLightOn,
   dragLightOff,
-} from './CitySlice';
+} from './xitySlice';
+import { getHouses } from './cityAPI';
 
 export function City() {
   const cityArrangement = useAppSelector(
@@ -19,6 +20,10 @@ export function City() {
   const wrapperWidth = 600;
   const gap = 20;
   const gridWidth = 150;
+
+  useEffect(() => {
+    getHouses();
+  }, []);
 
   return (
     <Wrap $wrapperWidth={wrapperWidth} $gap={gap}>
