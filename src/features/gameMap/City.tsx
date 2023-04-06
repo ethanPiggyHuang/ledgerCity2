@@ -2,12 +2,13 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import {
+  loadCityAsync,
   dropHouse,
   dragHouseStart,
   dragLightOn,
   dragLightOff,
 } from './citySlice';
-import { getHouses } from './cityAPI';
+// import { getHouses } from './cityAPI';
 
 export function City() {
   const cityArrangement = useAppSelector(
@@ -22,7 +23,9 @@ export function City() {
   const gridWidth = 150;
 
   useEffect(() => {
-    getHouses();
+    dispatch(loadCityAsync());
+
+    // getHouses();
   }, []);
 
   return (
@@ -67,7 +70,9 @@ export function City() {
                     e.target.style.opacity = '1';
                   }}
                   $type={grid}
-                ></House>
+                >
+                  {grid}
+                </House>
               )}
             </Grid>
           );

@@ -1,16 +1,18 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { fetchCity } from './cityAPI';
 
-interface cityState {
+export interface CityState {
   housesPosition: number[][];
   gridsStatus: number[][];
   dragInfo: { target: number; pastIndex: { xIndex: number; yIndex: number } };
+  status: 'idle' | 'loading' | 'failed';
 }
 
-const initialState: cityState = {
+const initialState: CityState = {
   housesPosition: [
-    [1, 2, 0],
     [0, 0, 0],
-    [0, 3, 0],
+    [0, 0, 0],
+    [0, 0, 0],
   ],
   gridsStatus: [
     [0, 0, 0],
@@ -18,7 +20,14 @@ const initialState: cityState = {
     [0, 0, 0],
   ],
   dragInfo: { target: 0, pastIndex: { xIndex: 0, yIndex: 0 } },
+  status: 'idle',
 };
+
+export const loadCityAsync = createAsyncThunk('city/fetchCity', async () => {
+  const response = await fetchCity();
+  // The value we return becomes the `fulfilled` action payload
+  return response.data;
+});
 
 export const cityArrangement = createSlice({
   name: 'housesPosition',
@@ -85,6 +94,36 @@ export const cityArrangement = createSlice({
       ];
       return state;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(loadCityAsync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(loadCityAsync.fulfilled, (state, action) => {
+        action.payload.forEach((house) => {
+          let type: number = 0;
+          switch (house.type) {
+            case 'food':
+              type = 1;
+              break;
+            case 'clothes':
+              type = 2;
+              break;
+            case 'transportation':
+              type = 3;
+              break;
+            default:
+              break;
+          }
+          state.housesPosition[house.position.y][house.position.x] = type; //TODO FIX typescript
+          // console.log(house);
+        });
+        state = state;
+      })
+      .addCase(loadCityAsync.rejected, (state) => {
+        state.status = 'failed';
+      });
   },
 });
 
