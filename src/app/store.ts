@@ -1,11 +1,11 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import counterReducer from '../features/counter/counterSlice';
-import housesPositionReducer from '../features/gameMap/CitySlice';
+import cityArrangementReducer from '../features/gameMap/CitySlice';
 
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
-    housesPosition: housesPositionReducer,
+    cityArrangement: cityArrangementReducer,
   },
 });
 

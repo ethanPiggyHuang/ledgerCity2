@@ -1,68 +1,46 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import { dropHouse } from './CitySlice';
+import {
+  dropHouse,
+  dragHouseStart,
+  dragLightOn,
+  dragLightOff,
+} from './CitySlice';
 
 export function City() {
-  const housesPosition = useAppSelector((state) => state.housesPosition.value);
+  const cityArrangement = useAppSelector(
+    (state) => state.cityArrangement.housesPosition
+  );
+  const gridsStatus = useAppSelector(
+    (state) => state.cityArrangement.gridsStatus
+  );
   const dispatch = useAppDispatch();
-  const [target, setTarget] = useState<number>(0);
-  const [pastIndex, setPastIndex] = useState(0);
   const wrapperWidth = 600;
   const gap = 20;
   const gridWidth = 150;
-  const gridStatus = [0, 0, 0, 0, 0, 0];
 
   return (
     <Wrap $wrapperWidth={wrapperWidth} $gap={gap}>
-      {housesPosition.map((grid, index: number) => {
+      {cityArrangement.map((grid, index: number) => {
         return (
           <Grid
             $gridWidth={gridWidth}
-            $status={gridStatus[index]}
+            $status={gridsStatus[index]}
             key={index}
             // ref={testRef}
             // onDragEnter={(e) => {
-            //   const newShine = [...shine].fill(0);
-            //   setShine(newShine);
             // }}
-            // onDragLeave={(e) => {
-            //   // console.log("onDragLeave", i);
-            //   // setPastIndex(i);
-            //   const newShine = [...shine].fill(0);
-            //   setShine(newShine);
-            // }}
+            onDragLeave={(e) => dispatch(dragLightOff())}
             onDragOver={(e) => {
               e.preventDefault();
-              // if (target !== 0) {
-              //   const newShine = [...shine];
-              //   if (i === pastIndex || test[i] === 0) {
-              //     newShine[i] = 1;
-              //   } else {
-              //     newShine[i] = -1;
-              //   }
-              //   setShine(newShine);
-              // }
+              dispatch(dragLightOn({ index: index }));
             }}
             onDrop={(e) => {
               console.log('onDrop');
-              setTarget(0);
-              // if (housesPosition[index] !== 0) {
-              // } else {
-              //   const newState = [...housesPosition];
-              //   newState[pastIndex] = 0;
-              //   newState[index] = target;
-              //   console.log('target', target);
-              dispatch(
-                dropHouse({
-                  index: index,
-                  target: target,
-                  pastIndex: pastIndex,
-                })
-              );
-              // }
-              // const newShine = [...shine].fill(0);
-              // setShine(newShine);
+              // setTarget(0);
+              dispatch(dropHouse({ index: index }));
+              dispatch(dragLightOff());
             }}
             // onClick={() => dispatch(shiftPosition())}
           >
@@ -70,17 +48,14 @@ export function City() {
               <House
                 draggable={true}
                 onDragStart={(e: any) => {
-                  e.target.style.opacity = '0.01'; //TODO
-                  setTarget(grid);
-                  setPastIndex(index);
-                  // const newShine = [...shine].fill(0);
-                  // setShine(newShine);
+                  //TODO any!?
+                  e.target.style.opacity = '0.01';
+                  dispatch(dragHouseStart({ target: grid, pastIndex: index }));
                 }}
                 onDragEnd={(e: any) => {
                   e.target.style.opacity = '1';
                 }}
-                //   colorCode={item}
-                type={grid}
+                $type={grid}
               ></House>
             )}
           </Grid>
@@ -99,7 +74,7 @@ type GridProps = {
   $status: number;
 };
 type HouseProps = {
-  type: number;
+  $type: number;
 };
 
 const Wrap = styled.div<WrapProps>`
@@ -126,8 +101,8 @@ const Grid = styled.div<GridProps>`
 `;
 const House = styled.div<HouseProps>`
   border-radius: 10px;
-  width: 150px;
-  height: 160px;
-  background-color: ${({ type }) =>
-    type === 1 ? 'skyblue' : type === 2 ? 'pink' : 'brown'};
+  width: 130px;
+  height: 130px;
+  background-color: ${({ $type }) =>
+    $type === 1 ? 'skyblue' : $type === 2 ? 'pink' : 'brown'};
 `;
