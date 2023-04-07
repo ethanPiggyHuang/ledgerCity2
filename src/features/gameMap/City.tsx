@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import {
-  fetchCityAsync,
+  displayCity,
   saveCityAsync,
   dropHouse,
   dragHouseStart,
@@ -12,8 +12,10 @@ import {
 } from './citySlice';
 // import { getHouses } from './cityAPI';
 
-export function City() {
-  const cityArrangement = useAppSelector(
+export const City: React.FC = () => {
+  const cityInfo = useAppSelector((state) => state.cityInfo);
+
+  const housesPosition = useAppSelector(
     (state) => state.cityArrangement.housesPosition
   );
   const gridsStatus = useAppSelector(
@@ -22,21 +24,22 @@ export function City() {
   const isHouseDraggable = useAppSelector(
     (state) => state.cityArrangement.isHouseDraggable
   );
+  //TODO: merge 可能性
   const dispatch = useAppDispatch();
   const wrapperWidth = 600;
   const gap = 20;
   const gridWidth = 150;
 
-  useEffect(() => {
-    dispatch(fetchCityAsync());
+  // console.log(housesPosition);
 
-    // getHouses();
-  }, []);
+  useEffect(() => {
+    dispatch(displayCity(cityInfo));
+  }, [cityInfo]);
 
   return (
     <>
       <Wrap $wrapperWidth={wrapperWidth} $gap={gap}>
-        {cityArrangement.map((row, yIndex) =>
+        {housesPosition.map((row, yIndex) =>
           row.map((house, xIndex) => {
             return (
               <Grid
@@ -52,23 +55,25 @@ export function City() {
                   dispatch(dragLightOn({ xIndex: xIndex, yIndex: yIndex }));
                 }}
                 onDrop={(e) => {
-                  console.log('onDrop');
+                  // console.log('onDrop');
                   // setTarget(0);
                   dispatch(dropHouse({ xIndex: xIndex, yIndex: yIndex }));
-                  dispatch(dragLightOff());
+                  // dispatch(dragLightOff());
                 }}
                 // onClick={() => dispatch(shiftPosition())}
               >
-                {house !== 0 && (
+                {house.type !== 0 && (
                   <House
                     draggable={isHouseDraggable}
                     onDragStart={(e: any) => {
                       //TODO any!?
                       if (isHouseDraggable) {
                         e.target.style.opacity = '0.01';
+                        console.log(house.id, house.type);
                         dispatch(
                           dragHouseStart({
-                            target: house,
+                            id: house.id,
+                            target: house.type,
                             pastIndex: { xIndex: xIndex, yIndex: yIndex },
                           })
                         );
@@ -77,9 +82,9 @@ export function City() {
                     onDragEnd={(e: any) => {
                       e.target.style.opacity = '1';
                     }}
-                    $type={house}
+                    $type={house.type}
                   >
-                    {house}
+                    {house.type}
                   </House>
                 )}
               </Grid>
@@ -90,7 +95,7 @@ export function City() {
       <button
         onClick={() => {
           isHouseDraggable
-            ? dispatch(saveCityAsync())
+            ? dispatch(saveCityAsync(cityInfo.houses))
             : dispatch(draggableSwitch());
           // console.log(isHouseDraggable);
         }}
@@ -99,7 +104,7 @@ export function City() {
       </button>
     </>
   );
-}
+};
 
 type WrapProps = {
   $wrapperWidth: number;
