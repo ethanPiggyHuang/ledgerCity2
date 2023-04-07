@@ -1,53 +1,101 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import { amountKeyIn, amountDelete } from './ledgerSlice';
+import {
+  amountKeyNumber,
+  amountDelete,
+  amountHoldOperator,
+  amountCalculate,
+  amountAllClear,
+} from './ledgerSlice';
 
 export const Calculator: React.FC = () => {
-  const { amount } = useAppSelector((state) => state.ledgerSingle);
+  const { amount, calculationHolder } = useAppSelector(
+    (state) => state.ledgerSingle
+  );
   const dispatch = useAppDispatch();
-  console.log(amount.number);
 
-  const buttons: (number | string)[] = [
-    7,
-    8,
-    9,
-    '-',
-    4,
-    5,
-    6,
+  const buttons: string[] = [
+    '7',
+    '8',
+    '9',
+    'AC',
+    '4',
+    '5',
+    '6',
     'x',
-    1,
-    2,
-    3,
-    '÷',
-    0,
-    '+',
+    '1',
+    '2',
+    '3',
+    '-',
+    '0',
+    '⇤',
     '=',
-    '<-',
+    '+',
   ];
+
+  const thousandsSeparator: (number: number) => string = function (number) {
+    const parts = number.toString().split('.');
+    const numberPart = parts[0];
+    const decimalPart = parts[1];
+    const thousands = /\B(?=(\d{3})+(?!\d))/g;
+    return (
+      numberPart.replace(thousands, ',') +
+      (decimalPart ? '.' + decimalPart : '')
+    );
+  };
 
   return (
     <>
       <AmountDisplay>
         <Currency>NT$</Currency>
         <AmountInput
-          readOnly
-          value={amount.number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+          readOnly //check better choice
+          value={`${thousandsSeparator(amount.number)} ${
+            calculationHolder.operator
+          } ${
+            calculationHolder.number !== 0
+              ? thousandsSeparator(calculationHolder.number)
+              : ''
+          }`}
           onKeyUp={(event) => {
+            console.log(event.key);
             const numberRegex: RegExp = /^\d+$/;
-            if (numberRegex.test(event.key)) {
-              dispatch(amountKeyIn(event.key));
+            if (event.key === 'Escape') {
+              dispatch(amountAllClear());
             } else if (event.key === 'Backspace') {
               dispatch(amountDelete());
-            }
+            } else if (event.key === 'Enter') {
+              dispatch(amountCalculate());
+            } else if (numberRegex.test(event.key)) {
+              dispatch(amountKeyNumber(event.key));
+            } //TODO: allow operators
           }}
         />
         <CurrencyExchange>NT$ 199</CurrencyExchange>
       </AmountDisplay>
       <CalculatorButtons>
         {buttons.map((button, index) => (
-          <CalculatorButton key={index}>{button}</CalculatorButton>
+          <CalculatorButton
+            key={index}
+            onClick={() => {
+              if (button === 'AC') {
+                dispatch(amountAllClear());
+              } else if (button === '⇤') {
+                dispatch(amountDelete());
+              } else if (button === '=') {
+                dispatch(amountCalculate());
+              } else if (['+', '-', 'x', '÷'].includes(button)) {
+                dispatch(
+                  amountHoldOperator(button as '' | '+' | '-' | 'x' | '÷')
+                );
+              } else {
+                dispatch(amountKeyNumber(button));
+              }
+            }}
+          >
+            {button}
+          </CalculatorButton>
         ))}
       </CalculatorButtons>
     </>

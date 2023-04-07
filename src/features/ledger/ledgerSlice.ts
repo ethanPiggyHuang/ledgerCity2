@@ -16,8 +16,12 @@ interface LedgerSingleState {
   labels: LabelState[];
   payWho: string;
   payHow: 'cash' | 'creditCard' | 'mobile';
-  amount: { currency: string; number: number; numberNT: number }; //TODO
-  statue: 'idle' | 'loading' | 'failed';
+  amount: { currency: string; number: number; numberNT: number }; //TODO currency exchange
+  calculationHolder: {
+    operator: '' | '+' | '-' | 'x' | '÷';
+    number: number;
+  };
+  status: 'idle' | 'loading' | 'failed';
   imageUrl: string;
 }
 
@@ -33,33 +37,13 @@ const initialState: LedgerSingleState = {
   payWho: '',
   payHow: 'cash',
   amount: { currency: '', number: 0, numberNT: 0 },
-  statue: 'idle',
+  calculationHolder: {
+    operator: '',
+    number: 0,
+  },
+  status: 'idle',
   imageUrl: '',
 };
-
-// export const saveCityAsync = createAsyncThunk(
-//   'city/saveCity',
-//   async (houses: HouseState[], { getState }) => {
-//     const cityId: string = 'YFbhq5M8vFBIUMMWZhqo'; //TODO: import from other State
-//     const data = getState() as any; //TODO
-//     const housesPosition: { type: number; id: string }[][] =
-//       data.cityArrangement.housesPosition;
-//     const houseIds = houses.map((house) => house.ledgerId);
-
-//     let newPostions: { [key: string]: { x: number; y: number } } = {};
-//     housesPosition.forEach((raw, yIndex) => {
-//       raw.forEach((grid, xIndex) => {
-//         const index = houseIds.findIndex((id) => id === grid.id);
-//         if (index > -1) newPostions[grid.id] = { y: yIndex, x: xIndex };
-//       });
-//     });
-//     const newHouses = houses.map((house) => {
-//       return { ...house, position: newPostions[house.ledgerId] };
-//     });
-
-//     await updateHousePosition(cityId, newHouses);
-//   }
-// );
 
 export const ledgerSingle = createSlice({
   name: 'ledgerSingle',
@@ -102,49 +86,131 @@ export const ledgerSingle = createSlice({
       };
       //TODO: case 次要標籤
     },
-    amountKeyIn: (state, action: PayloadAction<string>) => {
+    amountKeyNumber: (state, action: PayloadAction<string>) => {
       const pastNumberString = state.amount.number.toString();
-      if (pastNumberString.length > 12) {
-        alert('動用「一兆元」以上資金！？恭喜您已財富自由！');
-        return state;
+      const pastHolderNumberString = state.calculationHolder.number.toString();
+      // if (pastNumberString.length > 12) {
+      //   alert('動用「一兆元」以上資金！？恭喜您已財富自由！');
+      //   return state;
+      // }
+      if (state.calculationHolder.operator === '') {
+        return {
+          ...state,
+          amount: {
+            ...state.amount,
+            number: Number(pastNumberString + action.payload),
+          },
+        };
+      } else {
+        return {
+          ...state,
+          calculationHolder: {
+            ...state.calculationHolder,
+            number: Number(pastHolderNumberString + action.payload),
+          },
+        };
+      }
+    },
+    amountDelete: (state) => {
+      const pastNumberString = state.amount.number.toString();
+      const pastHolderNumberString = state.calculationHolder.number.toString();
+      if (state.calculationHolder.operator === '') {
+        return {
+          ...state,
+          amount: {
+            ...state.amount,
+            number: Number(
+              pastNumberString.slice(0, pastNumberString.length - 1)
+            ),
+          },
+        };
+      } else if (pastHolderNumberString === '0') {
+        return {
+          ...state,
+          calculationHolder: {
+            ...state.calculationHolder,
+            operator: '',
+          },
+        };
+      } else {
+        return {
+          ...state,
+          calculationHolder: {
+            ...state.calculationHolder,
+            number: Number(
+              pastHolderNumberString.slice(0, pastHolderNumberString.length - 1)
+            ),
+          },
+        };
+      }
+    },
+    amountHoldOperator: (
+      state,
+      action: PayloadAction<'' | '+' | '-' | 'x' | '÷'>
+    ) => {
+      const newNumber =
+        state.calculationHolder.operator === action.payload
+          ? state.calculationHolder.number
+          : 0;
+      return {
+        ...state,
+        calculationHolder: {
+          operator: action.payload,
+          number: newNumber,
+        },
+      };
+    },
+    amountCalculate: (state) => {
+      const numberBeforeOperator = state.amount.number;
+      const { number, operator } = state.calculationHolder;
+      let result: number;
+      switch (operator) {
+        case '+': {
+          result = numberBeforeOperator + number;
+          break;
+        }
+        case '-': {
+          result = numberBeforeOperator - number;
+          break;
+        }
+        case 'x': {
+          result = numberBeforeOperator * number;
+          break;
+        }
+        case '÷': {
+          result = numberBeforeOperator / number;
+          break;
+        }
+        default: {
+          result = numberBeforeOperator;
+        }
       }
       return {
         ...state,
         amount: {
           ...state.amount,
-          number: Number(pastNumberString + action.payload),
+          number: result,
+        },
+        calculationHolder: {
+          operator: '',
+          number: 0,
         },
       };
     },
-    amountDelete: (state) => {
-      const pastNumberString = state.amount.number.toString();
+    amountAllClear: (state) => {
       return {
         ...state,
         amount: {
           ...state.amount,
-          number: Number(
-            pastNumberString.slice(0, pastNumberString.length - 1)
-          ),
+          number: 0,
+        },
+        calculationHolder: {
+          operator: '',
+          number: 0,
         },
       };
     },
   },
-  // extraReducers: (builder) => {
-  //   builder
-  //     .addCase(saveCityAsync.pending, (state) => {
-  //       state.status = 'loading';
-  //     })
-  //     .addCase(saveCityAsync.fulfilled, (state) => {
-  //       state.status = 'idle';
-  //       state.isHouseDraggable = false;
-  //       alert('街道重建已紀錄');
-  //       return state;
-  //     })
-  //     .addCase(saveCityAsync.rejected, (state) => {
-  //       state.status = 'failed';
-  //       alert('街道重建儲存失敗');
-  //     });
-  // },
 });
 
 export const {
@@ -152,8 +218,11 @@ export const {
   chooseLabelType,
   chooseLabel,
   deleteLabel,
-  amountKeyIn,
+  amountKeyNumber,
   amountDelete,
+  amountHoldOperator,
+  amountCalculate,
+  amountAllClear,
 } = ledgerSingle.actions;
 
 export default ledgerSingle.reducer;
