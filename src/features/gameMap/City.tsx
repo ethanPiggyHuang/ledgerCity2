@@ -28,7 +28,8 @@ export const City: React.FC = () => {
   const dispatch = useAppDispatch();
   const wrapperWidth = 600;
   const gap = 20;
-  const gridWidth = 150;
+  const gridlength = 150;
+  const zoomRatio = 1; //TODO ratio
 
   // console.log(housesPosition);
 
@@ -39,11 +40,12 @@ export const City: React.FC = () => {
   return (
     <>
       <Wrap $wrapperWidth={wrapperWidth} $gap={gap}>
-        {housesPosition.map((row, yIndex) =>
-          row.map((house, xIndex) => {
+        {housesPosition.map((row, yIndex) => {
+          return row.map((house, xIndex) => {
             return (
               <Grid
-                $gridWidth={gridWidth}
+                $gridlength={gridlength}
+                $zoomRatio={zoomRatio}
                 $status={gridsStatus[yIndex][xIndex]}
                 key={xIndex}
                 // ref={testRef}
@@ -64,6 +66,7 @@ export const City: React.FC = () => {
               >
                 {house.type !== 0 && (
                   <House
+                    $zoomRatio={zoomRatio}
                     draggable={isHouseDraggable}
                     onDragStart={(e: any) => {
                       //TODO any!?
@@ -89,8 +92,8 @@ export const City: React.FC = () => {
                 )}
               </Grid>
             );
-          })
-        )}
+          });
+        })}
       </Wrap>
       <button
         onClick={() => {
@@ -111,10 +114,12 @@ type WrapProps = {
   $gap: number;
 };
 type GridProps = {
-  $gridWidth: number;
+  $gridlength: number;
+  $zoomRatio: number;
   $status: number;
 };
 type HouseProps = {
+  $zoomRatio: number;
   $type: number;
 };
 
@@ -130,8 +135,8 @@ const Wrap = styled.div<WrapProps>`
 `;
 
 const Grid = styled.div<GridProps>`
-  width: ${({ $gridWidth }) => `${$gridWidth}px`};
-  height: 150px;
+  width: ${({ $gridlength, $zoomRatio }) => `${$gridlength * $zoomRatio}px`};
+  height: ${({ $gridlength, $zoomRatio }) => `${$gridlength * $zoomRatio}px`};
   border: 1px solid lightblue;
   box-sizing: border-box;
   background-color: ${({ $status }) =>
@@ -142,8 +147,8 @@ const Grid = styled.div<GridProps>`
 `;
 const House = styled.div<HouseProps>`
   border-radius: 10px;
-  width: 130px;
-  height: 130px;
+  width: ${({ $zoomRatio }) => `${130 * $zoomRatio}px`};
+  height: ${({ $zoomRatio }) => `${130 * $zoomRatio}px`};
   background-color: ${({ $type }) =>
     $type === 1 ? 'skyblue' : $type === 2 ? 'pink' : 'brown'};
   display: flex;
