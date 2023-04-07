@@ -10,7 +10,6 @@ import {
   dragLightOff,
   draggableSwitch,
 } from './citySlice';
-// import { getHouses } from './cityAPI';
 
 export const City: React.FC = () => {
   const cityInfo = useAppSelector((state) => state.cityInfo);

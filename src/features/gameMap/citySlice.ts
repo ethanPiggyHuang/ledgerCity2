@@ -91,7 +91,6 @@ export const cityArrangement = createSlice({
             type: type,
             id: house.ledgerId,
           }; //TODO FIX typescript
-          // console.log(house);
         });
       }
       return state;
@@ -103,14 +102,12 @@ export const cityArrangement = createSlice({
         xIndex: number;
       }>
     ) => {
-      if (
-        state.housesPosition[action.payload.yIndex][action.payload.xIndex]
-          .type === 0
-      ) {
-        state.housesPosition[state.dragInfo.pastIndex.yIndex][
-          state.dragInfo.pastIndex.xIndex
-        ] = { type: 0, id: '' };
-        state.housesPosition[action.payload.yIndex][action.payload.xIndex] = {
+      const { yIndex, xIndex } = action.payload;
+      const pastYIndex = state.dragInfo.pastIndex.yIndex;
+      const pastXIndex = state.dragInfo.pastIndex.xIndex;
+      if (state.housesPosition[yIndex][xIndex].type === 0) {
+        state.housesPosition[pastYIndex][pastXIndex] = { type: 0, id: '' };
+        state.housesPosition[yIndex][xIndex] = {
           type: state.dragInfo.target,
           id: state.dragInfo.id,
         };
