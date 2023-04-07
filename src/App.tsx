@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import React from 'react';
 import { Counter } from './features/counter/Counter';
 import { GameMap } from './features/gameMap/GameMap';
-import { Record } from './features/record/Record';
+import { Ledger } from './features/ledger/Ledger';
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -31,7 +31,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<GameMap />} />
         <Route path="/counter" element={<Counter />} />
-        <Route path="/record" element={<Record />} />
+        <Route path="/ledger" element={<Ledger />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
