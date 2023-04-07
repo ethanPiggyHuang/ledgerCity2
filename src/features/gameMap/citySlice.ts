@@ -62,10 +62,7 @@ export const saveCityAsync = createAsyncThunk(
       return { ...house, position: newPostions[house.ledgerId] };
     });
 
-    const response = await saveCity(cityId, newHouses);
-    // // // The value we return becomes the `fulfilled` action payload
-    console.log(response);
-    // return response.data;
+    await saveCity(cityId, newHouses);
   }
 );
 
@@ -181,13 +178,15 @@ export const cityArrangement = createSlice({
       .addCase(saveCityAsync.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(saveCityAsync.fulfilled, (state, action) => {
+      .addCase(saveCityAsync.fulfilled, (state) => {
         state.status = 'idle';
-        alert('城市重建結果已紀錄');
+        state.isHouseDraggable = false;
+        alert('街道重建已紀錄');
         return state;
       })
       .addCase(saveCityAsync.rejected, (state) => {
         state.status = 'failed';
+        alert('街道重建儲存失敗');
       });
   },
 });
