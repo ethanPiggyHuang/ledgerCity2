@@ -35,7 +35,8 @@ export const City: React.FC = () => {
 
   useEffect(() => {
     dispatch(displayCity(cityInfo));
-  }, [cityInfo]);
+    console.log('city updated');
+  }, [cityInfo, dispatch]);
 
   return (
     <>
