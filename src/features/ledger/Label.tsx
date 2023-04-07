@@ -1,13 +1,17 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import { chooseLabelType, chooseLabel, deleteLabel } from './ledgerSlice';
+import {
+  itemKeyIn,
+  chooseLabelType,
+  chooseLabel,
+  deleteLabel,
+} from './ledgerSlice';
 
 export const Label: React.FC = () => {
-  const labelChoosing = useAppSelector(
-    (state) => state.ledgerSingle.labelChoosing
+  const { labelChoosing, labels, item } = useAppSelector(
+    (state) => state.ledgerSingle
   );
-  const labels = useAppSelector((state) => state.ledgerSingle.labels);
   const dispatch = useAppDispatch();
 
   // console.log(labelChoosing.type);
@@ -37,6 +41,7 @@ export const Label: React.FC = () => {
             labels[0].name !== '' &&
             labels.map((label, index) => (
               <LabelChosen
+                key={index}
                 onClick={() => {
                   dispatch(deleteLabel(index));
                 }}
@@ -45,7 +50,10 @@ export const Label: React.FC = () => {
               </LabelChosen>
             ))}
         </LabelChosens>
-        <ItemInput></ItemInput>
+        <ItemInput
+          value={item}
+          onChange={(e) => dispatch(itemKeyIn(e.target.value))}
+        />
       </ItemDisplay>
       <LabelOptions>
         <LabelTypes>
@@ -117,10 +125,11 @@ const LabelChosen = styled.div`
 const ItemInput = styled.input`
   height: 80%;
   width: 75%;
-  padding-left: 10px;
+  padding-right: 15px;
   border: 1px solid lightblue;
   font-size: 20px;
   margin-left: auto;
+  text-align: right;
 `;
 
 const LabelOptions = styled(ItemDisplay)`

@@ -9,7 +9,8 @@ interface LabelState {
 
 interface LedgerSingleState {
   mode: 'manual' | 'qrCode' | 'cloud';
-  // date: Date;
+  ledgerDate: Date;
+  recordDate: Date;
   item: string;
   labelChoosing: LabelState;
   labels: LabelState[];
@@ -20,9 +21,12 @@ interface LedgerSingleState {
   imageUrl: string;
 }
 
+const now = new Date(); //TODO
+
 const initialState: LedgerSingleState = {
   mode: 'manual',
-  // date: new Date(),
+  ledgerDate: now,
+  recordDate: now,
   item: '',
   labelChoosing: { type: 'main', name: 'food' },
   labels: [{ type: 'main', name: '' }],
@@ -61,6 +65,12 @@ export const ledgerSingle = createSlice({
   name: 'ledgerSingle',
   initialState,
   reducers: {
+    itemKeyIn: (state, action: PayloadAction<string>) => {
+      return {
+        ...state,
+        item: action.payload,
+      };
+    },
     chooseLabelType: (state, action: PayloadAction<'main' | 'sub'>) => {
       if (state.labelChoosing.type !== action.payload) {
         return {
@@ -92,6 +102,32 @@ export const ledgerSingle = createSlice({
       };
       //TODO: case 次要標籤
     },
+    amountKeyIn: (state, action: PayloadAction<string>) => {
+      const pastNumberString = state.amount.number.toString();
+      if (pastNumberString.length > 12) {
+        alert('動用「一兆元」以上資金！？恭喜您已財富自由！');
+        return state;
+      }
+      return {
+        ...state,
+        amount: {
+          ...state.amount,
+          number: Number(pastNumberString + action.payload),
+        },
+      };
+    },
+    amountDelete: (state) => {
+      const pastNumberString = state.amount.number.toString();
+      return {
+        ...state,
+        amount: {
+          ...state.amount,
+          number: Number(
+            pastNumberString.slice(0, pastNumberString.length - 1)
+          ),
+        },
+      };
+    },
   },
   // extraReducers: (builder) => {
   //   builder
@@ -111,7 +147,13 @@ export const ledgerSingle = createSlice({
   // },
 });
 
-export const { chooseLabelType, chooseLabel, deleteLabel } =
-  ledgerSingle.actions;
+export const {
+  itemKeyIn,
+  chooseLabelType,
+  chooseLabel,
+  deleteLabel,
+  amountKeyIn,
+  amountDelete,
+} = ledgerSingle.actions;
 
 export default ledgerSingle.reducer;

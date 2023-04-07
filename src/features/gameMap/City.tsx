@@ -14,16 +14,9 @@ import {
 export const City: React.FC = () => {
   const cityInfo = useAppSelector((state) => state.cityInfo);
 
-  const housesPosition = useAppSelector(
-    (state) => state.cityArrangement.housesPosition
+  const { housesPosition, gridsStatus, isHouseDraggable } = useAppSelector(
+    (state) => state.cityArrangement
   );
-  const gridsStatus = useAppSelector(
-    (state) => state.cityArrangement.gridsStatus
-  );
-  const isHouseDraggable = useAppSelector(
-    (state) => state.cityArrangement.isHouseDraggable
-  );
-  //TODO: merge 可能性
   const dispatch = useAppDispatch();
   const wrapperWidth = 600;
   const gap = 20;

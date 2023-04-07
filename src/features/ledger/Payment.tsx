@@ -31,7 +31,7 @@ export const Payment: React.FC = () => {
         <PaidHowText>支付工具</PaidHowText>
         <PaidMethods>
           {methods.map((method) => (
-            <PaidMethod>{method}</PaidMethod>
+            <PaidMethod key={method}>{method}</PaidMethod>
           ))}
         </PaidMethods>
       </PaymentInfo>

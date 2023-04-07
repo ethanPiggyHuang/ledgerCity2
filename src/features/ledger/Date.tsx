@@ -1,19 +1,25 @@
 import React, { useEffect } from 'react';
-import { useAppDispatch } from '../../app/hooks';
 import styled from 'styled-components/macro';
+import { useAppSelector, useAppDispatch } from '../../app/hooks';
 
 export const Date: React.FC = () => {
+  const ledgerDateStamp = useAppSelector(
+    (state) => state.ledgerSingle.ledgerDate
+  );
   const dispatch = useAppDispatch();
   useEffect(() => {
     //TODO: onSnapshot
     // dispatch(getCityInfo());
   }, []);
   // const time: DateConstructor = new Date();
+  const ledgerDate = ledgerDateStamp.toLocaleString();
 
   return (
     <Wrapper>
       <DateSwitch>{'<'}</DateSwitch>
-      <DateChosen>{'2023.04.10'}</DateChosen>
+      <DateChosen>
+        {ledgerDate.substring(0, ledgerDate.indexOf(' '))}
+      </DateChosen>
       <DateSwitch>{'>'}</DateSwitch>
     </Wrapper>
   );

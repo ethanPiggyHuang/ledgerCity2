@@ -1,14 +1,12 @@
 import React, { useEffect } from 'react';
-import { useAppDispatch } from '../../app/hooks';
 import styled from 'styled-components/macro';
+import { useAppSelector, useAppDispatch } from '../../app/hooks';
+import { amountKeyIn, amountDelete } from './ledgerSlice';
 
 export const Calculator: React.FC = () => {
+  const { amount } = useAppSelector((state) => state.ledgerSingle);
   const dispatch = useAppDispatch();
-  useEffect(() => {
-    //TODO: onSnapshot
-    // dispatch(getCityInfo());
-  }, []);
-  // const time: DateConstructor = new Date();
+  console.log(amount.number);
 
   const buttons: (number | string)[] = [
     7,
@@ -33,7 +31,18 @@ export const Calculator: React.FC = () => {
     <>
       <AmountDisplay>
         <Currency>NT$</Currency>
-        <AmountInput></AmountInput>
+        <AmountInput
+          readOnly
+          value={amount.number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+          onKeyUp={(event) => {
+            const numberRegex: RegExp = /^\d+$/;
+            if (numberRegex.test(event.key)) {
+              dispatch(amountKeyIn(event.key));
+            } else if (event.key === 'Backspace') {
+              dispatch(amountDelete());
+            }
+          }}
+        />
         <CurrencyExchange>NT$ 199</CurrencyExchange>
       </AmountDisplay>
       <CalculatorButtons>
@@ -73,12 +82,10 @@ const Currency = styled.div`
 const AmountInput = styled.input`
   height: 80%;
   width: 80%;
-  padding-left: 10px;
+  padding-right: 15px;
   border: 1px solid lightblue;
   font-size: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  text-align: right;
 `;
 const CurrencyExchange = styled.div`
   height: 80%;
@@ -89,7 +96,8 @@ const CurrencyExchange = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  // display: none;
+  display: none;
+  //TODO
 `;
 
 const CalculatorButtons = styled.div`
