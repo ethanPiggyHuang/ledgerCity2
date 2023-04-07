@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { saveCity } from './gameMapAPI';
+import { updateHousePosition } from './gameMapAPI';
 import { CityInfoState, HouseState } from './gameMapSlice';
 
 export interface CityState {
@@ -62,7 +62,7 @@ export const saveCityAsync = createAsyncThunk(
       return { ...house, position: newPostions[house.ledgerId] };
     });
 
-    await saveCity(cityId, newHouses);
+    await updateHousePosition(cityId, newHouses);
   }
 );
 

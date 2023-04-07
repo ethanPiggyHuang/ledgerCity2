@@ -10,7 +10,10 @@ export async function fetchCityInfo(cityId: string) {
   ); //TODO what if failed?
 }
 
-export async function saveCity(cityId: string, newHouses: HouseState[]) {
+export async function updateHousePosition(
+  cityId: string,
+  newHouses: HouseState[]
+) {
   const cityRef = doc(db, 'cities', cityId);
   await updateDoc(cityRef, { houses: newHouses });
 }
