@@ -39,7 +39,7 @@ export async function postLedger(
     availableGrids[Math.floor(Math.random() * availableGrids.length)];
   await updateDoc(housesRef, {
     houses: arrayUnion({
-      id: ledgerRef.id,
+      ledgerId: ledgerRef.id,
       height: 1,
       position: newPosition,
       type: ledgerData.labels[0].name,

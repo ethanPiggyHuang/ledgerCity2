@@ -7,7 +7,6 @@ import { Label } from './Label';
 import { Payment } from './Payment';
 import { Calculator } from './Calculator';
 import { Link } from 'react-router-dom';
-// import { store } from '../../app/store';
 
 export const Ledger: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -15,16 +14,6 @@ export const Ledger: React.FC = () => {
     // console.log('loading');
   }, []);
   // const time: DateConstructor = new Date();
-
-  // const unsubscribe = store.subscribe(() => {
-  //   const cityArrangement = store.getState().cityArrangement;
-  //   if (cityArrangement) {
-  //     // 做其他事情
-  //     console.log('Data fetched:', cityArrangement);
-  //     // 取消 watcher 訂閱
-  //     unsubscribe();
-  //   }
-  // });
 
   return (
     <Wrap>

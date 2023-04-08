@@ -92,7 +92,6 @@ export const City: React.FC = () => {
           isHouseDraggable
             ? dispatch(saveCityAsync(cityInfo.houses))
             : dispatch(draggableSwitch());
-          // console.log(isHouseDraggable);
         }}
       >
         {isHouseDraggable ? '儲存' : '街道重建'}
