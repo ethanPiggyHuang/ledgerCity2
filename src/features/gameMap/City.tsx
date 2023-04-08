@@ -46,15 +46,11 @@ export const City: React.FC = () => {
                 onDragLeave={(e) => dispatch(dragLightOff())}
                 onDragOver={(e) => {
                   e.preventDefault();
-                  dispatch(dragLightOn({ xIndex: xIndex, yIndex: yIndex }));
+                  dispatch(dragLightOn({ xIndex, yIndex }));
                 }}
                 onDrop={(e) => {
-                  // console.log('onDrop');
-                  // setTarget(0);
-                  dispatch(dropHouse({ xIndex: xIndex, yIndex: yIndex }));
-                  // dispatch(dragLightOff());
+                  dispatch(dropHouse({ xIndex, yIndex }));
                 }}
-                // onClick={() => dispatch(shiftPosition())}
               >
                 {house.type !== '' && (
                   <House
@@ -70,7 +66,7 @@ export const City: React.FC = () => {
                           dragHouseStart({
                             id: house.id,
                             target: house.type,
-                            pastIndex: { xIndex: xIndex, yIndex: yIndex },
+                            pastIndex: { xIndex, yIndex },
                           })
                         );
                       }
