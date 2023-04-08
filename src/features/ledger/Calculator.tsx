@@ -59,7 +59,7 @@ export const Calculator: React.FC = () => {
               : ''
           }`}
           onKeyUp={(event) => {
-            console.log(event.key);
+            // console.log(event.key);
             const numberRegex: RegExp = /^\d+$/;
             if (event.key === 'Escape') {
               dispatch(amountAllClear());
@@ -169,4 +169,5 @@ const CalculatorButton = styled.div`
   justify-content: center;
   align-items: center;
   border: 1px solid lightblue;
+  cursor: pointer;
 `;

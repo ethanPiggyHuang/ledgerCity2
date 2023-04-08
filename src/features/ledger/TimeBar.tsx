@@ -1,25 +1,24 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
+import { timeUpdate } from './ledgerSlice';
 
-export const Date: React.FC = () => {
-  const ledgerDateStamp = useAppSelector(
-    (state) => state.ledgerSingle.ledgerDate
-  );
+export const TimeBar: React.FC = () => {
+  const ledgerTime = useAppSelector((state) => state.ledgerSingle.ledgerTime);
   const dispatch = useAppDispatch();
+  const time = new Date();
+  const dateInSecond = time.getTime();
+
   useEffect(() => {
-    //TODO: onSnapshot
-    // dispatch(getCityInfo());
+    dispatch(timeUpdate(dateInSecond));
   }, []);
-  // const time: DateConstructor = new Date();
-  const ledgerDate = ledgerDateStamp.toLocaleString();
+
+  const timeDisplay = new Date(ledgerTime).toLocaleString();
 
   return (
     <Wrapper>
       <DateSwitch>{'<'}</DateSwitch>
-      <DateChosen>
-        {ledgerDate.substring(0, ledgerDate.indexOf(' '))}
-      </DateChosen>
+      <DateChosen>{timeDisplay}</DateChosen>
       <DateSwitch>{'>'}</DateSwitch>
     </Wrapper>
   );

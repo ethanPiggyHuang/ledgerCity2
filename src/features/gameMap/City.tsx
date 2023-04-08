@@ -27,7 +27,6 @@ export const City: React.FC = () => {
 
   useEffect(() => {
     dispatch(displayCity(cityInfo));
-    console.log('city updated');
   }, [cityInfo, dispatch]);
 
   return (
@@ -57,9 +56,10 @@ export const City: React.FC = () => {
                 }}
                 // onClick={() => dispatch(shiftPosition())}
               >
-                {house.type !== 0 && (
+                {house.type !== '' && (
                   <House
                     $zoomRatio={zoomRatio}
+                    $type={house.type}
                     draggable={isHouseDraggable}
                     onDragStart={(e: any) => {
                       //TODO any!?
@@ -78,7 +78,6 @@ export const City: React.FC = () => {
                     onDragEnd={(e: any) => {
                       e.target.style.opacity = '1';
                     }}
-                    $type={house.type}
                   >
                     {house.type}
                   </House>
@@ -113,7 +112,7 @@ type GridProps = {
 };
 type HouseProps = {
   $zoomRatio: number;
-  $type: number;
+  $type: string;
 };
 
 const Wrap = styled.div<WrapProps>`
@@ -142,8 +141,22 @@ const House = styled.div<HouseProps>`
   border-radius: 10px;
   width: ${({ $zoomRatio }) => `${130 * $zoomRatio}px`};
   height: ${({ $zoomRatio }) => `${130 * $zoomRatio}px`};
-  background-color: ${({ $type }) =>
-    $type === 1 ? 'skyblue' : $type === 2 ? 'pink' : 'brown'};
+  background-color: ${({ $type }) => {
+    switch ($type) {
+      case '食物': {
+        return '#e46161';
+      }
+      case '飲料': {
+        return '#f1b963';
+      }
+      case '交通': {
+        return '#f8f398';
+      }
+      default: {
+        return '#cbf078';
+      }
+    }
+  }};
   display: flex;
   align-items: center;
   justify-content: center;

@@ -1,37 +1,53 @@
 import React, { useEffect } from 'react';
-import { useAppDispatch } from '../../app/hooks';
 import styled from 'styled-components/macro';
-import { Calculator } from './Calculator';
-import { Label } from './Label';
+import { useAppSelector, useAppDispatch } from '../../app/hooks';
+import { paySelectPerson, paySelectMethod } from './ledgerSlice';
 
 export const Payment: React.FC = () => {
+  const { payWho, payHow } = useAppSelector((state) => state.ledgerSingle);
   const dispatch = useAppDispatch();
   useEffect(() => {
     //TODO: onSnapshot
     // dispatch(getCityInfo());
   }, []);
-  // const time: DateConstructor = new Date();
 
-  const methods: string[] = ['現金', '行動支付', '信用卡'];
+  const people = ['Ethan', 'Hazel'];
+  const methods: { en: 'cash' | 'creditCard' | 'mobile'; ch: string }[] = [
+    { en: 'cash', ch: '現金' },
+    { en: 'mobile', ch: '行動支付' },
+    { en: 'creditCard', ch: '信用卡' },
+  ];
 
   return (
     <>
       <PaymentInfo>
         <PaidByWhoText>誰買單？</PaidByWhoText>
         <PaidByWho>
-          <PersonOption>
-            <Portrait />
-            <Name>Ethan</Name>
-          </PersonOption>
-          <PersonOption>
-            <Portrait />
-            <Name>Hazel</Name>
-          </PersonOption>
+          {people.map((name, index) => (
+            <PersonOption
+              key={name}
+              $isChosen={name === payWho}
+              onClick={() => {
+                dispatch(paySelectPerson(name));
+              }}
+            >
+              <Portrait />
+              <Name>{name}</Name>
+            </PersonOption>
+          ))}
         </PaidByWho>
         <PaidHowText>支付工具</PaidHowText>
         <PaidMethods>
           {methods.map((method) => (
-            <PaidMethod key={method}>{method}</PaidMethod>
+            <PaidMethod
+              key={method.en}
+              $isChosen={method.en === payHow}
+              onClick={() => {
+                dispatch(paySelectMethod(method.en));
+              }}
+            >
+              {method.ch}
+            </PaidMethod>
           ))}
         </PaidMethods>
       </PaymentInfo>
@@ -39,10 +55,12 @@ export const Payment: React.FC = () => {
   );
 };
 
-// type HouseProps = {
-//   $zoomRatio: number;
-//   $type: number;
-// };
+type PersonOptionProps = {
+  $isChosen: boolean;
+};
+type PaidMethodProps = {
+  $isChosen: boolean;
+};
 
 const PaymentInfo = styled.div`
   margin: 10px auto 0;
@@ -68,13 +86,14 @@ const PaidByWho = styled.div`
   display: flex;
   border: 1px solid lightblue;
 `;
-const PersonOption = styled.div`
+const PersonOption = styled.div<PersonOptionProps>`
   width: 40%;
   border: 1px solid lightblue;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
+  background-color: ${({ $isChosen }) => ($isChosen ? 'lightblue' : '')};
 `;
 const Portrait = styled.img`
   height: 100px;
@@ -105,10 +124,11 @@ const PaidMethods = styled.div`
   align-items: center;
   gap: 20px;
 `;
-const PaidMethod = styled.p`
+const PaidMethod = styled.p<PaidMethodProps>`
   width: 100%;
   border: 1px solid lightblue;
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: ${({ $isChosen }) => ($isChosen ? 'lightblue' : '')};
 `;

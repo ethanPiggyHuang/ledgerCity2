@@ -1,19 +1,17 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-// import { updateHousePosition } from './gameMapAPI';
-// import { CityInfoState, HouseState } from './gameMapSlice';
+import { postLedger } from './ledgerAPI';
 
 interface LabelState {
   type: 'main' | 'sub';
   name: string;
 }
 
-interface LedgerSingleState {
+export interface LedgerSingleState {
   mode: 'manual' | 'qrCode' | 'cloud';
-  ledgerDate: Date;
-  recordDate: Date;
+  ledgerTime: number;
   item: string;
   labelChoosing: LabelState;
-  labels: LabelState[];
+  labels: LabelState[]; //Todo: can be simpler
   payWho: string;
   payHow: 'cash' | 'creditCard' | 'mobile';
   amount: { currency: string; number: number; numberNT: number }; //TODO currency exchange
@@ -25,12 +23,12 @@ interface LedgerSingleState {
   imageUrl: string;
 }
 
-const now = new Date(); //TODO
+// const now = new Date();
+// const totalSecond = now.getTime();
 
 const initialState: LedgerSingleState = {
   mode: 'manual',
-  ledgerDate: now,
-  recordDate: now,
+  ledgerTime: 0,
   item: '',
   labelChoosing: { type: 'main', name: 'food' },
   labels: [{ type: 'main', name: '' }],
@@ -45,6 +43,48 @@ const initialState: LedgerSingleState = {
   imageUrl: '',
 };
 
+export const ledgerSubmit = createAsyncThunk(
+  'ledger/ledgerSubmit',
+  async (arg, { getState }) => {
+    const allStates = getState() as any; //TODO typeScript
+    const ledgerSingle = allStates.ledgerSingle as LedgerSingleState;
+    const {
+      ledgerTime,
+      item,
+      labels,
+      payWho,
+      payHow,
+      amount: { number },
+      imageUrl,
+    } = ledgerSingle;
+    const ledgerData = {
+      ledgerTime,
+      item,
+      labels,
+      payWho,
+      payHow,
+      amount: {
+        currency: 'NT',
+        number,
+        numberNT: number,
+      },
+      imageUrl,
+      recordWho: 'Ethan', //TODO: import from Account State
+    };
+    const availableGrids: { yIndex: number; xIndex: number }[] = [];
+    const housesPosition = allStates.cityArrangement.housesPosition as {
+      type: string;
+      id: string;
+    }[][];
+    housesPosition.forEach((raw, yIndex) => {
+      raw.forEach((grid, xIndex) => {
+        if (grid.type === '') availableGrids.push({ yIndex, xIndex });
+      });
+    });
+    await postLedger(ledgerData, availableGrids);
+  }
+);
+
 export const ledgerSingle = createSlice({
   name: 'ledgerSingle',
   initialState,
@@ -55,7 +95,7 @@ export const ledgerSingle = createSlice({
         item: action.payload,
       };
     },
-    chooseLabelType: (state, action: PayloadAction<'main' | 'sub'>) => {
+    labelChooseType: (state, action: PayloadAction<'main' | 'sub'>) => {
       if (state.labelChoosing.type !== action.payload) {
         return {
           ...state,
@@ -63,7 +103,7 @@ export const ledgerSingle = createSlice({
         };
       }
     },
-    chooseLabel: (state, action: PayloadAction<string>) => {
+    labelChoose: (state, action: PayloadAction<string>) => {
       if (state.labelChoosing.type === 'main') {
         return {
           ...state,
@@ -76,7 +116,7 @@ export const ledgerSingle = createSlice({
       }
       //TODO: case 次要標籤
     },
-    deleteLabel: (state, action: PayloadAction<number>) => {
+    labelRetrieve: (state, action: PayloadAction<number>) => {
       return {
         ...state,
         labels: [
@@ -210,19 +250,64 @@ export const ledgerSingle = createSlice({
         },
       };
     },
+    paySelectPerson: (state, action: PayloadAction<string>) => {
+      if (state.payWho !== action.payload) {
+        return {
+          ...state,
+          payWho: action.payload,
+        };
+      }
+      return { ...state };
+    },
+    paySelectMethod: (
+      state,
+      action: PayloadAction<'cash' | 'creditCard' | 'mobile'>
+    ) => {
+      if (state.payHow !== action.payload) {
+        return {
+          ...state,
+          payHow: action.payload,
+        };
+      }
+      return { ...state };
+    },
+    timeUpdate: (state, action: PayloadAction<number>) => {
+      return {
+        ...state,
+        ledgerTime: action.payload,
+      };
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(ledgerSubmit.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(ledgerSubmit.fulfilled, (state) => {
+        state.status = 'idle';
+        alert('已登錄');
+        return state;
+      })
+      .addCase(ledgerSubmit.rejected, (state) => {
+        state.status = 'failed';
+        alert('登錄失敗');
+      });
   },
 });
 
 export const {
   itemKeyIn,
-  chooseLabelType,
-  chooseLabel,
-  deleteLabel,
+  labelChooseType,
+  labelChoose,
+  labelRetrieve,
   amountKeyNumber,
   amountDelete,
   amountHoldOperator,
   amountCalculate,
   amountAllClear,
+  paySelectPerson,
+  paySelectMethod,
+  timeUpdate,
 } = ledgerSingle.actions;
 
 export default ledgerSingle.reducer;

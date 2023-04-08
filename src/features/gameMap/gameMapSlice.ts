@@ -3,7 +3,7 @@ import { fetchCityInfo } from './gameMapAPI';
 
 export interface HouseState {
   type: string;
-  position: { x: number; y: number };
+  position: { xIndex: number; yIndex: number };
   height: number;
   ledgerId: string;
 }

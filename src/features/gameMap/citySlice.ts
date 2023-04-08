@@ -3,13 +3,14 @@ import { updateHousePosition } from './gameMapAPI';
 import { CityInfoState, HouseState } from './gameMapSlice';
 
 export interface CityState {
-  housesPosition: { type: number; id: string }[][];
+  housesPosition: { type: string; id: string }[][];
   gridsStatus: number[][];
   dragInfo: {
     id: string;
-    target: number;
+    target: string;
     pastIndex: { xIndex: number; yIndex: number };
   };
+  availableGrids: { xIndex: number; yIndex: number }[];
   status: 'idle' | 'loading' | 'failed';
   isHouseDraggable: boolean;
 }
@@ -17,19 +18,19 @@ export interface CityState {
 const initialState: CityState = {
   housesPosition: [
     [
-      { type: 0, id: '' },
-      { type: 0, id: '' },
-      { type: 0, id: '' },
+      { type: '', id: '' },
+      { type: '', id: '' },
+      { type: '', id: '' },
     ],
     [
-      { type: 0, id: '' },
-      { type: 0, id: '' },
-      { type: 0, id: '' },
+      { type: '', id: '' },
+      { type: '', id: '' },
+      { type: '', id: '' },
     ],
     [
-      { type: 0, id: '' },
-      { type: 0, id: '' },
-      { type: 0, id: '' },
+      { type: '', id: '' },
+      { type: '', id: '' },
+      { type: '', id: '' },
     ],
   ],
   gridsStatus: [
@@ -37,7 +38,8 @@ const initialState: CityState = {
     [0, 0, 0],
     [0, 0, 0],
   ],
-  dragInfo: { id: '', target: 0, pastIndex: { xIndex: 0, yIndex: 0 } },
+  dragInfo: { id: '', target: '', pastIndex: { xIndex: 0, yIndex: 0 } },
+  availableGrids: [{ xIndex: 0, yIndex: 0 }],
   status: 'idle',
   isHouseDraggable: false,
 };
@@ -45,23 +47,22 @@ const initialState: CityState = {
 export const saveCityAsync = createAsyncThunk(
   'city/saveCity',
   async (houses: HouseState[], { getState }) => {
-    const cityId: string = 'YFbhq5M8vFBIUMMWZhqo'; //TODO: import from other State
-    const data = getState() as any; //TODO
-    const housesPosition: { type: number; id: string }[][] =
-      data.cityArrangement.housesPosition;
+    const cityId: string = 'YFbhq5M8vFBIUMMWZhqo'; //TODO: import cityId from other State
+    const allStates = getState() as any; //TODO
     const houseIds = houses.map((house) => house.ledgerId);
+    const housesPosition: { type: number; id: string }[][] =
+      allStates.cityArrangement.housesPosition;
 
-    let newPostions: { [key: string]: { x: number; y: number } } = {};
+    let newPostions: { [key: string]: { xIndex: number; yIndex: number } } = {};
     housesPosition.forEach((raw, yIndex) => {
       raw.forEach((grid, xIndex) => {
         const index = houseIds.findIndex((id) => id === grid.id);
-        if (index > -1) newPostions[grid.id] = { y: yIndex, x: xIndex };
+        if (index > -1) newPostions[grid.id] = { yIndex, xIndex };
       });
     });
     const newHouses = houses.map((house) => {
       return { ...house, position: newPostions[house.ledgerId] };
     });
-
     await updateHousePosition(cityId, newHouses);
   }
 );
@@ -73,22 +74,8 @@ export const cityArrangement = createSlice({
     displayCity: (state, action: PayloadAction<CityInfoState>) => {
       if (action.payload.accessUsers.length !== 0) {
         action.payload.houses.forEach((house) => {
-          let type: number = 0;
-          switch (house.type) {
-            case 'food':
-              type = 1;
-              break;
-            case 'clothes':
-              type = 2;
-              break;
-            case 'transportation':
-              type = 3;
-              break;
-            default:
-              break;
-          }
-          state.housesPosition[house.position.y][house.position.x] = {
-            type: type,
+          state.housesPosition[house.position.yIndex][house.position.xIndex] = {
+            type: house.type,
             id: house.ledgerId,
           }; //TODO FIX typescript
         });
@@ -105,13 +92,13 @@ export const cityArrangement = createSlice({
       const { yIndex, xIndex } = action.payload;
       const pastYIndex = state.dragInfo.pastIndex.yIndex;
       const pastXIndex = state.dragInfo.pastIndex.xIndex;
-      if (state.housesPosition[yIndex][xIndex].type === 0) {
-        state.housesPosition[pastYIndex][pastXIndex] = { type: 0, id: '' };
+      if (state.housesPosition[yIndex][xIndex].type === '') {
+        state.housesPosition[pastYIndex][pastXIndex] = { type: '', id: '' };
         state.housesPosition[yIndex][xIndex] = {
           type: state.dragInfo.target,
           id: state.dragInfo.id,
         };
-        state.dragInfo.target = 0;
+        state.dragInfo.target = '';
         state.dragInfo.id = '';
       }
       state.gridsStatus = [
@@ -125,7 +112,7 @@ export const cityArrangement = createSlice({
       state,
       action: PayloadAction<{
         id: string;
-        target: number;
+        target: string;
         pastIndex: { xIndex: number; yIndex: number };
       }>
     ) => {
@@ -143,12 +130,12 @@ export const cityArrangement = createSlice({
         xIndex: number;
       }>
     ) => {
-      if (state.dragInfo.target !== 0) {
+      if (state.dragInfo.target !== '') {
         if (
           (action.payload.xIndex === state.dragInfo.pastIndex.xIndex &&
             action.payload.yIndex === state.dragInfo.pastIndex.yIndex) ||
           state.housesPosition[action.payload.yIndex][action.payload.xIndex]
-            .type === 0
+            .type === ''
         ) {
           state.gridsStatus[action.payload.yIndex][action.payload.xIndex] = 1;
         } else {

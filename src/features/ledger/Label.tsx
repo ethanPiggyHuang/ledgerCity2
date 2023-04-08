@@ -3,9 +3,9 @@ import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import {
   itemKeyIn,
-  chooseLabelType,
-  chooseLabel,
-  deleteLabel,
+  labelChooseType,
+  labelChoose,
+  labelRetrieve,
 } from './ledgerSlice';
 
 export const Label: React.FC = () => {
@@ -43,7 +43,7 @@ export const Label: React.FC = () => {
               <LabelChosen
                 key={index}
                 onClick={() => {
-                  dispatch(deleteLabel(index));
+                  dispatch(labelRetrieve(index));
                 }}
               >
                 {label.name}
@@ -59,13 +59,13 @@ export const Label: React.FC = () => {
         <LabelTypes>
           <LabelType
             $isChosen={labelChoosing.type === 'main'}
-            onClick={() => dispatch(chooseLabelType('main'))}
+            onClick={() => dispatch(labelChooseType('main'))}
           >
             主要標籤
           </LabelType>
           <LabelType
             $isChosen={labelChoosing.type === 'sub'}
-            onClick={() => dispatch(chooseLabelType('sub'))}
+            onClick={() => dispatch(labelChooseType('sub'))}
           >
             次要標籤
           </LabelType>
@@ -75,7 +75,7 @@ export const Label: React.FC = () => {
             <LabelButton
               key={index}
               $isChosen={labelChoosing.name === label}
-              onClick={() => dispatch(chooseLabel(label))}
+              onClick={() => dispatch(labelChoose(label))}
             >
               {label}
             </LabelButton>
