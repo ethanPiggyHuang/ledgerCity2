@@ -10,7 +10,6 @@ export interface CityState {
     target: string;
     pastIndex: { xIndex: number; yIndex: number };
   };
-  availableGrids: { xIndex: number; yIndex: number }[];
   status: 'idle' | 'loading' | 'failed';
   isHouseDraggable: boolean;
 }
@@ -39,7 +38,6 @@ const initialState: CityState = {
     [0, 0, 0],
   ],
   dragInfo: { id: '', target: '', pastIndex: { xIndex: 0, yIndex: 0 } },
-  availableGrids: [{ xIndex: 0, yIndex: 0 }],
   status: 'idle',
   isHouseDraggable: false,
 };
