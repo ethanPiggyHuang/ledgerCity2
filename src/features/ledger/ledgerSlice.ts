@@ -23,9 +23,6 @@ export interface LedgerSingleState {
   imageUrl: string;
 }
 
-// const now = new Date();
-// const totalSecond = now.getTime();
-
 const initialState: LedgerSingleState = {
   mode: 'manual',
   ledgerTime: 0,
@@ -286,6 +283,15 @@ export const ledgerSingle = createSlice({
       .addCase(ledgerSubmit.fulfilled, (state) => {
         state.status = 'idle';
         alert('已登錄');
+        state.item = '';
+        state.labelChoosing = { type: 'main', name: 'food' };
+        state.labels = [{ type: 'main', name: '' }];
+        state.amount = { currency: '', number: 0, numberNT: 0 };
+        state.calculationHolder = {
+          operator: '',
+          number: 0,
+        };
+        state.imageUrl = '';
         return state;
       })
       .addCase(ledgerSubmit.rejected, (state) => {

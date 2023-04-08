@@ -113,6 +113,7 @@ const ConfirmButton = styled.div`
   height: 80%;
   width: 75%;
   border: 1px solid lightblue;
+  font-size: 30px;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -132,7 +132,9 @@ const AmountInput = styled.input`
   width: 80%;
   padding-right: 15px;
   border: 1px solid lightblue;
-  font-size: 20px;
+  font-size: 30px;
+  font-weight: bold;
+  color: brown;
   text-align: right;
 `;
 const CurrencyExchange = styled.div`
