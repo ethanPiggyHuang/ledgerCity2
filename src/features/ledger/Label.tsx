@@ -120,6 +120,7 @@ const LabelChosen = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: lightpink;
   cursor: pointer; //TODO: delete icon
 `;
 const ItemInput = styled.input`

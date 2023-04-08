@@ -93,12 +93,14 @@ const PersonOption = styled.div<PersonOptionProps>`
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
+  cursor: pointer;
   background-color: ${({ $isChosen }) => ($isChosen ? 'lightblue' : '')};
 `;
 const Portrait = styled.img`
   height: 100px;
   width: 100px;
   border: 1px solid lightblue;
+  background-color: white;
 `;
 const Name = styled.p`
   height: 20px;
@@ -130,5 +132,6 @@ const PaidMethod = styled.p<PaidMethodProps>`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
   background-color: ${({ $isChosen }) => ($isChosen ? 'lightblue' : '')};
 `;
