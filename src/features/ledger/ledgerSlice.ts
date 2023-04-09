@@ -23,9 +23,11 @@ export interface LedgerSingleState {
   imageUrl: string;
 }
 
+const time = new Date().getTime();
+
 const initialState: LedgerSingleState = {
   mode: 'manual',
-  ledgerTime: 0,
+  ledgerTime: time,
   item: '',
   labelChoosing: { type: 'main', name: '' },
   labels: [{ type: 'main', name: '' }],
@@ -271,10 +273,39 @@ export const ledgerSingle = createSlice({
       }
       return { ...state };
     },
-    timeUpdate: (state, action: PayloadAction<number>) => {
+    timeEdit: (
+      state,
+      action: PayloadAction<{ prevTime: number; scope: string; delta: number }>
+    ) => {
+      const { prevTime, scope, delta } = action.payload;
+      const time = new Date(prevTime);
+      switch (scope) {
+        case 'date': {
+          const prevDate = time.getDate();
+          time.setDate(prevDate + delta);
+          break;
+        }
+        case 'month': {
+          const prevMonth = time.getMonth();
+          time.setMonth(prevMonth + delta);
+          break;
+        }
+        case 'year': {
+          const prevYear = time.getFullYear();
+          time.setFullYear(prevYear + delta);
+          break;
+        }
+        default: {
+        }
+      }
+      const newTimeInSeconds = time.getTime();
+
+      const now = new Date().getTime();
+      if (newTimeInSeconds > now) alert('注意，未來日期！');
+
       return {
         ...state,
-        ledgerTime: action.payload,
+        ledgerTime: newTimeInSeconds,
       };
     },
   },
@@ -316,7 +347,7 @@ export const {
   amountAllClear,
   paySelectPerson,
   paySelectMethod,
-  timeUpdate,
+  timeEdit,
 } = ledgerSingle.actions;
 
 export default ledgerSingle.reducer;

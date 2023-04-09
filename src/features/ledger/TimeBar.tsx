@@ -1,25 +1,61 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import { timeUpdate } from './ledgerSlice';
+import { timeEdit } from './ledgerSlice';
 
 export const TimeBar: React.FC = () => {
   const ledgerTime = useAppSelector((state) => state.ledgerSingle.ledgerTime);
   const dispatch = useAppDispatch();
-  const time = new Date();
-  const dateInSecond = time.getTime();
+
+  const time = new Date(ledgerTime);
+  const timeInSeconds = time.getTime();
+  const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+  const scopes = [
+    { scope: 'year', text: `${new Date(ledgerTime).getFullYear()}年` },
+    { scope: 'month', text: `${new Date(ledgerTime).getMonth() + 1}月` },
+    { scope: 'date', text: `${new Date(ledgerTime).getDate()}日` },
+    { scope: 'day', text: `星期${weekdays[new Date(ledgerTime).getDay()]}` },
+  ];
+  const switchs = [
+    { delta: -1, symbol: '▲' },
+    { delta: 1, symbol: '▼' },
+  ];
 
   useEffect(() => {
-    dispatch(timeUpdate(dateInSecond));
+    //
   }, []);
-
-  const timeDisplay = new Date(ledgerTime).toLocaleString();
 
   return (
     <Wrapper>
-      <DateSwitch>{'<'}</DateSwitch>
-      <DateChosen>{timeDisplay}</DateChosen>
-      <DateSwitch>{'>'}</DateSwitch>
+      {scopes.map(({ scope, text }) => (
+        <DateOption>
+          <DateText> {text}</DateText>
+          {scope !== 'day' ? (
+            <DateSwitchs>
+              {switchs.map(({ delta, symbol }) => (
+                <DateSwitch
+                  onClick={() =>
+                    dispatch(
+                      timeEdit({
+                        prevTime: timeInSeconds,
+                        scope,
+                        delta,
+                      })
+                    )
+                  }
+                >
+                  {symbol}
+                </DateSwitch>
+              ))}
+            </DateSwitchs>
+          ) : (
+            ''
+          )}
+        </DateOption>
+      ))}
+      {/* <DateOption>
+        <DateText> {`${time.getMinutes()}分${time.getSeconds()}秒`}</DateText>
+      </DateOption> */}
     </Wrapper>
   );
 };
@@ -33,20 +69,38 @@ const Wrapper = styled.div`
   height: 50px;
   width: 100%;
   display: flex;
+  justify-content: center;
   border: 1px solid lightblue;
 `;
-const DateSwitch = styled.div`
-  width: 10%;
+
+const DateOption = styled.div`
+  width: 15%;
   border: 1px solid lightblue;
   display: flex;
   justify-content: center;
   align-items: center;
 `;
-const DateChosen = styled.div`
-  width: 100%;
-  border: 1px solid lightblue;
+const DateText = styled.div`
+  height: 100%;
   font-size: 24px;
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+const DateSwitchs = styled.div`
+  height: 100%;
+  width: 10%;
+  margin-left: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+const DateSwitch = styled.div`
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: lightgrey;
+  cursor: pointer;
 `;
