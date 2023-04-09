@@ -1,33 +1,36 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { fetchLedgerList } from './statisticsAPI';
 
-interface LabelState {
-  type: 'main' | 'sub';
-  name: string;
-}
-
 export interface LedgerListState {
   timeLedger: number;
   item: string;
-  labels: LabelState[]; //TODO: can be simpler
+  labelMain: string;
+  labelSubs: string[];
   payWho: string;
   payHow: 'cash' | 'creditCard' | 'mobile';
   amount: { currency: string; number: number; numberNT: number }; //TODO currency exchange
-  status: 'idle' | 'loading' | 'failed';
   imageUrl: string;
-  recordTime: Date | undefined;
+  recordTime: number;
 }
 
-const initialState: LedgerListState = {
-  timeLedger: 0,
-  item: '',
-  labels: [{ type: 'main', name: '' }], //TODO: can be simpler
-  payWho: '',
-  payHow: 'cash',
-  amount: { currency: 'NT', number: 0, numberNT: 0 },
+const initialState: {
+  data: LedgerListState[];
+  status: 'idle' | 'loading' | 'failed';
+} = {
+  data: [
+    {
+      timeLedger: 0,
+      item: '',
+      labelMain: '',
+      labelSubs: [],
+      payWho: '',
+      payHow: 'cash',
+      amount: { currency: 'NT', number: 0, numberNT: 0 },
+      imageUrl: '',
+      recordTime: 0,
+    },
+  ],
   status: 'idle',
-  imageUrl: '',
-  recordTime: undefined,
 };
 
 export const getLedgerList = createAsyncThunk(
@@ -35,7 +38,13 @@ export const getLedgerList = createAsyncThunk(
   async () => {
     const ledgerBookId: string = 'UcrgCxiJxo3oA7vvwYtd'; //TODO: import from other State
     const response = await fetchLedgerList(ledgerBookId);
-    // return response.data;
+    const modifiedResponse = response.data.map((data) => {
+      const timeInSeconds = new Date(data.recordTime.seconds * 1000).getTime();
+      return { ...data, recordTime: timeInSeconds };
+    });
+    console.log(modifiedResponse);
+
+    return modifiedResponse;
   }
 );
 
@@ -50,8 +59,8 @@ export const ledgerList = createSlice({
       })
       .addCase(getLedgerList.fulfilled, (state, action) => {
         state.status = 'idle';
+        state.data = action.payload;
         console.log('fetch succeed');
-        // state = { ...action.payload, status: 'idle' };
         return state;
       })
       .addCase(getLedgerList.rejected, (state) => {

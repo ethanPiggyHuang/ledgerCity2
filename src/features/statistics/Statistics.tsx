@@ -6,7 +6,7 @@ import { Charts } from './Charts';
 import { LedgerDetail } from './LedgerDetail';
 
 export const Statistics: React.FC = () => {
-  const { housesPosition } = useAppSelector((state) => state.cityArrangement);
+  const ledgerList = useAppSelector((state) => state.ledgerList);
 
   const dispatch = useAppDispatch();
 
@@ -15,6 +15,9 @@ export const Statistics: React.FC = () => {
       Statistics
       <Charts />
       <LedgerDetail />
+      <button onClick={() => console.log('ledgerList', ledgerList)}>
+        test
+      </button>
       <br />
       <Link to="../">city</Link>
       <Link to="../ledger">ledger</Link>

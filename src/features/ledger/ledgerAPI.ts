@@ -8,7 +8,7 @@ import {
   serverTimestamp,
 } from 'firebase/firestore';
 
-interface LedgerDataStatus {
+export interface LedgerDataStatus {
   timeLedger: number;
   timeYear: number;
   timeMonth: number;
