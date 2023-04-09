@@ -1,5 +1,5 @@
 import { db } from '../../config/firebase';
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { CityInfoState, HouseState } from './gameMapSlice';
 
 export async function fetchCityInfo(cityId: string) {

@@ -28,12 +28,13 @@ export const TimeBar: React.FC = () => {
   return (
     <Wrapper>
       {scopes.map(({ scope, text }) => (
-        <DateOption>
+        <DateOption key={scope}>
           <DateText> {text}</DateText>
           {scope !== 'day' ? (
             <DateSwitchs>
-              {switchs.map(({ delta, symbol }) => (
+              {switchs.map(({ delta, symbol }, index) => (
                 <DateSwitch
+                  key={index}
                   onClick={() =>
                     dispatch(
                       timeEdit({
@@ -70,10 +71,12 @@ const Wrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
   border: 1px solid lightblue;
 `;
 
 const DateOption = styled.div`
+  height: 80%;
   width: 15%;
   border: 1px solid lightblue;
   display: flex;
