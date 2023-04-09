@@ -1,14 +1,18 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
+import { chooseTarget } from './statisticsSlice';
 
 export const Charts: React.FC = () => {
   const ledgerList = useAppSelector((state) => state.ledgerList.data);
+  const items = ledgerList.map((ledger) => ledger.item);
+  const ledgerId = ledgerList.map((ledger) => ledger.ledgerId);
+
   const amounts = ledgerList.map((ledger) => ledger.amount.number);
 
   const total = amounts.reduce((acc, cur) => (acc += cur), 0);
   const ratios = amounts.map((amount) => amount / total);
-  console.log(ratios);
+  // console.log(ratios);
 
   const dispatch = useAppDispatch();
 
@@ -37,7 +41,7 @@ export const Charts: React.FC = () => {
   );
 
   const conbined = ratios.map((ratio, index) => {
-    return { ratio, startAngle: startAngles[index] };
+    return { ratio, startAngle: startAngles[index], item: items[index] };
   });
 
   const drawSector = (
@@ -60,13 +64,21 @@ export const Charts: React.FC = () => {
     return (
       <PiePath
         key={index}
-        onClick={() => console.log('hit')}
+        onClick={() => {
+          dispatch(
+            chooseTarget({
+              targetType: 'ledgerId',
+              targetValue: ledgerId[index],
+            })
+          );
+          // alert(items[index]);
+        }} // TODO: fix global variable
         d={`M ${startPoint.x + radius} ${
           startPoint.y + radius
         } A ${radius} ${radius} 0 0 1 ${endPoint.x + radius} ${
           endPoint.y + radius
         } L ${origin.x + radius} ${origin.y + radius} Z`}
-        fill={colorCodes[index % 6]}
+        fill={colorCodes[index % 6]} // TODO: fix global variable
       />
     );
   };
@@ -77,7 +89,7 @@ export const Charts: React.FC = () => {
         <ChartTitle>BarChart</ChartTitle>
       </BarChart> */}
       <PieChart>
-        <ChartTitle>PieChart</ChartTitle>
+        <ChartTitle>PieChart [四月各項花費]</ChartTitle>
         <PieSvg>
           {conbined.map((data, index) => drawSector(data, index))}
           {/* <PiePath

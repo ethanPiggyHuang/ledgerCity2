@@ -2,6 +2,7 @@ import { db } from '../../config/firebase';
 import { getDocs, collection, query, where } from 'firebase/firestore';
 
 export interface LedgerListStatus {
+  ledgerId: string;
   timeLedger: number;
   timeYear: number;
   timeMonth: number;
@@ -27,7 +28,8 @@ export async function fetchLedgerList(ledgerBookId: string) {
   const querySnapshot = await getDocs(q);
   let result: any[] = []; //TODO typescript
   querySnapshot.forEach((doc) => {
-    result.push(doc.data());
+    // console.log('id', doc.id);
+    result.push({ ledgerId: doc.id, ...doc.data() });
   });
 
   return new Promise<{ data: LedgerListStatus[] }>((resolve) =>

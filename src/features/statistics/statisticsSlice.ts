@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { fetchLedgerList } from './statisticsAPI';
 
 export interface LedgerListState {
+  ledgerId: string;
   timeLedger: number;
   item: string;
   labelMain: string;
@@ -15,10 +16,12 @@ export interface LedgerListState {
 
 const initialState: {
   data: LedgerListState[];
+  choosing: string;
   status: 'idle' | 'loading' | 'failed';
 } = {
   data: [
     {
+      ledgerId: '',
       timeLedger: 0,
       item: '',
       labelMain: '',
@@ -30,6 +33,7 @@ const initialState: {
       recordTime: 0,
     },
   ],
+  choosing: '',
   status: 'idle',
 };
 
@@ -42,7 +46,6 @@ export const getLedgerList = createAsyncThunk(
       const timeInSeconds = new Date(data.recordTime.seconds * 1000).getTime();
       return { ...data, recordTime: timeInSeconds };
     });
-    console.log(modifiedResponse);
 
     return modifiedResponse;
   }
@@ -51,7 +54,21 @@ export const getLedgerList = createAsyncThunk(
 export const ledgerList = createSlice({
   name: 'ledgerList',
   initialState,
-  reducers: {},
+  reducers: {
+    chooseTarget: (
+      state,
+      action: PayloadAction<{ targetType: string; targetValue: string }>
+    ) => {
+      console.log(action.payload.targetValue);
+      if (action.payload.targetType === 'ledgerId') {
+        return {
+          ...state,
+          choosing: action.payload.targetValue,
+        };
+      }
+      return state;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getLedgerList.pending, (state) => {
@@ -70,6 +87,6 @@ export const ledgerList = createSlice({
   },
 });
 
-// export const {} = GameMainInfo.actions;
+export const { chooseTarget } = ledgerList.actions;
 
 export default ledgerList.reducer;
