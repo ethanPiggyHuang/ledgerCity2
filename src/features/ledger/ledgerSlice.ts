@@ -78,6 +78,7 @@ export const ledgerSubmit = createAsyncThunk(
         if (grid.type === '') availableGrids.push({ yIndex, xIndex });
       });
     });
+    console.log('available', availableGrids);
     await postLedger(ledgerData, availableGrids);
   }
 );

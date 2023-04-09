@@ -1,19 +1,31 @@
 import React, { useEffect } from 'react';
+import { Link, redirect } from 'react-router-dom';
 import styled from 'styled-components/macro';
-import { useAppDispatch } from '../../app/hooks';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { db } from '../../config/firebase';
+import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import { ledgerSubmit } from './ledgerSlice';
+import { getCityInfo } from '../gameMap/gameMapSlice';
 import { TimeBar } from './TimeBar';
 import { Label } from './Label';
 import { Payment } from './Payment';
 import { Calculator } from './Calculator';
-import { Link } from 'react-router-dom';
 
 export const Ledger: React.FC = () => {
+  const { housesPosition } = useAppSelector((state) => state.cityArrangement);
   const dispatch = useAppDispatch();
-  useEffect(() => {
-    // console.log('loading');
-  }, []);
-  // const time: DateConstructor = new Date();
+
+  console.log('housesPos', housesPosition);
+
+  const unsubscribe = onSnapshot(
+    doc(db, 'cities', 'YFbhq5M8vFBIUMMWZhqo'),
+    (doc) => {
+      const source = doc.metadata.hasPendingWrites ? 'Local' : 'Server';
+      if (source === 'Local') {
+        console.log('need redirect'); //TODO: how to redirect???
+      }
+    }
+  );
 
   return (
     <Wrap>
@@ -44,6 +56,13 @@ export const Ledger: React.FC = () => {
       </MainBoard>
       <br />
       <Link to="../">city</Link>
+      {/* <button
+        onClick={() => {
+          redirect('./index.html');
+        }}
+      >
+        test redirect
+      </button> */}
     </Wrap>
   );
 };

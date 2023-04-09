@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import {
   displayCity,
@@ -13,7 +13,6 @@ import {
 
 export const City: React.FC = () => {
   const cityInfo = useAppSelector((state) => state.cityInfo);
-
   const { housesPosition, gridsStatus, isHouseDraggable } = useAppSelector(
     (state) => state.cityArrangement
   );
