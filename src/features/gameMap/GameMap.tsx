@@ -16,7 +16,9 @@ export const GameMap: React.FC = () => {
     <>
       <City />
       <br />
+      <br />
       <Link to="/ledger">ledger</Link>
+      <br />
       <br />
       <Link to="/statistics">statistics</Link>
     </>

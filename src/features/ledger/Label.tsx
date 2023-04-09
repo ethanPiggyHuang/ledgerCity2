@@ -9,11 +9,12 @@ import {
 } from './ledgerSlice';
 
 export const Label: React.FC = () => {
-  const { labelChoosing, labels, item } = useAppSelector(
+  const { labelChoosingType, labelMain, labelSubs, item } = useAppSelector(
     (state) => state.ledgerSingle
   );
   const dispatch = useAppDispatch();
 
+  const labelChosen = labelMain === '' ? labelSubs : [labelMain, ...labelSubs];
   // console.log(labelChoosing.type);
 
   useEffect(() => {
@@ -37,16 +38,15 @@ export const Label: React.FC = () => {
     <>
       <ItemDisplay>
         <LabelChosens>
-          {labels.length !== 0 &&
-            labels[0].name !== '' &&
-            labels.map((label, index) => (
+          {labelChosen.length !== 0 &&
+            labelChosen.map((name) => (
               <LabelChosen
-                key={index}
+                key={name}
                 onClick={() => {
-                  dispatch(labelRetrieve(index));
+                  dispatch(labelRetrieve(name));
                 }}
               >
-                {label.name}
+                {name}
               </LabelChosen>
             ))}
         </LabelChosens>
@@ -58,13 +58,13 @@ export const Label: React.FC = () => {
       <LabelOptions>
         <LabelTypes>
           <LabelType
-            $isChosen={labelChoosing.type === 'main'}
+            $isChosen={labelChoosingType === 'main'}
             onClick={() => dispatch(labelChooseType('main'))}
           >
             主要標籤
           </LabelType>
           <LabelType
-            $isChosen={labelChoosing.type === 'sub'}
+            $isChosen={labelChoosingType === 'sub'}
             onClick={() => dispatch(labelChooseType('sub'))}
           >
             次要標籤
@@ -74,7 +74,7 @@ export const Label: React.FC = () => {
           {labelArray.map((label, index) => (
             <LabelButton
               key={index}
-              $isChosen={labelChoosing.name === label}
+              $isChosen={labelMain === label}
               onClick={() => dispatch(labelChoose(label))}
             >
               {label}

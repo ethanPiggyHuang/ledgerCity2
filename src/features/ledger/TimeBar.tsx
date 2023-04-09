@@ -4,7 +4,7 @@ import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import { timeEdit } from './ledgerSlice';
 
 export const TimeBar: React.FC = () => {
-  const ledgerTime = useAppSelector((state) => state.ledgerSingle.ledgerTime);
+  const ledgerTime = useAppSelector((state) => state.ledgerSingle.timeLedger);
   const dispatch = useAppDispatch();
 
   const time = new Date(ledgerTime);

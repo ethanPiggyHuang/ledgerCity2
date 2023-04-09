@@ -9,9 +9,12 @@ import {
 } from 'firebase/firestore';
 
 interface LedgerDataStatus {
-  ledgerTime: number;
+  timeLedger: number;
+  timeYear: number;
+  timeMonth: number;
   item: string;
-  labels: { type: string; name: string }[];
+  labelMain: string;
+  labelSubs: string[];
   payWho: string;
   payHow: 'cash' | 'creditCard' | 'mobile';
   amount: {
@@ -41,7 +44,7 @@ export async function postLedger(
       ledgerId: ledgerRef.id,
       height: 1,
       position: newPosition,
-      type: ledgerData.labels[0].name,
+      type: ledgerData.labelMain,
     }),
   });
   // console.log('updated', newPosition.xIndex, newPosition.yIndex);

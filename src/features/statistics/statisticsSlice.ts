@@ -7,7 +7,7 @@ interface LabelState {
 }
 
 export interface LedgerListState {
-  ledgerTime: number;
+  timeLedger: number;
   item: string;
   labels: LabelState[]; //TODO: can be simpler
   payWho: string;
@@ -19,7 +19,7 @@ export interface LedgerListState {
 }
 
 const initialState: LedgerListState = {
-  ledgerTime: 0,
+  timeLedger: 0,
   item: '',
   labels: [{ type: 'main', name: '' }], //TODO: can be simpler
   payWho: '',

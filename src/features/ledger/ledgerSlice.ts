@@ -1,17 +1,13 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { postLedger } from './ledgerAPI';
 
-interface LabelState {
-  type: 'main' | 'sub';
-  name: string;
-}
-
 export interface LedgerSingleState {
   mode: 'manual' | 'qrCode' | 'cloud';
-  ledgerTime: number;
+  timeLedger: number;
   item: string;
-  labelChoosing: LabelState;
-  labels: LabelState[]; //TODO: can be simpler
+  labelChoosingType: 'main' | 'sub';
+  labelMain: string;
+  labelSubs: string[];
   payWho: string;
   payHow: 'cash' | 'creditCard' | 'mobile';
   amount: { currency: string; number: number; numberNT: number }; //TODO currency exchange
@@ -27,10 +23,11 @@ const time = new Date().getTime();
 
 const initialState: LedgerSingleState = {
   mode: 'manual',
-  ledgerTime: time,
+  timeLedger: time,
   item: '',
-  labelChoosing: { type: 'main', name: '' },
-  labels: [{ type: 'main', name: '' }],
+  labelChoosingType: 'main',
+  labelMain: '',
+  labelSubs: [],
   payWho: 'Ethan', // TODO: 要改掉！
   payHow: 'cash',
   amount: { currency: '', number: 0, numberNT: 0 },
@@ -48,18 +45,22 @@ export const ledgerSubmit = createAsyncThunk(
     const allStates = getState() as any; //TODO typeScript
     const ledgerSingle = allStates.ledgerSingle as LedgerSingleState;
     const {
-      ledgerTime,
+      timeLedger,
       item,
-      labels,
+      labelMain,
+      labelSubs,
       payWho,
       payHow,
       amount: { number },
       imageUrl,
     } = ledgerSingle;
     const ledgerData = {
-      ledgerTime,
+      timeLedger,
+      timeYear: new Date(timeLedger).getFullYear(),
+      timeMonth: new Date(timeLedger).getMonth() + 1,
       item,
-      labels,
+      labelMain,
+      labelSubs,
       payWho,
       payHow,
       amount: {
@@ -97,33 +98,35 @@ export const ledgerSingle = createSlice({
       };
     },
     labelChooseType: (state, action: PayloadAction<'main' | 'sub'>) => {
-      if (state.labelChoosing.type !== action.payload) {
+      if (state.labelChoosingType !== action.payload) {
         return {
           ...state,
-          labelChoosing: { type: action.payload, name: '' },
+          labelChoosingType: action.payload,
         };
       }
     },
     labelChoose: (state, action: PayloadAction<string>) => {
-      if (state.labelChoosing.type === 'main') {
+      if (state.labelChoosingType === 'main') {
         return {
           ...state,
-          labelChoosing: { type: 'main', name: action.payload },
-          labels: [
-            { type: 'main', name: action.payload },
-            ...state.labels.slice(1, state.labels.length),
-          ],
+          labelMain: action.payload,
         };
       }
       //TODO: case 次要標籤
     },
-    labelRetrieve: (state, action: PayloadAction<number>) => {
+    labelRetrieve: (state, action: PayloadAction<string>) => {
+      if (state.labelMain === action.payload) {
+        return {
+          ...state,
+          labelMain: '',
+        };
+      }
+      const removeIndex = state.labelSubs.indexOf(action.payload);
       return {
         ...state,
-        labelChoosing: { type: 'main', name: '' },
-        labels: [
-          ...state.labels.slice(0, action.payload),
-          ...state.labels.slice(action.payload + 1),
+        labelSubs: [
+          ...state.labelSubs.slice(0, removeIndex),
+          ...state.labelSubs.slice(removeIndex + 1),
         ],
       };
       //TODO: case 次要標籤
@@ -299,13 +302,12 @@ export const ledgerSingle = createSlice({
         }
       }
       const newTimeInSeconds = time.getTime();
-
       const now = new Date().getTime();
       if (newTimeInSeconds > now) alert('注意，未來日期！');
 
       return {
         ...state,
-        ledgerTime: newTimeInSeconds,
+        timeLedger: newTimeInSeconds,
       };
     },
   },
@@ -318,8 +320,9 @@ export const ledgerSingle = createSlice({
         state.status = 'idle';
         alert('已登錄');
         state.item = '';
-        state.labelChoosing = { type: 'main', name: '' };
-        state.labels = [{ type: 'main', name: '' }];
+        state.labelChoosingType = 'main';
+        state.labelMain = '';
+        state.labelSubs = [];
         state.amount = { currency: '', number: 0, numberNT: 0 };
         state.calculationHolder = {
           operator: '',

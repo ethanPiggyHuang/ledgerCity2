@@ -13,7 +13,7 @@ import { Calculator } from './Calculator';
 
 export const Ledger: React.FC = () => {
   const { housesPosition } = useAppSelector((state) => state.cityArrangement);
-  const { item, labels, amount } = useAppSelector(
+  const { item, labelMain, amount } = useAppSelector(
     (state) => state.ledgerSingle
   );
   const dispatch = useAppDispatch();
@@ -48,7 +48,7 @@ export const Ledger: React.FC = () => {
           <RecordPerson>{`記錄者：${'Ethan'}`}</RecordPerson>
           <ConfirmButton
             onClick={() => {
-              if (!labels[0] || labels[0].name === '') {
+              if (labelMain === '') {
                 alert('請選擇一個主要標籤');
                 return;
               } else if (amount.number === 0) {
