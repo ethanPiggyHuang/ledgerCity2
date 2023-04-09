@@ -3,6 +3,7 @@ import counterReducer from '../features/counter/counterSlice';
 import cityInfoReducer from '../features/gameMap/gameMapSlice';
 import cityArrangementReducer from '../features/gameMap/citySlice';
 import ledgerSingleReducer from '../features/ledger/ledgerSlice';
+import ledgerListReducer from '../features/statistics/statisticsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     cityInfo: cityInfoReducer,
     cityArrangement: cityArrangementReducer,
     ledgerSingle: ledgerSingleReducer,
+    ledgerList: ledgerListReducer,
   },
 });
 
