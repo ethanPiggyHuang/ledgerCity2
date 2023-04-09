@@ -68,6 +68,7 @@ export const Ledger: React.FC = () => {
       </MainBoard>
       <br />
       <Link to="../">city</Link>
+      <Link to="/statistics">statistics</Link>
       {/* <button
         onClick={() => {
           redirect('./index.html');

@@ -5,6 +5,7 @@ import React from 'react';
 import { Counter } from './features/counter/Counter';
 import { GameMap } from './features/gameMap/GameMap';
 import { Ledger } from './features/ledger/Ledger';
+import { Statistics } from './features/statistics/Statistics';
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -32,6 +33,7 @@ const App: React.FC = () => {
         <Route path="/" element={<GameMap />} />
         <Route path="/counter" element={<Counter />} />
         <Route path="/ledger" element={<Ledger />} />
+        <Route path="/statistics" element={<Statistics />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
