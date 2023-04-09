@@ -13,9 +13,10 @@ import { Calculator } from './Calculator';
 
 export const Ledger: React.FC = () => {
   const { housesPosition } = useAppSelector((state) => state.cityArrangement);
+  const { item, labels, amount } = useAppSelector(
+    (state) => state.ledgerSingle
+  );
   const dispatch = useAppDispatch();
-
-  console.log('housesPos', housesPosition);
 
   const unsubscribe = onSnapshot(
     doc(db, 'cities', 'YFbhq5M8vFBIUMMWZhqo'),
@@ -47,6 +48,17 @@ export const Ledger: React.FC = () => {
           <RecordPerson>{`記錄者：${'Ethan'}`}</RecordPerson>
           <ConfirmButton
             onClick={() => {
+              if (!labels[0] || labels[0].name === '') {
+                alert('請選擇一個主要標籤');
+                return;
+              } else if (amount.number === 0) {
+                alert('請輸入花費金額');
+                return;
+              } else if (item === '') {
+                alert('請填入帳目品項');
+                return;
+              }
+              console.log('fff');
               dispatch(ledgerSubmit());
             }}
           >
@@ -66,11 +78,6 @@ export const Ledger: React.FC = () => {
     </Wrap>
   );
 };
-
-// type HouseProps = {
-//   $zoomRatio: number;
-//   $type: number;
-// };
 
 const Wrap = styled.div`
   padding: 20px;

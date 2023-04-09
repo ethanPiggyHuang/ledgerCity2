@@ -147,7 +147,7 @@ const CurrencyExchange = styled.div`
   justify-content: center;
   align-items: center;
   display: none;
-  //TODO
+  //TODO currency exchange
 `;
 
 const CalculatorButtons = styled.div`

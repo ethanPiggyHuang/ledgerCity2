@@ -36,7 +36,7 @@ export async function postLedger(
 
   const housesRef = doc(db, 'cities', 'YFbhq5M8vFBIUMMWZhqo');
   const newPosition =
-    availableGrids[Math.floor(Math.random() * availableGrids.length)];
+    availableGrids[Math.floor(Math.random() * availableGrids.length)]; //TODO: 可以調整選位子邏輯
   await updateDoc(housesRef, {
     houses: arrayUnion({
       ledgerId: ledgerRef.id,

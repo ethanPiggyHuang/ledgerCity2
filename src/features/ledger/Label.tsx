@@ -121,7 +121,7 @@ const LabelChosen = styled.div`
   justify-content: center;
   align-items: center;
   background-color: lightpink;
-  cursor: pointer; //TODO: delete icon
+  cursor: pointer; //TODO: delete cursor icon
 `;
 const ItemInput = styled.input`
   height: 80%;

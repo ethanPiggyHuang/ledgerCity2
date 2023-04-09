@@ -46,14 +46,14 @@ export const gameMainInfo = createSlice({
       })
       .addCase(getCityInfo.fulfilled, (state, action) => {
         state = { ...action.payload, status: 'idle' };
-        console.log(
-          state.houses.map((house) => {
-            return {
-              type: house.type,
-              pos: house.position,
-            };
-          })
-        );
+        // console.log(
+        //   state.houses.map((house) => {
+        //     return {
+        //       type: house.type,
+        //       pos: house.position,
+        //     };
+        //   })
+        // );
         return state;
       })
       .addCase(getCityInfo.rejected, (state) => {

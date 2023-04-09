@@ -11,7 +11,7 @@ export interface LedgerSingleState {
   ledgerTime: number;
   item: string;
   labelChoosing: LabelState;
-  labels: LabelState[]; //Todo: can be simpler
+  labels: LabelState[]; //TODO: can be simpler
   payWho: string;
   payHow: 'cash' | 'creditCard' | 'mobile';
   amount: { currency: string; number: number; numberNT: number }; //TODO currency exchange
@@ -27,9 +27,9 @@ const initialState: LedgerSingleState = {
   mode: 'manual',
   ledgerTime: 0,
   item: '',
-  labelChoosing: { type: 'main', name: 'food' },
+  labelChoosing: { type: 'main', name: '' },
   labels: [{ type: 'main', name: '' }],
-  payWho: '',
+  payWho: 'Ethan', // TODO: 要改掉！
   payHow: 'cash',
   amount: { currency: '', number: 0, numberNT: 0 },
   calculationHolder: {
@@ -79,6 +79,7 @@ export const ledgerSubmit = createAsyncThunk(
       });
     });
     console.log('available', availableGrids);
+    if (availableGrids.length === 0) alert('not enough grids'); //TODO: auto expand grid
     await postLedger(ledgerData, availableGrids);
   }
 );
@@ -117,6 +118,7 @@ export const ledgerSingle = createSlice({
     labelRetrieve: (state, action: PayloadAction<number>) => {
       return {
         ...state,
+        labelChoosing: { type: 'main', name: '' },
         labels: [
           ...state.labels.slice(0, action.payload),
           ...state.labels.slice(action.payload + 1),
@@ -285,7 +287,7 @@ export const ledgerSingle = createSlice({
         state.status = 'idle';
         alert('已登錄');
         state.item = '';
-        state.labelChoosing = { type: 'main', name: 'food' };
+        state.labelChoosing = { type: 'main', name: '' };
         state.labels = [{ type: 'main', name: '' }];
         state.amount = { currency: '', number: 0, numberNT: 0 };
         state.calculationHolder = {
