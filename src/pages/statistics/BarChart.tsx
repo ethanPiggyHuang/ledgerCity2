@@ -3,18 +3,37 @@ import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { chooseTarget } from '../../redux/reducers/ledgerListSlice';
 
+interface BarChartSetting {
+  svgHeight: number;
+  svgWidth: number;
+  barWidth: number;
+  yShrinkRatio: number;
+  labelDY: number;
+}
+
 export const BarChart: React.FC = () => {
   const ledgerList = useAppSelector((state) => state.ledgerList.data);
   const dispatch = useAppDispatch();
 
-  const items = ledgerList.map((ledger) => ledger.item);
-  const ledgerId = ledgerList.map((ledger) => ledger.ledgerId);
-  const amounts = ledgerList.map((ledger) => ledger.amount.number);
+  const barChartSetting = {
+    svgHeight: 400,
+    svgWidth: 600,
+    barWidth: 40,
+    yShrinkRatio: 0.9,
+    labelDY: 20,
+  };
 
-  const xMax = amounts.length;
-  const yMax = Math.max(...amounts);
+  const datas = ledgerList.map((ledger) => {
+    return {
+      label: ledger.item,
+      ledgerId: ledger.ledgerId,
+      value: ledger.amount.number,
+    };
+  });
 
-  // TODO: 這邊的 code 要好好整理一下
+  const xMax = datas.length;
+  const yMax = Math.max(...datas.map((data) => data.value));
+
   const colorCodes = [
     '#c23f3f',
     '#cf9741',
@@ -24,61 +43,60 @@ export const BarChart: React.FC = () => {
     '#7674cf',
   ];
 
-  const drawBar = (value: number, index: number): ReactNode => {
-    const barWidth = 40;
-    const svgHeight = 400;
-    const svgWidth = 600;
-    const yShrinkRatio = 0.9;
+  const drawBar = (
+    value: number,
+    ledgerId: string,
+    { svgHeight, svgWidth, barWidth, yShrinkRatio }: BarChartSetting,
+    colorCodes: string[],
+    index: number
+  ): ReactNode => {
     const startPointX = (svgWidth / xMax) * (index + 0.5) - barWidth / 2;
     const barHeight = (value / yMax) * svgHeight * yShrinkRatio;
 
     return (
-      <PiePath
+      <BarPath
         key={index}
         onClick={() => {
           dispatch(
             chooseTarget({
               targetType: 'ledgerId',
-              targetValue: ledgerId[index],
+              targetValue: ledgerId,
             })
           );
-        }} // TODO: fix global variable
+        }}
         d={`M ${startPointX} ${svgHeight} V ${svgHeight - barHeight} H ${
           startPointX + barWidth
         } V ${svgHeight} Z`}
-        fill={colorCodes[index % 6]} // TODO: fix global variable
+        fill={colorCodes[index % 6]}
       />
     );
   };
 
-  const setLabel = (text: string, index: number): ReactNode => {
-    const barWidth = 40;
-    const svgHeight = 400;
-    const svgWidth = 600;
-    const dY = 20;
+  const setXLabel = (
+    text: string,
+    { svgHeight, svgWidth, labelDY }: BarChartSetting,
+    index: number
+  ): ReactNode => {
     const labelX = (svgWidth / xMax) * (index + 0.5);
-    const labelY = svgHeight + dY;
+    const labelY = svgHeight + labelDY;
 
     return (
-      <text
-        key={index}
-        // TODO: fix global variable
-        x={labelX}
-        y={labelY}
-        fontSize="12px"
-        textAnchor="middle"
-      >
+      <LabelX key={index} x={labelX} y={labelY}>
         {text}
-      </text>
+      </LabelX>
     );
   };
 
   return (
     <Wrap>
-      <ChartTitle>BarChart [四月各項花費]</ChartTitle>
+      <ChartTitle>BarChart [四月各類別花費]</ChartTitle>
       <BarSvg>
-        {amounts.map((amount, index) => drawBar(amount, index))}
-        {items.map((item, index) => setLabel(item, index))}
+        {datas.map(({ value, ledgerId }, index) =>
+          drawBar(value, ledgerId, barChartSetting, colorCodes, index)
+        )}
+        {datas.map((data, index) =>
+          setXLabel(data.label, barChartSetting, index)
+        )}
         <path d={`M 0 400 L 600 400 Z`} stroke="black" />
         <path d={`M 0 400 L 0 0 Z`} stroke="black" />
       </BarSvg>
@@ -104,11 +122,16 @@ const BarSvg = styled.svg`
   width: 600px;
   // border: 1px solid lightblue;
 `;
-const PiePath = styled.path`
+const BarPath = styled.path`
   opacity: 0.7;
   cursor: pointer;
 
   &: hover {
     opacity: 1;
   }
+`;
+
+const LabelX = styled.text`
+  font-size: 16px;
+  text-anchor: middle;
 `;
