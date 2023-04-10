@@ -19,11 +19,11 @@ export interface LedgerSingleState {
   imageUrl: string;
 }
 
-const time = new Date().getTime();
+const now = new Date().getTime(); //TODO ESSENTIAL: Reducers Must Not Have Side Effects
 
 const initialState: LedgerSingleState = {
   mode: 'manual',
-  timeLedger: time,
+  timeLedger: now,
   item: '',
   labelChoosingType: 'main',
   labelMain: '',
@@ -302,7 +302,7 @@ export const ledgerSingle = createSlice({
         }
       }
       const newTimeInSeconds = time.getTime();
-      const now = new Date().getTime();
+      const now = new Date().getTime(); //TODO ESSENTIAL: Reducers Must Not Have Side Effects
       if (newTimeInSeconds > now) alert('注意，未來日期！');
 
       return {
