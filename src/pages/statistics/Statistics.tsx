@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { PieChart } from './PieChart';
+import { BarChart } from './BarChart';
 import { LedgerDetail } from './LedgerDetail';
 import { getLedgerList } from '../../redux/reducers/ledgerListSlice';
 
@@ -16,7 +17,9 @@ export const Statistics: React.FC = () => {
   return (
     <Wrap>
       <ChartWrap>
-        <PieChart></PieChart>
+        {/* TODO: need switch mechanism */}
+        {/* <PieChart></PieChart> */}
+        <BarChart></BarChart>
       </ChartWrap>
       <LedgerWarp>
         <LedgerDetail />
