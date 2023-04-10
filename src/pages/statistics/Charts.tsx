@@ -17,7 +17,6 @@ export const Charts: React.FC = () => {
   const dispatch = useAppDispatch();
 
   // TODO: 這邊的 code 要好好整理一下
-  // const ratios = [1 / 3, 1 / 6, 3 / 8, 1 / 8];
   const colorCodes = [
     '#c23f3f',
     '#cf9741',
@@ -60,6 +59,7 @@ export const Charts: React.FC = () => {
       x: radius * Math.cos(endAngle) + origin.x,
       y: radius * Math.sin(endAngle) + origin.y,
     };
+    const largeArcFlag = data.ratio > 0.5 ? 1 : 0;
 
     return (
       <PiePath
@@ -75,7 +75,7 @@ export const Charts: React.FC = () => {
         }} // TODO: fix global variable
         d={`M ${startPoint.x + radius} ${
           startPoint.y + radius
-        } A ${radius} ${radius} 0 0 1 ${endPoint.x + radius} ${
+        } A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endPoint.x + radius} ${
           endPoint.y + radius
         } L ${origin.x + radius} ${origin.y + radius} Z`}
         fill={colorCodes[index % 6]} // TODO: fix global variable
