@@ -2,7 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyAx-Bkt_ELVtL30qtELE7X2PfDzxJqm7O8',
+  apiKey: process.env.REACT_APP_FIREBASE_APIKEY,
   authDomain: 'ethanappproject.firebaseapp.com',
   projectId: 'ethanappproject',
   storageBucket: 'ethanappproject.appspot.com',
