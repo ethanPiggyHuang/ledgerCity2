@@ -8,7 +8,7 @@ import {
   dragHouseStart,
   dragLightOn,
   dragLightOff,
-  draggableSwitch,
+  draggableToggle,
 } from '../../redux/reducers/cityArrangementSlice';
 
 export const City: React.FC = () => {
@@ -90,7 +90,7 @@ export const City: React.FC = () => {
         onClick={() => {
           isHouseDraggable
             ? dispatch(saveCityAsync(cityBasicInfo.houses))
-            : dispatch(draggableSwitch());
+            : dispatch(draggableToggle());
         }}
       >
         {isHouseDraggable ? '儲存' : '街道重建'}
