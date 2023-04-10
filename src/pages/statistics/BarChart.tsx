@@ -9,7 +9,6 @@ export const BarChart: React.FC = () => {
 
   const items = ledgerList.map((ledger) => ledger.item);
   const ledgerId = ledgerList.map((ledger) => ledger.ledgerId);
-
   const amounts = ledgerList.map((ledger) => ledger.amount.number);
 
   const xMax = amounts.length;
@@ -43,7 +42,6 @@ export const BarChart: React.FC = () => {
               targetValue: ledgerId[index],
             })
           );
-          // alert(items[index]);
         }} // TODO: fix global variable
         d={`M ${startPointX} ${svgHeight} V ${svgHeight - barHeight} H ${
           startPointX + barWidth
@@ -53,11 +51,34 @@ export const BarChart: React.FC = () => {
     );
   };
 
+  const setLabel = (text: string, index: number): ReactNode => {
+    const barWidth = 40;
+    const svgHeight = 400;
+    const svgWidth = 600;
+    const dY = 20;
+    const labelX = (svgWidth / xMax) * (index + 0.5);
+    const labelY = svgHeight + dY;
+
+    return (
+      <text
+        key={index}
+        // TODO: fix global variable
+        x={labelX}
+        y={labelY}
+        fontSize="12px"
+        textAnchor="middle"
+      >
+        {text}
+      </text>
+    );
+  };
+
   return (
     <Wrap>
       <ChartTitle>BarChart [四月各項花費]</ChartTitle>
       <BarSvg>
-        {amounts.map((data, index) => drawBar(data, index))}
+        {amounts.map((amount, index) => drawBar(amount, index))}
+        {items.map((item, index) => setLabel(item, index))}
         <path d={`M 0 400 L 600 400 Z`} stroke="black" />
         <path d={`M 0 400 L 0 0 Z`} stroke="black" />
       </BarSvg>
@@ -79,7 +100,7 @@ const ChartTitle = styled.p`
   width: 100%;
 `;
 const BarSvg = styled.svg`
-  height: 400px;
+  height: 450px;
   width: 600px;
   // border: 1px solid lightblue;
 `;
