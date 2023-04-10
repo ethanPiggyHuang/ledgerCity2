@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../app/hooks';
+import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { Charts } from './Charts';
 import { LedgerDetail } from './LedgerDetail';
-import { getLedgerList } from './statisticsSlice';
+import { getLedgerList } from '../../redux/reducers/ledgerListSlice';
 
 export const Statistics: React.FC = () => {
   const dispatch = useAppDispatch();

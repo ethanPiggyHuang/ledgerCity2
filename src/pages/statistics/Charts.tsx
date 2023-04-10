@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import { chooseTarget } from './statisticsSlice';
+import { useAppSelector, useAppDispatch } from '../../redux/hooks';
+import { chooseTarget } from '../../redux/reducers/ledgerListSlice';
 
 export const Charts: React.FC = () => {
   const ledgerList = useAppSelector((state) => state.ledgerList.data);

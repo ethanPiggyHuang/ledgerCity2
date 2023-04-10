@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { updateHousePosition } from './gameMapAPI';
-import { CityInfoState, HouseState } from './gameMapSlice';
+import { updateHousePosition } from '../api/cityAPI';
+import { CityBasicInfoState, HouseState } from './cityBasicInfoSlice';
 
-export interface CityState {
+export interface CityArrangementState {
   housesPosition: { type: string; id: string }[][];
   gridsStatus: number[][];
   dragInfo: {
@@ -14,7 +14,7 @@ export interface CityState {
   isHouseDraggable: boolean;
 }
 
-const initialState: CityState = {
+const initialState: CityArrangementState = {
   housesPosition: [
     [
       { type: '', id: '' },
@@ -43,7 +43,7 @@ const initialState: CityState = {
 };
 
 export const saveCityAsync = createAsyncThunk(
-  'city/saveCity',
+  'cityArrangement/saveCity',
   async (houses: HouseState[], { getState }) => {
     const cityId: string = 'YFbhq5M8vFBIUMMWZhqo'; //TODO: import cityId from other State
     const allStates = getState() as any; //TODO
@@ -66,10 +66,10 @@ export const saveCityAsync = createAsyncThunk(
 );
 
 export const cityArrangement = createSlice({
-  name: 'housesPosition',
+  name: 'cityArrangement',
   initialState,
   reducers: {
-    displayCity: (state, action: PayloadAction<CityInfoState>) => {
+    displayCity: (state, action: PayloadAction<CityBasicInfoState>) => {
       if (action.payload.accessUsers.length !== 0) {
         action.payload.houses.forEach((house) => {
           state.housesPosition[house.position.yIndex][house.position.xIndex] = {

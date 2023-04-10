@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { postLedger } from './ledgerAPI';
+import { postLedger } from '../api/ledgerSingleAPI';
 
 export interface LedgerSingleState {
   mode: 'manual' | 'qrCode' | 'cloud';

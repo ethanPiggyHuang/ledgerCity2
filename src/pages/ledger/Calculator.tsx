@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../app/hooks';
+import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import {
   amountKeyNumber,
   amountDelete,
   amountHoldOperator,
   amountCalculate,
   amountAllClear,
-} from './ledgerSlice';
+} from '../../redux/reducers/ledgerSingleSlice';
 
 export const Calculator: React.FC = () => {
   const { amount, calculationHolder } = useAppSelector(

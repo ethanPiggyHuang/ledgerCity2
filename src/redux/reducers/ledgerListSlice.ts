@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { fetchLedgerList } from './statisticsAPI';
+import { fetchLedgerList } from '../api/ledgerListAPI';
 
 export interface LedgerListState {
   ledgerId: string;

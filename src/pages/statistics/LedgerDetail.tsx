@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../app/hooks';
+import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 
 export const LedgerDetail: React.FC = () => {
   const ledgerList = useAppSelector((state) => state.ledgerList.data);

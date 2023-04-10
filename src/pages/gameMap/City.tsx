@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../app/hooks';
+import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import {
   displayCity,
   saveCityAsync,
@@ -9,10 +9,10 @@ import {
   dragLightOn,
   dragLightOff,
   draggableSwitch,
-} from './citySlice';
+} from '../../redux/reducers/cityArrangementSlice';
 
 export const City: React.FC = () => {
-  const cityInfo = useAppSelector((state) => state.cityInfo);
+  const cityBasicInfo = useAppSelector((state) => state.cityBasicInfo);
   const { housesPosition, gridsStatus, isHouseDraggable } = useAppSelector(
     (state) => state.cityArrangement
   );
@@ -25,8 +25,8 @@ export const City: React.FC = () => {
   // console.log(housesPosition);
 
   useEffect(() => {
-    dispatch(displayCity(cityInfo));
-  }, [cityInfo, dispatch]);
+    dispatch(displayCity(cityBasicInfo));
+  }, [cityBasicInfo, dispatch]);
 
   return (
     <>
@@ -85,7 +85,7 @@ export const City: React.FC = () => {
       <button
         onClick={() => {
           isHouseDraggable
-            ? dispatch(saveCityAsync(cityInfo.houses))
+            ? dispatch(saveCityAsync(cityBasicInfo.houses))
             : dispatch(draggableSwitch());
         }}
       >

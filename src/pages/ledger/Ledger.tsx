@@ -3,9 +3,9 @@ import { Link, redirect } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../config/firebase';
-import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import { ledgerSubmit } from './ledgerSlice';
-import { getCityInfo } from '../gameMap/gameMapSlice';
+import { useAppSelector, useAppDispatch } from '../../redux/hooks';
+import { ledgerSubmit } from '../../redux/reducers/ledgerSingleSlice';
+import { getCityInfo } from '../../redux/reducers/cityBasicInfoSlice';
 import { TimeBar } from './TimeBar';
 import { Label } from './Label';
 import { Payment } from './Payment';
@@ -90,7 +90,7 @@ const Wrap = styled.div`
 `;
 
 const ModeOptions = styled.div`
-  height: 80px;
+  height: 50px;
   width: 100%;
   display: flex;
   justify-content: space-between;

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { fetchCityInfo } from './gameMapAPI';
+import { fetchCityInfo } from '../api/cityAPI';
 
 export interface HouseState {
   type: string;
@@ -8,7 +8,7 @@ export interface HouseState {
   ledgerId: string;
 }
 
-export interface CityInfoState {
+export interface CityBasicInfoState {
   accessUsers: { id: string; name: string }[];
   citizen: string[];
   cityName: string;
@@ -17,7 +17,7 @@ export interface CityInfoState {
   status: 'idle' | 'loading' | 'failed';
 }
 
-const initialState: CityInfoState = {
+const initialState: CityBasicInfoState = {
   accessUsers: [],
   citizen: [],
   cityName: '',
@@ -27,7 +27,7 @@ const initialState: CityInfoState = {
 };
 
 export const getCityInfo = createAsyncThunk(
-  'gameMap/fetchCityInfo',
+  'cityBasicInfo/getCityInfo',
   async () => {
     const cityId: string = 'YFbhq5M8vFBIUMMWZhqo'; //TODO: import from other State
     const response = await fetchCityInfo(cityId);
@@ -35,8 +35,8 @@ export const getCityInfo = createAsyncThunk(
   }
 );
 
-export const gameMainInfo = createSlice({
-  name: 'gameMainInfo',
+export const cityBasicInfo = createSlice({
+  name: 'cityBasicInfo',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -65,4 +65,4 @@ export const gameMainInfo = createSlice({
 
 // export const {} = GameMainInfo.actions;
 
-export default gameMainInfo.reducer;
+export default cityBasicInfo.reducer;

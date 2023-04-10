@@ -1,14 +1,14 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
-import cityInfoReducer from '../features/gameMap/gameMapSlice';
-import cityArrangementReducer from '../features/gameMap/citySlice';
-import ledgerSingleReducer from '../features/ledger/ledgerSlice';
-import ledgerListReducer from '../features/statistics/statisticsSlice';
+import counterReducer from '../feature/counter/counterSlice';
+import cityBasicInfoReducer from './reducers/cityBasicInfoSlice';
+import cityArrangementReducer from './reducers/cityArrangementSlice';
+import ledgerSingleReducer from './reducers/ledgerSingleSlice';
+import ledgerListReducer from './reducers/ledgerListSlice';
 
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
-    cityInfo: cityInfoReducer,
+    cityBasicInfo: cityBasicInfoReducer,
     cityArrangement: cityArrangementReducer,
     ledgerSingle: ledgerSingleReducer,
     ledgerList: ledgerListReducer,

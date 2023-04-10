@@ -1,12 +1,12 @@
 import { db } from '../../config/firebase';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { CityInfoState, HouseState } from './gameMapSlice';
+import { CityBasicInfoState, HouseState } from '../reducers/cityBasicInfoSlice';
 
 export async function fetchCityInfo(cityId: string) {
   const cityRef = doc(db, 'cities', cityId);
   const docSnapshot = await getDoc(cityRef);
-  return new Promise<{ data: CityInfoState }>((resolve) =>
-    resolve({ data: docSnapshot.data() as CityInfoState })
+  return new Promise<{ data: CityBasicInfoState }>((resolve) =>
+    resolve({ data: docSnapshot.data() as CityBasicInfoState })
   ); //TODO what if failed?
 }
 

@@ -2,10 +2,10 @@ import { Reset } from 'styled-reset';
 import { createGlobalStyle } from 'styled-components';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import React from 'react';
-import { Counter } from './features/counter/Counter';
-import { GameMap } from './features/gameMap/GameMap';
-import { Ledger } from './features/ledger/Ledger';
-import { Statistics } from './features/statistics/Statistics';
+import { Counter } from './feature/counter/Counter';
+import { GameMap } from './pages/gameMap/GameMap';
+import { Ledger } from './pages/ledger/Ledger';
+import { Statistics } from './pages/statistics/Statistics';
 
 const GlobalStyle = createGlobalStyle`
   * {

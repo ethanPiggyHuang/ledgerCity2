@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../app/hooks';
+import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import {
   itemKeyIn,
   labelChooseType,
   labelChoose,
   labelRetrieve,
-} from './ledgerSlice';
+} from '../../redux/reducers/ledgerSingleSlice';
 
 export const Label: React.FC = () => {
   const { labelChoosingType, labelMain, labelSubs, item } = useAppSelector(

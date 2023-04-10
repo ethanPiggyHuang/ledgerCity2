@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import { paySelectPerson, paySelectMethod } from './ledgerSlice';
+import { useAppSelector, useAppDispatch } from '../../redux/hooks';
+import {
+  paySelectPerson,
+  paySelectMethod,
+} from '../../redux/reducers/ledgerSingleSlice';
 
 export const Payment: React.FC = () => {
   const { payWho, payHow } = useAppSelector((state) => state.ledgerSingle);

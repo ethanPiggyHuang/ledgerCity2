@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import { timeEdit } from './ledgerSlice';
+import { useAppSelector, useAppDispatch } from '../../redux/hooks';
+import { timeEdit } from '../../redux/reducers/ledgerSingleSlice';
 
 export const TimeBar: React.FC = () => {
   const ledgerTime = useAppSelector((state) => state.ledgerSingle.timeLedger);

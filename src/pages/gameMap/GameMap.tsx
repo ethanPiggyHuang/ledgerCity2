@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { onSnapshot } from 'firebase/firestore';
-import { useAppDispatch } from '../../app/hooks';
+import { useAppDispatch } from '../../redux/hooks';
 import { City } from './City';
-import { getCityInfo } from './gameMapSlice';
+import { getCityInfo } from '../../redux/reducers/cityBasicInfoSlice';
 import { Link } from 'react-router-dom';
 
 export const GameMap: React.FC = () => {
