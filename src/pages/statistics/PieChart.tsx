@@ -3,7 +3,7 @@ import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { chooseTarget } from '../../redux/reducers/ledgerListSlice';
 
-export const Charts: React.FC = () => {
+export const PieChart: React.FC = () => {
   const ledgerList = useAppSelector((state) => state.ledgerList.data);
   const items = ledgerList.map((ledger) => ledger.item);
   const ledgerId = ledgerList.map((ledger) => ledger.ledgerId);
@@ -85,24 +85,8 @@ export const Charts: React.FC = () => {
 
   return (
     <Wrap>
-      {/* <BarChart>
-        <ChartTitle>BarChart</ChartTitle>
-      </BarChart> */}
-      <PieChart>
-        <ChartTitle>PieChart [四月各項花費]</ChartTitle>
-        <PieSvg>
-          {conbined.map((data, index) => drawSector(data, index))}
-          {/* <PiePath
-            onClick={() => console.log('hit')}
-            d="M 100 0 A 100 100 0 0 1 200 100 L 100 100 Z"
-            fill="blue"
-          />
-          <PiePath
-            d="M 100 200 A 100 100 0 0 1 0 100 L 100 100 Z"
-            fill="blue"
-          /> */}
-        </PieSvg>
-      </PieChart>
+      <ChartTitle>PieChart [四月各項花費]</ChartTitle>
+      <PieSvg>{conbined.map((data, index) => drawSector(data, index))}</PieSvg>
     </Wrap>
   );
 };
@@ -114,22 +98,6 @@ export const Charts: React.FC = () => {
 const Wrap = styled.div`
   padding: 10px;
   position: relative;
-  display: flex;
-  gap: 20px;
-  height: 80vh;
-  width: 50vw;
-  border: 1px solid lightblue;
-`;
-const BarChart = styled.div`
-  padding: 10px;
-  height: 100%;
-  width: 50%;
-  border: 1px solid lightblue;
-`;
-const PieChart = styled.div`
-  padding: 10px;
-  height: 100%;
-  width: 100%;
   border: 1px solid lightblue;
 `;
 const ChartTitle = styled.p`

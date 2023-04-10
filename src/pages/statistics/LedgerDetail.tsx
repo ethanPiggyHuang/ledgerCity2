@@ -41,15 +41,12 @@ type LedgerRowProps = {
 };
 
 const Wrap = styled.div`
-  margin-top: 25px;
   padding: 20px;
   position: relative;
   display: flex;
   flex-direction: column;
-  // flex-wrap: wrap;
   gap: 20px;
-  height: 80vh;
-  width: 40vw;
+  width: 100%;
   border: 1px solid lightblue;
 `;
 const LedgerRow = styled.div<LedgerRowProps>`

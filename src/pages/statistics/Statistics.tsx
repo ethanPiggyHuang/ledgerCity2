@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { Charts } from './Charts';
+import { PieChart } from './PieChart';
 import { LedgerDetail } from './LedgerDetail';
 import { getLedgerList } from '../../redux/reducers/ledgerListSlice';
 
@@ -15,9 +15,12 @@ export const Statistics: React.FC = () => {
 
   return (
     <Wrap>
-      Statistics
-      <Charts />
-      <LedgerDetail />
+      <ChartWrap>
+        <PieChart></PieChart>
+      </ChartWrap>
+      <LedgerWarp>
+        <LedgerDetail />
+      </LedgerWarp>
       <br />
       <Link to="../">city</Link>
       <Link to="../ledger">ledger</Link>
@@ -27,11 +30,18 @@ export const Statistics: React.FC = () => {
 
 const Wrap = styled.div`
   padding: 20px;
-  height: 100vh;
+  height: 95vh;
   position: relative;
   display: flex;
-  flex-direction: column;
   border: 1px solid lightblue;
   flex-wrap: wrap;
   gap: 10px;
 `;
+const ChartWrap = styled.div`
+  height: 100%;
+  width: 48%;
+  display: flex;
+  border: 1px solid lightblue;
+  gap: 10px;
+`;
+const LedgerWarp = styled(ChartWrap)``;
