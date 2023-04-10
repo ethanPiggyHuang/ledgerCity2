@@ -16,7 +16,10 @@ export interface CityArrangementState {
 
 const initialState: CityArrangementState = {
   housesPosition: [
+    //TODO 04/11 start
     [
+      { type: '', id: '' },
+      { type: '', id: '' },
       { type: '', id: '' },
       { type: '', id: '' },
       { type: '', id: '' },
@@ -25,8 +28,12 @@ const initialState: CityArrangementState = {
       { type: '', id: '' },
       { type: '', id: '' },
       { type: '', id: '' },
+      { type: '', id: '' },
+      { type: '', id: '' },
     ],
     [
+      { type: '', id: '' },
+      { type: '', id: '' },
       { type: '', id: '' },
       { type: '', id: '' },
       { type: '', id: '' },

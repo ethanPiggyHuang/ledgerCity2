@@ -23,7 +23,7 @@ export interface LedgerListStatus {
 
 export async function fetchLedgerList(ledgerBookId: string) {
   const ledgersRef = collection(db, 'ledgerBooks', ledgerBookId, 'ledgers');
-  const q = query(ledgersRef, where('timeMonth', '==', 4));
+  const q = query(ledgersRef, where('timeMonth', '>=', 0));
 
   const querySnapshot = await getDocs(q);
   let result: any[] = []; //TODO typescript

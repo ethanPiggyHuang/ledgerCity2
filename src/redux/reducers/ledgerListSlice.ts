@@ -46,7 +46,6 @@ export const getLedgerList = createAsyncThunk(
       const timeInSeconds = new Date(data.recordTime.seconds * 1000).getTime();
       return { ...data, recordTime: timeInSeconds };
     });
-
     return modifiedResponse;
   }
 );
@@ -60,13 +59,8 @@ export const ledgerList = createSlice({
       action: PayloadAction<{ targetType: string; targetValue: string }>
     ) => {
       console.log(action.payload.targetValue);
-      if (action.payload.targetType === 'ledgerId') {
-        return {
-          ...state,
-          choosing: action.payload.targetValue,
-        };
-      }
-      return state;
+      if (action.payload.targetType === 'ledgerId')
+        state.choosing = action.payload.targetValue;
     },
   },
   extraReducers: (builder) => {
@@ -78,7 +72,6 @@ export const ledgerList = createSlice({
         state.status = 'idle';
         state.data = action.payload;
         console.log('fetch succeed');
-        return state;
       })
       .addCase(getLedgerList.rejected, (state) => {
         state.status = 'failed';

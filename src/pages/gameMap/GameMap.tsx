@@ -9,8 +9,9 @@ export const GameMap: React.FC = () => {
   const dispatch = useAppDispatch();
   useEffect(() => {
     //TODO: onSnapshot
+    console.log('activate');
     dispatch(getCityInfo());
-  }, []);
+  }, [dispatch]);
 
   return (
     <>
