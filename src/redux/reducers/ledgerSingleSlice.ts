@@ -92,101 +92,59 @@ export const ledgerSingle = createSlice({
   initialState,
   reducers: {
     itemKeyIn: (state, action: PayloadAction<string>) => {
-      return {
-        ...state,
-        item: action.payload,
-      };
+      state.item = action.payload;
     },
     labelChooseType: (state, action: PayloadAction<'main' | 'sub'>) => {
-      if (state.labelChoosingType !== action.payload) {
-        return {
-          ...state,
-          labelChoosingType: action.payload,
-        };
-      }
+      if (state.labelChoosingType !== action.payload)
+        state.labelChoosingType = action.payload;
     },
     labelChoose: (state, action: PayloadAction<string>) => {
       if (state.labelChoosingType === 'main') {
-        return {
-          ...state,
-          labelMain: action.payload,
-        };
+        state.labelMain = action.payload;
       }
       //TODO: case 次要標籤
     },
     labelRetrieve: (state, action: PayloadAction<string>) => {
       if (state.labelMain === action.payload) {
-        return {
-          ...state,
-          labelMain: '',
-        };
-      }
-      const removeIndex = state.labelSubs.indexOf(action.payload);
-      return {
-        ...state,
-        labelSubs: [
+        state.labelMain = '';
+      } else {
+        //TODO: case 次要標籤
+        const removeIndex = state.labelSubs.indexOf(action.payload);
+        state.labelSubs = [
           ...state.labelSubs.slice(0, removeIndex),
           ...state.labelSubs.slice(removeIndex + 1),
-        ],
-      };
-      //TODO: case 次要標籤
+        ];
+      }
     },
     amountKeyNumber: (state, action: PayloadAction<string>) => {
       const pastNumberString = state.amount.number.toString();
       const pastHolderNumberString = state.calculationHolder.number.toString();
+      // TODO: 需要限制數字的位數
       // if (pastNumberString.length > 12) {
       //   alert('動用「一兆元」以上資金！？恭喜您已財富自由！');
       //   return state;
       // }
       if (state.calculationHolder.operator === '') {
-        return {
-          ...state,
-          amount: {
-            ...state.amount,
-            number: Number(pastNumberString + action.payload),
-          },
-        };
+        state.amount.number = Number(pastNumberString + action.payload);
       } else {
-        return {
-          ...state,
-          calculationHolder: {
-            ...state.calculationHolder,
-            number: Number(pastHolderNumberString + action.payload),
-          },
-        };
+        state.calculationHolder.number = Number(
+          pastHolderNumberString + action.payload
+        );
       }
     },
     amountDelete: (state) => {
       const pastNumberString = state.amount.number.toString();
       const pastHolderNumberString = state.calculationHolder.number.toString();
       if (state.calculationHolder.operator === '') {
-        return {
-          ...state,
-          amount: {
-            ...state.amount,
-            number: Number(
-              pastNumberString.slice(0, pastNumberString.length - 1)
-            ),
-          },
-        };
+        state.amount.number = Number(
+          pastNumberString.slice(0, pastNumberString.length - 1)
+        );
       } else if (pastHolderNumberString === '0') {
-        return {
-          ...state,
-          calculationHolder: {
-            ...state.calculationHolder,
-            operator: '',
-          },
-        };
+        state.calculationHolder.operator = '';
       } else {
-        return {
-          ...state,
-          calculationHolder: {
-            ...state.calculationHolder,
-            number: Number(
-              pastHolderNumberString.slice(0, pastHolderNumberString.length - 1)
-            ),
-          },
-        };
+        state.calculationHolder.number = Number(
+          pastHolderNumberString.slice(0, pastHolderNumberString.length - 1)
+        );
       }
     },
     amountHoldOperator: (
@@ -197,13 +155,8 @@ export const ledgerSingle = createSlice({
         state.calculationHolder.operator === action.payload
           ? state.calculationHolder.number
           : 0;
-      return {
-        ...state,
-        calculationHolder: {
-          operator: action.payload,
-          number: newNumber,
-        },
-      };
+      state.calculationHolder.operator = action.payload;
+      state.calculationHolder.number = newNumber;
     },
     amountCalculate: (state) => {
       const numberBeforeOperator = state.amount.number;
@@ -230,51 +183,23 @@ export const ledgerSingle = createSlice({
           result = numberBeforeOperator;
         }
       }
-      return {
-        ...state,
-        amount: {
-          ...state.amount,
-          number: result,
-        },
-        calculationHolder: {
-          operator: '',
-          number: 0,
-        },
-      };
+      state.amount.number = result;
+      state.calculationHolder.operator = '';
+      state.calculationHolder.number = 0;
     },
     amountAllClear: (state) => {
-      return {
-        ...state,
-        amount: {
-          ...state.amount,
-          number: 0,
-        },
-        calculationHolder: {
-          operator: '',
-          number: 0,
-        },
-      };
+      state.amount.number = 0;
+      state.calculationHolder.operator = '';
+      state.calculationHolder.number = 0;
     },
     paySelectPerson: (state, action: PayloadAction<string>) => {
-      if (state.payWho !== action.payload) {
-        return {
-          ...state,
-          payWho: action.payload,
-        };
-      }
-      return { ...state };
+      state.payWho = action.payload;
     },
     paySelectMethod: (
       state,
       action: PayloadAction<'cash' | 'creditCard' | 'mobile'>
     ) => {
-      if (state.payHow !== action.payload) {
-        return {
-          ...state,
-          payHow: action.payload,
-        };
-      }
-      return { ...state };
+      state.payHow = action.payload;
     },
     timeEdit: (
       state,
@@ -305,10 +230,7 @@ export const ledgerSingle = createSlice({
       const now = new Date().getTime(); //TODO ESSENTIAL: Reducers Must Not Have Side Effects
       if (newTimeInSeconds > now) alert('注意，未來日期！');
 
-      return {
-        ...state,
-        timeLedger: newTimeInSeconds,
-      };
+      state.timeLedger = newTimeInSeconds;
     },
   },
   extraReducers: (builder) => {
@@ -329,7 +251,6 @@ export const ledgerSingle = createSlice({
           number: 0,
         };
         state.imageUrl = '';
-        return state;
       })
       .addCase(ledgerSubmit.rejected, (state) => {
         state.status = 'failed';
