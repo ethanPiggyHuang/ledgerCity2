@@ -22,18 +22,6 @@ export const BarChart: React.FC = () => {
     yShrinkRatio: 0.9,
     labelDY: 20,
   };
-
-  const datas = ledgerList.map((ledger) => {
-    return {
-      label: ledger.item,
-      ledgerId: ledger.ledgerId,
-      value: ledger.amount.number,
-    };
-  });
-
-  const xMax = datas.length;
-  const yMax = Math.max(...datas.map((data) => data.value));
-
   const colorCodes = [
     '#c23f3f',
     '#cf9741',
@@ -43,11 +31,23 @@ export const BarChart: React.FC = () => {
     '#7674cf',
   ];
 
+  const datas = ledgerList.map((ledger) => {
+    return {
+      label: ledger.item,
+      ledgerId: ledger.ledgerId,
+      value: ledger.amount.number,
+    };
+  });
+  const xMax = datas.length;
+  const yMax = Math.max(...datas.map((data) => data.value));
+
   const drawBar = (
     value: number,
     ledgerId: string,
     { svgHeight, svgWidth, barWidth, yShrinkRatio }: BarChartSetting,
     colorCodes: string[],
+    xMax: number,
+    yMax: number,
     index: number
   ): ReactNode => {
     const startPointX = (svgWidth / xMax) * (index + 0.5) - barWidth / 2;
@@ -75,6 +75,7 @@ export const BarChart: React.FC = () => {
   const setXLabel = (
     text: string,
     { svgHeight, svgWidth, labelDY }: BarChartSetting,
+    xMax: number,
     index: number
   ): ReactNode => {
     const labelX = (svgWidth / xMax) * (index + 0.5);
@@ -92,10 +93,18 @@ export const BarChart: React.FC = () => {
       <ChartTitle>BarChart [四月各類別花費]</ChartTitle>
       <BarSvg>
         {datas.map(({ value, ledgerId }, index) =>
-          drawBar(value, ledgerId, barChartSetting, colorCodes, index)
+          drawBar(
+            value,
+            ledgerId,
+            barChartSetting,
+            colorCodes,
+            xMax,
+            yMax,
+            index
+          )
         )}
         {datas.map((data, index) =>
-          setXLabel(data.label, barChartSetting, index)
+          setXLabel(data.label, barChartSetting, xMax, index)
         )}
         <path d={`M 0 400 L 600 400 Z`} stroke="black" />
         <path d={`M 0 400 L 0 0 Z`} stroke="black" />
