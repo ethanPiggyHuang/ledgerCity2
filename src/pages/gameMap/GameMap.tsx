@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { onSnapshot } from 'firebase/firestore';
+import { Link } from 'react-router-dom';
 import { useAppDispatch } from '../../redux/hooks';
 import { City } from './City';
 import { getCityInfo } from '../../redux/reducers/cityBasicInfoSlice';
-import { Link } from 'react-router-dom';
+import { DialogBoard } from '../../component/DialogBoard';
 
 export const GameMap: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -15,6 +16,7 @@ export const GameMap: React.FC = () => {
 
   return (
     <>
+      <DialogBoard />
       <City />
       <br />
       <br />
