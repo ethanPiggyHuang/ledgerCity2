@@ -28,8 +28,8 @@ export const Statistics: React.FC = () => {
 
       <ChartWrap>
         {/* TODO: need switch mechanism */}
-        {/* <PieChart></PieChart> */}
-        <BarChart></BarChart>
+        <PieChart></PieChart>
+        {/* <BarChart></BarChart> */}
       </ChartWrap>
       <LedgerWarp>
         <LedgerDetail />

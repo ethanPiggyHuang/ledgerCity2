@@ -37,7 +37,6 @@ export async function fetchLedgerList(
   const querySnapshot = await getDocs(q);
   let result: any[] = []; //TODO typescript
   querySnapshot.forEach((doc) => {
-    // console.log('id', doc.id);
     result.push({ ledgerId: doc.id, ...doc.data() });
   });
 

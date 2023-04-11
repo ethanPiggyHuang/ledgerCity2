@@ -2,21 +2,30 @@ import React, { ReactNode } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { chooseTarget } from '../../redux/reducers/ledgerListSlice';
+import { mainLabels } from '../../utils/gameSettings';
+
+interface PieChartSetting {
+  svgHeight: number;
+  svgWidth: number;
+  radius: number;
+}
+
+interface dataByLabel {
+  value: number;
+  ratio: number;
+  label: string;
+  ledgerMatchedIds: string[];
+}
 
 export const PieChart: React.FC = () => {
   const ledgerList = useAppSelector((state) => state.ledgerList.data);
-  const items = ledgerList.map((ledger) => ledger.item);
-  const ledgerId = ledgerList.map((ledger) => ledger.ledgerId);
-
-  const amounts = ledgerList.map((ledger) => ledger.amount.number);
-
-  const total = amounts.reduce((acc, cur) => (acc += cur), 0);
-  const ratios = amounts.map((amount) => amount / total);
-  // console.log(ratios);
-
   const dispatch = useAppDispatch();
 
-  // TODO: 這邊的 code 要好好整理一下
+  const pieChartSetting = {
+    svgHeight: 550,
+    svgWidth: 550,
+    radius: 250,
+  };
   const colorCodes = [
     '#c23f3f',
     '#cf9741',
@@ -26,31 +35,57 @@ export const PieChart: React.FC = () => {
     '#7674cf',
   ];
 
-  const accumulate = (array: number[]): number[] =>
-    array.reduce(
-      (acc: number[], cur: number, index: number) =>
-        index === 0 ? [cur] : [...acc, cur + acc[index - 1]],
+  const rawDatas = ledgerList.map((ledger) => {
+    return {
+      labelMain: ledger.labelMain,
+      ledgerId: ledger.ledgerId,
+      value: ledger.amount.number,
+      year: ledger.timeYear,
+      month: ledger.timeMonth,
+    };
+  });
+
+  const datas = mainLabels.map((mainLabel) => {
+    const label = mainLabel;
+    const totalValue = rawDatas.reduce((acc, cur) => (acc += cur.value), 0);
+    const ledgerMatched = rawDatas.filter(
+      (ledger) => ledger.labelMain === mainLabel
+    ) || { ledgerId: [] };
+    const ledgerMatchedIds = ledgerMatched.map((ledger) => ledger.ledgerId);
+    const value = ledgerMatched.reduce((acc, cur) => acc + cur.value, 0);
+    const ratio = value / totalValue;
+
+    return { value, ratio, label, ledgerMatchedIds };
+  });
+
+  const accumulate = (datas: dataByLabel[]): number[] =>
+    datas.reduce(
+      (acc, cur: dataByLabel, index) =>
+        index === 0 ? [cur.ratio] : [...acc, cur.ratio + acc[index - 1]],
       [] as number[]
     );
 
-  const startingRatios = [0, ...accumulate(ratios).slice(0, ratios.length - 1)];
+  const startingRatios = [0, ...accumulate(datas).slice(0, datas.length - 1)];
 
   const startAngles = startingRatios.map(
     (ratio) => -Math.PI / 2 + ratio * 2 * Math.PI
   );
 
-  const conbined = ratios.map((ratio, index) => {
-    return { ratio, startAngle: startAngles[index], item: items[index] };
+  const conbined = datas.map((data, index) => {
+    return { ...data, startAngle: startAngles[index] };
   });
 
   const drawSector = (
-    data: { ratio: number; startAngle: number },
+    startAngle: number,
+    value: number,
+    ratio: number,
+    label: string,
+    ledgerMatchedIds: string[],
+    { svgHeight, svgWidth, radius }: PieChartSetting,
     index: number
   ): ReactNode => {
-    const radius = 250;
     const origin = { x: 0, y: 10 };
-    const startAngle = data.startAngle;
-    const endAngle = startAngle + 2 * Math.PI * data.ratio;
+    const endAngle = startAngle + 2 * Math.PI * ratio;
     const startPoint = {
       x: radius * Math.cos(startAngle) + origin.x,
       y: radius * Math.sin(startAngle) + origin.y,
@@ -59,7 +94,7 @@ export const PieChart: React.FC = () => {
       x: radius * Math.cos(endAngle) + origin.x,
       y: radius * Math.sin(endAngle) + origin.y,
     };
-    const largeArcFlag = data.ratio > 0.5 ? 1 : 0;
+    const largeArcFlag = ratio > 0.5 ? 1 : 0;
 
     return (
       <PiePath
@@ -68,9 +103,10 @@ export const PieChart: React.FC = () => {
           dispatch(
             chooseTarget({
               targetType: 'ledgerId',
-              targetValue: ledgerId[index],
+              targetValue: ledgerMatchedIds[0],
             })
           );
+          console.log('select: ', label);
           // alert(items[index]);
         }} // TODO: fix global variable
         d={`M ${startPoint.x + radius} ${
@@ -86,7 +122,20 @@ export const PieChart: React.FC = () => {
   return (
     <Wrap>
       <ChartTitle>PieChart [四月各項花費]</ChartTitle>
-      <PieSvg>{conbined.map((data, index) => drawSector(data, index))}</PieSvg>
+      <PieSvg>
+        {conbined.map(
+          ({ startAngle, value, ratio, label, ledgerMatchedIds }, index) =>
+            drawSector(
+              startAngle,
+              value,
+              ratio,
+              label,
+              ledgerMatchedIds,
+              pieChartSetting,
+              index
+            )
+        )}
+      </PieSvg>
     </Wrap>
   );
 };

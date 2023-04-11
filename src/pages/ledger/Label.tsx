@@ -7,6 +7,7 @@ import {
   labelChoose,
   labelRetrieve,
 } from '../../redux/reducers/ledgerSingleSlice';
+import { mainLabels } from '../../utils/gameSettings';
 
 export const Label: React.FC = () => {
   const { labelChoosingType, labelMain, labelSubs, item } = useAppSelector(
@@ -22,17 +23,6 @@ export const Label: React.FC = () => {
     // dispatch(getCityInfo());
   }, []);
   // const time: DateConstructor = new Date();
-
-  const labelArray: string[] = [
-    '食物',
-    '飲料',
-    '交通',
-    '服裝',
-    '醫藥',
-    '娛樂',
-    '其他',
-    '社交',
-  ];
 
   return (
     <>
@@ -71,7 +61,7 @@ export const Label: React.FC = () => {
           </LabelType>
         </LabelTypes>
         <LabelButtons>
-          {labelArray.map((label, index) => (
+          {mainLabels.map((label, index) => (
             <LabelButton
               key={index}
               $isChosen={labelMain === label}

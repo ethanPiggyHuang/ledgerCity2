@@ -11,14 +11,6 @@ interface BarChartSetting {
   labelDY: number;
 }
 
-interface Ledger {
-  label: string;
-  ledgerId: string;
-  value: number;
-  year: number;
-  month: number;
-}
-
 export const BarChart: React.FC = () => {
   const ledgerList = useAppSelector((state) => state.ledgerList.data);
   const dispatch = useAppDispatch();
@@ -41,7 +33,8 @@ export const BarChart: React.FC = () => {
 
   const rawDatas = ledgerList.map((ledger) => {
     return {
-      label: ledger.item,
+      item: ledger.item,
+      label: ledger.labelMain,
       ledgerId: ledger.ledgerId,
       value: ledger.amount.number,
       year: ledger.timeYear,
@@ -50,32 +43,29 @@ export const BarChart: React.FC = () => {
   });
 
   const months = [
-    { ch: '一月', value: 1 },
-    { ch: '二月', value: 2 },
-    { ch: '三月', value: 3 },
-    { ch: '四月', value: 4 },
-    { ch: '五月', value: 5 },
-    { ch: '六月', value: 6 },
-    { ch: '七月', value: 7 },
-    { ch: '八月', value: 8 },
-    { ch: '九月', value: 9 },
-    { ch: '十月', value: 10 },
-    { ch: '十一月', value: 11 },
-    { ch: '十二月', value: 12 },
+    { xLabel: '一月', monthValue: 1 },
+    { xLabel: '二月', monthValue: 2 },
+    { xLabel: '三月', monthValue: 3 },
+    { xLabel: '四月', monthValue: 4 },
+    { xLabel: '五月', monthValue: 5 },
+    { xLabel: '六月', monthValue: 6 },
+    { xLabel: '七月', monthValue: 7 },
+    { xLabel: '八月', monthValue: 8 },
+    { xLabel: '九月', monthValue: 9 },
+    { xLabel: '十月', monthValue: 10 },
+    { xLabel: '十一月', monthValue: 11 },
+    { xLabel: '十二月', monthValue: 12 },
   ];
-  const datas = months.map((month) =>
-    rawDatas.reduce(
-      (acc, cur) => {
-        if (cur.month === month.value) {
-          acc.value += cur.value;
-          acc.ledgerId = cur.ledgerId;
-        }
-        return acc;
-      },
-      { value: 0, label: month.ch, ledgerId: '' }
-    )
-  );
-  console.log('datas2', datas);
+  const datas = months.map((month) => {
+    const { xLabel, monthValue } = month;
+    const { ledgerId } = rawDatas.find(
+      (ledger) => ledger.month === monthValue
+    ) || { ledgerId: '' };
+    const value = rawDatas
+      .filter((ledger) => ledger.month === monthValue)
+      .reduce((acc, cur) => acc + cur.value, 0);
+    return { value, xLabel, ledgerId };
+  });
 
   const xMax = months.length;
   const yMax = Math.max(...datas.map((data) => data.value));
@@ -91,6 +81,7 @@ export const BarChart: React.FC = () => {
   ): ReactNode => {
     const startPointX = (svgWidth / xMax) * (index + 0.5) - barWidth / 2;
     const barHeight = (value / yMax) * svgHeight * yShrinkRatio;
+    const barTopY = svgHeight - barHeight; //TODO: NaN 奇怪錯誤，commit 7692540 應該是沒問題
 
     return (
       <BarPath
@@ -103,7 +94,7 @@ export const BarChart: React.FC = () => {
             })
           );
         }}
-        d={`M ${startPointX} ${svgHeight} V ${svgHeight - barHeight} H ${
+        d={`M ${startPointX} ${svgHeight} V ${barTopY} H ${
           startPointX + barWidth
         } V ${svgHeight} Z`}
         fill={colorCodes[index % 6]}
@@ -142,8 +133,8 @@ export const BarChart: React.FC = () => {
             index
           )
         )}
-        {datas.map(({ label }, index) =>
-          setXLabel(label, barChartSetting, xMax, index)
+        {datas.map(({ xLabel }, index) =>
+          setXLabel(xLabel, barChartSetting, xMax, index)
         )}
         <path d={`M 0 400 L 600 400 Z`} stroke="black" />
         <path d={`M 0 400 L 0 0 Z`} stroke="black" />
