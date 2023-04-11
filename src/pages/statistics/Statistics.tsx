@@ -5,11 +5,17 @@ import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { PieChart } from './PieChart';
 import { BarChart } from './BarChart';
 import { LedgerDetail } from './LedgerDetail';
-import { getLedgerList } from '../../redux/reducers/ledgerListSlice';
+import {
+  getLedgerList,
+  chooseYear,
+  chooseMonth,
+} from '../../redux/reducers/ledgerListSlice';
 
 export const Statistics: React.FC = () => {
-  const { choices } = useAppSelector((state) => state.ledgerList);
+  const { chosenYear } = useAppSelector((state) => state.ledgerList.choices);
   const dispatch = useAppDispatch();
+
+  console.log(chosenYear);
 
   useEffect(() => {
     dispatch(getLedgerList(2023));
@@ -19,7 +25,13 @@ export const Statistics: React.FC = () => {
     <Wrap>
       <Header>
         <Select
-          onChange={(e) => dispatch(getLedgerList(Number(e.target.value)))}
+          value={chosenYear}
+          onChange={(e) => {
+            dispatch(getLedgerList(Number(e.target.value)));
+            dispatch(chooseYear(Number(e.target.value)));
+            // 可以考量更換年份之後，要不要重設月份？(default 0)
+            dispatch(chooseMonth(0));
+          }}
         >
           <Option value={2023}>2023</Option>
           <Option value={2022}>2022</Option>
@@ -28,8 +40,8 @@ export const Statistics: React.FC = () => {
 
       <ChartWrap>
         {/* TODO: need switch mechanism */}
+        <BarChart></BarChart>
         <PieChart></PieChart>
-        {/* <BarChart></BarChart> */}
       </ChartWrap>
       <LedgerWarp>
         <LedgerDetail />
@@ -60,6 +72,7 @@ const ChartWrap = styled.div`
   height: 90%;
   width: 48%;
   display: flex;
+  flex-direction: column;
   border: 1px solid lightblue;
   gap: 10px;
 `;

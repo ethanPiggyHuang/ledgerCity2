@@ -159,6 +159,7 @@ const House = styled.div<HouseProps>`
       }
     }
   }};
+  font-size: 24px;
   display: flex;
   align-items: center;
   justify-content: center;

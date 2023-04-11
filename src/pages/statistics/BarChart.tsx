@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { chooseTarget } from '../../redux/reducers/ledgerListSlice';
+import { chooseLabel, chooseMonth } from '../../redux/reducers/ledgerListSlice';
 
 interface BarChartSetting {
   svgHeight: number;
@@ -12,12 +12,15 @@ interface BarChartSetting {
 }
 
 export const BarChart: React.FC = () => {
+  const loadingStatus = useAppSelector((state) => state.ledgerList.status);
   const ledgerList = useAppSelector((state) => state.ledgerList.data);
+  const { chosenYear } = useAppSelector((state) => state.ledgerList.choices);
+
   const dispatch = useAppDispatch();
 
   const barChartSetting = {
-    svgHeight: 400,
-    svgWidth: 600,
+    svgHeight: 300,
+    svgWidth: 500,
     barWidth: 40,
     yShrinkRatio: 0.9,
     labelDY: 20,
@@ -64,7 +67,7 @@ export const BarChart: React.FC = () => {
     const value = rawDatas
       .filter((ledger) => ledger.month === monthValue)
       .reduce((acc, cur) => acc + cur.value, 0);
-    return { value, xLabel, ledgerId };
+    return { value, xLabel, ledgerId, monthValue };
   });
 
   const xMax = months.length;
@@ -72,7 +75,7 @@ export const BarChart: React.FC = () => {
 
   const drawBar = (
     value: number,
-    ledgerId: string,
+    monthValue: number,
     { svgHeight, svgWidth, barWidth, yShrinkRatio }: BarChartSetting,
     colorCodes: string[],
     xMax: number,
@@ -81,22 +84,20 @@ export const BarChart: React.FC = () => {
   ): ReactNode => {
     const startPointX = (svgWidth / xMax) * (index + 0.5) - barWidth / 2;
     const barHeight = (value / yMax) * svgHeight * yShrinkRatio;
-    const barTopY = svgHeight - barHeight; //TODO: NaN 奇怪錯誤，commit 7692540 應該是沒問題
+    const barTopY = svgHeight - barHeight;
+
+    const dScript = `M ${startPointX} ${svgHeight} V ${barTopY} H ${
+      startPointX + barWidth
+    } V ${svgHeight} Z`;
 
     return (
       <BarPath
         key={index}
         onClick={() => {
-          dispatch(
-            chooseTarget({
-              targetType: 'ledgerId',
-              targetValue: ledgerId,
-            })
-          );
+          dispatch(chooseMonth(monthValue));
+          dispatch(chooseLabel(''));
         }}
-        d={`M ${startPointX} ${svgHeight} V ${barTopY} H ${
-          startPointX + barWidth
-        } V ${svgHeight} Z`}
+        d={dScript}
         fill={colorCodes[index % 6]}
       />
     );
@@ -120,25 +121,28 @@ export const BarChart: React.FC = () => {
 
   return (
     <Wrap>
-      <ChartTitle>BarChart [四月各類別花費]</ChartTitle>
-      <BarSvg>
-        {datas.map(({ value, ledgerId }, index) =>
-          drawBar(
-            value,
-            ledgerId,
-            barChartSetting,
-            colorCodes,
-            xMax,
-            yMax,
-            index
-          )
-        )}
-        {datas.map(({ xLabel }, index) =>
-          setXLabel(xLabel, barChartSetting, xMax, index)
-        )}
-        <path d={`M 0 400 L 600 400 Z`} stroke="black" />
-        <path d={`M 0 400 L 0 0 Z`} stroke="black" />
-      </BarSvg>
+      <ChartTitle>{`BarChart：${chosenYear}年各月份花費`}</ChartTitle>
+      {/* TODO: NaN 奇怪錯誤，應該與 initial state 無法 render 相關 */}
+      {loadingStatus === 'idle' && (
+        <BarSvg>
+          {datas.map(({ value, monthValue }, index) =>
+            drawBar(
+              value,
+              monthValue,
+              barChartSetting,
+              colorCodes,
+              xMax,
+              yMax,
+              index
+            )
+          )}
+          {datas.map(({ xLabel }, index) =>
+            setXLabel(xLabel, barChartSetting, xMax, index)
+          )}
+          <path d={`M 0 300 L 500 300 Z`} stroke="black" />
+          <path d={`M 0 300 L 0 0 Z`} stroke="black" />
+        </BarSvg>
+      )}
     </Wrap>
   );
 };
@@ -157,8 +161,8 @@ const ChartTitle = styled.p`
   width: 100%;
 `;
 const BarSvg = styled.svg`
-  height: 450px;
-  width: 600px;
+  height: 350px;
+  width: 500px;
   // border: 1px solid lightblue;
 `;
 const BarPath = styled.path`

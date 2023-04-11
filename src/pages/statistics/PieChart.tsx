@@ -1,30 +1,33 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { chooseTarget } from '../../redux/reducers/ledgerListSlice';
+import { chooseLabel } from '../../redux/reducers/ledgerListSlice';
 import { mainLabels } from '../../utils/gameSettings';
 
 interface PieChartSetting {
   svgHeight: number;
   svgWidth: number;
   radius: number;
+  preservedDy: number;
 }
 
 interface dataByLabel {
   value: number;
   ratio: number;
   label: string;
-  ledgerMatchedIds: string[];
 }
 
 export const PieChart: React.FC = () => {
+  const loadingStatus = useAppSelector((state) => state.ledgerList.status);
   const ledgerList = useAppSelector((state) => state.ledgerList.data);
+  const { chosenMonth } = useAppSelector((state) => state.ledgerList.choices);
   const dispatch = useAppDispatch();
 
   const pieChartSetting = {
-    svgHeight: 550,
-    svgWidth: 550,
-    radius: 250,
+    svgHeight: 400,
+    svgWidth: 400,
+    radius: 180,
+    preservedDy: 10,
   };
   const colorCodes = [
     '#c23f3f',
@@ -47,15 +50,26 @@ export const PieChart: React.FC = () => {
 
   const datas = mainLabels.map((mainLabel) => {
     const label = mainLabel;
-    const totalValue = rawDatas.reduce((acc, cur) => (acc += cur.value), 0);
-    const ledgerMatched = rawDatas.filter(
+    const ledgerMatchMonth = rawDatas.filter(
+      (ledger) => ledger.month === chosenMonth
+    );
+    const totalValue = ledgerMatchMonth.reduce(
+      (acc, cur) => (acc += cur.value),
+      0
+    );
+    const ledgerAlsoMatchLabel = ledgerMatchMonth.filter(
       (ledger) => ledger.labelMain === mainLabel
-    ) || { ledgerId: [] };
-    const ledgerMatchedIds = ledgerMatched.map((ledger) => ledger.ledgerId);
-    const value = ledgerMatched.reduce((acc, cur) => acc + cur.value, 0);
-    const ratio = value / totalValue;
+    );
+    const value = ledgerAlsoMatchLabel.reduce(
+      (acc, cur) => (acc += cur.value),
+      0
+    );
+    const ratio =
+      ledgerMatchMonth.length === 1 && ledgerAlsoMatchLabel.length !== 0
+        ? value / totalValue - 0.000001
+        : value / totalValue;
 
-    return { value, ratio, label, ledgerMatchedIds };
+    return { value, ratio, label };
   });
 
   const accumulate = (datas: dataByLabel[]): number[] =>
@@ -77,14 +91,12 @@ export const PieChart: React.FC = () => {
 
   const drawSector = (
     startAngle: number,
-    value: number,
     ratio: number,
     label: string,
-    ledgerMatchedIds: string[],
-    { svgHeight, svgWidth, radius }: PieChartSetting,
+    { radius, preservedDy }: PieChartSetting,
     index: number
   ): ReactNode => {
-    const origin = { x: 0, y: 10 };
+    const origin = { x: 0, y: preservedDy };
     const endAngle = startAngle + 2 * Math.PI * ratio;
     const startPoint = {
       x: radius * Math.cos(startAngle) + origin.x,
@@ -96,24 +108,21 @@ export const PieChart: React.FC = () => {
     };
     const largeArcFlag = ratio > 0.5 ? 1 : 0;
 
+    const dScript = `M ${startPoint.x + radius} ${
+      startPoint.y + radius
+    } A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endPoint.x + radius} ${
+      endPoint.y + radius
+    } L ${origin.x + radius} ${origin.y + radius} Z`;
+
     return (
       <PiePath
         key={index}
         onClick={() => {
-          dispatch(
-            chooseTarget({
-              targetType: 'ledgerId',
-              targetValue: ledgerMatchedIds[0],
-            })
-          );
+          // TODO: set label
+          dispatch(chooseLabel(label));
           console.log('select: ', label);
-          // alert(items[index]);
-        }} // TODO: fix global variable
-        d={`M ${startPoint.x + radius} ${
-          startPoint.y + radius
-        } A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endPoint.x + radius} ${
-          endPoint.y + radius
-        } L ${origin.x + radius} ${origin.y + radius} Z`}
+        }}
+        d={dScript}
         fill={colorCodes[index % 6]} // TODO: fix global variable
       />
     );
@@ -121,28 +130,26 @@ export const PieChart: React.FC = () => {
 
   return (
     <Wrap>
-      <ChartTitle>PieChart [四月各項花費]</ChartTitle>
-      <PieSvg>
-        {conbined.map(
-          ({ startAngle, value, ratio, label, ledgerMatchedIds }, index) =>
-            drawSector(
-              startAngle,
-              value,
-              ratio,
-              label,
-              ledgerMatchedIds,
-              pieChartSetting,
-              index
-            )
-        )}
-      </PieSvg>
+      <ChartTitle>{`PieChart：${chosenMonth}月各類別花費`}</ChartTitle>
+      {/* TODO: NaN 奇怪錯誤，應該與 initial state 無法 render 相關 */}
+      {loadingStatus === 'idle' && (
+        <PieSvg
+          $svgHeight={pieChartSetting.svgHeight}
+          $svgWidth={pieChartSetting.svgWidth}
+        >
+          {conbined.map(({ startAngle, ratio, label }, index) =>
+            drawSector(startAngle, ratio, label, pieChartSetting, index)
+          )}
+        </PieSvg>
+      )}
     </Wrap>
   );
 };
 
-// type PiePathProps = {
-//   $backgroundColor: string;
-// };
+type PieSvgProps = {
+  $svgHeight: number;
+  $svgWidth: number;
+};
 
 const Wrap = styled.div`
   padding: 10px;
@@ -152,10 +159,10 @@ const Wrap = styled.div`
 const ChartTitle = styled.p`
   width: 100%;
 `;
-const PieSvg = styled.svg`
-  height: 510px;
-  width: 500px;
-  // border: 1px solid lightblue;
+const PieSvg = styled.svg<PieSvgProps>`
+  padding-top: 0px;
+  height: ${({ $svgHeight }) => `${$svgHeight}px`};
+  width: ${({ $svgWidth }) => `${$svgWidth}px`};
 `;
 const PiePath = styled.path`
   opacity: 0.7;

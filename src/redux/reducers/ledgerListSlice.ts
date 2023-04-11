@@ -18,7 +18,12 @@ export interface LedgerListState {
 
 const initialState: {
   data: LedgerListState[];
-  choices: { ledgerId: string; year: number };
+  choices: {
+    ledgerId: string;
+    chosenYear: number;
+    chosenMonth: number;
+    chosenLabel: string;
+  };
   status: 'idle' | 'loading' | 'failed';
 } = {
   data: [
@@ -37,8 +42,8 @@ const initialState: {
       recordTime: 0,
     },
   ],
-  choices: { ledgerId: '', year: 2023 },
-  status: 'idle',
+  choices: { ledgerId: '', chosenYear: 2023, chosenMonth: 0, chosenLabel: '' },
+  status: 'loading',
 };
 
 export const getLedgerList = createAsyncThunk(
@@ -62,13 +67,14 @@ export const ledgerList = createSlice({
   name: 'ledgerList',
   initialState,
   reducers: {
-    chooseTarget: (
-      state,
-      action: PayloadAction<{ targetType: string; targetValue: string }>
-    ) => {
-      console.log(action.payload.targetValue);
-      if (action.payload.targetType === 'ledgerId')
-        state.choices.ledgerId = action.payload.targetValue;
+    chooseYear: (state, action: PayloadAction<number>) => {
+      state.choices.chosenYear = action.payload;
+    },
+    chooseMonth: (state, action: PayloadAction<number>) => {
+      state.choices.chosenMonth = action.payload;
+    },
+    chooseLabel: (state, action: PayloadAction<string>) => {
+      state.choices.chosenLabel = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -79,7 +85,6 @@ export const ledgerList = createSlice({
       .addCase(getLedgerList.fulfilled, (state, action) => {
         state.status = 'idle';
         state.data = action.payload;
-        console.log('fetch succeed');
       })
       .addCase(getLedgerList.rejected, (state) => {
         state.status = 'failed';
@@ -88,6 +93,6 @@ export const ledgerList = createSlice({
   },
 });
 
-export const { chooseTarget } = ledgerList.actions;
+export const { chooseYear, chooseMonth, chooseLabel } = ledgerList.actions;
 
 export default ledgerList.reducer;
