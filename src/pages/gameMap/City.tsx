@@ -89,7 +89,7 @@ export const City: React.FC = () => {
       <button
         onClick={() => {
           isHouseDraggable
-            ? dispatch(saveCityAsync(cityBasicInfo.houses))
+            ? dispatch(saveCityAsync(cityBasicInfo.houses)) //TODO: can get state info directly in reducer
             : dispatch(draggableToggle());
         }}
       >

@@ -1,7 +1,8 @@
 import { db } from '../../config/firebase';
 import { getDocs, collection, query, where } from 'firebase/firestore';
+import { WhereFilterOp } from '@firebase/firestore-types';
 
-export interface LedgerListStatus {
+export interface LedgerListState {
   ledgerId: string;
   timeLedger: number;
   timeYear: number;
@@ -21,9 +22,17 @@ export interface LedgerListStatus {
   recordTime: any; //TODO typescript
 }
 
-export async function fetchLedgerList(ledgerBookId: string) {
+export async function fetchLedgerList(
+  ledgerBookId: string,
+  queryParams: {
+    field: string;
+    whereFilterOp: WhereFilterOp;
+    value: string | number;
+  }
+) {
   const ledgersRef = collection(db, 'ledgerBooks', ledgerBookId, 'ledgers');
-  const q = query(ledgersRef, where('timeMonth', '>=', 0));
+  const { field, whereFilterOp, value } = queryParams;
+  const q = query(ledgersRef, where(field, whereFilterOp, value));
 
   const querySnapshot = await getDocs(q);
   let result: any[] = []; //TODO typescript
@@ -32,7 +41,7 @@ export async function fetchLedgerList(ledgerBookId: string) {
     result.push({ ledgerId: doc.id, ...doc.data() });
   });
 
-  return new Promise<{ data: LedgerListStatus[] }>((resolve) =>
-    resolve({ data: result as LedgerListStatus[] })
+  return new Promise<{ data: LedgerListState[] }>((resolve) =>
+    resolve({ data: result as LedgerListState[] })
   );
 }

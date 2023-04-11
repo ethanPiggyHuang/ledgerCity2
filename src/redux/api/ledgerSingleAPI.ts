@@ -8,7 +8,7 @@ import {
   serverTimestamp,
 } from 'firebase/firestore';
 
-export interface LedgerDataStatus {
+export interface LedgerDataState {
   timeLedger: number;
   timeYear: number;
   timeMonth: number;
@@ -27,14 +27,13 @@ export interface LedgerDataStatus {
 }
 
 export async function postLedger(
-  ledgerData: LedgerDataStatus,
+  ledgerData: LedgerDataState,
   availableGrids: { yIndex: number; xIndex: number }[]
 ) {
   const ledgerRef = await addDoc(
     collection(db, 'ledgerBooks', 'UcrgCxiJxo3oA7vvwYtd', 'ledgers'),
     { ...ledgerData, recordTime: serverTimestamp() }
   );
-  // console.log('id', ledgerRef.id);
 
   const housesRef = doc(db, 'cities', 'YFbhq5M8vFBIUMMWZhqo');
   const newPosition =
@@ -47,5 +46,4 @@ export async function postLedger(
       type: ledgerData.labelMain,
     }),
   });
-  // console.log('updated', newPosition.xIndex, newPosition.yIndex);
 }

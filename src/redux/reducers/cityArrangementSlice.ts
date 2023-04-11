@@ -16,7 +16,7 @@ export interface CityArrangementState {
 
 const initialState: CityArrangementState = {
   housesPosition: [
-    //TODO 04/11 start
+    //TODO: flexible game map size
     [
       { type: '', id: '' },
       { type: '', id: '' },

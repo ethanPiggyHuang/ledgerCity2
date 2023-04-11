@@ -7,7 +7,7 @@ export async function fetchCityInfo(cityId: string) {
   const docSnapshot = await getDoc(cityRef);
   return new Promise<{ data: CityBasicInfoState }>((resolve) =>
     resolve({ data: docSnapshot.data() as CityBasicInfoState })
-  ); //TODO what if failed?
+  );
 }
 
 export async function updateHousePosition(

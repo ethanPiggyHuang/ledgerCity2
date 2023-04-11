@@ -4,8 +4,7 @@ import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 
 export const LedgerDetail: React.FC = () => {
   const ledgerList = useAppSelector((state) => state.ledgerList.data);
-  const { choosing } = useAppSelector((state) => state.ledgerList);
-  // const { item, amount } = ledgerList;
+  const { choices } = useAppSelector((state) => state.ledgerList);
   const ledgerListDisplay = ledgerList.map((ledger) => {
     return {
       ledgerId: ledger.ledgerId,
@@ -14,7 +13,6 @@ export const LedgerDetail: React.FC = () => {
       date: new Date(ledger.timeLedger).toLocaleString(),
     };
   });
-  // console.log(ledgerListDisplay);
 
   const dispatch = useAppDispatch();
 
@@ -26,7 +24,7 @@ export const LedgerDetail: React.FC = () => {
         <LedgerText>日期</LedgerText>
       </LedgerRow>
       {ledgerListDisplay.map((ledger, index) => (
-        <LedgerRow key={index} $isChosen={choosing === ledger.ledgerId}>
+        <LedgerRow key={index} $isChosen={choices.ledgerId === ledger.ledgerId}>
           <LedgerText>{ledger.item}</LedgerText>
           <LedgerText>{ledger.amount}</LedgerText>
           <LedgerText>{ledger.date}</LedgerText>

@@ -11,6 +11,14 @@ interface BarChartSetting {
   labelDY: number;
 }
 
+interface Ledger {
+  label: string;
+  ledgerId: string;
+  value: number;
+  year: number;
+  month: number;
+}
+
 export const BarChart: React.FC = () => {
   const ledgerList = useAppSelector((state) => state.ledgerList.data);
   const dispatch = useAppDispatch();
@@ -31,14 +39,45 @@ export const BarChart: React.FC = () => {
     '#7674cf',
   ];
 
-  const datas = ledgerList.map((ledger) => {
+  const rawDatas = ledgerList.map((ledger) => {
     return {
       label: ledger.item,
       ledgerId: ledger.ledgerId,
       value: ledger.amount.number,
+      year: ledger.timeYear,
+      month: ledger.timeMonth,
     };
   });
-  const xMax = datas.length;
+
+  const months = [
+    { ch: '一月', value: 1 },
+    { ch: '二月', value: 2 },
+    { ch: '三月', value: 3 },
+    { ch: '四月', value: 4 },
+    { ch: '五月', value: 5 },
+    { ch: '六月', value: 6 },
+    { ch: '七月', value: 7 },
+    { ch: '八月', value: 8 },
+    { ch: '九月', value: 9 },
+    { ch: '十月', value: 10 },
+    { ch: '十一月', value: 11 },
+    { ch: '十二月', value: 12 },
+  ];
+  const datas = months.map((month) =>
+    rawDatas.reduce(
+      (acc, cur) => {
+        if (cur.month === month.value) {
+          acc.value += cur.value;
+          acc.ledgerId = cur.ledgerId;
+        }
+        return acc;
+      },
+      { value: 0, label: month.ch, ledgerId: '' }
+    )
+  );
+  console.log('datas2', datas);
+
+  const xMax = months.length;
   const yMax = Math.max(...datas.map((data) => data.value));
 
   const drawBar = (
@@ -103,8 +142,8 @@ export const BarChart: React.FC = () => {
             index
           )
         )}
-        {datas.map((data, index) =>
-          setXLabel(data.label, barChartSetting, xMax, index)
+        {datas.map(({ label }, index) =>
+          setXLabel(label, barChartSetting, xMax, index)
         )}
         <path d={`M 0 400 L 600 400 Z`} stroke="black" />
         <path d={`M 0 400 L 0 0 Z`} stroke="black" />
@@ -141,6 +180,6 @@ const BarPath = styled.path`
 `;
 
 const LabelX = styled.text`
-  font-size: 16px;
+  font-size: 14px;
   text-anchor: middle;
 `;

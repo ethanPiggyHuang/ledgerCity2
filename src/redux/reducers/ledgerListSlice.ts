@@ -4,6 +4,8 @@ import { fetchLedgerList } from '../api/ledgerListAPI';
 export interface LedgerListState {
   ledgerId: string;
   timeLedger: number;
+  timeYear: number;
+  timeMonth: number;
   item: string;
   labelMain: string;
   labelSubs: string[];
@@ -16,13 +18,15 @@ export interface LedgerListState {
 
 const initialState: {
   data: LedgerListState[];
-  choosing: string;
+  choices: { ledgerId: string; year: number };
   status: 'idle' | 'loading' | 'failed';
 } = {
   data: [
     {
       ledgerId: '',
       timeLedger: 0,
+      timeYear: 0,
+      timeMonth: 0,
       item: '',
       labelMain: '',
       labelSubs: [],
@@ -33,15 +37,19 @@ const initialState: {
       recordTime: 0,
     },
   ],
-  choosing: '',
+  choices: { ledgerId: '', year: 2023 },
   status: 'idle',
 };
 
 export const getLedgerList = createAsyncThunk(
   'statistics/getLedgerList',
-  async () => {
+  async (year: number) => {
     const ledgerBookId: string = 'UcrgCxiJxo3oA7vvwYtd'; //TODO: import from other State
-    const response = await fetchLedgerList(ledgerBookId);
+    const response = await fetchLedgerList(ledgerBookId, {
+      field: 'timeYear',
+      whereFilterOp: '==',
+      value: year,
+    });
     const modifiedResponse = response.data.map((data) => {
       const timeInSeconds = new Date(data.recordTime.seconds * 1000).getTime();
       return { ...data, recordTime: timeInSeconds };
@@ -60,7 +68,7 @@ export const ledgerList = createSlice({
     ) => {
       console.log(action.payload.targetValue);
       if (action.payload.targetType === 'ledgerId')
-        state.choosing = action.payload.targetValue;
+        state.choices.ledgerId = action.payload.targetValue;
     },
   },
   extraReducers: (builder) => {
