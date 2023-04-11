@@ -1,5 +1,5 @@
 import { db } from '../../config/firebase';
-import { getDocs, collection, query, where } from 'firebase/firestore';
+import { getDocs, collection, query, where, orderBy } from 'firebase/firestore';
 import { WhereFilterOp } from '@firebase/firestore-types';
 
 export interface LedgerListState {
@@ -25,6 +25,7 @@ export interface LedgerListState {
 export async function fetchLedgerList(
   ledgerBookId: string,
   queryParams: {
+    // TODO: delete sometime
     field: string;
     whereFilterOp: WhereFilterOp;
     value: string | number;
@@ -32,7 +33,8 @@ export async function fetchLedgerList(
 ) {
   const ledgersRef = collection(db, 'ledgerBooks', ledgerBookId, 'ledgers');
   const { field, whereFilterOp, value } = queryParams;
-  const q = query(ledgersRef, where(field, whereFilterOp, value));
+  // const q = query(ledgersRef, where(field, whereFilterOp, value));
+  const q = query(ledgersRef, orderBy('timeLedger'));
 
   const querySnapshot = await getDocs(q);
   let result: any[] = []; //TODO typescript

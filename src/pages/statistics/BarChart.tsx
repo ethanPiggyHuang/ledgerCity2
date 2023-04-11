@@ -38,7 +38,6 @@ export const BarChart: React.FC = () => {
     return {
       item: ledger.item,
       label: ledger.labelMain,
-      ledgerId: ledger.ledgerId,
       value: ledger.amount.number,
       year: ledger.timeYear,
       month: ledger.timeMonth,
@@ -61,13 +60,13 @@ export const BarChart: React.FC = () => {
   ];
   const datas = months.map((month) => {
     const { xLabel, monthValue } = month;
-    const { ledgerId } = rawDatas.find(
-      (ledger) => ledger.month === monthValue
-    ) || { ledgerId: '' };
+
     const value = rawDatas
-      .filter((ledger) => ledger.month === monthValue)
+      .filter(
+        (ledger) => ledger.month === monthValue && ledger.year === chosenYear
+      )
       .reduce((acc, cur) => acc + cur.value, 0);
-    return { value, xLabel, ledgerId, monthValue };
+    return { value, xLabel, monthValue };
   });
 
   const xMax = months.length;

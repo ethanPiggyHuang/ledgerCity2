@@ -15,10 +15,8 @@ export const Statistics: React.FC = () => {
   const { chosenYear } = useAppSelector((state) => state.ledgerList.choices);
   const dispatch = useAppDispatch();
 
-  console.log(chosenYear);
-
   useEffect(() => {
-    dispatch(getLedgerList(2023));
+    dispatch(getLedgerList());
   }, [dispatch]);
 
   return (
@@ -27,7 +25,6 @@ export const Statistics: React.FC = () => {
         <Select
           value={chosenYear}
           onChange={(e) => {
-            dispatch(getLedgerList(Number(e.target.value)));
             dispatch(chooseYear(Number(e.target.value)));
             // 可以考量更換年份之後，要不要重設月份？(default 0)
             dispatch(chooseMonth(0));

@@ -48,12 +48,12 @@ const initialState: {
 
 export const getLedgerList = createAsyncThunk(
   'statistics/getLedgerList',
-  async (year: number) => {
+  async () => {
     const ledgerBookId: string = 'UcrgCxiJxo3oA7vvwYtd'; //TODO: import from other State
     const response = await fetchLedgerList(ledgerBookId, {
       field: 'timeYear',
-      whereFilterOp: '==',
-      value: year,
+      whereFilterOp: '>=',
+      value: 0,
     });
     const modifiedResponse = response.data.map((data) => {
       const timeInSeconds = new Date(data.recordTime.seconds * 1000).getTime();

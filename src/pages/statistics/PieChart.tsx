@@ -20,7 +20,9 @@ interface dataByLabel {
 export const PieChart: React.FC = () => {
   const loadingStatus = useAppSelector((state) => state.ledgerList.status);
   const ledgerList = useAppSelector((state) => state.ledgerList.data);
-  const { chosenMonth } = useAppSelector((state) => state.ledgerList.choices);
+  const { chosenYear, chosenMonth } = useAppSelector(
+    (state) => state.ledgerList.choices
+  );
   const dispatch = useAppDispatch();
 
   const pieChartSetting = {
@@ -51,7 +53,7 @@ export const PieChart: React.FC = () => {
   const datas = mainLabels.map((mainLabel) => {
     const label = mainLabel;
     const ledgerMatchMonth = rawDatas.filter(
-      (ledger) => ledger.month === chosenMonth
+      (ledger) => ledger.year === chosenYear && ledger.month === chosenMonth
     );
     const totalValue = ledgerMatchMonth.reduce(
       (acc, cur) => (acc += cur.value),
@@ -66,7 +68,7 @@ export const PieChart: React.FC = () => {
     );
     const ratio =
       ledgerMatchMonth.length === 1 && ledgerAlsoMatchLabel.length !== 0
-        ? value / totalValue - 0.000001
+        ? value / totalValue - 0.00001
         : value / totalValue;
 
     return { value, ratio, label };
@@ -94,6 +96,7 @@ export const PieChart: React.FC = () => {
     ratio: number,
     label: string,
     { radius, preservedDy }: PieChartSetting,
+    colorCodes: string[],
     index: number
   ): ReactNode => {
     const origin = { x: 0, y: preservedDy };
@@ -118,12 +121,10 @@ export const PieChart: React.FC = () => {
       <PiePath
         key={index}
         onClick={() => {
-          // TODO: set label
           dispatch(chooseLabel(label));
-          console.log('select: ', label);
         }}
         d={dScript}
-        fill={colorCodes[index % 6]} // TODO: fix global variable
+        fill={colorCodes[index % 6]}
       />
     );
   };
@@ -138,7 +139,14 @@ export const PieChart: React.FC = () => {
           $svgWidth={pieChartSetting.svgWidth}
         >
           {conbined.map(({ startAngle, ratio, label }, index) =>
-            drawSector(startAngle, ratio, label, pieChartSetting, index)
+            drawSector(
+              startAngle,
+              ratio,
+              label,
+              pieChartSetting,
+              colorCodes,
+              index
+            )
           )}
         </PieSvg>
       )}
