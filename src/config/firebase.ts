@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
-const firebaseConfig = {
+const config = {
   apiKey: process.env.REACT_APP_FIREBASE_APIKEY,
   authDomain: 'ethanappproject.firebaseapp.com',
   projectId: 'ethanappproject',
@@ -11,6 +11,6 @@ const firebaseConfig = {
   measurementId: 'G-T25FFKR3Q0',
 };
 
-const app = initializeApp(firebaseConfig);
+export const app = initializeApp(config);
 
 export const db = getFirestore(app);

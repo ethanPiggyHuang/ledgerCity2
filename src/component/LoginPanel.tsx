@@ -48,7 +48,7 @@ export const LoginPanel: React.FC = () => {
   return (
     <Wrap>
       <Title>註冊</Title>
-      <Button onClick={handleLoginFb}>G登入</Button>
+      <Button onClick={handleLoginFb}>Google登入</Button>
       <Button onClick={handleLogoutFb}>G登出</Button>
       <Info>{info}</Info>
       {protraitUrl && <Portrait src={protraitUrl} />}
