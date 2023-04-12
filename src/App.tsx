@@ -8,7 +8,7 @@ import { Ledger } from './pages/ledger/Ledger';
 import { Statistics } from './pages/statistics/Statistics';
 import LoginPage from './pages/login/Login';
 // import { initializeApp } from 'firebase/app';
-import { app } from './config/firebase';
+// import { app } from './config/firebase';
 import AuthRoute from './component/AuthRoute';
 
 export interface IApplicationProps {}
