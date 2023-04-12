@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
-import {
-  getAuth,
-  signInWithPopup,
-  FacebookAuthProvider,
-  getAdditionalUserInfo,
-  signOut,
-} from 'firebase/auth';
+import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth';
+
 import { displayCity } from '../redux/reducers/cityArrangementSlice';
 
 export const LoginPanel: React.FC = () => {
@@ -19,39 +14,22 @@ export const LoginPanel: React.FC = () => {
   useEffect(() => {}, []);
 
   const handleLoginFb = () => {
-    const provider = new FacebookAuthProvider();
-    provider.addScope('user_friends');
-
+    const provider = new GoogleAuthProvider();
+    provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
     provider.setCustomParameters({
-      display: 'popup',
+      login_hint: 'user@example.com',
     });
     const auth = getAuth();
     auth.languageCode = 'it';
     signInWithPopup(auth, provider)
       .then((result) => {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential?.accessToken;
         // The signed-in user info.
         const user = result.user;
-
-        // This gives you a Facebook Access Token. You can use it to access the Facebook API.
-        const credential = FacebookAuthProvider.credentialFromResult(result);
-        const accessToken = credential?.accessToken; //TODO
-
-        const IdP = getAdditionalUserInfo(result);
-        if (IdP) {
-          const profile = IdP.profile;
-          return profile;
-        }
-      })
-      .then((profile) => {
-        if (profile?.name) {
-          const name = profile?.name as string;
-          const picture = profile?.picture as {
-            data: { [key: string]: string };
-          };
-          console.log('then', profile);
-          setInfo(name);
-          setProtraitUrl(picture.data.url);
-        }
+        // IdP data available using getAdditionalUserInfo(result)
+        // ...
       })
       .catch((error) => {
         // Handle Errors here.
@@ -60,30 +38,18 @@ export const LoginPanel: React.FC = () => {
         // The email of the user's account used.
         const email = error.customData.email;
         // The AuthCredential type that was used.
-        const credential = FacebookAuthProvider.credentialFromError(error);
-
+        const credential = GoogleAuthProvider.credentialFromError(error);
         // ...
       });
   };
 
-  const handleLogoutFb = () => {
-    const auth = getAuth();
-    signOut(auth)
-      .then(() => {
-        // Sign-out successful.
-        console.log('Sign-out successful');
-      })
-      .catch((error) => {
-        // An error happened.
-        console.log('An error happened');
-      });
-  };
+  const handleLogoutFb = () => {};
 
   return (
     <Wrap>
       <Title>註冊</Title>
-      <Button onClick={handleLoginFb}>FB登入</Button>
-      <Button onClick={handleLogoutFb}>FB登出</Button>
+      <Button onClick={handleLoginFb}>G登入</Button>
+      <Button onClick={handleLogoutFb}>G登出</Button>
       <Info>{info}</Info>
       {protraitUrl && <Portrait src={protraitUrl} />}
     </Wrap>
