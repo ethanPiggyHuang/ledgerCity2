@@ -1,13 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
-import { getAuth, signInWithPopup, FacebookAuthProvider } from 'firebase/auth';
+import {
+  getAuth,
+  signInWithPopup,
+  FacebookAuthProvider,
+  getAdditionalUserInfo,
+  signOut,
+} from 'firebase/auth';
 import { displayCity } from '../redux/reducers/cityArrangementSlice';
 
 export const LoginPanel: React.FC = () => {
   const cityBasicInfo = useAppSelector((state) => state.cityBasicInfo);
   const dispatch = useAppDispatch();
-  const [info, setInfo] = useState('aa');
+  const [info, setInfo] = useState('visitor');
+  const [protraitUrl, setProtraitUrl] = useState('');
 
   useEffect(() => {}, []);
 
@@ -27,10 +34,24 @@ export const LoginPanel: React.FC = () => {
 
         // This gives you a Facebook Access Token. You can use it to access the Facebook API.
         const credential = FacebookAuthProvider.credentialFromResult(result);
-        const accessToken = credential.accessToken;
+        const accessToken = credential?.accessToken; //TODO
 
-        // IdP data available using getAdditionalUserInfo(result)
-        // ...
+        const IdP = getAdditionalUserInfo(result);
+        if (IdP) {
+          const profile = IdP.profile;
+          return profile;
+        }
+      })
+      .then((profile) => {
+        if (profile?.name) {
+          const name = profile?.name as string;
+          const picture = profile?.picture as {
+            data: { [key: string]: string };
+          };
+          console.log('then', profile);
+          setInfo(name);
+          setProtraitUrl(picture.data.url);
+        }
       })
       .catch((error) => {
         // Handle Errors here.
@@ -45,7 +66,18 @@ export const LoginPanel: React.FC = () => {
       });
   };
 
-  const handleLogoutFb = () => {};
+  const handleLogoutFb = () => {
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        // Sign-out successful.
+        console.log('Sign-out successful');
+      })
+      .catch((error) => {
+        // An error happened.
+        console.log('An error happened');
+      });
+  };
 
   return (
     <Wrap>
@@ -53,6 +85,7 @@ export const LoginPanel: React.FC = () => {
       <Button onClick={handleLoginFb}>FB登入</Button>
       <Button onClick={handleLogoutFb}>FB登出</Button>
       <Info>{info}</Info>
+      {protraitUrl && <Portrait src={protraitUrl} />}
     </Wrap>
   );
 };
@@ -79,4 +112,8 @@ const Button = styled.button`
 `;
 const Info = styled.p`
   font-size: 32px;
+`;
+const Portrait = styled.img`
+  width: 100px;
+  height: 100px;
 `;

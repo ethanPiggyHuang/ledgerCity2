@@ -40,7 +40,7 @@ const BlackCurtain = styled.div`
   width: 100vw;
   height: 100vh;
   background-color: black;
-  opacity: 0.5;
+  opacity: 0.8;
   position: absolute;
   z-index: 1;
 `;
