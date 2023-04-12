@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
-import { LOG_OUT } from '../redux/reducers/userInfoSlice';
+import { LOGGED_IN, LOG_OUT } from '../redux/reducers/userInfoSlice';
 
 export interface IAuthRouteProps {
   children?: React.ReactNode; //TODO ??
@@ -22,7 +22,8 @@ const AuthRoute: React.FunctionComponent<IAuthRouteProps> = (props) => {
   useEffect(() => {
     const AuthCheck = onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log('user', [{ uid: user.uid, name: user.displayName }]);
+        console.log('user', [{ uid: user.uid, name: user }]);
+        dispatch(LOGGED_IN(user));
         setIsLoading(false);
       } else {
         console.log('unauthorized');

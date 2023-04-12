@@ -31,7 +31,7 @@ export const LoginPanel: React.FunctionComponent<IloginPageProps> = () => {
         // console.log('帳號建立(UTC +0)', response.user.metadata.creationTime);
         // console.log('最後登入(UTC +0)', response.user.metadata.lastSignInTime);
         // console.log('user', response.user);
-        dispatch(LOGGED_IN());
+        // dispatch(LOGGED_IN());
 
         // navigate('/');
       })

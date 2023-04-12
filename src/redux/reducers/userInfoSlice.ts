@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { fetchLedgerList } from '../api/ledgerListAPI';
+import { User } from 'firebase/auth';
 
 export interface userInfoState {
   isLogin: boolean;
@@ -8,9 +9,9 @@ export interface userInfoState {
     user: {
       userId: string;
       userShortId: number;
-      name: string;
-      email: string;
-      portraitUrl: string;
+      name: string | null;
+      email: string | null;
+      portraitUrl: string | null;
     };
     cityList: string[];
     friends: {
@@ -33,9 +34,9 @@ const initialState: userInfoState = {
     user: {
       userId: '',
       userShortId: 0,
-      name: '',
-      email: '',
-      portraitUrl: '',
+      name: null,
+      email: null,
+      portraitUrl: null,
     },
     cityList: [],
     friends: [],
@@ -66,11 +67,28 @@ export const userInfo = createSlice({
   name: 'userInfo',
   initialState,
   reducers: {
-    LOGGED_IN: (state) => {
+    LOGGED_IN: (state, action: PayloadAction<User>) => {
+      const { uid, displayName, email, photoURL } = action.payload;
+      const user = {
+        userId: uid,
+        userShortId: 12345678,
+        name: displayName,
+        email: email,
+        portraitUrl: photoURL,
+      };
       state.isLogin = true;
+      state.data.user = user;
     },
     LOG_OUT: (state) => {
+      const user = {
+        userId: '',
+        userShortId: 0,
+        name: null,
+        email: null,
+        portraitUrl: null,
+      };
       state.isLogin = false;
+      state.data.user = user;
     },
   },
   // extraReducers: (builder) => {

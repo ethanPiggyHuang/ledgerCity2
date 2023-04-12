@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { onSnapshot } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
-import { useAppDispatch } from '../../redux/hooks';
+import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { City } from './City';
 import Login from '../login/Login';
 import { getCityInfo } from '../../redux/reducers/cityBasicInfoSlice';
@@ -13,23 +13,25 @@ import { ref, set } from 'firebase/database';
 export const GameMap: React.FC = () => {
   const auth = getAuth();
   const [hasUser, serHasUser] = useState(false);
+  const { isLogin } = useAppSelector((state) => state.userInfo);
 
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(getCityInfo());
   }, [dispatch]);
 
-  useEffect(() => {
-    const AuthCheck = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log('hasUser', user.uid);
-        serHasUser(true);
-      } else {
-        console.log('unauthorized');
-        serHasUser(false);
-      }
-    });
-  }, [auth]);
+  // useEffect(() => {
+  //   // TODO: 是否和 authRoute 重複！？
+  //   const AuthCheck = onAuthStateChanged(auth, (user) => {
+  //     if (user) {
+  //       console.log('hasUser', user.uid);
+  //       serHasUser(true);
+  //     } else {
+  //       console.log('unauthorized');
+  //       serHasUser(false);
+  //     }
+  //   });
+  // }, [auth]);
 
   useEffect(() => {
     // const logOutTime = () => {
@@ -55,7 +57,8 @@ export const GameMap: React.FC = () => {
 
   return (
     <>
-      {!hasUser && <DialogBoard />}
+      {/* TODO: 首頁 refresh 時會閃一下 */}
+      {!isLogin && <DialogBoard />}
       <City />
       <br />
       <br />
