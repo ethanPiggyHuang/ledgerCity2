@@ -6,12 +6,17 @@ import {
   onAuthStateChanged,
 } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
+import { useAppSelector, useAppDispatch } from '../../redux/hooks';
+import { LOGGED_IN } from '../../redux/reducers/userInfoSlice';
 import { rtdb } from '../../config/firebase';
 import { ref, set } from 'firebase/database';
 
 export interface IloginPageProps {}
 
-const LoginPage: React.FunctionComponent<IloginPageProps> = (props) => {
+const Login: React.FunctionComponent<IloginPageProps> = (props) => {
+  // const isLogin = useAppSelector((state) => state.userInfo.isLogin);
+  const dispatch = useAppDispatch();
+
   const auth = getAuth();
   const navigate = useNavigate();
   const [isAuthing, setIsAuthing] = useState(false);
@@ -27,29 +32,32 @@ const LoginPage: React.FunctionComponent<IloginPageProps> = (props) => {
         console.log('email', response.user.email);
         console.log('帳號建立(UTC +0)', response.user.metadata.creationTime);
         console.log('最後登入(UTC +0)', response.user.metadata.lastSignInTime);
-        // console.log('reloadUserInfo', response.user);
         console.log('user', response.user);
-        //------------------------
-        const uid = response.user.uid;
+        dispatch(LOGGED_IN());
 
-        set(
-          ref(
-            rtdb,
-            `users/${response.user.uid}/${response.user.metadata.lastSignInTime}`
-          ),
-          {
-            lastSignInTime: response.user.metadata.lastSignInTime,
-          }
-        );
+        // navigate('/');
+        //------------------------
+
+        // write into rtdb
+        // set(
+        //   ref(
+        //     rtdb,
+        //     `users/${response.user.uid}/${response.user.metadata.lastSignInTime}`
+        //   ),
+        //   {
+        //     lastSignInTime: response.user.metadata.lastSignInTime,
+        //   }
+        // );
 
         //------------------------
-        navigate('/');
       })
       .catch((error) => {
         console.log('error', error);
         setIsAuthing(false);
       });
   };
+
+  console.log('here', auth);
   return (
     <div>
       <p>Login Page</p>
@@ -60,4 +68,4 @@ const LoginPage: React.FunctionComponent<IloginPageProps> = (props) => {
   );
 };
 
-export default LoginPage;
+export default Login;

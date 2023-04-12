@@ -1,57 +1,53 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  onAuthStateChanged,
+} from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
-import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth';
+import { LOGGED_IN } from '../redux/reducers/userInfoSlice';
 
-import { displayCity } from '../redux/reducers/cityArrangementSlice';
+export interface IloginPageProps {}
 
-export const LoginPanel: React.FC = () => {
-  const cityBasicInfo = useAppSelector((state) => state.cityBasicInfo);
+export const LoginPanel: React.FunctionComponent<IloginPageProps> = () => {
   const dispatch = useAppDispatch();
-  const [info, setInfo] = useState('visitor');
-  const [protraitUrl, setProtraitUrl] = useState('');
 
-  useEffect(() => {}, []);
+  const auth = getAuth();
+  const navigate = useNavigate();
+  const [isAuthing, setIsAuthing] = useState(false);
 
-  const handleLoginFb = () => {
-    const provider = new GoogleAuthProvider();
-    provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
-    provider.setCustomParameters({
-      login_hint: 'user@example.com',
-    });
-    const auth = getAuth();
-    auth.languageCode = 'it';
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential?.accessToken;
-        // The signed-in user info.
-        const user = result.user;
-        // IdP data available using getAdditionalUserInfo(result)
-        // ...
+  const signInWithGoogle = async () => {
+    setIsAuthing(true);
+
+    signInWithPopup(auth, new GoogleAuthProvider())
+      .then((response) => {
+        console.log('uid', response.user.uid);
+        console.log('user', response.user.photoURL);
+        // console.log('displayName', response.user.displayName);
+        // console.log('email', response.user.email);
+        // console.log('帳號建立(UTC +0)', response.user.metadata.creationTime);
+        // console.log('最後登入(UTC +0)', response.user.metadata.lastSignInTime);
+        // console.log('user', response.user);
+        dispatch(LOGGED_IN());
+
+        // navigate('/');
       })
       .catch((error) => {
-        // Handle Errors here.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.customData.email;
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error);
-        // ...
+        console.log('error', error);
+        setIsAuthing(false);
       });
   };
-
-  const handleLogoutFb = () => {};
 
   return (
     <Wrap>
       <Title>註冊</Title>
-      <Button onClick={handleLoginFb}>Google登入</Button>
-      <Button onClick={handleLogoutFb}>G登出</Button>
-      <Info>{info}</Info>
-      {protraitUrl && <Portrait src={protraitUrl} />}
+      <Button onClick={() => signInWithGoogle()}>Google登入</Button>
+      {/* <Button onClick={handleLogoutFb}>G登出</Button> */}
+      {/* <Info>{info}</Info> */}
+      {/* {protraitUrl && <Portrait src={protraitUrl} />} */}
     </Wrap>
   );
 };

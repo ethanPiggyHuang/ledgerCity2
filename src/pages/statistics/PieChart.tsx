@@ -26,9 +26,9 @@ export const PieChart: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const pieChartSetting = {
-    svgHeight: 400,
-    svgWidth: 400,
-    radius: 180,
+    svgHeight: 300,
+    svgWidth: 300,
+    radius: 140,
     preservedDy: 10,
   };
   const colorCodes = [

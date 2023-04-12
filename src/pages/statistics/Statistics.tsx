@@ -10,10 +10,12 @@ import {
   chooseYear,
   chooseMonth,
 } from '../../redux/reducers/ledgerListSlice';
+import { getAuth, signOut } from 'firebase/auth';
 
 export const Statistics: React.FC = () => {
   const { chosenYear } = useAppSelector((state) => state.ledgerList.choices);
   const dispatch = useAppDispatch();
+  const auth = getAuth();
 
   useEffect(() => {
     dispatch(getLedgerList());
@@ -46,6 +48,14 @@ export const Statistics: React.FC = () => {
       <br />
       <Link to="../">city</Link>
       <Link to="../ledger">ledger</Link>
+      <br />
+      <button
+        onClick={() => {
+          signOut(auth);
+        }}
+      >
+        Sign out
+      </button>
     </Wrap>
   );
 };

@@ -4,6 +4,7 @@ import cityBasicInfoReducer from './reducers/cityBasicInfoSlice';
 import cityArrangementReducer from './reducers/cityArrangementSlice';
 import ledgerSingleReducer from './reducers/ledgerSingleSlice';
 import ledgerListReducer from './reducers/ledgerListSlice';
+import userInfoReducer from './reducers/userInfoSlice';
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     cityArrangement: cityArrangementReducer,
     ledgerSingle: ledgerSingleReducer,
     ledgerList: ledgerListReducer,
+    userInfo: userInfoReducer,
   },
 });
 

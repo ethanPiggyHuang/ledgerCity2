@@ -6,7 +6,7 @@ import { Counter } from './feature/counter/Counter';
 import { GameMap } from './pages/gameMap/GameMap';
 import { Ledger } from './pages/ledger/Ledger';
 import { Statistics } from './pages/statistics/Statistics';
-import LoginPage from './pages/login/Login';
+import Login from './pages/login/Login';
 // import { initializeApp } from 'firebase/app';
 // import { app } from './config/firebase';
 import AuthRoute from './component/AuthRoute';
@@ -18,21 +18,17 @@ const App: React.FunctionComponent<IApplicationProps> = (props) => {
     <BrowserRouter>
       <Reset />
       <GlobalStyle />
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <AuthRoute>
-              <GameMap />
-            </AuthRoute>
-          }
-        />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/counter" element={<Counter />} />
-        <Route path="/ledger" element={<Ledger />} />
-        <Route path="/statistics" element={<Statistics />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <AuthRoute>
+        <Routes>
+          <Route path="/" element={<GameMap />} />
+          {/* //TODO */}
+          {/* <Route path="/login" element={<Login />} /> */}
+          <Route path="/counter" element={<Counter />} />
+          <Route path="/ledger" element={<Ledger />} />
+          <Route path="/statistics" element={<Statistics />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AuthRoute>
     </BrowserRouter>
   );
 };
