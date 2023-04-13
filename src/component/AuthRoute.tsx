@@ -22,8 +22,9 @@ const AuthRoute: React.FunctionComponent<IAuthRouteProps> = (props) => {
   useEffect(() => {
     const AuthCheck = onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log('user', [{ uid: user.uid, name: user }]);
-        dispatch(LOGGED_IN(user));
+        // console.log('user', [{ uid: user.uid, name: user }]);
+        const { uid, displayName, email, photoURL } = user;
+        dispatch(LOGGED_IN({ uid, displayName, email, photoURL }));
         setIsLoading(false);
       } else {
         console.log('unauthorized');

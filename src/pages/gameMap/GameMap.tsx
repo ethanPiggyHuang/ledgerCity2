@@ -14,6 +14,7 @@ export const GameMap: React.FC = () => {
   const auth = getAuth();
   const [hasUser, serHasUser] = useState(false);
   const { isLogin } = useAppSelector((state) => state.userInfo);
+  // const { name } = useAppSelector((state) => state.userInfo.data.user);
 
   const dispatch = useAppDispatch();
   useEffect(() => {
@@ -54,6 +55,8 @@ export const GameMap: React.FC = () => {
   }, []);
 
   // if (Login) return;
+
+  console.log(isLogin);
 
   return (
     <>
