@@ -75,7 +75,6 @@ export const userInfo = createSlice({
   initialState,
   reducers: {
     AUTHING_TOGGLE: (state, action: PayloadAction<boolean>) => {
-      console.log(action.payload);
       state.loginStatus.isAuthing = action.payload;
     },
     LOGGED_IN: (

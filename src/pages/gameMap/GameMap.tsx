@@ -5,41 +5,57 @@ import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { City } from './City';
 import { getCityInfo } from '../../redux/reducers/cityBasicInfoSlice';
 import { DialogBoard } from '../../component/DialogBoard';
-import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
-import { rtdb } from '../../config/firebase';
-import { ref, set } from 'firebase/database';
+import { getAuth, signOut } from 'firebase/auth';
+import { postFadeOutTime, postFadeOutTimeRT } from '../../redux/api/userAPI';
 
 export const GameMap: React.FC = () => {
   const auth = getAuth();
   const { isLogin, isAuthing } = useAppSelector(
     (state) => state.userInfo.loginStatus
   );
-  // const { name } = useAppSelector((state) => state.userInfo.data.user);
+  const { userId } = useAppSelector((state) => state.userInfo.data.user);
+  // const { accessUsers } = useAppSelector((state) => state.cityBasicInfo);
 
   const dispatch = useAppDispatch();
   useEffect(() => {
+    // if (accessUsers.length === 0) {
     dispatch(getCityInfo());
-  }, [dispatch]);
+    // console.log('getCityInfo');
+    // }
+  }, []);
 
   useEffect(() => {
-    // const logOutTime = () => {
-    //   const user = 'isLogin';
-    //   if (user === 'isLogin') {
-    //     const user = { uid: 'myCPVIkcOYalDVvdj9hngfml3yq2' };
-    //     const logoutTime = new Date().getTime();
-    //     // if (document.hidden) {
-    //     set(ref(rtdb, `users/${user.uid}/offline`), {
-    //       logoutTime: logoutTime,
-    //     });
-    //     // }
-    //   },
-    // };
-    // window.addEventListener('visibilitychange', logOutTime); // 網頁被切換掉、縮小、關閉，document.hidden 要是 true
-    // window.addEventListener('pagehide', logOutTime); // 離開此頁導向其他網站，不實用
-    // window.addEventListener('offline', logOutTime); //離線
+    const logOutTime = (enableType: string) => {
+      if (userId) {
+        // const logoutTime = new Date().getTime();
+        if (
+          enableType === 'visibilitychange' &&
+          document.hidden
+          // || enableType === 'offline'
+        ) {
+          // postFadeOutTime(userId);
+          postFadeOutTimeRT(userId, enableType);
+        }
+      }
+    };
+
+    // 網頁被切換掉、縮小、關閉時，document.hidden 變成 true
+    window.addEventListener('visibilitychange', () =>
+      logOutTime('visibilitychange')
+    );
+    // TODO: 離線 ???
+    // window.addEventListener('offline', () => logOutTime('offline'));
+    // window.addEventListener('pagehide', logOutTime); // 離開此頁導向其他網站，不太實用
     // window.addEventListener('beforeunload', logOutTime); //關閉頁面
     // window.addEventListener('unload', logOutTime); //關閉頁面
-  }, []);
+
+    return () => {
+      window.removeEventListener('visibilitychange', () =>
+        logOutTime('visibilitychange')
+      );
+      //   window.removeEventListener('offline', () => logOutTime('offline'));
+    };
+  }, [userId]);
 
   return (
     <>

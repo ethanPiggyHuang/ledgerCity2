@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import { LoginPanel } from './LoginPanel';
@@ -7,7 +7,6 @@ import { displayCity } from '../redux/reducers/cityArrangementSlice';
 export const DialogBoard: React.FC = () => {
   const cityBasicInfo = useAppSelector((state) => state.cityBasicInfo);
   const dispatch = useAppDispatch();
-  const [info, setInfo] = useState('aa');
 
   useEffect(() => {}, []);
 
