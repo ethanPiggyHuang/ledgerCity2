@@ -23,7 +23,6 @@ export const DialogBoard: React.FC = () => {
 
 type CurtainProps = {
   $isLogin: boolean;
-  // $isDialog: boolean;
 };
 
 const Curtain = styled.div<CurtainProps>`

@@ -1,11 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components/macro';
-import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  onAuthStateChanged,
-} from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import { LOGGED_IN, AUTHING_TOGGLE } from '../redux/reducers/userInfoSlice';
@@ -14,17 +9,12 @@ export interface IloginPageProps {}
 
 export const LoginPanel: React.FunctionComponent<IloginPageProps> = () => {
   const dispatch = useAppDispatch();
-  const authing = useAppSelector(
-    (state) => state.userInfo.loginStatus.isAuthing
-  );
-
-  console.log('authing', authing);
+  // const authing = useAppSelector(
+  //   (state) => state.userInfo.loginStatus.isAuthing
+  // );
 
   const auth = getAuth();
   const navigate = useNavigate();
-  // const [isAuthing, setIsAuthing] = useState(true);
-
-  // console.log('isAuthing', isAuthing);
 
   const signInWithGoogle = async () => {
     dispatch(AUTHING_TOGGLE(true));
@@ -45,7 +35,6 @@ export const LoginPanel: React.FunctionComponent<IloginPageProps> = () => {
       .catch((error) => {
         console.log('error', error);
         dispatch(AUTHING_TOGGLE(false));
-        // setIsAuthing(false);
       });
   };
 
@@ -53,9 +42,6 @@ export const LoginPanel: React.FunctionComponent<IloginPageProps> = () => {
     <Wrap>
       <Title>註冊</Title>
       <Button onClick={() => signInWithGoogle()}>Google登入</Button>
-      {/* <Button onClick={handleLogoutFb}>G登出</Button> */}
-      {/* <Info>{info}</Info> */}
-      {/* {protraitUrl && <Portrait src={protraitUrl} />} */}
     </Wrap>
   );
 };
@@ -79,11 +65,4 @@ const Title = styled.p`
 `;
 const Button = styled.button`
   font-size: 32px;
-`;
-const Info = styled.p`
-  font-size: 32px;
-`;
-const Portrait = styled.img`
-  width: 100px;
-  height: 100px;
 `;

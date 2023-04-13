@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import styled from 'styled-components/macro';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
@@ -14,19 +15,15 @@ export interface IAuthRouteProps {
 
 const AuthRoute: React.FunctionComponent<IAuthRouteProps> = (props) => {
   const { children } = props;
-  const isLogin = useAppSelector((state) => state.userInfo);
   const dispatch = useAppDispatch();
-
-  const auth = getAuth();
-  const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false); //TODO 時機！？
-
   const isAuthing = useAppSelector(
     (state) => state.userInfo.loginStatus.isAuthing
   );
 
+  const auth = getAuth();
+  const navigate = useNavigate();
+
   useEffect(() => {
-    setIsLoading(true);
     dispatch(AUTHING_TOGGLE(true));
     const AuthCheck = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -34,7 +31,6 @@ const AuthRoute: React.FunctionComponent<IAuthRouteProps> = (props) => {
         // console.log('user', [{ uid: user.uid, name: user }]);
         const { uid, displayName, email, photoURL } = user;
         dispatch(LOGGED_IN({ uid, displayName, email, photoURL }));
-        setIsLoading(false);
       } else {
         dispatch(AUTHING_TOGGLE(false));
         console.log('unauthorized');
@@ -47,9 +43,13 @@ const AuthRoute: React.FunctionComponent<IAuthRouteProps> = (props) => {
     return () => AuthCheck();
   }, [auth]);
 
-  // if (isLoading) return <p>loading...</p>;
+  if (isAuthing) return <LoadingText>loading...</LoadingText>;
 
   return <div>{children}</div>;
 };
 
 export default AuthRoute;
+
+const LoadingText = styled.p`
+  font-size: 60px;
+`;
