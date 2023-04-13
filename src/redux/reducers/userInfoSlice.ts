@@ -1,9 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { fetchLedgerList } from '../api/ledgerListAPI';
-import { User } from 'firebase/auth';
 
 export interface userInfoState {
-  isLogin: boolean;
+  loginStatus: {
+    isLogin: boolean;
+    isAuthing: boolean;
+    isLoading: boolean;
+  };
   status: 'idle' | 'loading' | 'failed';
   data: {
     user: {
@@ -28,7 +31,11 @@ export interface userInfoState {
 }
 
 const initialState: userInfoState = {
-  isLogin: false,
+  loginStatus: {
+    isLogin: false,
+    isAuthing: true,
+    isLoading: false,
+  },
   status: 'idle',
   data: {
     user: {
@@ -67,6 +74,10 @@ export const userInfo = createSlice({
   name: 'userInfo',
   initialState,
   reducers: {
+    AUTHING_TOGGLE: (state, action: PayloadAction<boolean>) => {
+      console.log(action.payload);
+      state.loginStatus.isAuthing = action.payload;
+    },
     LOGGED_IN: (
       state,
       action: PayloadAction<{
@@ -84,7 +95,7 @@ export const userInfo = createSlice({
         email: email,
         portraitUrl: photoURL,
       };
-      state.isLogin = true;
+      state.loginStatus.isLogin = true;
       state.data.user = user;
     },
     LOG_OUT: (state) => {
@@ -95,7 +106,7 @@ export const userInfo = createSlice({
         email: null,
         portraitUrl: null,
       };
-      state.isLogin = false;
+      state.loginStatus.isLogin = false;
       state.data.user = user;
     },
   },
@@ -115,6 +126,6 @@ export const userInfo = createSlice({
   // },
 });
 
-export const { LOGGED_IN, LOG_OUT } = userInfo.actions;
+export const { AUTHING_TOGGLE, LOGGED_IN, LOG_OUT } = userInfo.actions;
 
 export default userInfo.reducer;

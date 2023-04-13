@@ -3,7 +3,7 @@ import { onSnapshot } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { City } from './City';
-import Login from '../login/Login';
+// import Login from '../login/Login';
 import { getCityInfo } from '../../redux/reducers/cityBasicInfoSlice';
 import { DialogBoard } from '../../component/DialogBoard';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
@@ -13,7 +13,9 @@ import { ref, set } from 'firebase/database';
 export const GameMap: React.FC = () => {
   const auth = getAuth();
   const [hasUser, serHasUser] = useState(false);
-  const { isLogin } = useAppSelector((state) => state.userInfo);
+  const { isLogin, isAuthing } = useAppSelector(
+    (state) => state.userInfo.loginStatus
+  );
   // const { name } = useAppSelector((state) => state.userInfo.data.user);
 
   const dispatch = useAppDispatch();
@@ -56,12 +58,15 @@ export const GameMap: React.FC = () => {
 
   // if (Login) return;
 
-  console.log(isLogin);
+  console.log('isLogin', isLogin);
+  // console.log('auth', auth.currentUser?.uid);
+  console.log('isAuthing', isAuthing);
+  // !isLogin
 
   return (
     <>
       {/* TODO: 首頁 refresh 時會閃一下 */}
-      {!isLogin && <DialogBoard />}
+      {!isLogin && !isAuthing && <DialogBoard />}
       <City />
       <br />
       <br />

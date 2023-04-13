@@ -6,7 +6,7 @@ import { Counter } from './feature/counter/Counter';
 import { GameMap } from './pages/gameMap/GameMap';
 import { Ledger } from './pages/ledger/Ledger';
 import { Statistics } from './pages/statistics/Statistics';
-import Login from './pages/login/Login';
+// import Login from './pages/login/Login';
 // import { initializeApp } from 'firebase/app';
 // import { app } from './config/firebase';
 import AuthRoute from './component/AuthRoute';
