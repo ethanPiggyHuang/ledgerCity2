@@ -1,5 +1,11 @@
 import { db } from '../../config/firebase';
-import { setDoc, doc, serverTimestamp } from 'firebase/firestore';
+import {
+  setDoc,
+  getDoc,
+  doc,
+  serverTimestamp,
+  updateDoc,
+} from 'firebase/firestore';
 import { rtdb } from '../../config/firebase';
 import { ref, set } from 'firebase/database';
 
@@ -17,4 +23,20 @@ export async function postFadeOutTimeRT(userId: string, enableType: string) {
   //   enableType: enableType,
   // });
   console.log('最後要打開此function: postFadeOutTimeRT()');
+}
+
+export async function FETCH_COORPERATE_LOCATION(userId: string) {
+  console.log('userId', userId);
+  const docSnap = await getDoc(doc(db, 'allUserStatus', userId));
+  if (docSnap) {
+    console.log(new Date(docSnap.data()?.fadeOutTime.seconds * 1000));
+  }
+}
+
+export async function updateLocation(userId: string, location: string) {
+  console.log('userId', userId);
+  await updateDoc(doc(db, 'allUserStatus', userId), {
+    currentPage: location,
+    latestActiveTime: serverTimestamp(),
+  });
 }

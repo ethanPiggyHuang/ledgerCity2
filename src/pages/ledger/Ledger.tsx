@@ -10,14 +10,23 @@ import { TimeBar } from './TimeBar';
 import { Label } from './Label';
 import { Payment } from './Payment';
 import { Calculator } from './Calculator';
+import { updateLocation } from '../../redux/api/userAPI';
 
 export const Ledger: React.FC = () => {
   const { housesPosition } = useAppSelector((state) => state.cityArrangement);
   const { item, labelMain, amount } = useAppSelector(
     (state) => state.ledgerSingle
   );
+  const { userId } = useAppSelector((state) => state.userInfo.data.user);
+
   const dispatch = useAppDispatch();
 
+  // 監聽使用者進入頁面 -> 送到 db
+  useEffect(() => {
+    if (userId) updateLocation(userId, 'ledger');
+  }, [userId]);
+
+  //TODO: ???
   const unsubscribe = onSnapshot(
     doc(db, 'cities', 'YFbhq5M8vFBIUMMWZhqo'),
     (doc) => {

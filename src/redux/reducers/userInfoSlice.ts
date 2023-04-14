@@ -1,13 +1,13 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { fetchLedgerList } from '../api/ledgerListAPI';
 
-export interface userInfoState {
+export interface UserInfoState {
+  status: 'idle' | 'loading' | 'failed';
   loginStatus: {
     isLogin: boolean;
     isAuthing: boolean;
     isLoading: boolean;
   };
-  status: 'idle' | 'loading' | 'failed';
   data: {
     user: {
       userId: string;
@@ -30,7 +30,7 @@ export interface userInfoState {
   };
 }
 
-const initialState: userInfoState = {
+const initialState: UserInfoState = {
   loginStatus: {
     isLogin: false,
     isAuthing: true,

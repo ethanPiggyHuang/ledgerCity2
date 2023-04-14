@@ -11,11 +11,19 @@ import {
   chooseMonth,
 } from '../../redux/reducers/ledgerListSlice';
 import { getAuth, signOut } from 'firebase/auth';
+import { updateLocation } from '../../redux/api/userAPI';
 
 export const Statistics: React.FC = () => {
   const { chosenYear } = useAppSelector((state) => state.ledgerList.choices);
+  const { userId } = useAppSelector((state) => state.userInfo.data.user);
+
   const dispatch = useAppDispatch();
   const auth = getAuth();
+
+  // 監聽使用者進入頁面 -> 送到 db
+  useEffect(() => {
+    if (userId) updateLocation(userId, 'statistics');
+  }, [userId]);
 
   useEffect(() => {
     dispatch(getLedgerList());

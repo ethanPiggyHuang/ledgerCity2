@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { onSnapshot } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { City } from './City';
@@ -7,6 +6,10 @@ import { getCityInfo } from '../../redux/reducers/cityBasicInfoSlice';
 import { DialogBoard } from '../../component/DialogBoard';
 import { getAuth, signOut } from 'firebase/auth';
 import { postFadeOutTime, postFadeOutTimeRT } from '../../redux/api/userAPI';
+import { GET_COOP_FRIEND_ACTIVITY } from '../../redux/reducers/usersActivitySlice';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { db } from '../../config/firebase';
+import { updateLocation } from '../../redux/api/userAPI';
 
 export const GameMap: React.FC = () => {
   const auth = getAuth();
@@ -14,16 +17,22 @@ export const GameMap: React.FC = () => {
     (state) => state.userInfo.loginStatus
   );
   const { userId } = useAppSelector((state) => state.userInfo.data.user);
-  // const { accessUsers } = useAppSelector((state) => state.cityBasicInfo);
+  const constId = 'myCPVIkcOYalDVvdj9hngfml3yq2';
+  const cooperatorLocation = useAppSelector(
+    (state) => state.userActivity.data[constId]?.currentPage
+  );
+  const { isEditingCity, fadeOutTime, latestActiveTime } = useAppSelector(
+    (state) => state.userActivity.data[constId]
+  );
 
   const dispatch = useAppDispatch();
+
+  // 從 db 獲取 city 資料
   useEffect(() => {
-    // if (accessUsers.length === 0) {
     dispatch(getCityInfo());
-    // console.log('getCityInfo');
-    // }
   }, []);
 
+  // 監聽使用者（關閉/離開）網頁動態 -> 送到 db
   useEffect(() => {
     const logOutTime = (enableType: string) => {
       if (userId) {
@@ -33,8 +42,8 @@ export const GameMap: React.FC = () => {
           document.hidden
           // || enableType === 'offline'
         ) {
-          // postFadeOutTime(userId);
-          postFadeOutTimeRT(userId, enableType);
+          postFadeOutTime(userId);
+          // postFadeOutTimeRT(userId, enableType);
         }
       }
     };
@@ -50,11 +59,49 @@ export const GameMap: React.FC = () => {
     // window.addEventListener('unload', logOutTime); //關閉頁面
 
     return () => {
-      window.removeEventListener('visibilitychange', () =>
-        logOutTime('visibilitychange')
+      window.removeEventListener(
+        'visibilitychange',
+        () => logOutTime('visibilitychange')
+        //   window.removeEventListener('offline', () => logOutTime('offline'));
       );
-      //   window.removeEventListener('offline', () => logOutTime('offline'));
     };
+  }, [userId]);
+
+  // 監聽好友動態（一人）
+  useEffect(() => {
+    const unsubscribe = onSnapshot(doc(db, 'allUserStatus', userId), (doc) => {
+      if (doc) {
+        const data = doc.data();
+        if (data) {
+          const { fadeOutTime, isEditingCity, latestActiveTime } = data;
+          const fadeOutTimeSecond = fadeOutTime?.seconds;
+          const latestActiveTimeSecond = latestActiveTime?.seconds;
+          const currentPage = data.currentPage as
+            | 'city'
+            | 'ledger'
+            | 'statistics'
+            | 'profile'
+            | 'leave';
+          dispatch(
+            GET_COOP_FRIEND_ACTIVITY({
+              userId,
+              currentPage,
+              isEditingCity,
+              fadeOutTimeSecond,
+              latestActiveTimeSecond,
+            })
+          );
+        }
+      }
+    });
+
+    // Stop listening to changes
+    return () => unsubscribe();
+  }, []);
+
+  // 監聽使用者進入頁面 -> 送到 db
+  useEffect(() => {
+    if (userId) updateLocation(userId, 'city');
   }, [userId]);
 
   return (
@@ -69,16 +116,16 @@ export const GameMap: React.FC = () => {
       <Link to="/statistics">statistics</Link>
       <br />
       <br />
-      <button
-        onClick={() => {
-          signOut(auth);
-        }}
-      >
-        Sign out
-      </button>
+      <button onClick={() => signOut(auth)}>Sign out</button>
       <br />
       <br />
-      {/* <button onClick={() => getRTDB()}>Get realtime db info</button> */}
+      <p>{`userId: ${userId}`}</p>
+      <p>{`locatiton: ${cooperatorLocation}`}</p>
+      <p>{`isEditingCity: ${isEditingCity}`}</p>
+      <p>{`fadeOutTime: ${fadeOutTime ? new Date(fadeOutTime * 1000) : ''}`}</p>
+      <p>{`latestActiveTime: ${
+        latestActiveTime ? new Date(latestActiveTime * 1000) : ''
+      }`}</p>
     </>
   );
 };
