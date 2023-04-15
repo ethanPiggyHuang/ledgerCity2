@@ -3,12 +3,10 @@ import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import {
   displayCity,
-  saveCityAsync,
   dropHouse,
   dragHouseStart,
   dragLightOn,
   dragLightOff,
-  draggableToggle,
 } from '../../redux/reducers/cityArrangementSlice';
 
 export const City: React.FC = () => {
@@ -86,15 +84,6 @@ export const City: React.FC = () => {
           );
         })}
       </CityRange>
-      <button
-        onClick={() => {
-          isHouseDraggable
-            ? dispatch(saveCityAsync(cityBasicInfo.houses)) //TODO: can get state info directly in reducer
-            : dispatch(draggableToggle());
-        }}
-      >
-        {isHouseDraggable ? '儲存' : '街道重建'}
-      </button>
     </>
   );
 };

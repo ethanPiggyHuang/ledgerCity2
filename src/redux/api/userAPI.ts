@@ -34,7 +34,7 @@ export async function FETCH_COORPERATE_LOCATION(userId: string) {
 }
 
 export async function updateLocation(userId: string, location: string) {
-  console.log('userId', userId);
+  // console.log('userId', userId);
   await updateDoc(doc(db, 'allUserStatus', userId), {
     currentPage: location,
     latestActiveTime: serverTimestamp(),

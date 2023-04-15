@@ -17,8 +17,15 @@ export interface UsersActivityState {
 const initialState: UsersActivityState = {
   status: 'idle',
   data: {
+    //TODO 這邊要好好調整
     myCPVIkcOYalDVvdj9hngfml3yq2: {
-      currentPage: 'ledger',
+      currentPage: 'city',
+      fadeOutTime: 0,
+      isEditingCity: false,
+      latestActiveTime: 0,
+    },
+    zLXmF0iGASbeYEJwdnEUk96BJ8u1: {
+      currentPage: 'city',
       fadeOutTime: 0,
       isEditingCity: false,
       latestActiveTime: 0,
