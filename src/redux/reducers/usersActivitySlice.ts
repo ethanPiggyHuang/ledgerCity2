@@ -63,8 +63,6 @@ export const usersActivity = createSlice({
           latestActiveTimeSecond,
         } = action.payload;
 
-        console.log(fadeOutTimeSecond, latestActiveTimeSecond);
-
         state.data[userId].currentPage = currentPage;
         state.data[userId].isEditingCity = isEditingCity;
         state.data[userId].fadeOutTime = fadeOutTimeSecond;

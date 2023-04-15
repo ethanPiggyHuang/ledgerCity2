@@ -54,9 +54,12 @@ export const Statistics: React.FC = () => {
         <LedgerDetail />
       </LedgerWarp>
       <br />
+      {/* <div> */}
       <Link to="../">city</Link>
+      <br />
       <Link to="../ledger">ledger</Link>
       <br />
+
       <button
         onClick={() => {
           signOut(auth);
@@ -64,13 +67,14 @@ export const Statistics: React.FC = () => {
       >
         Sign out
       </button>
+      {/* </div> */}
     </Wrap>
   );
 };
 
 const Wrap = styled.div`
   padding: 20px;
-  height: 95vh;
+  // height: 95vh;
   position: relative;
   display: flex;
   flex-wrap: wrap;
@@ -85,7 +89,7 @@ const Select = styled.select``;
 const Option = styled.option``;
 const ChartWrap = styled.div`
   height: 90%;
-  width: 48%;
+  width: 49%;
   display: flex;
   flex-direction: column;
   border: 1px solid lightblue;
