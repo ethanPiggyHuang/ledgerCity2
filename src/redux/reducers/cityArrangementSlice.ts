@@ -5,22 +5,30 @@ import { CityBasicInfoState, HouseState } from './cityBasicInfoSlice';
 export interface CityArrangementState {
   housesPosition: { type: string; id: string }[][];
   gridsStatus: number[][];
+  dragMode: 'city' | 'houses';
+  cityShift: {
+    dragStart: { x: number; y: number };
+    current: { x: number; y: number };
+  };
   dragInfo: {
     id: string;
     target: string;
     pastIndex: { xIndex: number; yIndex: number };
   };
   status: 'idle' | 'loading' | 'failed';
-  isHouseDraggable: boolean;
   scale: number;
 }
 
 const initialState: CityArrangementState = {
   housesPosition: [[{ type: '', id: '' }]],
   gridsStatus: [[0]],
+  dragMode: 'city',
+  cityShift: {
+    dragStart: { x: 0, y: 0 },
+    current: { x: 0, y: 0 },
+  },
   dragInfo: { id: '', target: '', pastIndex: { xIndex: 0, yIndex: 0 } },
   status: 'idle',
-  isHouseDraggable: false,
   scale: 1,
 };
 
@@ -55,12 +63,14 @@ export const cityArrangement = createSlice({
       const houses = action.payload.houses;
       if (houses.length !== 0) {
         const citySize = Math.ceil(Math.sqrt(houses.length));
-        const newRows = new Array(citySize + 1).fill('');
+        const RowNumber = citySize + 1;
+        const ColumnNumber = citySize + 2;
+        const newRows = new Array(RowNumber).fill('');
         const newHousesPosition = newRows.map((row) =>
-          new Array(citySize + 2).fill({ type: '', id: '' })
+          new Array(ColumnNumber).fill({ type: '', id: '' })
         );
-        const newGridsStatus = new Array(citySize + 1).fill(
-          new Array(citySize + 2).fill(0)
+        const newGridsStatus = new Array(RowNumber).fill(
+          new Array(ColumnNumber).fill(0)
         );
         houses.forEach((house) => {
           newHousesPosition[house.position.yIndex][house.position.xIndex] = {
@@ -72,6 +82,59 @@ export const cityArrangement = createSlice({
         state.housesPosition = newHousesPosition;
         state.gridsStatus = newGridsStatus;
       }
+    },
+    RECORD_DRAG_START: (
+      state,
+      action: PayloadAction<{
+        mouseX: number;
+        mouseY: number;
+      }>
+    ) => {
+      state.cityShift.dragStart.x =
+        action.payload.mouseX - state.cityShift.current.x;
+      state.cityShift.dragStart.y =
+        action.payload.mouseY - state.cityShift.current.y;
+    },
+    UPDATE_CITY_LOCATION: (
+      state,
+      action: PayloadAction<{
+        mouseX: number;
+        mouseY: number;
+        cityHeight: number;
+      }>
+    ) => {
+      const { mouseX, mouseY, cityHeight } = action.payload;
+      const dragStart = state.cityShift.dragStart;
+      const current = state.cityShift.current;
+      current.x = mouseX - 2 * dragStart.x;
+      current.y = mouseY + cityHeight * state.scale - 2 * dragStart.y;
+
+      // TODO: 放太大的時候，y軸shift 會跑掉，可能是因為 div 左中超出螢幕高度。也可以考慮 translation 來調整位置。
+      // console.log(
+      //   'mouseY',
+      //   mouseY,
+      //   'state.scale',
+      //   state.scale,
+      //   'dragStart.y',
+      //   dragStart.y
+      // );
+      // console.log('Y adjust', cityHeight * state.scale);
+      // console.log(
+      //   'top',
+      //   mouseY + cityHeight * state.scale - 2 * dragStart.y,
+      //   'left',
+      //   mouseX - 2 * dragStart.x
+      // );
+    },
+    SET_CITY_LOCATION: (
+      state,
+      action: PayloadAction<{
+        top: number;
+        left: number;
+      }>
+    ) => {
+      state.cityShift.current.x = action.payload.left;
+      state.cityShift.current.y = action.payload.top;
     },
     dropHouse: (
       state,
@@ -142,7 +205,7 @@ export const cityArrangement = createSlice({
       }
     },
     draggableToggle: (state) => {
-      state.isHouseDraggable = !state.isHouseDraggable;
+      state.dragMode = 'houses';
     },
     ADJUST_SCALE: (state, action: PayloadAction<number>) => {
       const minScale = 0.4;
@@ -164,7 +227,7 @@ export const cityArrangement = createSlice({
       })
       .addCase(saveCityAsync.fulfilled, (state) => {
         state.status = 'idle';
-        state.isHouseDraggable = false;
+        state.dragMode = 'city';
         alert('街道重建已紀錄');
       })
       .addCase(saveCityAsync.rejected, (state) => {
@@ -176,6 +239,9 @@ export const cityArrangement = createSlice({
 
 export const {
   displayCity,
+  RECORD_DRAG_START,
+  UPDATE_CITY_LOCATION,
+  SET_CITY_LOCATION,
   dropHouse,
   dragHouseStart,
   dragLightOn,

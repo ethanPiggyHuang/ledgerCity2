@@ -8,3 +8,6 @@ export const mainLabels: string[] = [
   '其他',
   '社交',
 ];
+
+export const gridGap = 20;
+export const gridLength = 120;

@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import useSound from 'use-sound';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import {
@@ -7,97 +8,134 @@ import {
   dragHouseStart,
   dragLightOn,
   dragLightOff,
+  RECORD_DRAG_START,
+  UPDATE_CITY_LOCATION,
 } from '../../redux/reducers/cityArrangementSlice';
+import { gridGap, gridLength } from '../../utils/gameSettings';
+import hammer_ice from '../../utils/hammer_ice.wav';
 
 export const City: React.FC = () => {
   const cityBasicInfo = useAppSelector((state) => state.cityBasicInfo);
-  const { housesPosition, gridsStatus, isHouseDraggable, scale } =
+  const { housesPosition, gridsStatus, dragMode, scale, cityShift } =
     useAppSelector((state) => state.cityArrangement);
   const dispatch = useAppDispatch();
   // TODO: 要再改成可以一鍵看到城市全貌
-  const gap = 20;
-  const gridlength = 120;
-  const wrapperWidth = (gridlength + gap) * housesPosition[0].length;
+  const cityWidth = (gridLength + gridGap) * housesPosition[0].length;
+  const cityHeight = (gridLength + gridGap) * housesPosition.length;
+
+  const [playHammerShort] = useSound(hammer_ice, { volume: 0.5 });
+
+  // console.log('top', cityShift.current.y, 'left', cityShift.current.x);
 
   useEffect(() => {
     dispatch(displayCity(cityBasicInfo));
   }, [cityBasicInfo, dispatch]);
 
   return (
-    <>
-      <CityRange
-        $widthAttrs={`${wrapperWidth * scale}px`}
-        $gap={gap}
-        $scale={scale}
-      >
-        {housesPosition.map((row, yIndex) => {
-          return (
-            <Row
-              key={yIndex}
-              $paddingTopAttrs={`${gap * scale}px`}
-              $gapAttrs={`${gap * scale}px`}
-            >
-              {row.map((house, xIndex) => {
-                return (
-                  <Grid
-                    $lengthAttrs={`${gridlength * scale}px`}
-                    $status={gridsStatus[yIndex][xIndex]}
-                    key={xIndex}
-                    // ref={testRef}
-                    // onDragEnter={(e) => {
-                    // }}
-                    onDragLeave={(e) => dispatch(dragLightOff())}
-                    onDragOver={(e) => {
-                      e.preventDefault();
-                      dispatch(dragLightOn({ xIndex, yIndex }));
-                    }}
-                    onDrop={(e) => {
-                      dispatch(dropHouse({ xIndex, yIndex }));
-                    }}
-                  >
-                    {house.type !== '' && (
-                      <House
-                        $lengthAttrs={`${100 * scale}px`}
-                        $fontSizeAttrs={`${24 * scale}px`}
-                        $type={house.type}
-                        draggable={isHouseDraggable}
-                        onDragStart={(event: React.DragEvent) => {
-                          if (isHouseDraggable) {
-                            const target = event.target as HTMLDivElement;
-                            target.style.opacity = '0.01';
-                            console.log(house.id, house.type);
-                            dispatch(
-                              dragHouseStart({
-                                id: house.id,
-                                target: house.type,
-                                pastIndex: { xIndex, yIndex },
-                              })
-                            );
-                          }
-                        }}
-                        onDragEnd={(event: React.DragEvent) => {
-                          const target = event.target as HTMLDivElement;
-                          target.style.opacity = '1';
-                        }}
-                      >
-                        {house.type}
-                      </House>
-                    )}
-                  </Grid>
-                );
-              })}
-            </Row>
-          );
-        })}
-      </CityRange>
-    </>
+    <CityRange
+      $widthAttrs={`${cityWidth * scale}px`}
+      $heightAttrs={`${cityHeight * scale}px`}
+      $topAttrs={`${cityShift.current.y}px`}
+      $leftAttrs={`${cityShift.current.x}px`}
+      draggable={dragMode === 'city'}
+      onDragStart={(event: React.DragEvent) => {
+        if (dragMode !== 'city') return;
+        const target = event.target as HTMLDivElement;
+        event.dataTransfer.setData('text/plain', '');
+        dispatch(
+          RECORD_DRAG_START({ mouseX: event.clientX, mouseY: event.clientY })
+        );
+        target.style.opacity = '0.01';
+      }}
+      onDragEnd={(event: React.DragEvent) => {
+        if (dragMode !== 'city') return;
+        const target = event.target as HTMLDivElement;
+        target.style.opacity = '1';
+        console.log('mouseX', event.clientX, 'mouseY', event.clientY);
+        dispatch(
+          UPDATE_CITY_LOCATION({
+            mouseX: event.clientX,
+            mouseY: event.clientY,
+            cityHeight: cityHeight,
+          })
+        );
+      }}
+    >
+      {housesPosition.map((row, yIndex) => {
+        return (
+          <Row
+            key={yIndex}
+            $paddingTopAttrs={`${gridGap * scale}px`}
+            $gapAttrs={`${gridGap * scale}px`}
+          >
+            {row.map((house, xIndex) => {
+              return (
+                <Grid
+                  $lengthAttrs={`${gridLength * scale}px`}
+                  $status={gridsStatus[yIndex][xIndex]}
+                  key={xIndex}
+                  // ref={testRef}
+                  // onDragEnter={(e) => {
+                  // }}
+                  onDragLeave={(e) => {
+                    if (dragMode !== 'houses') return;
+                    dispatch(dragLightOff());
+                  }}
+                  onDragOver={(e) => {
+                    if (dragMode !== 'houses') return;
+                    e.preventDefault();
+                    dispatch(dragLightOn({ xIndex, yIndex }));
+                  }}
+                  onDrop={(e) => {
+                    if (dragMode !== 'houses') return;
+                    dispatch(dropHouse({ xIndex, yIndex }));
+                    playHammerShort();
+                    setTimeout(() => playHammerShort(), 500);
+                    setTimeout(() => playHammerShort(), 1000);
+                  }}
+                >
+                  {house.type !== '' && (
+                    <House
+                      $lengthAttrs={`${100 * scale}px`}
+                      $fontSizeAttrs={`${24 * scale}px`}
+                      $type={house.type}
+                      draggable={dragMode === 'houses'}
+                      onDragStart={(event: React.DragEvent) => {
+                        if (dragMode !== 'houses') return;
+                        const target = event.target as HTMLDivElement;
+                        target.style.opacity = '0.01';
+                        dispatch(
+                          dragHouseStart({
+                            id: house.id,
+                            target: house.type,
+                            pastIndex: { xIndex, yIndex },
+                          })
+                        );
+                      }}
+                      onDragEnd={(event: React.DragEvent) => {
+                        if (dragMode !== 'houses') return;
+                        const target = event.target as HTMLDivElement;
+                        target.style.opacity = '1';
+                      }}
+                    >
+                      {house.type}
+                    </House>
+                  )}
+                </Grid>
+              );
+            })}
+          </Row>
+        );
+      })}
+    </CityRange>
   );
 };
 
 type CityRangeProps = {
   $widthAttrs: string;
-  $gap: number;
-  $scale: number;
+  $heightAttrs: string;
+  $topAttrs: string;
+  $leftAttrs: string;
 };
 type RowProps = {
   $paddingTopAttrs: string;
@@ -113,19 +151,19 @@ type HouseProps = {
   $fontSizeAttrs: string;
 };
 
-const CityWrapper = styled.div`
-  width: 100vw;
-  height: 100vh;
-`;
-
-const CityRange = styled.div.attrs<CityRangeProps>(({ $widthAttrs }) => ({
-  style: {
-    width: $widthAttrs,
-  },
-}))<CityRangeProps>`
+const CityRange = styled.div.attrs<CityRangeProps>(
+  ({ $widthAttrs, $heightAttrs, $topAttrs, $leftAttrs }) => ({
+    style: {
+      width: $widthAttrs,
+      height: $heightAttrs,
+      top: $topAttrs,
+      left: $leftAttrs,
+    },
+  })
+)<CityRangeProps>`
   margin: auto;
-  position: relative;
-  border: 1px lightgrey solid;
+  position: absolute;
+  // border: 1px lightgrey solid;
   flex-wrap: wrap;
   cursor: pointer;
 `;

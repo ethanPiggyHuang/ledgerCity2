@@ -4,7 +4,9 @@ import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import {
   ADJUST_SCALE,
   SET_SCALE,
+  SET_CITY_LOCATION,
 } from '../../redux/reducers/cityArrangementSlice';
+import { gridGap, gridLength } from '../../utils/gameSettings';
 
 export const ScaleBar: React.FC = () => {
   const { scale } = useAppSelector((state) => state.cityArrangement);
@@ -12,8 +14,10 @@ export const ScaleBar: React.FC = () => {
     (state) => state.userActivity.data.myCPVIkcOYalDVvdj9hngfml3yq2
   );
   const dispatch = useAppDispatch();
-  const [displayScale, setDisplayScale] = useState(false);
-  const [isScrolling, setIsScrolling] = useState(false); // TODO
+  const { housesPosition } = useAppSelector((state) => state.cityArrangement);
+  const cityHeight = (gridLength + gridGap) * housesPosition.length;
+  const [displayScale, setDisplayScale] = useState(false); // TODO: 要放進 redux state？
+  const [isScrolling, setIsScrolling] = useState(false); // TODO: 滾動時才出現「倍率」
 
   useEffect(() => {
     const scrollEvent = (event: WheelEvent) => {
@@ -44,6 +48,9 @@ export const ScaleBar: React.FC = () => {
     <Wrapper>
       {displayScale && <Scale>{`${scale.toFixed(1)} x`}</Scale>}
       <button onClick={() => dispatch(SET_SCALE(1))}>1.0 x</button>
+      <button onClick={() => dispatch(SET_CITY_LOCATION({ top: 0, left: 0 }))}>
+        左上
+      </button>
     </Wrapper>
   );
 };

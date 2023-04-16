@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
-import { doc, onSnapshot } from 'firebase/firestore';
-import { db } from '../../config/firebase';
 import { City } from './City';
 import { RearrangeOptions } from './RearrangeOptions';
 import { NavBar } from './NavBar';
@@ -9,7 +7,6 @@ import { ScaleBar } from './ScaleBar';
 import { DialogBoard } from '../../component/DialogBoard';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { getCityInfo } from '../../redux/reducers/cityBasicInfoSlice';
-import { GET_COOP_FRIEND_ACTIVITY } from '../../redux/reducers/usersActivitySlice';
 import {
   postFadeOutTime,
   postFadeOutTimeRT,
@@ -62,43 +59,6 @@ export const GameMap: React.FC = () => {
           //   window.removeEventListener('offline', () => logOutTime('offline'));
         );
       };
-    }
-  }, [userId]);
-
-  // 監聽好友動態（一人）
-  useEffect(() => {
-    if (userId) {
-      const unsubscribe = onSnapshot(
-        doc(db, 'allUserStatus', userId),
-        (doc) => {
-          if (doc) {
-            const data = doc.data();
-            if (data) {
-              const { fadeOutTime, isEditingCity, latestActiveTime } = data;
-              const fadeOutTimeSecond = fadeOutTime?.seconds;
-              const latestActiveTimeSecond = latestActiveTime?.seconds;
-              const currentPage = data?.currentPage as
-                | 'city'
-                | 'ledger'
-                | 'statistics'
-                | 'profile'
-                | 'leave';
-              dispatch(
-                GET_COOP_FRIEND_ACTIVITY({
-                  userId,
-                  currentPage,
-                  isEditingCity,
-                  fadeOutTimeSecond,
-                  latestActiveTimeSecond,
-                })
-              );
-            }
-          }
-        }
-      );
-
-      // Stop listening to changes
-      return () => unsubscribe();
     }
   }, [userId]);
 
