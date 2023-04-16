@@ -3,7 +3,7 @@ import styled from 'styled-components/macro';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { City } from './City';
-import { SideBar } from './SideBar';
+import { RearrangeOptions } from './RearrangeOptions';
 import { NavBar } from './NavBar';
 import { ScaleBar } from './ScaleBar';
 import { DialogBoard } from '../../component/DialogBoard';
@@ -111,7 +111,7 @@ export const GameMap: React.FC = () => {
     <Wrapper>
       {!isLogin && !isAuthing && <DialogBoard />}
       <City />
-      <SideBar />
+      <RearrangeOptions />
       <NavBar />
       <ScaleBar />
     </Wrapper>

@@ -11,6 +11,7 @@ import { Label } from './Label';
 import { Payment } from './Payment';
 import { Calculator } from './Calculator';
 import { updateLocation } from '../../redux/api/userAPI';
+import { NavBar } from '../gameMap/NavBar';
 
 export const Ledger: React.FC = () => {
   const { housesPosition } = useAppSelector((state) => state.cityArrangement);
@@ -79,15 +80,7 @@ export const Ledger: React.FC = () => {
         </BoardFooter>
       </MainBoard>
       <br />
-      <Link to="../">city</Link>
-      <Link to="/statistics">statistics</Link>
-      {/* <button
-        onClick={() => {
-          redirect('./index.html');
-        }}
-      >
-        test redirect
-      </button> */}
+      <NavBar />
     </Wrap>
   );
 };

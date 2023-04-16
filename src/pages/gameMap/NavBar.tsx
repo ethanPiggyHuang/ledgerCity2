@@ -5,8 +5,10 @@ import { Link } from 'react-router-dom';
 export const NavBar: React.FC = () => {
   return (
     <Wrapper>
+      <Link to="/city">city</Link>
       <Link to="/ledger">ledger</Link>
       <Link to="/statistics">statistics</Link>
+      <Link to="/profile">profile</Link>
     </Wrapper>
   );
 };

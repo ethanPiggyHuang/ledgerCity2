@@ -6,6 +6,7 @@ import { Counter } from './feature/counter/Counter';
 import { GameMap } from './pages/gameMap/GameMap';
 import { Ledger } from './pages/ledger/Ledger';
 import { Statistics } from './pages/statistics/Statistics';
+import { Profile } from './pages/profile/Profile';
 // import Login from './pages/login/Login';
 // import { initializeApp } from 'firebase/app';
 // import { app } from './config/firebase';
@@ -26,6 +27,7 @@ const App: React.FunctionComponent<IApplicationProps> = (props) => {
           <Route path="/counter" element={<Counter />} />
           <Route path="/ledger" element={<Ledger />} />
           <Route path="/statistics" element={<Statistics />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<Navigate to="/city" replace />} />
         </Routes>
       </AuthRoute>

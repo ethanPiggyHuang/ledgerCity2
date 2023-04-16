@@ -12,6 +12,7 @@ import {
 } from '../../redux/reducers/ledgerListSlice';
 import { getAuth, signOut } from 'firebase/auth';
 import { updateLocation } from '../../redux/api/userAPI';
+import { NavBar } from '../gameMap/NavBar';
 
 export const Statistics: React.FC = () => {
   const { chosenYear } = useAppSelector((state) => state.ledgerList.choices);
@@ -54,33 +55,19 @@ export const Statistics: React.FC = () => {
         <LedgerDetail />
       </LedgerWarp>
       <br />
-      {/* <div> */}
-      <Link to="../">city</Link>
-      <br />
-      <Link to="../ledger">ledger</Link>
-      <br />
-
-      <button
-        onClick={() => {
-          signOut(auth);
-        }}
-      >
-        Sign out
-      </button>
-      {/* </div> */}
+      <NavBar />
     </Wrap>
   );
 };
 
 const Wrap = styled.div`
   padding: 20px;
-  // height: 95vh;
+  height: 100vh;
   position: relative;
   display: flex;
   flex-wrap: wrap;
   border: 1px solid lightblue;
   flex-wrap: wrap;
-  gap: 10px;
 `;
 const Header = styled.div`
   width: 100%;
@@ -88,11 +75,10 @@ const Header = styled.div`
 const Select = styled.select``;
 const Option = styled.option``;
 const ChartWrap = styled.div`
-  height: 90%;
+  max-height: 90%;
+  overflow: hidden;
   width: 49%;
   display: flex;
   flex-direction: column;
-  border: 1px solid lightblue;
-  gap: 10px;
 `;
 const LedgerWarp = styled(ChartWrap)``;
