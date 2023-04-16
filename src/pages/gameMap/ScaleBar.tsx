@@ -16,7 +16,7 @@ export const ScaleBar: React.FC = () => {
   const dispatch = useAppDispatch();
   const { housesPosition } = useAppSelector((state) => state.cityArrangement);
   const cityHeight = (gridLength + gridGap) * housesPosition.length;
-  const [displayScale, setDisplayScale] = useState(false); // TODO: 要放進 redux state？
+  const [displayScale, setDisplayScale] = useState(true); // TODO: 要放進 redux state？
   const [isScrolling, setIsScrolling] = useState(false); // TODO: 滾動時才出現「倍率」
 
   useEffect(() => {
@@ -38,16 +38,18 @@ export const ScaleBar: React.FC = () => {
       window.removeEventListener('wheel', (event) => scrollEvent(event));
   }, []);
 
-  useEffect(() => {
-    setDisplayScale(true);
-    // TODO: 還需要搭配 isScrolling 才能有較好體驗，在 scroll event 中觸發
-    setTimeout(() => setDisplayScale(false), 8000);
-  }, [scale]);
+  // 會發生 Maximum update depth exceeded. Q^Q
+  // useEffect(() => {
+  //   setDisplayScale(true);
+  //   // TODO: 還需要搭配 isScrolling 才能有較好體驗，在 scroll event 中觸發
+  //   setTimeout(() => setDisplayScale(false), 8000);
+  // }, [scale]);
 
   return (
     <Wrapper>
       {displayScale && <Scale>{`${scale.toFixed(1)} x`}</Scale>}
       <button onClick={() => dispatch(SET_SCALE(1))}>1.0 x</button>
+      <button onClick={() => dispatch(SET_SCALE(2))}>2.0 x</button>
       <button onClick={() => dispatch(SET_CITY_LOCATION({ top: 0, left: 0 }))}>
         左上
       </button>
@@ -65,7 +67,7 @@ const Wrapper = styled.div`
 
 const Scale = styled.p`
   width: 150px;
-  height: 50px;
+  height: 40px;
   background-color: grey;
   color: white;
   display: flex;

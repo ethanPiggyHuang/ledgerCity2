@@ -14,6 +14,9 @@ import {
 import { gridGap, gridLength, houseWidth } from '../../utils/gameSettings';
 import hammer_ice from '../../utils/hammer_ice.wav';
 import { HouseOfFood } from './housesSvg/HouseOfFood';
+import { HouseOfClothes } from './housesSvg/HouseOfClothes';
+import { HouseOfDrinks } from './housesSvg/HouseOfDrinks';
+import { HouseOfPlants } from './housesSvg/HouseOfPlants';
 
 export const City: React.FC = () => {
   const cityBasicInfo = useAppSelector((state) => state.cityBasicInfo);
@@ -119,7 +122,15 @@ export const City: React.FC = () => {
                         target.style.opacity = '1';
                       }}
                     >
-                      {house.type === '食物' ? <HouseOfFood /> : ''}
+                      {house.type === '食物' ? (
+                        <HouseOfFood />
+                      ) : house.type === '服裝' ? (
+                        <HouseOfClothes />
+                      ) : house.type === '飲料' ? (
+                        <HouseOfDrinks />
+                      ) : (
+                        <HouseOfPlants />
+                      )}
                     </House>
                   )}
                 </Grid>
@@ -211,23 +222,6 @@ const House = styled.div.attrs<HouseProps>(
   })
 )<HouseProps>`
   border-radius: 10px;
-  background-color: ${({ $type }) => {
-    switch ($type) {
-      case '食物': {
-        return '';
-        // return '#e46161';
-      }
-      case '飲料': {
-        return '#f1b963';
-      }
-      case '交通': {
-        return '#f8f398';
-      }
-      default: {
-        return '#cbf078';
-      }
-    }
-  }};
   display: flex;
   align-items: center;
   justify-content: center;

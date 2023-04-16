@@ -8,8 +8,6 @@ export const DialogBoard: React.FC = () => {
   const cityBasicInfo = useAppSelector((state) => state.cityBasicInfo);
   const dispatch = useAppDispatch();
 
-  useEffect(() => {}, []);
-
   return (
     <Curtain $isLogin={false}>
       <BlackCurtain></BlackCurtain>
