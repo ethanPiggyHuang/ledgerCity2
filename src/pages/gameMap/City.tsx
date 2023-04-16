@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import {
@@ -7,7 +7,6 @@ import {
   dragHouseStart,
   dragLightOn,
   dragLightOff,
-  ADJUST_SCALE,
 } from '../../redux/reducers/cityArrangementSlice';
 
 export const City: React.FC = () => {
@@ -15,48 +14,32 @@ export const City: React.FC = () => {
   const { housesPosition, gridsStatus, isHouseDraggable, scale } =
     useAppSelector((state) => state.cityArrangement);
   const dispatch = useAppDispatch();
-  const wrapperWidth = 1200;
   const gap = 20;
   const gridlength = 120;
-  const { currentPage } = useAppSelector(
-    (state) => state.userActivity.data.myCPVIkcOYalDVvdj9hngfml3yq2
-  );
+  const wrapperWidth = (gridlength + gap) * housesPosition[0].length;
 
   useEffect(() => {
     dispatch(displayCity(cityBasicInfo));
   }, [cityBasicInfo, dispatch]);
 
-  useEffect(() => {
-    const scrollEvent = (event: WheelEvent) => {
-      // TODO: 要限定在 city 才 listen 此 scroll event
-      console.log('listen scroll');
-      if (currentPage === 'city') {
-        event.preventDefault();
-        const wheel = event.deltaY / 3000;
-        const zoom = Math.pow(1 + Math.abs(wheel) / 2, wheel > 0 ? 1 : -1);
-        setTimeout(() => dispatch(ADJUST_SCALE(zoom)), 10);
-      }
-    };
-    window.addEventListener('wheel', (event) => scrollEvent(event), {
-      passive: false,
-    });
-
-    return () =>
-      //TODO 在別的頁面時，也要 remove 掉
-      window.removeEventListener('wheel', (event) => scrollEvent(event));
-  }, []);
-
   return (
     <>
-      <CityRange $wrapperWidth={wrapperWidth} $gap={gap} $scale={scale}>
+      <CityRange
+        $widthAttrs={`${wrapperWidth * scale}px`}
+        $gap={gap}
+        $scale={scale}
+      >
         {housesPosition.map((row, yIndex) => {
           return (
-            <Row key={yIndex} $scale={scale}>
+            <Row
+              key={yIndex}
+              $paddingTopAttrs={`${gap * scale}px`}
+              $gapAttrs={`${gap * scale}px`}
+            >
               {row.map((house, xIndex) => {
                 return (
                   <Grid
-                    $gridlength={gridlength}
-                    $scale={scale}
+                    $lengthAttrs={`${gridlength * scale}px`}
                     $status={gridsStatus[yIndex][xIndex]}
                     key={xIndex}
                     // ref={testRef}
@@ -73,7 +56,7 @@ export const City: React.FC = () => {
                   >
                     {house.type !== '' && (
                       <House
-                        $scale={scale}
+                        $lengthAttrs={`${100 * scale}px`}
                         $type={house.type}
                         draggable={isHouseDraggable}
                         onDragStart={(event: React.DragEvent) => {
@@ -110,21 +93,21 @@ export const City: React.FC = () => {
 };
 
 type CityRangeProps = {
-  $wrapperWidth: number;
+  $widthAttrs: string;
   $gap: number;
   $scale: number;
 };
 type RowProps = {
-  $scale: number;
+  $paddingTopAttrs: string;
+  $gapAttrs: string;
 };
 type GridProps = {
-  $gridlength: number;
+  $lengthAttrs: string;
   $status: number;
-  $scale: number;
 };
 type HouseProps = {
+  $lengthAttrs: string;
   $type: string;
-  $scale: number;
 };
 
 const CityWrapper = styled.div`
@@ -132,26 +115,34 @@ const CityWrapper = styled.div`
   height: 100vh;
 `;
 
-const CityRange = styled.div<CityRangeProps>`
+const CityRange = styled.div.attrs<CityRangeProps>(({ $widthAttrs }) => ({
+  style: {
+    width: $widthAttrs,
+  },
+}))<CityRangeProps>`
   margin: auto;
   position: relative;
-  width: ${({ $wrapperWidth }) => `${$wrapperWidth}px`};
   border: 1px red solid;
   flex-wrap: wrap;
-  gap: ${({ $gap, $scale }) => `${$gap * $scale}px`};
 `;
-const Row = styled.div<RowProps>`
-  // border: 1px solid lightblue;
-  padding-top: ${({ $scale }) => `${10 * $scale}px`};
+
+const Row = styled.div.attrs<RowProps>(({ $paddingTopAttrs, $gapAttrs }) => ({
+  style: {
+    paddingTop: $paddingTopAttrs,
+    gap: $gapAttrs,
+  },
+}))<RowProps>`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: ${({ $scale }) => `${10 * $scale}px`};
 `;
 
-const Grid = styled.div<GridProps>`
-  width: ${({ $gridlength, $scale }) => `${$gridlength * $scale}px`};
-  height: ${({ $gridlength, $scale }) => `${$gridlength * $scale}px`};
+const Grid = styled.div.attrs<GridProps>(({ $lengthAttrs }) => ({
+  style: {
+    width: $lengthAttrs,
+    height: $lengthAttrs,
+  },
+}))<GridProps>`
   border: 1px solid lightblue;
   background-color: ${({ $status }) =>
     $status === 1 ? 'lightgreen' : $status === -1 ? 'lightcoral' : ''};
@@ -159,10 +150,13 @@ const Grid = styled.div<GridProps>`
   align-items: center;
   justify-content: center;
 `;
-const House = styled.div<HouseProps>`
+const House = styled.div.attrs<HouseProps>(({ $lengthAttrs }) => ({
+  style: {
+    width: $lengthAttrs,
+    height: $lengthAttrs,
+  },
+}))<HouseProps>`
   border-radius: 10px;
-  width: ${({ $scale }) => `${100 * $scale}px`};
-  height: ${({ $scale }) => `${100 * $scale}px`};
   background-color: ${({ $type }) => {
     switch ($type) {
       case '食物': {

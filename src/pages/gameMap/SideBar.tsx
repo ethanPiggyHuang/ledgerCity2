@@ -29,7 +29,8 @@ export const SideBar: React.FC = () => {
 
   useEffect(() => {
     setDisplayScale(true);
-    setTimeout(() => setDisplayScale(false), 3000);
+    // TODO: 還需要搭配 isScrolling 才能有較好體驗，在 scroll event 中觸發
+    setTimeout(() => setDisplayScale(false), 8000);
   }, [scale]);
 
   return (
@@ -43,15 +44,7 @@ export const SideBar: React.FC = () => {
       >
         {isHouseDraggable ? '儲存' : '街道重建'}
       </button>
-      <br />
-      {displayScale && <Scale>{`${scale.toFixed(1)} x`}</Scale>}
-      <br />
-      <Link to="/ledger">ledger</Link>
-      <br />
-      <br />
-      <Link to="/statistics">statistics</Link>
-      <br />
-      <br />
+
       <button onClick={() => signOut(auth)}>Sign out</button>
       <br />
       <br />
@@ -72,18 +65,4 @@ const Wrapper = styled.div`
   top: 0;
   left: 0;
   width: 150px;
-`;
-
-const Scale = styled.p`
-  width: 150px;
-  height: 50px;
-  position: absolute;
-  left: 10px;
-  top: 10px;
-  background-color: grey;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
 `;

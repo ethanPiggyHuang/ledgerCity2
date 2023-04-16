@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import styled from 'styled-components/macro';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { City } from './City';
 import { SideBar } from './SideBar';
+import { NavBar } from './NavBar';
+import { ScaleBar } from './ScaleBar';
 import { DialogBoard } from '../../component/DialogBoard';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { getCityInfo } from '../../redux/reducers/cityBasicInfoSlice';
@@ -106,10 +108,17 @@ export const GameMap: React.FC = () => {
   }, [userId]);
 
   return (
-    <>
+    <Wrapper>
       {!isLogin && !isAuthing && <DialogBoard />}
       <City />
       <SideBar />
-    </>
+      <NavBar />
+      <ScaleBar />
+    </Wrapper>
   );
 };
+
+const Wrapper = styled.div`
+  height: 100vh;
+  position: relative;
+`;
