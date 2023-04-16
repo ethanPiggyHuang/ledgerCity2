@@ -17,7 +17,7 @@ export interface UsersActivityState {
 const initialState: UsersActivityState = {
   status: 'idle',
   data: {
-    //TODO 這邊要好好調整
+    //TODO 這邊要好好調整如何設定初始值
     myCPVIkcOYalDVvdj9hngfml3yq2: {
       currentPage: 'city',
       fadeOutTime: 0,

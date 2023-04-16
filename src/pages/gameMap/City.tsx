@@ -18,8 +18,9 @@ export const City: React.FC = () => {
   const wrapperWidth = 1200;
   const gap = 20;
   const gridlength = 120;
-
-  console.log('scale', scale);
+  const { currentPage } = useAppSelector(
+    (state) => state.userActivity.data.myCPVIkcOYalDVvdj9hngfml3yq2
+  );
 
   useEffect(() => {
     dispatch(displayCity(cityBasicInfo));
@@ -27,17 +28,21 @@ export const City: React.FC = () => {
 
   useEffect(() => {
     const scrollEvent = (event: WheelEvent) => {
-      event.preventDefault();
-      const wheel = event.deltaY / 3000;
-      const zoom = Math.pow(1 + Math.abs(wheel) / 2, wheel > 0 ? 1 : -1);
-      setTimeout(() => dispatch(ADJUST_SCALE(zoom)), 10);
-      // setScale((prev) => prev * zoom), 10);
+      // TODO: 要限定在 city 才 listen 此 scroll event
+      console.log('listen scroll');
+      if (currentPage === 'city') {
+        event.preventDefault();
+        const wheel = event.deltaY / 3000;
+        const zoom = Math.pow(1 + Math.abs(wheel) / 2, wheel > 0 ? 1 : -1);
+        setTimeout(() => dispatch(ADJUST_SCALE(zoom)), 10);
+      }
     };
     window.addEventListener('wheel', (event) => scrollEvent(event), {
       passive: false,
     });
 
     return () =>
+      //TODO 在別的頁面時，也要 remove 掉
       window.removeEventListener('wheel', (event) => scrollEvent(event));
   }, []);
 

@@ -23,7 +23,10 @@ export const Ledger: React.FC = () => {
 
   // 監聽使用者進入頁面 -> 送到 db
   useEffect(() => {
-    if (userId) updateLocation(userId, 'ledger');
+    if (userId) {
+      updateLocation(userId, 'ledger');
+      console.log(userId, 'update');
+    }
   }, [userId]);
 
   //TODO: ???
