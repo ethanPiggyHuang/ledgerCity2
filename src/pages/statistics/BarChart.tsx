@@ -251,6 +251,9 @@ export const BarChart: React.FC = () => {
       <button onClick={() => setHasCategory(!hasCategory)}>
         {hasCategory ? '隱藏類別' : '顯示類別'}
       </button>
+      <button onClick={() => setLabelsDisplay(new Array(8).fill(true))}>
+        類別全開
+      </button>
 
       {hasCategory && (
         <LabelWrap>
