@@ -81,4 +81,6 @@ const ChartWrap = styled.div`
   display: flex;
   flex-direction: column;
 `;
-const LedgerWarp = styled(ChartWrap)``;
+const LedgerWarp = styled(ChartWrap)`
+  overflow: scroll;
+`;

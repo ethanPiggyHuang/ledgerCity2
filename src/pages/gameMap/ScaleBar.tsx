@@ -29,13 +29,11 @@ export const ScaleBar: React.FC = () => {
         setTimeout(() => dispatch(ADJUST_SCALE(zoom)), 10);
       }
     };
-    window.addEventListener('wheel', (event) => scrollEvent(event), {
+    window.addEventListener('wheel', scrollEvent, {
       passive: false,
     });
 
-    return () =>
-      //TODO 在別的頁面時，也要 remove EventListener
-      window.removeEventListener('wheel', (event) => scrollEvent(event));
+    return () => window.removeEventListener('wheel', scrollEvent);
   }, []);
 
   // 會發生 Maximum update depth exceeded. Q^Q

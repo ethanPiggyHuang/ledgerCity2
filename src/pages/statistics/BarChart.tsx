@@ -101,7 +101,7 @@ export const BarChart: React.FC = () => {
     return { label, isIncluded: true, data: dataByCategory };
   });
 
-  console.log(datasCategory);
+  // console.log(datasCategory);
 
   const drawBar = (
     value: number,
