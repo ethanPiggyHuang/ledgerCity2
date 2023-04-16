@@ -1,7 +1,8 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { chooseLabel, chooseMonth } from '../../redux/reducers/ledgerListSlice';
+import { mainLabels } from '../../utils/gameSettings';
 
 interface BarChartSetting {
   svgHeight: number;
@@ -15,6 +16,10 @@ export const BarChart: React.FC = () => {
   const loadingStatus = useAppSelector((state) => state.ledgerList.status);
   const ledgerList = useAppSelector((state) => state.ledgerList.data);
   const { chosenYear } = useAppSelector((state) => state.ledgerList.choices);
+  const [hasCategory, setHasCategory] = useState(false);
+  const [displayMonths, setDisplayMonths] = useState(12);
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth() + 1;
 
   const dispatch = useAppDispatch();
 
@@ -44,7 +49,7 @@ export const BarChart: React.FC = () => {
     };
   });
 
-  const months = [
+  const totalMonths = [
     { xLabel: '一月', monthValue: 1 },
     { xLabel: '二月', monthValue: 2 },
     { xLabel: '三月', monthValue: 3 },
@@ -58,6 +63,15 @@ export const BarChart: React.FC = () => {
     { xLabel: '十一月', monthValue: 11 },
     { xLabel: '十二月', monthValue: 12 },
   ];
+
+  let months: { xLabel: string; monthValue: number }[];
+  if (displayMonths === 12) {
+    months = totalMonths;
+  } else {
+    console.log(displayMonths);
+    months = totalMonths.slice(currentMonth - displayMonths, displayMonths + 1);
+  }
+
   const datas = months.map((month) => {
     const { xLabel, monthValue } = month;
 
@@ -97,7 +111,7 @@ export const BarChart: React.FC = () => {
           dispatch(chooseLabel(''));
         }}
         d={dScript}
-        fill={colorCodes[index % 6]}
+        fill={'grey'}
       />
     );
   };
@@ -142,6 +156,14 @@ export const BarChart: React.FC = () => {
           <path d={`M 0 300 L 0 0 Z`} stroke="black" />
         </BarSvg>
       )}
+      <button onClick={() => setDisplayMonths(12)}>全年</button>
+      {chosenYear === currentYear && (
+        <button onClick={() => setDisplayMonths(3)}>近3個月</button>
+      )}
+      <span>{`  `}</span>
+      <button onClick={() => setHasCategory(!hasCategory)}>
+        {hasCategory ? '隱藏類別' : '顯示類別'}
+      </button>
     </Wrap>
   );
 };
