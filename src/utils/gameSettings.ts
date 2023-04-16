@@ -9,5 +9,6 @@ export const mainLabels: string[] = [
   '社交',
 ];
 
-export const gridGap = 20;
+export const gridGap = 0;
 export const gridLength = 120;
+export const houseWidth = 100;

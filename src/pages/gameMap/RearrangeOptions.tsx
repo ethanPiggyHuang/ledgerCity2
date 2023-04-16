@@ -14,7 +14,7 @@ export const RearrangeOptions: React.FC = () => {
   const { houses } = useAppSelector((state) => state.cityBasicInfo);
   const dispatch = useAppDispatch();
   const [isMusicPlay, setIsMusicPlay] = useState(false);
-  const [playHammer] = useSound(hammer_2, { volume: 0.8 });
+  const [playHammer, { stop }] = useSound(hammer_2, { volume: 0.8 });
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -22,7 +22,7 @@ export const RearrangeOptions: React.FC = () => {
     if (dragMode === 'houses') {
       dispatch(saveCityAsync(houses)); //TODO: can get state info directly in reducer
       playHammer();
-      // setTimeout(() => stop(), 1000);
+      // setTimeout(() => stop(), 1000); // 音效時間短一點
     } else {
       dispatch(draggableToggle());
     }

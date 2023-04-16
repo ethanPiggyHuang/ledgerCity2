@@ -11,8 +11,9 @@ import {
   RECORD_DRAG_START,
   UPDATE_CITY_LOCATION,
 } from '../../redux/reducers/cityArrangementSlice';
-import { gridGap, gridLength } from '../../utils/gameSettings';
+import { gridGap, gridLength, houseWidth } from '../../utils/gameSettings';
 import hammer_ice from '../../utils/hammer_ice.wav';
+import { HouseOfFood } from './housesSvg/HouseOfFood';
 
 export const City: React.FC = () => {
   const cityBasicInfo = useAppSelector((state) => state.cityBasicInfo);
@@ -72,6 +73,7 @@ export const City: React.FC = () => {
                 <Grid
                   $lengthAttrs={`${gridLength * scale}px`}
                   $status={gridsStatus[yIndex][xIndex]}
+                  $type={house.type}
                   key={xIndex}
                   // ref={testRef}
                   // onDragEnter={(e) => {
@@ -95,7 +97,7 @@ export const City: React.FC = () => {
                 >
                   {house.type !== '' && (
                     <House
-                      $lengthAttrs={`${100 * scale}px`}
+                      $lengthAttrs={`${houseWidth * scale}px`}
                       $fontSizeAttrs={`${24 * scale}px`}
                       $type={house.type}
                       draggable={dragMode === 'houses'}
@@ -117,7 +119,7 @@ export const City: React.FC = () => {
                         target.style.opacity = '1';
                       }}
                     >
-                      {house.type}
+                      {house.type === '食物' ? <HouseOfFood /> : ''}
                     </House>
                   )}
                 </Grid>
@@ -143,6 +145,7 @@ type RowProps = {
 type GridProps = {
   $lengthAttrs: string;
   $status: number;
+  $type: string;
 };
 type HouseProps = {
   $lengthAttrs: string;
@@ -185,8 +188,15 @@ const Grid = styled.div.attrs<GridProps>(({ $lengthAttrs }) => ({
   },
 }))<GridProps>`
   // border: 1px solid lightblue;
-  background-color: ${({ $status }) =>
-    $status === 1 ? 'lightgreen' : $status === -1 ? 'lightcoral' : ''};
+
+  background-color: ${({ $status, $type }) =>
+    $status === 1
+      ? 'lightgreen'
+      : $status === -1
+      ? 'lightcoral'
+      : $type !== ''
+      ? 'lightgrey'
+      : ''};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -204,7 +214,8 @@ const House = styled.div.attrs<HouseProps>(
   background-color: ${({ $type }) => {
     switch ($type) {
       case '食物': {
-        return '#e46161';
+        return '';
+        // return '#e46161';
       }
       case '飲料': {
         return '#f1b963';
