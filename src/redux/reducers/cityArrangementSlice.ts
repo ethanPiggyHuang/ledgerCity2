@@ -12,6 +12,7 @@ export interface CityArrangementState {
   };
   status: 'idle' | 'loading' | 'failed';
   isHouseDraggable: boolean;
+  scale: number;
 }
 
 const initialState: CityArrangementState = {
@@ -20,6 +21,7 @@ const initialState: CityArrangementState = {
   dragInfo: { id: '', target: '', pastIndex: { xIndex: 0, yIndex: 0 } },
   status: 'idle',
   isHouseDraggable: false,
+  scale: 1,
 };
 
 export const saveCityAsync = createAsyncThunk(
@@ -142,6 +144,9 @@ export const cityArrangement = createSlice({
     draggableToggle: (state) => {
       state.isHouseDraggable = !state.isHouseDraggable;
     },
+    ADJUST_SCALE: (state, action: PayloadAction<number>) => {
+      state.scale *= action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -167,6 +172,7 @@ export const {
   dragLightOn,
   dragLightOff,
   draggableToggle,
+  ADJUST_SCALE,
 } = cityArrangement.actions;
 
 export default cityArrangement.reducer;

@@ -7,36 +7,51 @@ import {
   dragHouseStart,
   dragLightOn,
   dragLightOff,
+  ADJUST_SCALE,
 } from '../../redux/reducers/cityArrangementSlice';
 
 export const City: React.FC = () => {
   const cityBasicInfo = useAppSelector((state) => state.cityBasicInfo);
-  const { housesPosition, gridsStatus, isHouseDraggable } = useAppSelector(
-    (state) => state.cityArrangement
-  );
+  const { housesPosition, gridsStatus, isHouseDraggable, scale } =
+    useAppSelector((state) => state.cityArrangement);
   const dispatch = useAppDispatch();
   const wrapperWidth = 1200;
   const gap = 20;
-  const gridlength = 150;
-  const zoomRatio = 1; //TODO ratio
+  const gridlength = 120;
 
-  // console.log(housesPosition);
+  console.log('scale', scale);
 
   useEffect(() => {
     dispatch(displayCity(cityBasicInfo));
   }, [cityBasicInfo, dispatch]);
 
+  useEffect(() => {
+    const scrollEvent = (event: WheelEvent) => {
+      event.preventDefault();
+      const wheel = event.deltaY / 3000;
+      const zoom = Math.pow(1 + Math.abs(wheel) / 2, wheel > 0 ? 1 : -1);
+      setTimeout(() => dispatch(ADJUST_SCALE(zoom)), 10);
+      // setScale((prev) => prev * zoom), 10);
+    };
+    window.addEventListener('wheel', (event) => scrollEvent(event), {
+      passive: false,
+    });
+
+    return () =>
+      window.removeEventListener('wheel', (event) => scrollEvent(event));
+  }, []);
+
   return (
     <>
-      <CityRange $wrapperWidth={wrapperWidth} $gap={gap}>
+      <CityRange $wrapperWidth={wrapperWidth} $gap={gap} $scale={scale}>
         {housesPosition.map((row, yIndex) => {
           return (
-            <Row key={yIndex}>
+            <Row key={yIndex} $scale={scale}>
               {row.map((house, xIndex) => {
                 return (
                   <Grid
                     $gridlength={gridlength}
-                    $zoomRatio={zoomRatio}
+                    $scale={scale}
                     $status={gridsStatus[yIndex][xIndex]}
                     key={xIndex}
                     // ref={testRef}
@@ -53,13 +68,13 @@ export const City: React.FC = () => {
                   >
                     {house.type !== '' && (
                       <House
-                        $zoomRatio={zoomRatio}
+                        $scale={scale}
                         $type={house.type}
                         draggable={isHouseDraggable}
-                        onDragStart={(e: any) => {
-                          //TODO any!?
+                        onDragStart={(event: React.DragEvent) => {
                           if (isHouseDraggable) {
-                            e.target.style.opacity = '0.01';
+                            const target = event.target as HTMLDivElement;
+                            target.style.opacity = '0.01';
                             console.log(house.id, house.type);
                             dispatch(
                               dragHouseStart({
@@ -70,8 +85,9 @@ export const City: React.FC = () => {
                             );
                           }
                         }}
-                        onDragEnd={(e: any) => {
-                          e.target.style.opacity = '1';
+                        onDragEnd={(event: React.DragEvent) => {
+                          const target = event.target as HTMLDivElement;
+                          target.style.opacity = '1';
                         }}
                       >
                         {house.type}
@@ -91,36 +107,46 @@ export const City: React.FC = () => {
 type CityRangeProps = {
   $wrapperWidth: number;
   $gap: number;
+  $scale: number;
+};
+type RowProps = {
+  $scale: number;
 };
 type GridProps = {
   $gridlength: number;
-  $zoomRatio: number;
   $status: number;
+  $scale: number;
 };
 type HouseProps = {
-  $zoomRatio: number;
   $type: string;
+  $scale: number;
 };
+
+const CityWrapper = styled.div`
+  width: 100vw;
+  height: 100vh;
+`;
 
 const CityRange = styled.div<CityRangeProps>`
   margin: auto;
   position: relative;
   width: ${({ $wrapperWidth }) => `${$wrapperWidth}px`};
+  border: 1px red solid;
   flex-wrap: wrap;
-  gap: ${({ $gap }) => `${$gap}px`};
+  gap: ${({ $gap, $scale }) => `${$gap * $scale}px`};
 `;
-const Row = styled.div`
+const Row = styled.div<RowProps>`
   // border: 1px solid lightblue;
-  padding-top: 10px;
+  padding-top: ${({ $scale }) => `${10 * $scale}px`};
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: ${({ $scale }) => `${10 * $scale}px`};
 `;
 
 const Grid = styled.div<GridProps>`
-  width: ${({ $gridlength, $zoomRatio }) => `${$gridlength * $zoomRatio}px`};
-  height: ${({ $gridlength, $zoomRatio }) => `${$gridlength * $zoomRatio}px`};
+  width: ${({ $gridlength, $scale }) => `${$gridlength * $scale}px`};
+  height: ${({ $gridlength, $scale }) => `${$gridlength * $scale}px`};
   border: 1px solid lightblue;
   background-color: ${({ $status }) =>
     $status === 1 ? 'lightgreen' : $status === -1 ? 'lightcoral' : ''};
@@ -130,8 +156,8 @@ const Grid = styled.div<GridProps>`
 `;
 const House = styled.div<HouseProps>`
   border-radius: 10px;
-  width: ${({ $zoomRatio }) => `${130 * $zoomRatio}px`};
-  height: ${({ $zoomRatio }) => `${130 * $zoomRatio}px`};
+  width: ${({ $scale }) => `${100 * $scale}px`};
+  height: ${({ $scale }) => `${100 * $scale}px`};
   background-color: ${({ $type }) => {
     switch ($type) {
       case '食物': {
