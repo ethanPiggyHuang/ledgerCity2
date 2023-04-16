@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { ADJUST_SCALE } from '../../redux/reducers/cityArrangementSlice';
+import {
+  ADJUST_SCALE,
+  SET_SCALE,
+} from '../../redux/reducers/cityArrangementSlice';
 
 export const ScaleBar: React.FC = () => {
   const { scale } = useAppSelector((state) => state.cityArrangement);
@@ -40,7 +43,7 @@ export const ScaleBar: React.FC = () => {
   return (
     <Wrapper>
       {displayScale && <Scale>{`${scale.toFixed(1)} x`}</Scale>}
-      <button onClick={() => {}}>to 1.0 x</button>
+      <button onClick={() => dispatch(SET_SCALE(1))}>1.0 x</button>
     </Wrapper>
   );
 };
@@ -50,6 +53,7 @@ const Wrapper = styled.div`
   z-index: 2;
   bottom: 20px;
   right: 20px;
+  width: 150px;
 `;
 
 const Scale = styled.p`

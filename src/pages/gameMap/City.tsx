@@ -14,6 +14,7 @@ export const City: React.FC = () => {
   const { housesPosition, gridsStatus, isHouseDraggable, scale } =
     useAppSelector((state) => state.cityArrangement);
   const dispatch = useAppDispatch();
+  // TODO: 要再改成可以一鍵看到城市全貌
   const gap = 20;
   const gridlength = 120;
   const wrapperWidth = (gridlength + gap) * housesPosition[0].length;
@@ -124,6 +125,7 @@ const CityRange = styled.div.attrs<CityRangeProps>(({ $widthAttrs }) => ({
   position: relative;
   border: 1px red solid;
   flex-wrap: wrap;
+  cursor: pointer;
 `;
 
 const Row = styled.div.attrs<RowProps>(({ $paddingTopAttrs, $gapAttrs }) => ({

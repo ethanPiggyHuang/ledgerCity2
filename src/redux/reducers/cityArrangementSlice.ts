@@ -147,6 +147,9 @@ export const cityArrangement = createSlice({
     ADJUST_SCALE: (state, action: PayloadAction<number>) => {
       state.scale *= action.payload;
     },
+    SET_SCALE: (state, action: PayloadAction<number>) => {
+      state.scale = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -173,6 +176,7 @@ export const {
   dragLightOff,
   draggableToggle,
   ADJUST_SCALE,
+  SET_SCALE,
 } = cityArrangement.actions;
 
 export default cityArrangement.reducer;
