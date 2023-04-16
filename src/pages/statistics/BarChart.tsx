@@ -17,6 +17,7 @@ export const BarChart: React.FC = () => {
   const ledgerList = useAppSelector((state) => state.ledgerList.data);
   const { chosenYear } = useAppSelector((state) => state.ledgerList.choices);
   const [hasCategory, setHasCategory] = useState(false);
+  const [labelsDisplay, setLabelsDisplay] = useState(new Array(8).fill(true));
   const [displayMonths, setDisplayMonths] = useState(12);
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
@@ -37,6 +38,8 @@ export const BarChart: React.FC = () => {
     '#a9ce56',
     '#6cd4c2',
     '#7674cf',
+    '#666666',
+    '#83580b',
   ];
 
   const rawDatas = ledgerList.map((ledger) => {
@@ -145,11 +148,17 @@ export const BarChart: React.FC = () => {
   ): ReactNode => {
     let prevLabel = 0;
     for (let i = 0; i < labelIndex; i++) {
-      prevLabel +=
-        (datasCategory[i].data[index].value / yMax) * svgHeight * yShrinkRatio;
+      if (labelsDisplay[i]) {
+        prevLabel +=
+          (datasCategory[i].data[index].value / yMax) *
+          svgHeight *
+          yShrinkRatio;
+      }
     }
     const startPointX = (svgWidth / xMax) * (index + 0.5) - barWidth / 2;
-    const barHeight = (value / yMax) * svgHeight * yShrinkRatio;
+    const barHeight = labelsDisplay[labelIndex]
+      ? (value / yMax) * svgHeight * yShrinkRatio
+      : 0;
     const barTopY = svgHeight - prevLabel - barHeight;
 
     const dScript = `M ${startPointX} ${svgHeight - prevLabel} V ${barTopY} H ${
@@ -164,7 +173,7 @@ export const BarChart: React.FC = () => {
           dispatch(chooseLabel(''));
         }}
         d={dScript}
-        fill={colorCodes[labelIndex % 6]}
+        fill={colorCodes[labelIndex]}
       />
     );
   };
@@ -242,13 +251,41 @@ export const BarChart: React.FC = () => {
       <button onClick={() => setHasCategory(!hasCategory)}>
         {hasCategory ? '隱藏類別' : '顯示類別'}
       </button>
+
+      {hasCategory && (
+        <LabelWrap>
+          {mainLabels.map((label, index) => (
+            <>
+              <LabelColor
+                $display={labelsDisplay[index]}
+                $backgroundColor={colorCodes[index]}
+                onClick={() => {
+                  let newArr = [...labelsDisplay];
+                  newArr[index] = !newArr[index];
+                  setLabelsDisplay(newArr);
+                }}
+              />
+              <LabelText
+                onClick={() => {
+                  let newArr = [...labelsDisplay];
+                  newArr[index] = !newArr[index];
+                  setLabelsDisplay(newArr);
+                }}
+              >
+                {label}
+              </LabelText>
+            </>
+          ))}
+        </LabelWrap>
+      )}
     </Wrap>
   );
 };
 
-// type PiePathProps = {
-//   $backgroundColor: string;
-// };
+type LabelColorProps = {
+  $display: boolean;
+  $backgroundColor: string;
+};
 
 const Wrap = styled.div`
   padding: 10px;
@@ -277,4 +314,24 @@ const BarPath = styled.path`
 const LabelX = styled.text`
   font-size: 14px;
   text-anchor: middle;
+`;
+
+const LabelWrap = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+`;
+
+const LabelColor = styled.div<LabelColorProps>`
+  width: 16px;
+  height: 16px;
+  border: grey solid 1px;
+  opacity: 0.7;
+  background-color: ${({ $backgroundColor, $display }) =>
+    $display ? `${$backgroundColor}` : ''};
+  cursor: pointer;
+`;
+const LabelText = styled.p`
+  height: 10px;
+  cursor: pointer;
 `;
