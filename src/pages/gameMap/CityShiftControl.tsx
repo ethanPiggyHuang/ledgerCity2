@@ -1,10 +1,7 @@
-import React, { useEffect, useRef } from 'react';
-import useSound from 'use-sound';
+import React, { useRef } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { CITY_RELOCATE } from '../../redux/reducers/cityArrangementSlice';
-import { gridGap, gridLength } from '../../utils/gameSettings';
-import hammer_ice from '../../utils/hammer_ice.wav';
 
 export const CityShiftControl = (props: { type: string }) => {
   const { dragMode } = useAppSelector((state) => state.cityArrangement);

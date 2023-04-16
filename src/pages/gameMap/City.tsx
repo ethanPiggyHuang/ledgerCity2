@@ -55,7 +55,6 @@ export const City: React.FC = () => {
         if (dragMode !== 'city') return;
         const target = event.target as HTMLDivElement;
         target.style.opacity = '1';
-        console.log('mouseX', event.clientX, 'mouseY', event.clientY);
         dispatch(
           UPDATE_CITY_LOCATION({
             mouseX: event.clientX,
@@ -93,9 +92,11 @@ export const City: React.FC = () => {
                   onDrop={(e) => {
                     if (dragMode !== 'houses') return;
                     dispatch(dropHouse({ xIndex, yIndex }));
-                    playHammerShort();
-                    setTimeout(() => playHammerShort(), 500);
-                    setTimeout(() => playHammerShort(), 1000);
+                    if (gridsStatus[yIndex][xIndex] === 1) {
+                      playHammerShort();
+                      setTimeout(() => playHammerShort(), 500);
+                      setTimeout(() => playHammerShort(), 1000);
+                    }
                   }}
                 >
                   {house.type !== '' && (
