@@ -145,7 +145,13 @@ export const cityArrangement = createSlice({
       state.isHouseDraggable = !state.isHouseDraggable;
     },
     ADJUST_SCALE: (state, action: PayloadAction<number>) => {
-      state.scale *= action.payload;
+      const minScale = 0.4;
+      const maxScale = 2.5;
+      if (state.scale < maxScale && action.payload > 1) {
+        state.scale *= action.payload;
+      } else if (state.scale > minScale && action.payload < 1) {
+        state.scale *= action.payload;
+      }
     },
     SET_SCALE: (state, action: PayloadAction<number>) => {
       state.scale = action.payload;

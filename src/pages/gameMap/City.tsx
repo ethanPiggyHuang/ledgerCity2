@@ -58,6 +58,7 @@ export const City: React.FC = () => {
                     {house.type !== '' && (
                       <House
                         $lengthAttrs={`${100 * scale}px`}
+                        $fontSizeAttrs={`${24 * scale}px`}
                         $type={house.type}
                         draggable={isHouseDraggable}
                         onDragStart={(event: React.DragEvent) => {
@@ -109,6 +110,7 @@ type GridProps = {
 type HouseProps = {
   $lengthAttrs: string;
   $type: string;
+  $fontSizeAttrs: string;
 };
 
 const CityWrapper = styled.div`
@@ -123,7 +125,7 @@ const CityRange = styled.div.attrs<CityRangeProps>(({ $widthAttrs }) => ({
 }))<CityRangeProps>`
   margin: auto;
   position: relative;
-  border: 1px red solid;
+  border: 1px lightgrey solid;
   flex-wrap: wrap;
   cursor: pointer;
 `;
@@ -145,19 +147,22 @@ const Grid = styled.div.attrs<GridProps>(({ $lengthAttrs }) => ({
     height: $lengthAttrs,
   },
 }))<GridProps>`
-  border: 1px solid lightblue;
+  // border: 1px solid lightblue;
   background-color: ${({ $status }) =>
     $status === 1 ? 'lightgreen' : $status === -1 ? 'lightcoral' : ''};
   display: flex;
   align-items: center;
   justify-content: center;
 `;
-const House = styled.div.attrs<HouseProps>(({ $lengthAttrs }) => ({
-  style: {
-    width: $lengthAttrs,
-    height: $lengthAttrs,
-  },
-}))<HouseProps>`
+const House = styled.div.attrs<HouseProps>(
+  ({ $lengthAttrs, $fontSizeAttrs }) => ({
+    style: {
+      width: $lengthAttrs,
+      height: $lengthAttrs,
+      fontSize: $fontSizeAttrs,
+    },
+  })
+)<HouseProps>`
   border-radius: 10px;
   background-color: ${({ $type }) => {
     switch ($type) {
@@ -175,7 +180,6 @@ const House = styled.div.attrs<HouseProps>(({ $lengthAttrs }) => ({
       }
     }
   }};
-  font-size: 24px;
   display: flex;
   align-items: center;
   justify-content: center;

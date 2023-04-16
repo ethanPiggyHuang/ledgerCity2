@@ -4,6 +4,9 @@ import { getAuth, signOut } from 'firebase/auth';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { updateLocation } from '../../redux/api/userAPI';
 import { NavBar } from '../gameMap/NavBar';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { db } from '../../config/firebase';
+import { GET_COOP_FRIEND_ACTIVITY } from '../../redux/reducers/usersActivitySlice';
 
 export const Profile: React.FC = () => {
   const { userId } = useAppSelector((state) => state.userInfo.data.user);
@@ -24,6 +27,43 @@ export const Profile: React.FC = () => {
     }
   }, [userId]);
 
+  // 監聽好友動態（一人）
+  useEffect(() => {
+    if (userId) {
+      const unsubscribe = onSnapshot(
+        doc(db, 'allUserStatus', userId),
+        (doc) => {
+          if (doc) {
+            const data = doc.data();
+            if (data) {
+              const { fadeOutTime, isEditingCity, latestActiveTime } = data;
+              const fadeOutTimeSecond = fadeOutTime?.seconds;
+              const latestActiveTimeSecond = latestActiveTime?.seconds;
+              const currentPage = data?.currentPage as
+                | 'city'
+                | 'ledger'
+                | 'statistics'
+                | 'profile'
+                | 'leave';
+              dispatch(
+                GET_COOP_FRIEND_ACTIVITY({
+                  userId,
+                  currentPage,
+                  isEditingCity,
+                  fadeOutTimeSecond,
+                  latestActiveTimeSecond,
+                })
+              );
+            }
+          }
+        }
+      );
+
+      // Stop listening to changes
+      return () => unsubscribe();
+    }
+  }, [userId]);
+
   return (
     <Wrap>
       <p>{`userId: ${userId}`}</p>
@@ -33,8 +73,10 @@ export const Profile: React.FC = () => {
       <p>{`latestActiveTime: ${
         latestActiveTime ? new Date(latestActiveTime * 1000) : ''
       }`}</p>
-      <NavBar />
+      <br />
+      <br />
       <button onClick={() => signOut(auth)}>Sign out</button>
+      <NavBar />
     </Wrap>
   );
 };
@@ -44,6 +86,6 @@ const Wrap = styled.div`
   height: 100vh;
   padding: 20px;
   position: relative;
-  display: flex;
+  // display: flex;
   gap: 20px;
 `;
