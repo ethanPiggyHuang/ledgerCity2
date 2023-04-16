@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import {

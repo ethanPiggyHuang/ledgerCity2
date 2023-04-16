@@ -15,35 +15,8 @@ export interface CityArrangementState {
 }
 
 const initialState: CityArrangementState = {
-  housesPosition: [
-    //TODO: flexible game map size
-    [
-      { type: '', id: '' },
-      { type: '', id: '' },
-      { type: '', id: '' },
-      { type: '', id: '' },
-      { type: '', id: '' },
-    ],
-    [
-      { type: '', id: '' },
-      { type: '', id: '' },
-      { type: '', id: '' },
-      { type: '', id: '' },
-      { type: '', id: '' },
-    ],
-    [
-      { type: '', id: '' },
-      { type: '', id: '' },
-      { type: '', id: '' },
-      { type: '', id: '' },
-      { type: '', id: '' },
-    ],
-  ],
-  gridsStatus: [
-    [0, 0, 0],
-    [0, 0, 0],
-    [0, 0, 0],
-  ],
+  housesPosition: [[{ type: '', id: '' }]],
+  gridsStatus: [[0]],
   dragInfo: { id: '', target: '', pastIndex: { xIndex: 0, yIndex: 0 } },
   status: 'idle',
   isHouseDraggable: false,
@@ -77,14 +50,26 @@ export const cityArrangement = createSlice({
   initialState,
   reducers: {
     displayCity: (state, action: PayloadAction<CityBasicInfoState>) => {
-      // if (action.payload.accessUsers.length !== 0) {
-      action.payload.houses.forEach((house) => {
-        state.housesPosition[house.position.yIndex][house.position.xIndex] = {
-          type: house.type,
-          id: house.ledgerId,
-        };
-      });
-      // }
+      const houses = action.payload.houses;
+      if (houses.length !== 0) {
+        const citySize = Math.ceil(Math.sqrt(houses.length));
+        const newRows = new Array(citySize + 1).fill('');
+        const newHousesPosition = newRows.map((row) =>
+          new Array(citySize + 2).fill({ type: '', id: '' })
+        );
+        const newGridsStatus = new Array(citySize + 1).fill(
+          new Array(citySize + 2).fill(0)
+        );
+        houses.forEach((house) => {
+          newHousesPosition[house.position.yIndex][house.position.xIndex] = {
+            type: house.type,
+            id: house.ledgerId,
+          };
+        });
+
+        state.housesPosition = newHousesPosition;
+        state.gridsStatus = newGridsStatus;
+      }
     },
     dropHouse: (
       state,
@@ -105,12 +90,11 @@ export const cityArrangement = createSlice({
         state.dragInfo.target = '';
         state.dragInfo.id = '';
       }
-      //TODO: adjust RESET
-      state.gridsStatus = [
-        [0, 0, 0],
-        [0, 0, 0],
-        [0, 0, 0],
-      ];
+      for (let i = 0; i < state.gridsStatus.length; i++) {
+        for (let j = 0; j < state.gridsStatus[i].length; j++) {
+          state.gridsStatus[i][j] = 0;
+        }
+      }
     },
     dragHouseStart: (
       state,
@@ -149,11 +133,11 @@ export const cityArrangement = createSlice({
       }
     },
     dragLightOff: (state) => {
-      state.gridsStatus = [
-        [0, 0, 0],
-        [0, 0, 0],
-        [0, 0, 0],
-      ];
+      for (let i = 0; i < state.gridsStatus.length; i++) {
+        for (let j = 0; j < state.gridsStatus[i].length; j++) {
+          state.gridsStatus[i][j] = 0;
+        }
+      }
     },
     draggableToggle: (state) => {
       state.isHouseDraggable = !state.isHouseDraggable;

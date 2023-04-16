@@ -25,6 +25,7 @@ export const GameMap: React.FC = () => {
   // 從 db 獲取 city 資料
   useEffect(() => {
     dispatch(getCityInfo());
+    // 要改成從 db 匯入
   }, []);
 
   // 監聽使用者（關閉/離開）網頁動態 -> 送到 db
@@ -53,7 +54,6 @@ export const GameMap: React.FC = () => {
       // window.addEventListener('unload', logOutTime); //關閉頁面
 
       return () => {
-        console.log('return');
         window.removeEventListener(
           'visibilitychange',
           () => logOutTime('visibilitychange')
