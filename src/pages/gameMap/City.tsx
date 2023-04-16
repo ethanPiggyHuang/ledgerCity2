@@ -56,7 +56,6 @@ export const City: React.FC = () => {
           UPDATE_CITY_LOCATION({
             mouseX: event.clientX,
             mouseY: event.clientY,
-            cityHeight: cityHeight,
           })
         );
       }}

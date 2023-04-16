@@ -7,6 +7,7 @@ export interface CityArrangementState {
   gridsStatus: number[][];
   dragMode: 'city' | 'houses';
   cityShift: {
+    mouseStart: { x: number; y: number };
     dragStart: { x: number; y: number };
     current: { x: number; y: number };
   };
@@ -24,6 +25,7 @@ const initialState: CityArrangementState = {
   gridsStatus: [[0]],
   dragMode: 'city',
   cityShift: {
+    mouseStart: { x: 0, y: 0 },
     dragStart: { x: 0, y: 0 },
     current: { x: 0, y: 0 },
   },
@@ -90,42 +92,37 @@ export const cityArrangement = createSlice({
         mouseY: number;
       }>
     ) => {
-      state.cityShift.dragStart.x =
-        action.payload.mouseX - state.cityShift.current.x;
-      state.cityShift.dragStart.y =
-        action.payload.mouseY - state.cityShift.current.y;
+      // 舊的奇怪的算法
+      // state.cityShift.dragStart.x =
+      //   action.payload.mouseX - state.cityShift.current.x;
+      // state.cityShift.dragStart.y =
+      //   action.payload.mouseY - state.cityShift.current.y;
+      state.cityShift.mouseStart.x = action.payload.mouseX;
+      state.cityShift.mouseStart.y = action.payload.mouseY;
     },
     UPDATE_CITY_LOCATION: (
       state,
       action: PayloadAction<{
         mouseX: number;
         mouseY: number;
-        cityHeight: number;
       }>
     ) => {
-      const { mouseX, mouseY, cityHeight } = action.payload;
-      const dragStart = state.cityShift.dragStart;
-      const current = state.cityShift.current;
-      current.x = mouseX - 2 * dragStart.x;
-      current.y = mouseY + cityHeight * state.scale - 2 * dragStart.y;
+      // 舊的奇怪的算法
+      // const { mouseX, mouseY, cityHeight } = action.payload;
+      // const dragStart = state.cityShift.dragStart;
+      // const current = state.cityShift.current;
+      // current.x = mouseX - 2 * dragStart.x;
+      // current.y = mouseY + cityHeight * state.scale - 2 * dragStart.y;
 
-      // TODO: 放太大的時候，y軸shift 會跑掉，可能是因為 div 左中超出螢幕高度。也可以考慮 translation 來調整位置。
-      // console.log(
-      //   'mouseY',
-      //   mouseY,
-      //   'state.scale',
-      //   state.scale,
-      //   'dragStart.y',
-      //   dragStart.y
-      // );
-      // console.log('Y adjust', cityHeight * state.scale);
-      // console.log(
-      //   'top',
-      //   mouseY + cityHeight * state.scale - 2 * dragStart.y,
-      //   'left',
-      //   mouseX - 2 * dragStart.x
-      // );
+      const { x, y } = state.cityShift.mouseStart;
+      const { mouseX, mouseY } = action.payload;
+      const { current } = state.cityShift;
+      const mouseShiftX = mouseX - x;
+      const mouseShiftY = mouseY - y;
+      current.x = current.x + mouseShiftX;
+      current.y = current.y + mouseShiftY;
     },
+
     SET_CITY_LOCATION: (
       state,
       action: PayloadAction<{
@@ -135,6 +132,18 @@ export const cityArrangement = createSlice({
     ) => {
       state.cityShift.current.x = action.payload.left;
       state.cityShift.current.y = action.payload.top;
+    },
+    CITY_RELOCATE: (
+      state,
+      action: PayloadAction<{
+        shiftX: number;
+        shiftY: number;
+      }>
+    ) => {
+      state.cityShift.current.x =
+        state.cityShift.current.x + action.payload.shiftX;
+      state.cityShift.current.y =
+        state.cityShift.current.y + action.payload.shiftY;
     },
     dropHouse: (
       state,
@@ -242,6 +251,7 @@ export const {
   RECORD_DRAG_START,
   UPDATE_CITY_LOCATION,
   SET_CITY_LOCATION,
+  CITY_RELOCATE,
   dropHouse,
   dragHouseStart,
   dragLightOn,

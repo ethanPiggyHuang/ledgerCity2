@@ -5,6 +5,7 @@ import { RearrangeOptions } from './RearrangeOptions';
 import { NavBar } from './NavBar';
 import { ScaleBar } from './ScaleBar';
 import { DialogBoard } from '../../component/DialogBoard';
+import { CityShiftControl } from './CityShiftControl';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { getCityInfo } from '../../redux/reducers/cityBasicInfoSlice';
 import {
@@ -74,6 +75,7 @@ export const GameMap: React.FC = () => {
       <RearrangeOptions />
       <NavBar />
       <ScaleBar />
+      {/* <CityShiftControl type={'down'} /> */}
     </Wrapper>
   );
 };
