@@ -68,7 +68,6 @@ export const BarChart: React.FC = () => {
   if (displayMonths === 12) {
     months = totalMonths;
   } else {
-    console.log(displayMonths);
     months = totalMonths.slice(currentMonth - displayMonths, displayMonths + 1);
   }
 
@@ -85,6 +84,24 @@ export const BarChart: React.FC = () => {
 
   const xMax = months.length;
   const yMax = Math.max(...datas.map((data) => data.value));
+
+  const datasCategory = mainLabels.map((label) => {
+    const dataByCategory = months.map((month) => {
+      const { xLabel, monthValue } = month;
+      const value = rawDatas
+        .filter(
+          (ledger) =>
+            ledger.month === monthValue &&
+            ledger.year === chosenYear &&
+            ledger.label === label
+        )
+        .reduce((acc, cur) => acc + cur.value, 0);
+      return { value, xLabel, monthValue };
+    });
+    return { label, isIncluded: true, data: dataByCategory };
+  });
+
+  console.log(datasCategory);
 
   const drawBar = (
     value: number,
@@ -116,6 +133,42 @@ export const BarChart: React.FC = () => {
     );
   };
 
+  const drawCategoryBar = (
+    value: number,
+    monthValue: number,
+    { svgHeight, svgWidth, barWidth, yShrinkRatio }: BarChartSetting,
+    colorCodes: string[],
+    xMax: number,
+    yMax: number,
+    index: number,
+    labelIndex: number
+  ): ReactNode => {
+    let prevLabel = 0;
+    for (let i = 0; i < labelIndex; i++) {
+      prevLabel +=
+        (datasCategory[i].data[index].value / yMax) * svgHeight * yShrinkRatio;
+    }
+    const startPointX = (svgWidth / xMax) * (index + 0.5) - barWidth / 2;
+    const barHeight = (value / yMax) * svgHeight * yShrinkRatio;
+    const barTopY = svgHeight - prevLabel - barHeight;
+
+    const dScript = `M ${startPointX} ${svgHeight - prevLabel} V ${barTopY} H ${
+      startPointX + barWidth
+    } V ${svgHeight - prevLabel} Z`;
+
+    return (
+      <BarPath
+        key={index}
+        onClick={() => {
+          dispatch(chooseMonth(monthValue));
+          dispatch(chooseLabel(''));
+        }}
+        d={dScript}
+        fill={colorCodes[labelIndex % 6]}
+      />
+    );
+  };
+
   const setXLabel = (
     text: string,
     { svgHeight, svgWidth, labelDY }: BarChartSetting,
@@ -136,7 +189,7 @@ export const BarChart: React.FC = () => {
     <Wrap>
       <ChartTitle>{`BarChart：${chosenYear}年各月份花費`}</ChartTitle>
       {/* TODO: NaN 奇怪錯誤，應該與 initial state 無法 render 相關 */}
-      {loadingStatus === 'idle' && (
+      {loadingStatus === 'idle' && !hasCategory && (
         <BarSvg>
           {datas.map(({ value, monthValue }, index) =>
             drawBar(
@@ -148,6 +201,31 @@ export const BarChart: React.FC = () => {
               yMax,
               index
             )
+          )}
+          {datas.map(({ xLabel }, index) =>
+            setXLabel(xLabel, barChartSetting, xMax, index)
+          )}
+          <path d={`M 0 300 L 500 300 Z`} stroke="black" />
+          <path d={`M 0 300 L 0 0 Z`} stroke="black" />
+        </BarSvg>
+      )}
+      {loadingStatus === 'idle' && hasCategory && (
+        <BarSvg>
+          {datasCategory.map(
+            (dataCategory, labelIndex) =>
+              dataCategory.isIncluded &&
+              dataCategory.data.map(({ value, monthValue }, index) =>
+                drawCategoryBar(
+                  value,
+                  monthValue,
+                  barChartSetting,
+                  colorCodes,
+                  xMax,
+                  yMax,
+                  index,
+                  labelIndex
+                )
+              )
           )}
           {datas.map(({ xLabel }, index) =>
             setXLabel(xLabel, barChartSetting, xMax, index)
@@ -177,6 +255,7 @@ const Wrap = styled.div`
   width: 100%;
   position: relative;
   border: 1px solid lightblue;
+  overflow: scroll;
 `;
 const ChartTitle = styled.p`
   width: 100%;
