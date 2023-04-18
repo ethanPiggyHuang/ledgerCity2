@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { postLedger, editLedger } from '../api/ledgerSingleAPI';
+import { postLedger, updateLedger } from '../api/ledgerSingleAPI';
+import { RootState } from '../store';
 
 export interface LedgerDataState {
   timeLedger: number;
@@ -10,12 +11,13 @@ export interface LedgerDataState {
   labelSubs: string[];
   payWho: string;
   payHow: 'cash' | 'creditCard' | 'mobile';
-  amount: { currency: string; number: number; numberNT: number }; //TODO currency exchange
+  amount: { currency: string; number: number; numberNT: number }; //TODO: currency exchange
   recordTime: number;
   recordWho: string;
 }
 
 export interface LedgerSingleState {
+  ledgerId: string;
   data: LedgerDataState;
   calculationHolder: {
     operator: '' | '+' | '-' | 'x' | '÷';
@@ -25,6 +27,7 @@ export interface LedgerSingleState {
 }
 
 const initialState: LedgerSingleState = {
+  ledgerId: '',
   data: {
     timeLedger: 0,
     timeMonth: 0,
@@ -48,12 +51,13 @@ const initialState: LedgerSingleState = {
 export const ledgerSubmit = createAsyncThunk(
   'ledger/ledgerSubmit',
   async (arg, { getState }) => {
-    const allStates = getState() as any; //TODO typeScript
-    const ledgerSingle = allStates.ledgerSingle as LedgerSingleState;
+    const allStates = getState() as RootState;
+    const ledgerSingle = allStates.ledgerSingle;
     const data = ledgerSingle.data;
+    const { userId } = allStates.userInfo.data.user;
     const ledgerData = {
       ...data,
-      recordWho: 'Ethan', //TODO: import from Account State
+      recordWho: userId,
     };
     const availableGrids: { yIndex: number; xIndex: number }[] = [];
     const housesPosition = allStates.cityArrangement.housesPosition as {
@@ -71,14 +75,36 @@ export const ledgerSubmit = createAsyncThunk(
   }
 );
 
+export const ledgerUpdate = createAsyncThunk(
+  'ledger/ledgerUpdate',
+  async (arg, { getState }) => {
+    const allStates = getState() as RootState;
+    const ledgerBookId = 'UcrgCxiJxo3oA7vvwYtd';
+    const { userId } = allStates.userInfo.data.user;
+    const { ledgerId, data } = allStates.ledgerSingle;
+
+    const updateData = {
+      ...data,
+      recordWho: userId,
+    };
+    await updateLedger(ledgerBookId, ledgerId, updateData);
+  }
+);
+
 export const ledgerSingle = createSlice({
   name: 'ledgerSingle',
   initialState,
   reducers: {
     ledgerEdit: (
       state,
-      action: PayloadAction<{ ledgerId: string; data: LedgerSingleState }>
-    ) => {},
+      action: PayloadAction<{
+        ledgerId: string;
+        data: LedgerDataState;
+      }>
+    ) => {
+      state.ledgerId = action.payload.ledgerId;
+      state.data = action.payload.data;
+    },
     itemKeyIn: (state, action: PayloadAction<string>) => {
       state.data.item = action.payload;
     },
@@ -237,6 +263,26 @@ export const ledgerSingle = createSlice({
       .addCase(ledgerSubmit.rejected, (state) => {
         state.status = 'failed';
         alert('登錄失敗');
+      })
+      .addCase(ledgerUpdate.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(ledgerUpdate.fulfilled, (state) => {
+        state.status = 'idle';
+        alert('已登錄');
+        state.data.item = '';
+        state.data.labelMain = '';
+        state.data.labelSubs = [];
+        state.data.amount = { currency: '', number: 0, numberNT: 0 };
+        state.calculationHolder = {
+          operator: '',
+          number: 0,
+        };
+        state.ledgerId = '';
+      })
+      .addCase(ledgerUpdate.rejected, (state) => {
+        state.status = 'failed';
+        alert('更新失敗');
       });
   },
 });

@@ -31,11 +31,11 @@ export async function postLedger(
   });
 }
 
-export async function editLedger(
+export async function updateLedger(
   ledgerBookId: string,
   ledgerId: string,
-  ledgerData: LedgerDataState
+  updateData: LedgerDataState
 ) {
   const ledgerRef = doc(db, 'ledgerBooks', ledgerBookId, 'ledgers', ledgerId);
-  await updateDoc(ledgerRef, { ...ledgerData, recordTime: serverTimestamp() });
+  await updateDoc(ledgerRef, { ...updateData, recordTime: serverTimestamp() });
 }

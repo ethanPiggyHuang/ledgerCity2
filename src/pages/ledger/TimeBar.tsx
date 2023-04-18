@@ -12,6 +12,13 @@ export const TimeBar: React.FC = () => {
   );
   const dispatch = useAppDispatch();
 
+  useEffect(() => {
+    if (ledgerTime === 0) {
+      const nowInSeconds = new Date().getTime();
+      dispatch(timeInitialize(nowInSeconds));
+    }
+  }, []);
+
   const time = new Date(ledgerTime);
   const timeInSeconds = time.getTime();
   const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
@@ -25,11 +32,6 @@ export const TimeBar: React.FC = () => {
     { delta: -1, symbol: '▲' },
     { delta: 1, symbol: '▼' },
   ];
-
-  useEffect(() => {
-    const nowInSeconds = new Date().getTime();
-    dispatch(timeInitialize(nowInSeconds));
-  }, []);
 
   return (
     <Wrapper>

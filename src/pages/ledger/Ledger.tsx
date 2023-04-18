@@ -4,7 +4,10 @@ import styled from 'styled-components/macro';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { ledgerSubmit } from '../../redux/reducers/ledgerSingleSlice';
+import {
+  ledgerSubmit,
+  ledgerUpdate,
+} from '../../redux/reducers/ledgerSingleSlice';
 import { getCityInfo } from '../../redux/reducers/cityBasicInfoSlice';
 import { TimeBar } from './TimeBar';
 import { Label } from './Label';
@@ -14,11 +17,11 @@ import { updateLocation } from '../../redux/api/userAPI';
 import { NavBar } from '../gameMap/NavBar';
 
 export const Ledger: React.FC = () => {
-  const { housesPosition } = useAppSelector((state) => state.cityArrangement);
+  const { name, userId } = useAppSelector((state) => state.userInfo.data.user);
+  const { ledgerId } = useAppSelector((state) => state.ledgerSingle);
   const { item, labelMain, amount } = useAppSelector(
     (state) => state.ledgerSingle.data
   );
-  const { userId } = useAppSelector((state) => state.userInfo.data.user);
 
   const dispatch = useAppDispatch();
 
@@ -53,7 +56,7 @@ export const Ledger: React.FC = () => {
           <Calculator />
         </Section>
         <BoardFooter>
-          <RecordPerson>{`記錄者：${'Ethan'}`}</RecordPerson>
+          <RecordPerson>{`記錄者：${name}`}</RecordPerson>
           <ConfirmButton
             onClick={() => {
               if (labelMain === '') {
@@ -66,8 +69,11 @@ export const Ledger: React.FC = () => {
                 alert('請填入帳目品項');
                 return;
               }
-              console.log('fff');
-              dispatch(ledgerSubmit());
+              if (ledgerId === '') {
+                dispatch(ledgerSubmit());
+              } else {
+                dispatch(ledgerUpdate());
+              }
             }}
           >
             確認

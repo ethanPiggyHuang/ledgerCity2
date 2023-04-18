@@ -3,6 +3,7 @@ import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { ledgerEdit } from '../../redux/reducers/ledgerSingleSlice';
 import { deleteSingleLedger } from '../../redux/reducers/ledgerListSlice';
+// import { redirect } from 'react-router-dom';
 
 export const LedgerDetail: React.FC = () => {
   const ledgerList = useAppSelector((state) => state.ledgerList.dataList);
@@ -47,13 +48,14 @@ export const LedgerDetail: React.FC = () => {
           <LedgerIcon
             className="material-symbols-outlined"
             onClick={() => {
-              const ledgerData = ledgerList.filter(
+              const chosenLedger = ledgerList.find(
                 (data) => data.ledgerId === ledger.ledgerId
               );
-              console.log(ledgerData);
-              // dispatch(
-              //   ledgerEdit({ ledgerId: ledger.ledgerId, data: ledgerData })
-              // );
+              console.log(chosenLedger);
+              if (chosenLedger) {
+                dispatch(ledgerEdit(chosenLedger));
+                // redirect('/statistics');
+              }
             }}
           >
             edit
