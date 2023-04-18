@@ -4,12 +4,17 @@ import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { GET_COOP_FRIEND_ACTIVITY } from '../../redux/reducers/usersActivitySlice';
+import { getAuth, signOut } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
+import { LOG_OUT } from '../../redux/reducers/userInfoSlice';
 
-export const Social: React.FC = () => {
+export const Account: React.FC = () => {
   const { userId, friends } = useAppSelector((state) => state.userInfo.data);
   const friendIds = friends.map((friend) => friend.userId);
 
   const dispatch = useAppDispatch();
+  const auth = getAuth();
+  const navigate = useNavigate();
 
   return (
     <Wrap>
@@ -24,6 +29,15 @@ export const Social: React.FC = () => {
           <br />
         </>
       ))} */}
+      <button
+        onClick={() => {
+          signOut(auth);
+          dispatch(LOG_OUT());
+          navigate('./city');
+        }}
+      >
+        Sign out
+      </button>
     </Wrap>
   );
 };

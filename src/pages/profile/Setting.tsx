@@ -5,7 +5,7 @@ import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { GET_COOP_FRIEND_ACTIVITY } from '../../redux/reducers/usersActivitySlice';
 
-export const Social: React.FC = () => {
+export const Setting: React.FC = () => {
   const { userId, friends } = useAppSelector((state) => state.userInfo.data);
   const friendIds = friends.map((friend) => friend.userId);
 

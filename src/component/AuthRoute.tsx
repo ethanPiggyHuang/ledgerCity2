@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import {
   AUTHING_TOGGLE,
   LOGGED_IN,
-  LOG_OUT,
   CREATE_ACCOUNT,
 } from '../redux/reducers/userInfoSlice';
 
@@ -17,16 +15,16 @@ export interface IAuthRouteProps {
 const AuthRoute: React.FunctionComponent<IAuthRouteProps> = (props) => {
   const { children } = props;
   const dispatch = useAppDispatch();
-  const isAuthing = useAppSelector(
-    (state) => state.userInfo.loginStatus.isAuthing
+  const { isAuthing, isLogin } = useAppSelector(
+    (state) => state.userInfo.loginStatus
   );
 
   const auth = getAuth();
-  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(AUTHING_TOGGLE(true));
     const AuthCheck = onAuthStateChanged(auth, (user) => {
+      console.log('user', user);
       if (user) {
         const { uid, displayName, email, photoURL } = user;
         if (user.metadata.creationTime === user.metadata.lastSignInTime) {
@@ -45,8 +43,7 @@ const AuthRoute: React.FunctionComponent<IAuthRouteProps> = (props) => {
       } else {
         dispatch(AUTHING_TOGGLE(false));
         console.log('unauthorized');
-        dispatch(LOG_OUT());
-        navigate('/');
+        // navigate('/');
       }
     });
     // AuthCheck();

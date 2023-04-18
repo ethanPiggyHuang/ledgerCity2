@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
-import { getAuth, signOut } from 'firebase/auth';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { updateLocation } from '../../redux/api/userAPI';
 import { NavBar } from '../gameMap/NavBar';
 import { Social } from './Social';
+import { Setting } from './Setting';
+import { Account } from './Account';
 
 export const Profile: React.FC = () => {
   const { userId } = useAppSelector((state) => state.userInfo.data);
@@ -16,7 +17,6 @@ export const Profile: React.FC = () => {
     (state) => state.userActivity.data[constId]
   );
   const dispatch = useAppDispatch();
-  const auth = getAuth();
 
   // 監聽使用者進入頁面 -> 送到 db
   useEffect(() => {
@@ -27,8 +27,9 @@ export const Profile: React.FC = () => {
 
   return (
     <Wrap>
-      <Social />
-      <button onClick={() => signOut(auth)}>Sign out</button>
+      {/* <Social /> */}
+      <Account />
+      {/* <Setting /> */}
       <NavBar />
     </Wrap>
   );

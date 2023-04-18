@@ -9,8 +9,6 @@ export interface UserInfoState {
     isAuthing: boolean;
     isLoading: boolean;
   };
-  cityId: string;
-  ledgerBookId: string;
   data: {
     userId: string;
     userName: string | null;
@@ -98,7 +96,9 @@ export const userInfo = createSlice({
       state.loginStatus.isLogin = true;
     },
     LOG_OUT: (state) => {
-      state = initialState;
+      console.log('log out');
+      state.data = initialState.data;
+      state.loginStatus = initialState.loginStatus;
     },
   },
   extraReducers: (builder) => {

@@ -30,7 +30,7 @@ export async function createAccount(userInfo: {
   const initailCityData = {
     accessUsers: [userId],
     citizen: [],
-    cityName: '夢想市',
+    cityName: '記帳城市',
     houses: [
       {
         height: 1,
