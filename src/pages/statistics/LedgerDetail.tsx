@@ -3,7 +3,7 @@ import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { ledgerEdit } from '../../redux/reducers/ledgerSingleSlice';
 import { deleteSingleLedger } from '../../redux/reducers/ledgerListSlice';
-// import { redirect } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export const LedgerDetail: React.FC = () => {
   const ledgerList = useAppSelector((state) => state.ledgerList.dataList);
@@ -23,6 +23,7 @@ export const LedgerDetail: React.FC = () => {
   });
 
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   return (
     <Wrap>
@@ -54,7 +55,7 @@ export const LedgerDetail: React.FC = () => {
               console.log(chosenLedger);
               if (chosenLedger) {
                 dispatch(ledgerEdit(chosenLedger));
-                // redirect('/statistics');
+                navigate('/ledger');
               }
             }}
           >
