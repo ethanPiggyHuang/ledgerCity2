@@ -17,7 +17,7 @@ import { updateLocation } from '../../redux/api/userAPI';
 import { NavBar } from '../gameMap/NavBar';
 
 export const Ledger: React.FC = () => {
-  const { name, userId } = useAppSelector((state) => state.userInfo.data.user);
+  const { userId } = useAppSelector((state) => state.userInfo.data);
   const { ledgerId } = useAppSelector((state) => state.ledgerSingle);
   const { item, labelMain, amount } = useAppSelector(
     (state) => state.ledgerSingle.data
@@ -56,7 +56,7 @@ export const Ledger: React.FC = () => {
           <Calculator />
         </Section>
         <BoardFooter>
-          <RecordPerson>{`記錄者：${name}`}</RecordPerson>
+          <RecordPerson>{`記錄者：`}</RecordPerson>
           <ConfirmButton
             onClick={() => {
               if (labelMain === '') {

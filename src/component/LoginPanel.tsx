@@ -40,7 +40,7 @@ export const LoginPanel: React.FunctionComponent<IloginPageProps> = () => {
 
   return (
     <Wrap>
-      <Title>註冊</Title>
+      <Title>登入</Title>
       <Button onClick={() => signInWithGoogle()}>Google登入</Button>
     </Wrap>
   );

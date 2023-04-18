@@ -7,6 +7,7 @@ import {
   AUTHING_TOGGLE,
   LOGGED_IN,
   LOG_OUT,
+  CREATE_ACCOUNT,
 } from '../redux/reducers/userInfoSlice';
 
 export interface IAuthRouteProps {
@@ -27,10 +28,20 @@ const AuthRoute: React.FunctionComponent<IAuthRouteProps> = (props) => {
     dispatch(AUTHING_TOGGLE(true));
     const AuthCheck = onAuthStateChanged(auth, (user) => {
       if (user) {
-        dispatch(AUTHING_TOGGLE(false));
-        // console.log('user', [{ uid: user.uid, name: user }]);
         const { uid, displayName, email, photoURL } = user;
-        dispatch(LOGGED_IN({ uid, displayName, email, photoURL }));
+        if (user.metadata.creationTime === user.metadata.lastSignInTime) {
+          // 使用者是第一次註冊  TODO: 確認是否註冊過
+          console.log('使用者是第一次註冊');
+          dispatch(CREATE_ACCOUNT({ uid, displayName, email, photoURL }));
+        } else {
+          // 使用者已登入過
+          console.log('使用者已登入過');
+          // dispatch(CREATE_ACCOUNT({ uid, displayName, email, photoURL }));
+          dispatch(LOGGED_IN({ uid, displayName, email, photoURL }));
+        }
+        dispatch(AUTHING_TOGGLE(false));
+
+        console.log('login user:', user);
       } else {
         dispatch(AUTHING_TOGGLE(false));
         console.log('unauthorized');

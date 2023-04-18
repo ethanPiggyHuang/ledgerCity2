@@ -18,7 +18,7 @@ export const GameMap: React.FC = () => {
   const { isLogin, isAuthing } = useAppSelector(
     (state) => state.userInfo.loginStatus
   );
-  const { userId } = useAppSelector((state) => state.userInfo.data.user);
+  const { userId } = useAppSelector((state) => state.userInfo.data);
 
   const dispatch = useAppDispatch();
 
@@ -67,6 +67,8 @@ export const GameMap: React.FC = () => {
   useEffect(() => {
     if (userId) updateLocation(userId, 'city');
   }, [userId]);
+
+  console.log(isLogin, isAuthing);
 
   return (
     <Wrapper>

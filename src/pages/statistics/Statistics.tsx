@@ -16,7 +16,7 @@ import { NavBar } from '../gameMap/NavBar';
 
 export const Statistics: React.FC = () => {
   const { chosenYear } = useAppSelector((state) => state.ledgerList.choices);
-  const { userId } = useAppSelector((state) => state.userInfo.data.user);
+  const { userId } = useAppSelector((state) => state.userInfo.data);
 
   const dispatch = useAppDispatch();
   const auth = getAuth();

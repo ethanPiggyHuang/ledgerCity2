@@ -2,12 +2,70 @@ import { db } from '../../config/firebase';
 import {
   setDoc,
   getDoc,
+  addDoc,
+  collection,
   doc,
   serverTimestamp,
   updateDoc,
+  arrayUnion,
 } from 'firebase/firestore';
 import { rtdb } from '../../config/firebase';
 import { ref, set } from 'firebase/database';
+
+export async function createAccount(userInfo: {
+  userId: string;
+  userName: string;
+  userEmail: string;
+  userPortraitUrl: string;
+}) {
+  const { userId } = userInfo;
+  const initialUserProfile = {
+    userNickName: '',
+    cityList: [],
+    friends: [],
+    subLabels: { food: ['早餐', '午餐', '晚餐'] },
+    trophy: { list: [], citizens: [] },
+    gameSetting: { hasMusic: false, hasHints: false, isRecordContinue: false },
+  };
+  const initailCityData = {
+    accessUsers: [userId],
+    citizen: [],
+    cityName: '夢想市',
+    houses: [
+      {
+        height: 1,
+        ledgerId: '0',
+        position: { xIndex: 1, yIndex: 1 },
+        type: '市政廳',
+      },
+    ],
+  };
+  await setDoc(doc(db, 'users', userId), {
+    ...userInfo,
+    ...initialUserProfile,
+  });
+  await setDoc(doc(db, 'allUserStatus', userId), {
+    currentPage: 'city',
+    isEditingCity: false,
+    fadeOutTime: serverTimestamp(),
+    latestActiveTime: serverTimestamp(),
+  });
+  const cityRef = await addDoc(collection(db, 'cities'), initailCityData);
+  const ledgerBookRef = await addDoc(collection(db, 'ledgerBooks'), {
+    cityId: cityRef.id,
+  });
+  await updateDoc(doc(db, 'cities', cityRef.id), {
+    ledgerBookId: ledgerBookRef.id,
+  });
+  await updateDoc(doc(db, 'users', userId), {
+    cityList: arrayUnion(cityRef.id),
+  });
+
+  return new Promise<{ data: { cityId: string; ledgerBookId: string } }>(
+    (resolve) =>
+      resolve({ data: { cityId: cityRef.id, ledgerBookId: ledgerBookRef.id } })
+  );
+}
 
 export async function postFadeOutTime(userId: string) {
   // await setDoc(doc(db, 'allUserStatus', userId), {

@@ -54,7 +54,7 @@ export const ledgerSubmit = createAsyncThunk(
     const allStates = getState() as RootState;
     const ledgerSingle = allStates.ledgerSingle;
     const data = ledgerSingle.data;
-    const { userId } = allStates.userInfo.data.user;
+    const { userId } = allStates.userInfo.data;
     const ledgerData = {
       ...data,
       recordWho: userId,
@@ -80,7 +80,7 @@ export const ledgerUpdate = createAsyncThunk(
   async (arg, { getState }) => {
     const allStates = getState() as RootState;
     const ledgerBookId = 'UcrgCxiJxo3oA7vvwYtd';
-    const { userId } = allStates.userInfo.data.user;
+    const { userId } = allStates.userInfo.data;
     const { ledgerId, data } = allStates.ledgerSingle;
 
     const updateData = {
