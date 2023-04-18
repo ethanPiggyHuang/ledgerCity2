@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
+import { ledgerEdit } from '../../redux/reducers/ledgerSingleSlice';
+import { deleteSingleLedger } from '../../redux/reducers/ledgerListSlice';
 
 export const LedgerDetail: React.FC = () => {
   const ledgerList = useAppSelector((state) => state.ledgerList.data);
@@ -27,6 +29,7 @@ export const LedgerDetail: React.FC = () => {
         <LedgerText>項目</LedgerText>
         <LedgerText>花費</LedgerText>
         <LedgerText>日期</LedgerText>
+        <LedgerText>動作</LedgerText>
       </LedgerRow>
       {ledgerListDisplay.map((ledger, index) => (
         <LedgerRow
@@ -41,6 +44,26 @@ export const LedgerDetail: React.FC = () => {
           <LedgerText>{ledger.item}</LedgerText>
           <LedgerText>{ledger.amount}</LedgerText>
           <LedgerText>{ledger.date}</LedgerText>
+          <LedgerIcon
+            className="material-symbols-outlined"
+            onClick={() => {
+              const ledgerData = ledgerList.filter(
+                (data) => data.ledgerId === ledger.ledgerId
+              );
+              console.log(ledgerData);
+              // dispatch(
+              //   ledgerEdit({ ledgerId: ledger.ledgerId, data: ledgerData })
+              // );
+            }}
+          >
+            edit
+          </LedgerIcon>
+          <LedgerIcon
+            className="material-symbols-outlined"
+            onClick={() => dispatch(deleteSingleLedger(ledger.ledgerId))}
+          >
+            delete
+          </LedgerIcon>
         </LedgerRow>
       ))}
     </Wrap>
@@ -73,4 +96,10 @@ const LedgerRow = styled.div<LedgerRowProps>`
 const LedgerText = styled.p`
   width: 30%;
   text-align: center;
+`;
+
+const LedgerIcon = styled.p`
+  width: 15%;
+  text-align: center;
+  cursor: pointer;
 `;

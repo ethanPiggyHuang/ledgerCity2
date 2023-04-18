@@ -132,8 +132,7 @@ export const PieChart: React.FC = () => {
   return (
     <Wrap>
       <ChartTitle>{`PieChart：${chosenMonth}月各類別花費`}</ChartTitle>
-      {/* TODO: NaN 奇怪錯誤，應該與 initial state 無法 render 相關 */}
-      {loadingStatus === 'idle' && (
+      {loadingStatus === 'idle' && chosenMonth !== 0 && (
         <PieSvg
           $svgHeight={pieChartSetting.svgHeight}
           $svgWidth={pieChartSetting.svgWidth}

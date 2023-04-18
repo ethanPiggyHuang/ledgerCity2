@@ -10,9 +10,8 @@ import {
 } from '../../redux/reducers/ledgerSingleSlice';
 
 export const Calculator: React.FC = () => {
-  const { amount, calculationHolder } = useAppSelector(
-    (state) => state.ledgerSingle
-  );
+  const { calculationHolder } = useAppSelector((state) => state.ledgerSingle);
+  const { amount } = useAppSelector((state) => state.ledgerSingle.input);
   const dispatch = useAppDispatch();
 
   const buttons: string[] = [

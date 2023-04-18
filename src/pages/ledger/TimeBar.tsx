@@ -4,7 +4,9 @@ import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { timeEdit } from '../../redux/reducers/ledgerSingleSlice';
 
 export const TimeBar: React.FC = () => {
-  const ledgerTime = useAppSelector((state) => state.ledgerSingle.timeLedger);
+  const ledgerTime = useAppSelector(
+    (state) => state.ledgerSingle.input.timeLedger
+  );
   const dispatch = useAppDispatch();
 
   const time = new Date(ledgerTime);

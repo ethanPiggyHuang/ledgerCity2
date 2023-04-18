@@ -7,22 +7,10 @@ import {
   updateDoc,
   serverTimestamp,
 } from 'firebase/firestore';
+import { LedgerInputState } from '../reducers/ledgerSingleSlice';
 
 export interface LedgerDataState {
-  timeLedger: number;
-  timeYear: number;
-  timeMonth: number;
-  item: string;
-  labelMain: string;
-  labelSubs: string[];
-  payWho: string;
-  payHow: 'cash' | 'creditCard' | 'mobile';
-  amount: {
-    currency: string;
-    number: number;
-    numberNT: number;
-  };
-  imageUrl: string;
+  input: LedgerInputState;
   recordWho: string;
 }
 
@@ -43,7 +31,16 @@ export async function postLedger(
       ledgerId: ledgerRef.id,
       height: 1,
       position: newPosition,
-      type: ledgerData.labelMain,
+      type: ledgerData.input.labelMain,
     }),
   });
+}
+
+export async function editLedger(
+  ledgerBookId: string,
+  ledgerId: string,
+  ledgerData: LedgerDataState
+) {
+  const ledgerRef = doc(db, 'ledgerBooks', ledgerBookId, 'ledgers', ledgerId);
+  await updateDoc(ledgerRef, { ...ledgerData, recordTime: serverTimestamp() });
 }

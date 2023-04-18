@@ -3,15 +3,14 @@ import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import {
   itemKeyIn,
-  labelChooseType,
-  labelChoose,
+  labelChooseMain,
   labelRetrieve,
 } from '../../redux/reducers/ledgerSingleSlice';
 import { mainLabels } from '../../utils/gameSettings';
 
 export const Label: React.FC = () => {
-  const { labelChoosingType, labelMain, labelSubs, item } = useAppSelector(
-    (state) => state.ledgerSingle
+  const { labelMain, labelSubs, item } = useAppSelector(
+    (state) => state.ledgerSingle.input
   );
   const dispatch = useAppDispatch();
 
@@ -47,25 +46,15 @@ export const Label: React.FC = () => {
       </ItemDisplay>
       <LabelOptions>
         <LabelTypes>
-          <LabelType
-            $isChosen={labelChoosingType === 'main'}
-            onClick={() => dispatch(labelChooseType('main'))}
-          >
-            主要標籤
-          </LabelType>
-          <LabelType
-            $isChosen={labelChoosingType === 'sub'}
-            onClick={() => dispatch(labelChooseType('sub'))}
-          >
-            次要標籤
-          </LabelType>
+          <LabelType $isChosen={true}>主要標籤</LabelType>
+          <LabelType $isChosen={false}>次要標籤</LabelType>
         </LabelTypes>
         <LabelButtons>
           {mainLabels.map((label, index) => (
             <LabelButton
               key={index}
               $isChosen={labelMain === label}
-              onClick={() => dispatch(labelChoose(label))}
+              onClick={() => dispatch(labelChooseMain(label))}
             >
               {label}
             </LabelButton>

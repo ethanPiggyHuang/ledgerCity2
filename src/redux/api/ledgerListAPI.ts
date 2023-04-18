@@ -1,5 +1,15 @@
 import { db } from '../../config/firebase';
-import { getDocs, collection, query, where, orderBy } from 'firebase/firestore';
+import {
+  getDocs,
+  collection,
+  query,
+  where,
+  doc,
+  orderBy,
+  deleteDoc,
+  updateDoc,
+  deleteField,
+} from 'firebase/firestore';
 import { WhereFilterOp } from '@firebase/firestore-types';
 
 export interface LedgerListState {
@@ -45,4 +55,8 @@ export async function fetchLedgerList(
   return new Promise<{ data: LedgerListState[] }>((resolve) =>
     resolve({ data: result as LedgerListState[] })
   );
+}
+
+export async function deleteLedger(ledgerBookId: string, ledgerId: string) {
+  await deleteDoc(doc(db, 'ledgerBooks', ledgerBookId, 'ledgers', ledgerId));
 }

@@ -1,42 +1,50 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { postLedger } from '../api/ledgerSingleAPI';
+import { postLedger, editLedger } from '../api/ledgerSingleAPI';
 
-export interface LedgerSingleState {
-  mode: 'manual' | 'qrCode' | 'cloud';
+export interface LedgerInputState {
   timeLedger: number;
+  timeMonth: number;
+  timeYear: number;
   item: string;
-  labelChoosingType: 'main' | 'sub';
   labelMain: string;
   labelSubs: string[];
   payWho: string;
   payHow: 'cash' | 'creditCard' | 'mobile';
   amount: { currency: string; number: number; numberNT: number }; //TODO currency exchange
+}
+
+export interface LedgerSingleState {
+  input: LedgerInputState;
+  ledgerId: string;
+  recordTime: number;
+  recordWho: string;
   calculationHolder: {
     operator: '' | '+' | '-' | 'x' | '÷';
     number: number;
   };
   status: 'idle' | 'loading' | 'failed';
-  imageUrl: string;
 }
 
-const now = new Date().getTime(); //TODO ESSENTIAL: Reducers Must Not Have Side Effects
-
 const initialState: LedgerSingleState = {
-  mode: 'manual',
-  timeLedger: now,
-  item: '',
-  labelChoosingType: 'main',
-  labelMain: '',
-  labelSubs: [],
-  payWho: 'Ethan', // TODO: 要改掉！
-  payHow: 'cash',
-  amount: { currency: '', number: 0, numberNT: 0 },
+  input: {
+    timeLedger: 0,
+    timeMonth: 0,
+    timeYear: 0,
+    item: '',
+    labelMain: '',
+    labelSubs: [],
+    payWho: '',
+    payHow: 'cash',
+    amount: { currency: '', number: 0, numberNT: 0 },
+  },
+  ledgerId: '',
+  recordTime: 0,
+  recordWho: '',
   calculationHolder: {
     operator: '',
     number: 0,
   },
   status: 'idle',
-  imageUrl: '',
 };
 
 export const ledgerSubmit = createAsyncThunk(
@@ -44,31 +52,9 @@ export const ledgerSubmit = createAsyncThunk(
   async (arg, { getState }) => {
     const allStates = getState() as any; //TODO typeScript
     const ledgerSingle = allStates.ledgerSingle as LedgerSingleState;
-    const {
-      timeLedger,
-      item,
-      labelMain,
-      labelSubs,
-      payWho,
-      payHow,
-      amount: { number },
-      imageUrl,
-    } = ledgerSingle;
+    const input = ledgerSingle.input;
     const ledgerData = {
-      timeLedger,
-      timeYear: new Date(timeLedger).getFullYear(),
-      timeMonth: new Date(timeLedger).getMonth() + 1,
-      item,
-      labelMain,
-      labelSubs,
-      payWho,
-      payHow,
-      amount: {
-        currency: 'NT',
-        number,
-        numberNT: number,
-      },
-      imageUrl,
+      input: input,
       recordWho: 'Ethan', //TODO: import from Account State
     };
     const availableGrids: { yIndex: number; xIndex: number }[] = [];
@@ -91,33 +77,30 @@ export const ledgerSingle = createSlice({
   name: 'ledgerSingle',
   initialState,
   reducers: {
+    ledgerEdit: (
+      state,
+      action: PayloadAction<{ ledgerId: string; data: LedgerSingleState }>
+    ) => {},
     itemKeyIn: (state, action: PayloadAction<string>) => {
-      state.item = action.payload;
+      state.input.item = action.payload;
     },
-    labelChooseType: (state, action: PayloadAction<'main' | 'sub'>) => {
-      if (state.labelChoosingType !== action.payload)
-        state.labelChoosingType = action.payload;
-    },
-    labelChoose: (state, action: PayloadAction<string>) => {
-      if (state.labelChoosingType === 'main') {
-        state.labelMain = action.payload;
-      }
+    labelChooseMain: (state, action: PayloadAction<string>) => {
+      state.input.labelMain = action.payload;
+
       //TODO: case 次要標籤
     },
     labelRetrieve: (state, action: PayloadAction<string>) => {
-      if (state.labelMain === action.payload) {
-        state.labelMain = '';
+      if (state.input.labelMain === action.payload) {
+        state.input.labelMain = '';
       } else {
         //TODO: case 次要標籤
-        const removeIndex = state.labelSubs.indexOf(action.payload);
-        state.labelSubs = [
-          ...state.labelSubs.slice(0, removeIndex),
-          ...state.labelSubs.slice(removeIndex + 1),
-        ];
+        state.input.labelSubs = state.input.labelSubs.filter(
+          (labelSub) => labelSub !== action.payload
+        );
       }
     },
     amountKeyNumber: (state, action: PayloadAction<string>) => {
-      const pastNumberString = state.amount.number.toString();
+      const pastNumberString = state.input.amount.number.toString();
       const pastHolderNumberString = state.calculationHolder.number.toString();
       // TODO: 需要限制數字的位數
       // if (pastNumberString.length > 12) {
@@ -125,7 +108,7 @@ export const ledgerSingle = createSlice({
       //   return state;
       // }
       if (state.calculationHolder.operator === '') {
-        state.amount.number = Number(pastNumberString + action.payload);
+        state.input.amount.number = Number(pastNumberString + action.payload);
       } else {
         state.calculationHolder.number = Number(
           pastHolderNumberString + action.payload
@@ -133,10 +116,10 @@ export const ledgerSingle = createSlice({
       }
     },
     amountDelete: (state) => {
-      const pastNumberString = state.amount.number.toString();
+      const pastNumberString = state.input.amount.number.toString();
       const pastHolderNumberString = state.calculationHolder.number.toString();
       if (state.calculationHolder.operator === '') {
-        state.amount.number = Number(
+        state.input.amount.number = Number(
           pastNumberString.slice(0, pastNumberString.length - 1)
         );
       } else if (pastHolderNumberString === '0') {
@@ -159,7 +142,7 @@ export const ledgerSingle = createSlice({
       state.calculationHolder.number = newNumber;
     },
     amountCalculate: (state) => {
-      const numberBeforeOperator = state.amount.number;
+      const numberBeforeOperator = state.input.amount.number;
       const { number, operator } = state.calculationHolder;
       let result: number;
       switch (operator) {
@@ -183,23 +166,23 @@ export const ledgerSingle = createSlice({
           result = numberBeforeOperator;
         }
       }
-      state.amount.number = result;
+      state.input.amount.number = result;
       state.calculationHolder.operator = '';
       state.calculationHolder.number = 0;
     },
     amountAllClear: (state) => {
-      state.amount.number = 0;
+      state.input.amount.number = 0;
       state.calculationHolder.operator = '';
       state.calculationHolder.number = 0;
     },
     paySelectPerson: (state, action: PayloadAction<string>) => {
-      state.payWho = action.payload;
+      state.input.payWho = action.payload;
     },
     paySelectMethod: (
       state,
       action: PayloadAction<'cash' | 'creditCard' | 'mobile'>
     ) => {
-      state.payHow = action.payload;
+      state.input.payHow = action.payload;
     },
     timeEdit: (
       state,
@@ -226,11 +209,11 @@ export const ledgerSingle = createSlice({
         default: {
         }
       }
-      const newTimeInSeconds = time.getTime();
-      const now = new Date().getTime(); //TODO ESSENTIAL: Reducers Must Not Have Side Effects
-      if (newTimeInSeconds > now) alert('注意，未來日期！');
-
-      state.timeLedger = newTimeInSeconds;
+      // const now = new Date().getTime(); //TODO ESSENTIAL: Reducers Must Not Have Side Effects
+      // if (newTimeInSeconds > now) alert('注意，未來日期！');
+      state.input.timeLedger = time.getTime();
+      state.input.timeMonth = time.getMonth() + 1;
+      state.input.timeYear = time.getFullYear();
     },
   },
   extraReducers: (builder) => {
@@ -241,16 +224,14 @@ export const ledgerSingle = createSlice({
       .addCase(ledgerSubmit.fulfilled, (state) => {
         state.status = 'idle';
         alert('已登錄');
-        state.item = '';
-        state.labelChoosingType = 'main';
-        state.labelMain = '';
-        state.labelSubs = [];
-        state.amount = { currency: '', number: 0, numberNT: 0 };
+        state.input.item = '';
+        state.input.labelMain = '';
+        state.input.labelSubs = [];
+        state.input.amount = { currency: '', number: 0, numberNT: 0 };
         state.calculationHolder = {
           operator: '',
           number: 0,
         };
-        state.imageUrl = '';
       })
       .addCase(ledgerSubmit.rejected, (state) => {
         state.status = 'failed';
@@ -260,9 +241,9 @@ export const ledgerSingle = createSlice({
 });
 
 export const {
+  ledgerEdit,
   itemKeyIn,
-  labelChooseType,
-  labelChoose,
+  labelChooseMain,
   labelRetrieve,
   amountKeyNumber,
   amountDelete,
