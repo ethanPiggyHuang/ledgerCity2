@@ -19,7 +19,7 @@ interface dataByLabel {
 
 export const PieChart: React.FC = () => {
   const loadingStatus = useAppSelector((state) => state.ledgerList.status);
-  const ledgerList = useAppSelector((state) => state.ledgerList.data);
+  const ledgerList = useAppSelector((state) => state.ledgerList.dataList);
   const { chosenYear, chosenMonth } = useAppSelector(
     (state) => state.ledgerList.choices
   );
@@ -42,11 +42,11 @@ export const PieChart: React.FC = () => {
 
   const rawDatas = ledgerList.map((ledger) => {
     return {
-      labelMain: ledger.labelMain,
+      labelMain: ledger.data.labelMain,
       ledgerId: ledger.ledgerId,
-      value: ledger.amount.number,
-      year: ledger.timeYear,
-      month: ledger.timeMonth,
+      value: ledger.data.amount.number,
+      year: ledger.data.timeYear,
+      month: ledger.data.timeMonth,
     };
   });
 

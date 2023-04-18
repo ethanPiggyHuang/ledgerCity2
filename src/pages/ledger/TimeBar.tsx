@@ -1,11 +1,14 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { timeEdit } from '../../redux/reducers/ledgerSingleSlice';
+import {
+  timeEdit,
+  timeInitialize,
+} from '../../redux/reducers/ledgerSingleSlice';
 
 export const TimeBar: React.FC = () => {
   const ledgerTime = useAppSelector(
-    (state) => state.ledgerSingle.input.timeLedger
+    (state) => state.ledgerSingle.data.timeLedger
   );
   const dispatch = useAppDispatch();
 
@@ -24,7 +27,8 @@ export const TimeBar: React.FC = () => {
   ];
 
   useEffect(() => {
-    //
+    const nowInSeconds = new Date().getTime();
+    dispatch(timeInitialize(nowInSeconds));
   }, []);
 
   return (

@@ -7,12 +7,7 @@ import {
   updateDoc,
   serverTimestamp,
 } from 'firebase/firestore';
-import { LedgerInputState } from '../reducers/ledgerSingleSlice';
-
-export interface LedgerDataState {
-  input: LedgerInputState;
-  recordWho: string;
-}
+import { LedgerDataState } from '../reducers/ledgerSingleSlice';
 
 export async function postLedger(
   ledgerData: LedgerDataState,
@@ -31,7 +26,7 @@ export async function postLedger(
       ledgerId: ledgerRef.id,
       height: 1,
       position: newPosition,
-      type: ledgerData.input.labelMain,
+      type: ledgerData.labelMain,
     }),
   });
 }

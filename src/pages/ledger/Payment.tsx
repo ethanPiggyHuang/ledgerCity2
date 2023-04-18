@@ -7,9 +7,7 @@ import {
 } from '../../redux/reducers/ledgerSingleSlice';
 
 export const Payment: React.FC = () => {
-  const { payWho, payHow } = useAppSelector(
-    (state) => state.ledgerSingle.input
-  );
+  const { payWho, payHow } = useAppSelector((state) => state.ledgerSingle.data);
   const dispatch = useAppDispatch();
   useEffect(() => {
     //TODO: onSnapshot

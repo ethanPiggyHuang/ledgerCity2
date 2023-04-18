@@ -12,24 +12,25 @@ import {
 } from 'firebase/firestore';
 import { WhereFilterOp } from '@firebase/firestore-types';
 
-export interface LedgerListState {
+export interface LedgerRecordedState {
   ledgerId: string;
-  timeLedger: number;
-  timeYear: number;
-  timeMonth: number;
-  item: string;
-  labelMain: string;
-  labelSubs: string[];
-  payWho: string;
-  payHow: 'cash' | 'creditCard' | 'mobile';
-  amount: {
-    currency: string;
-    number: number;
-    numberNT: number;
+  data: {
+    timeLedger: number;
+    timeYear: number;
+    timeMonth: number;
+    item: string;
+    labelMain: string;
+    labelSubs: string[];
+    payWho: string;
+    payHow: 'cash' | 'creditCard' | 'mobile';
+    amount: {
+      currency: string;
+      number: number;
+      numberNT: number;
+    };
+    recordWho: string;
+    recordTime: any; //TODO typescript
   };
-  imageUrl: string;
-  recordWho: string;
-  recordTime: any; //TODO typescript
 }
 
 export async function fetchLedgerList(
@@ -49,11 +50,11 @@ export async function fetchLedgerList(
   const querySnapshot = await getDocs(q);
   let result: any[] = []; //TODO typescript
   querySnapshot.forEach((doc) => {
-    result.push({ ledgerId: doc.id, ...doc.data() });
+    result.push({ ledgerId: doc.id, data: doc.data() });
   });
 
-  return new Promise<{ data: LedgerListState[] }>((resolve) =>
-    resolve({ data: result as LedgerListState[] })
+  return new Promise<{ dataList: LedgerRecordedState[] }>((resolve) =>
+    resolve({ dataList: result as LedgerRecordedState[] })
   );
 }
 

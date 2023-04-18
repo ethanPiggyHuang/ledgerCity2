@@ -16,13 +16,11 @@ import { NavBar } from '../gameMap/NavBar';
 export const Ledger: React.FC = () => {
   const { housesPosition } = useAppSelector((state) => state.cityArrangement);
   const { item, labelMain, amount } = useAppSelector(
-    (state) => state.ledgerSingle.input
+    (state) => state.ledgerSingle.data
   );
   const { userId } = useAppSelector((state) => state.userInfo.data.user);
 
   const dispatch = useAppDispatch();
-
-  const now = new Date().getTime(); //TODO ESSENTIAL: Reducers Must Not Have Side Effects
 
   // 監聽使用者進入頁面 -> 送到 db
   useEffect(() => {

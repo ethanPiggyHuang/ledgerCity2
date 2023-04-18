@@ -14,7 +14,7 @@ interface BarChartSetting {
 
 export const BarChart: React.FC = () => {
   const loadingStatus = useAppSelector((state) => state.ledgerList.status);
-  const ledgerList = useAppSelector((state) => state.ledgerList.data);
+  const ledgerList = useAppSelector((state) => state.ledgerList.dataList);
   const { chosenYear } = useAppSelector((state) => state.ledgerList.choices);
   const [hasCategory, setHasCategory] = useState(false);
   const [labelsDisplay, setLabelsDisplay] = useState(new Array(8).fill(true));
@@ -44,11 +44,11 @@ export const BarChart: React.FC = () => {
 
   const rawDatas = ledgerList.map((ledger) => {
     return {
-      item: ledger.item,
-      label: ledger.labelMain,
-      value: ledger.amount.number,
-      year: ledger.timeYear,
-      month: ledger.timeMonth,
+      item: ledger.data.item,
+      label: ledger.data.labelMain,
+      value: ledger.data.amount.number,
+      year: ledger.data.timeYear,
+      month: ledger.data.timeMonth,
     };
   });
 

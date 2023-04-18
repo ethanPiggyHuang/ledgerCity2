@@ -1,25 +1,11 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { fetchLedgerList, deleteLedger } from '../api/ledgerListAPI';
-
-export interface LedgerSingleState {
-  ledgerId: string;
-  timeLedger: number;
-  timeYear: number;
-  timeMonth: number;
-  item: string;
-  labelMain: string;
-  labelSubs: string[];
-  payWho: string;
-  payHow: 'cash' | 'creditCard' | 'mobile';
-  amount: { currency: string; number: number; numberNT: number }; //TODO currency exchange
-  imageUrl: string;
-  recordTime: number;
-}
+import { LedgerDataState } from './ledgerSingleSlice';
 
 interface LedgerListState {
-  data: LedgerSingleState[];
+  dataList: { ledgerId: string; data: LedgerDataState }[];
   choices: {
-    ledgerId: string;
+    chosenLedgerId: string;
     chosenYear: number;
     chosenMonth: number;
     chosenLabel: string;
@@ -28,23 +14,13 @@ interface LedgerListState {
 }
 
 const initialState: LedgerListState = {
-  data: [
-    {
-      ledgerId: '',
-      timeLedger: 0,
-      timeYear: 0,
-      timeMonth: 0,
-      item: '',
-      labelMain: '',
-      labelSubs: [],
-      payWho: '',
-      payHow: 'cash',
-      amount: { currency: 'NT', number: 0, numberNT: 0 },
-      imageUrl: '',
-      recordTime: 0,
-    },
-  ],
-  choices: { ledgerId: '', chosenYear: 2023, chosenMonth: 0, chosenLabel: '' },
+  dataList: [],
+  choices: {
+    chosenLedgerId: '',
+    chosenYear: 2023,
+    chosenMonth: 0,
+    chosenLabel: '',
+  },
   status: 'loading',
 };
 
@@ -57,9 +33,14 @@ export const getLedgerList = createAsyncThunk(
       whereFilterOp: '>=',
       value: 0,
     });
-    const modifiedResponse = response.data.map((data) => {
-      const timeInSeconds = new Date(data.recordTime.seconds * 1000).getTime();
-      return { ...data, recordTime: timeInSeconds };
+    const modifiedResponse = response.dataList.map((ledger) => {
+      const timeInSeconds = new Date(
+        ledger.data.recordTime.seconds * 1000
+      ).getTime();
+      return {
+        ledgerId: ledger.ledgerId,
+        data: { ...ledger.data, recordTime: timeInSeconds },
+      };
     });
     return modifiedResponse;
   }
@@ -95,7 +76,7 @@ export const ledgerList = createSlice({
       })
       .addCase(getLedgerList.fulfilled, (state, action) => {
         state.status = 'idle';
-        state.data = action.payload;
+        state.dataList = action.payload;
       })
       .addCase(getLedgerList.rejected, (state) => {
         state.status = 'failed';
@@ -106,7 +87,7 @@ export const ledgerList = createSlice({
       })
       .addCase(deleteSingleLedger.fulfilled, (state, action) => {
         state.status = 'idle';
-        state.data = state.data.filter(
+        state.dataList = state.dataList.filter(
           (ledger) => ledger.ledgerId !== action.payload
         );
         console.log('delete ledger complete');

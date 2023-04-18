@@ -11,7 +11,7 @@ import {
 
 export const Calculator: React.FC = () => {
   const { calculationHolder } = useAppSelector((state) => state.ledgerSingle);
-  const { amount } = useAppSelector((state) => state.ledgerSingle.input);
+  const { amount } = useAppSelector((state) => state.ledgerSingle.data);
   const dispatch = useAppDispatch();
 
   const buttons: string[] = [

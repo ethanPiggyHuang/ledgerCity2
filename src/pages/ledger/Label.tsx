@@ -10,7 +10,7 @@ import { mainLabels } from '../../utils/gameSettings';
 
 export const Label: React.FC = () => {
   const { labelMain, labelSubs, item } = useAppSelector(
-    (state) => state.ledgerSingle.input
+    (state) => state.ledgerSingle.data
   );
   const dispatch = useAppDispatch();
 
