@@ -11,6 +11,7 @@ import {
 } from 'firebase/firestore';
 import { rtdb } from '../../config/firebase';
 import { ref, set } from 'firebase/database';
+import { UserDataState } from '../reducers/userInfoSlice';
 
 export async function createAccount(userInfo: {
   userId: string;
@@ -65,6 +66,41 @@ export async function createAccount(userInfo: {
     (resolve) =>
       resolve({ data: { cityId: cityRef.id, ledgerBookId: ledgerBookRef.id } })
   );
+}
+
+export async function getAccountInfo(userInfo: {
+  userId: string;
+  userName: string;
+  userEmail: string;
+  userPortraitUrl: string;
+}) {
+  const { userId, userName, userEmail, userPortraitUrl } = userInfo;
+
+  await updateDoc(doc(db, 'users', userId), {
+    userName,
+    userEmail,
+    userPortraitUrl,
+  });
+  const docSnap = await getDoc(doc(db, 'users', userId));
+  if (docSnap.exists()) {
+    const data = docSnap.data() as UserDataState; //TODO typescript
+    return new Promise<{ data: UserDataState }>((resolve) => resolve({ data }));
+  }
+  // const cityRef = await addDoc(collection(db, 'cities'), initailCityData);
+  // const ledgerBookRef = await addDoc(collection(db, 'ledgerBooks'), {
+  //   cityId: cityRef.id,
+  // });
+  // await updateDoc(doc(db, 'cities', cityRef.id), {
+  //   ledgerBookId: ledgerBookRef.id,
+  // });
+  // await updateDoc(doc(db, 'users', userId), {
+  //   cityList: arrayUnion(cityRef.id),
+  // });
+
+  // return new Promise<{ data: { cityId: string; ledgerBookId: string } }>(
+  //   (resolve) =>
+  //     resolve({ data: { cityId: cityRef.id, ledgerBookId: ledgerBookRef.id } })
+  // );
 }
 
 export async function postFadeOutTime(userId: string) {

@@ -18,15 +18,19 @@ export const GameMap: React.FC = () => {
   const { isLogin, isAuthing } = useAppSelector(
     (state) => state.userInfo.loginStatus
   );
-  const { userId } = useAppSelector((state) => state.userInfo.data);
+  const { status } = useAppSelector((state) => state.cityBasicInfo);
+  const { userId, cityList } = useAppSelector((state) => state.userInfo.data);
 
   const dispatch = useAppDispatch();
 
   // 從 db 獲取 city 資料
   useEffect(() => {
-    dispatch(getCityInfo());
+    if (cityList.length !== 0) {
+      dispatch(getCityInfo(cityList[0]));
+      console.log('go fetch');
+    }
     // 要改成從 db 匯入
-  }, []);
+  }, [cityList]);
 
   // 監聽使用者（關閉/離開）網頁動態 -> 送到 db
   useEffect(() => {
@@ -68,10 +72,9 @@ export const GameMap: React.FC = () => {
     if (userId) updateLocation(userId, 'city');
   }, [userId]);
 
-  console.log(isLogin, isAuthing);
-
   return (
     <Wrapper>
+      {/* && status === 'loading' */}
       {!isLogin && !isAuthing && <DialogBoard />}
       <City />
       <RearrangeOptions />

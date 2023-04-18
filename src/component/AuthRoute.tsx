@@ -4,7 +4,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import {
   AUTHING_TOGGLE,
-  LOGGED_IN,
+  GET_ACCOUNT_INFO,
   CREATE_ACCOUNT,
 } from '../redux/reducers/userInfoSlice';
 
@@ -24,7 +24,6 @@ const AuthRoute: React.FunctionComponent<IAuthRouteProps> = (props) => {
   useEffect(() => {
     dispatch(AUTHING_TOGGLE(true));
     const AuthCheck = onAuthStateChanged(auth, (user) => {
-      console.log('user', user);
       if (user) {
         const { uid, displayName, email, photoURL } = user;
         if (user.metadata.creationTime === user.metadata.lastSignInTime) {
@@ -35,15 +34,12 @@ const AuthRoute: React.FunctionComponent<IAuthRouteProps> = (props) => {
           // 使用者已登入過
           console.log('使用者已登入過');
           // dispatch(CREATE_ACCOUNT({ uid, displayName, email, photoURL }));
-          dispatch(LOGGED_IN({ uid, displayName, email, photoURL }));
+          dispatch(GET_ACCOUNT_INFO({ uid, displayName, email, photoURL }));
         }
         dispatch(AUTHING_TOGGLE(false));
-
-        console.log('login user:', user);
       } else {
         dispatch(AUTHING_TOGGLE(false));
         console.log('unauthorized');
-        // navigate('/');
       }
     });
     // AuthCheck();
