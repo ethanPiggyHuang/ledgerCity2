@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link, redirect } from 'react-router-dom';
-import styled from 'styled-components/macro';
+import styled, { keyframes, css } from 'styled-components/macro';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
@@ -22,6 +22,7 @@ export const Ledger: React.FC = () => {
   const { item, labelMain, amount } = useAppSelector(
     (state) => state.ledgerSingle.data
   );
+  const { ledgerPosition } = useAppSelector((state) => state.pageControl);
 
   const dispatch = useAppDispatch();
 
@@ -33,19 +34,8 @@ export const Ledger: React.FC = () => {
     }
   }, [userId]);
 
-  //TODO: ???
-  const unsubscribe = onSnapshot(
-    doc(db, 'cities', 'YFbhq5M8vFBIUMMWZhqo'),
-    (doc) => {
-      const source = doc.metadata.hasPendingWrites ? 'Local' : 'Server';
-      if (source === 'Local') {
-        console.log('need redirect'); //TODO: how to redirect???
-      }
-    }
-  );
-
   return (
-    <Wrap>
+    <Wrap $state={ledgerPosition}>
       <MainBoard>
         <TimeBar />
         <Section>
@@ -81,18 +71,50 @@ export const Ledger: React.FC = () => {
         </BoardFooter>
       </MainBoard>
       <br />
-      <NavBar />
     </Wrap>
   );
 };
 
-const Wrap = styled.div`
+type WrapProps = { $state: 'minimize' | 'normal' | 'expand' };
+
+const fadeOut = keyframes`
+from {
+  transform: translateY(0);
+}
+to {
+  transform: translateY(300px);
+}
+`;
+
+const showUp = keyframes`
+from {
+  transform: translateY(300px);
+}
+to {
+  transform: translateY(0px);
+}
+`;
+
+const Wrap = styled.div<WrapProps>`
   padding: 20px;
-  position: relative;
+  position: absolute;
+  bottom: 0;
+  max-height: 50vh;
+  overflow: scroll;
   display: flex;
   border: 1px solid lightblue;
   flex-wrap: wrap;
   gap: 20px;
+  ${({ $state }) =>
+    $state === 'normal'
+      ? css`
+          animation: ${fadeOut} 1s linear 1;
+          transform: translateY(300px);
+        `
+      : css`
+          animation: ${showUp} 1s linear 1;
+          transform: translateY(0px);
+        `}
 `;
 
 const ModeOptions = styled.div`

@@ -6,6 +6,7 @@ import ledgerSingleReducer from './reducers/ledgerSingleSlice';
 import ledgerListReducer from './reducers/ledgerListSlice';
 import userInfoReducer from './reducers/userInfoSlice';
 import userActivityReducer from './reducers/usersActivitySlice';
+import pageControlReducer from './reducers/pageControlSlice';
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     ledgerList: ledgerListReducer,
     userInfo: userInfoReducer,
     userActivity: userActivityReducer,
+    pageControl: pageControlReducer,
   },
 });
 

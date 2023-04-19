@@ -26,8 +26,8 @@ const App: React.FunctionComponent<IApplicationProps> = (props) => {
           <Route path="/city" element={<GameMap />} />
           {/* //TODO */}
           {/* <Route path="/login" element={<Login />} /> */}
-          <Route path="/counter" element={<Counter />} />
-          <Route path="/ledger" element={<Ledger />} />
+          {/* <Route path="/counter" element={<Counter />} /> */}
+          {/* <Route path="/ledger" element={<Ledger />} /> */}
           <Route path="/statistics" element={<Statistics />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<Navigate to="/city" replace />} />

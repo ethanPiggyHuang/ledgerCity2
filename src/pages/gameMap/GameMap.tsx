@@ -15,6 +15,7 @@ import {
 import { getCityInfo } from '../../redux/reducers/cityBasicInfoSlice';
 import { getLedgerList } from '../../redux/reducers/ledgerListSlice';
 import { Button } from '../../component/Button';
+import { Ledger } from '../ledger/Ledger';
 
 export const GameMap: React.FC = () => {
   const { isLogin, isAuthing } = useAppSelector(
@@ -86,6 +87,7 @@ export const GameMap: React.FC = () => {
       <RearrangeOptions />
       <NavBar />
       <ScaleBar />
+      <Ledger />
       {/* <CityShiftControl type={'down'} /> */}
       {/* <Button type={'edit'}></Button> */}
     </Wrapper>
