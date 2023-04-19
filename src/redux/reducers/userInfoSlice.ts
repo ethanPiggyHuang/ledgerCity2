@@ -70,7 +70,8 @@ export const CREATE_ACCOUNT = createAsyncThunk(
     const userPortraitUrl = photoURL || '';
     const user = { userId: uid, userName, userEmail, userPortraitUrl };
     const response = await createAccount(user);
-    return response.data;
+
+    return { user, data: response.data };
   }
 );
 
@@ -130,7 +131,11 @@ export const userInfo = createSlice({
       .addCase(CREATE_ACCOUNT.fulfilled, (state, action) => {
         state.status = 'idle';
         state.loginStatus.isLogin = true;
-        const { cityId, ledgerBookId } = action.payload;
+        const { cityId, ledgerBookId } = action.payload.data;
+        state.data.userId = action.payload.user.userId;
+        state.data.userName = action.payload.user.userName;
+        state.data.userPortraitUrl = action.payload.user.userPortraitUrl;
+        state.data.userEmail = action.payload.user.userEmail;
         console.log('check', cityId, ledgerBookId);
         state.data.cityList = [cityId];
       })
@@ -140,14 +145,15 @@ export const userInfo = createSlice({
       })
       .addCase(GET_ACCOUNT_INFO.pending, (state) => {
         state.status = 'loading';
-        //要跳出提示「帳號創建中」
       })
       .addCase(GET_ACCOUNT_INFO.fulfilled, (state, action) => {
         state.status = 'idle';
         state.loginStatus.isLogin = true;
-        const cityId = action.payload?.cityList[0];
-        console.log(cityId);
-        if (cityId) state.data.cityList = [cityId];
+        if (action.payload) {
+          // const cityId = action.payload.cityList[0];
+          // state.data.cityList = [cityId];
+          state.data = action.payload;
+        }
       })
       .addCase(GET_ACCOUNT_INFO.rejected, (state) => {
         state.status = 'failed';

@@ -13,12 +13,14 @@ import {
   postFadeOutTimeRT,
   updateLocation,
 } from '../../redux/api/userAPI';
+import { getLedgerList } from '../../redux/reducers/ledgerListSlice';
+import { Button } from '../../component/Button';
 
 export const GameMap: React.FC = () => {
   const { isLogin, isAuthing } = useAppSelector(
     (state) => state.userInfo.loginStatus
   );
-  const { status } = useAppSelector((state) => state.cityBasicInfo);
+  const { ledgerBookId } = useAppSelector((state) => state.cityBasicInfo);
   const { userId, cityList } = useAppSelector((state) => state.userInfo.data);
 
   const dispatch = useAppDispatch();
@@ -31,6 +33,12 @@ export const GameMap: React.FC = () => {
     }
     // 要改成從 db 匯入
   }, [cityList]);
+
+  useEffect(() => {
+    if (ledgerBookId.length !== 0) {
+      dispatch(getLedgerList(ledgerBookId));
+    }
+  }, [ledgerBookId]);
 
   // 監聽使用者（關閉/離開）網頁動態 -> 送到 db
   useEffect(() => {
@@ -81,6 +89,7 @@ export const GameMap: React.FC = () => {
       <NavBar />
       <ScaleBar />
       {/* <CityShiftControl type={'down'} /> */}
+      {/* <Button type={'edit'}></Button> */}
     </Wrapper>
   );
 };

@@ -26,8 +26,8 @@ const initialState: LedgerListState = {
 
 export const getLedgerList = createAsyncThunk(
   'statistics/getLedgerList',
-  async () => {
-    const ledgerBookId: string = 'UcrgCxiJxo3oA7vvwYtd'; //TODO: import from other State
+  async (ledgerBookId: string) => {
+    // const ledgerBookId: string = 'UcrgCxiJxo3oA7vvwYtd'; //TODO: import from other State
     const response = await fetchLedgerList(ledgerBookId, {
       field: 'timeYear',
       whereFilterOp: '>=',

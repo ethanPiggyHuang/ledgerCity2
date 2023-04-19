@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { updateHousePosition } from '../api/cityAPI';
 import { CityBasicInfoState, HouseState } from './cityBasicInfoSlice';
+import { RootState } from '../store';
 
 export interface CityArrangementState {
   housesPosition: { type: string; id: string }[][];
@@ -36,11 +37,12 @@ const initialState: CityArrangementState = {
 
 export const saveCityAsync = createAsyncThunk(
   'cityArrangement/saveCity',
-  async (houses: HouseState[], { getState }) => {
-    const cityId: string = 'YFbhq5M8vFBIUMMWZhqo'; //TODO: import cityId from other State
-    const allStates = getState() as any; //TODO
+  async (arg, { getState }) => {
+    const allStates = getState() as RootState; //TODO
+    const cityId = allStates.userInfo.data.cityList[0]; //TODO: import cityId from other State
+    const houses = allStates.cityBasicInfo.houses;
     const houseIds = houses.map((house) => house.ledgerId);
-    const housesPosition: { type: number; id: string }[][] =
+    const housesPosition: { type: string; id: string }[][] =
       allStates.cityArrangement.housesPosition;
 
     let newPostions: { [key: string]: { xIndex: number; yIndex: number } } = {};

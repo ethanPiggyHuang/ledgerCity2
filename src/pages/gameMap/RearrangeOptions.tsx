@@ -11,7 +11,6 @@ import hammer_2 from '../../utils/hammer_2.wav';
 
 export const RearrangeOptions: React.FC = () => {
   const { dragMode } = useAppSelector((state) => state.cityArrangement);
-  const { houses } = useAppSelector((state) => state.cityBasicInfo);
   const dispatch = useAppDispatch();
   const [isMusicPlay, setIsMusicPlay] = useState(false);
   const [playHammer, { stop }] = useSound(hammer_2, { volume: 0.8 });
@@ -20,7 +19,7 @@ export const RearrangeOptions: React.FC = () => {
 
   const handleConstruction = () => {
     if (dragMode === 'houses') {
-      dispatch(saveCityAsync(houses)); //TODO: can get state info directly in reducer
+      dispatch(saveCityAsync());
       playHammer();
       // setTimeout(() => stop(), 1000); // 音效時間短一點
     } else {

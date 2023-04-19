@@ -26,9 +26,9 @@ export const Statistics: React.FC = () => {
     if (userId) updateLocation(userId, 'statistics');
   }, [userId]);
 
-  useEffect(() => {
-    dispatch(getLedgerList());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(getLedgerList());
+  // }, [dispatch]);
 
   return (
     <Wrap>
