@@ -54,7 +54,12 @@ export const saveCityAsync = createAsyncThunk(
     const newHouses = houses.map((house) => {
       return { ...house, position: newPostions[house.ledgerId] };
     });
-    await updateHousePosition(cityId, newHouses);
+    console.log(cityId, newHouses);
+    try {
+      await updateHousePosition(cityId, newHouses);
+    } catch (error) {
+      console.log(error);
+    }
   }
 );
 

@@ -9,8 +9,10 @@ import {
   deleteDoc,
   updateDoc,
   deleteField,
+  arrayRemove,
 } from 'firebase/firestore';
 import { WhereFilterOp } from '@firebase/firestore-types';
+import { HouseState } from '../reducers/cityBasicInfoSlice';
 
 export interface LedgerRecordedState {
   ledgerId: string;
@@ -58,6 +60,14 @@ export async function fetchLedgerList(
   );
 }
 
-export async function deleteLedger(ledgerBookId: string, ledgerId: string) {
-  await deleteDoc(doc(db, 'ledgerBooks', ledgerBookId, 'ledgers', ledgerId));
+export async function deleteLedger(
+  cityId: string,
+  newHouses: HouseState[],
+  ledgerBookId: string,
+  ledgerId: string
+) {
+  const cityRef = doc(db, 'cities', cityId);
+  const ledgerRef = doc(db, 'ledgerBooks', ledgerBookId, 'ledgers', ledgerId);
+  await deleteDoc(ledgerRef);
+  await updateDoc(cityRef, { houses: newHouses });
 }

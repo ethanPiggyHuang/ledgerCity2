@@ -49,9 +49,14 @@ export const getLedgerList = createAsyncThunk(
 export const deleteSingleLedger = createAsyncThunk(
   'statistics/deleteSingleLedger',
   async (ledgerId: string, { getState }) => {
-    const allState = getState() as RootState;
-    const ledgerBookId = allState.cityBasicInfo.ledgerBookId;
-    await deleteLedger(ledgerBookId, ledgerId);
+    const allStates = getState() as RootState;
+    const cityId = allStates.userInfo.data.cityList[0];
+    const ledgerBookId = allStates.cityBasicInfo.ledgerBookId;
+    const houses = allStates.cityBasicInfo.houses;
+    const newHouses = houses.filter((house) => house.ledgerId !== ledgerId);
+    houses.forEach((house) => console.log(house.ledgerId !== ledgerId));
+    // console.log(newHouses);
+    await deleteLedger(cityId, newHouses, ledgerBookId, ledgerId);
     return ledgerId;
   }
 );

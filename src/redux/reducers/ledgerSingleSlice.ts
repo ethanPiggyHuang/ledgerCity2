@@ -62,10 +62,8 @@ export const ledgerSubmit = createAsyncThunk(
       recordWho: userId,
     };
     const availableGrids: { yIndex: number; xIndex: number }[] = [];
-    const housesPosition = allStates.cityArrangement.housesPosition as {
-      type: string;
-      id: string;
-    }[][];
+    // const houses = allStates.cityBasicInfo.houses;
+    const housesPosition = allStates.cityArrangement.housesPosition;
     housesPosition.forEach((raw, yIndex) => {
       raw.forEach((grid, xIndex) => {
         if (grid.type === '') availableGrids.push({ yIndex, xIndex });
@@ -243,6 +241,8 @@ export const ledgerSingle = createSlice({
     },
     timeInitialize: (state, action: PayloadAction<number>) => {
       state.data.timeLedger = action.payload;
+      state.data.timeMonth = new Date(action.payload).getMonth() + 1;
+      state.data.timeYear = new Date(action.payload).getFullYear();
     },
   },
   extraReducers: (builder) => {

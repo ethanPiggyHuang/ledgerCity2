@@ -3,11 +3,9 @@ import styled from 'styled-components/macro';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import {
-  AUTHING_TOGGLE,
-  GET_ACCOUNT_INFO,
-  CREATE_ACCOUNT,
-} from '../redux/reducers/userInfoSlice';
-import { getCityInfo } from '../redux/reducers/cityBasicInfoSlice';
+  UPDATE_CITY_INFO,
+  CityBasicInfoState,
+} from '../redux/reducers/cityBasicInfoSlice';
 import {
   getLedgerList,
   UPDATE_LEDGER_LIST,
@@ -33,7 +31,6 @@ interface LedgerDatabaseState {
 
 const Header: React.FC = () => {
   const dispatch = useAppDispatch();
-
   const { ledgerBookId } = useAppSelector((state) => state.cityBasicInfo);
   const { cityList } = useAppSelector((state) => state.userInfo.data);
 
@@ -41,15 +38,17 @@ const Header: React.FC = () => {
 
   useEffect(() => {
     if (cityList.length !== 0) {
-      dispatch(getCityInfo(cityList[0]));
-      console.log('go fetch');
+      const q = doc(db, 'cities', cityList[0]);
+      const unsubscribe = onSnapshot(q, (doc) => {
+        const cityInfo = doc.data();
+        dispatch(UPDATE_CITY_INFO(cityInfo as CityBasicInfoState));
+      });
+      return () => unsubscribe();
     }
   }, [cityList]);
 
   useEffect(() => {
     if (ledgerBookId.length !== 0) {
-      // dispatch(getLedgerList(ledgerBookId));
-
       const q = query(
         collection(db, 'ledgerBooks', ledgerBookId, 'ledgers'),
         orderBy('timeLedger')
@@ -58,7 +57,6 @@ const Header: React.FC = () => {
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         let rawResult = [] as any;
         querySnapshot.forEach((doc) => {
-          // console.log('id', doc.id);
           rawResult.push({ ledgerId: doc.id, data: doc.data() });
         });
 

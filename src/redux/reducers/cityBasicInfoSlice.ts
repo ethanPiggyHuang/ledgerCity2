@@ -14,7 +14,7 @@ export interface CityBasicInfoState {
   cityName: string;
   houses: HouseState[];
   ledgerBookId: string;
-  status: 'idle' | 'loading' | 'failed';
+  status?: 'idle' | 'loading' | 'failed';
 }
 
 const initialState: CityBasicInfoState = {
@@ -41,7 +41,16 @@ export const getCityInfo = createAsyncThunk(
 export const cityBasicInfo = createSlice({
   name: 'cityBasicInfo',
   initialState,
-  reducers: {},
+  reducers: {
+    UPDATE_CITY_INFO: (state, action: PayloadAction<CityBasicInfoState>) => {
+      state.cityName = action.payload.cityName;
+      state.accessUsers = action.payload.accessUsers;
+      state.citizen = action.payload.citizen;
+      state.houses = action.payload.houses;
+      state.ledgerBookId = action.payload.ledgerBookId;
+      state.status = 'idle';
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getCityInfo.pending, (state) => {
@@ -65,6 +74,6 @@ export const cityBasicInfo = createSlice({
   },
 });
 
-// export const {} = GameMainInfo.actions;
+export const { UPDATE_CITY_INFO } = cityBasicInfo.actions;
 
 export default cityBasicInfo.reducer;
