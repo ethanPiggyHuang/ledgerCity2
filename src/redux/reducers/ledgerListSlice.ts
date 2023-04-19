@@ -22,7 +22,7 @@ const initialState: LedgerListState = {
     chosenMonth: 0,
     chosenLabel: '',
   },
-  status: 'loading',
+  status: 'idle',
 };
 
 export const getLedgerList = createAsyncThunk(

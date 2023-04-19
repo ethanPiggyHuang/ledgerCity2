@@ -48,7 +48,7 @@ const Header: React.FC = () => {
 
   useEffect(() => {
     if (ledgerBookId.length !== 0) {
-      dispatch(getLedgerList(ledgerBookId));
+      // dispatch(getLedgerList(ledgerBookId));
 
       const q = query(
         collection(db, 'ledgerBooks', ledgerBookId, 'ledgers'),
@@ -58,24 +58,26 @@ const Header: React.FC = () => {
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         let rawResult = [] as any;
         querySnapshot.forEach((doc) => {
-          console.log('id', doc.id);
+          // console.log('id', doc.id);
           rawResult.push({ ledgerId: doc.id, data: doc.data() });
         });
 
         const convertedResult: { ledgerId: string; data: LedgerDataState }[] =
           rawResult.map(
-            (data: { ledgerId: string; data: LedgerDatabaseState }) => {
+            (
+              data: { ledgerId: string; data: LedgerDatabaseState },
+              index: number
+            ) => {
+              if (index === 0) console.log('record', data.data.recordTime);
               const recordTime = data.data.recordTime
                 ? new Date(data.data.recordTime.seconds * 1000).getTime()
                 : 0;
-              // console.log(typeof data.recordTime.seconds);
               return {
                 ...data,
                 data: { ...data.data, recordTime },
               };
             }
           );
-        // console.log(convertedResult);
         dispatch(UPDATE_LEDGER_LIST(convertedResult));
       });
 
