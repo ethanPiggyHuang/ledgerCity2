@@ -38,12 +38,11 @@ const initialState: CityArrangementState = {
 export const saveCityAsync = createAsyncThunk(
   'cityArrangement/saveCity',
   async (arg, { getState }) => {
-    const allStates = getState() as RootState; //TODO
-    const cityId = allStates.userInfo.data.cityList[0]; //TODO: import cityId from other State
+    const allStates = getState() as RootState;
+    const cityId = allStates.userInfo.data.cityList[0];
     const houses = allStates.cityBasicInfo.houses;
     const houseIds = houses.map((house) => house.ledgerId);
-    const housesPosition: { type: string; id: string }[][] =
-      allStates.cityArrangement.housesPosition;
+    const housesPosition = allStates.cityArrangement.housesPosition;
 
     let newPostions: { [key: string]: { xIndex: number; yIndex: number } } = {};
     housesPosition.forEach((raw, yIndex) => {

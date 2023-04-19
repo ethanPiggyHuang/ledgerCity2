@@ -7,12 +7,12 @@ import { ScaleBar } from './ScaleBar';
 import { DialogBoard } from '../../component/DialogBoard';
 import { CityShiftControl } from './CityShiftControl';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { getCityInfo } from '../../redux/reducers/cityBasicInfoSlice';
 import {
   postFadeOutTime,
   postFadeOutTimeRT,
   updateLocation,
 } from '../../redux/api/userAPI';
+import { getCityInfo } from '../../redux/reducers/cityBasicInfoSlice';
 import { getLedgerList } from '../../redux/reducers/ledgerListSlice';
 import { Button } from '../../component/Button';
 
@@ -21,24 +21,22 @@ export const GameMap: React.FC = () => {
     (state) => state.userInfo.loginStatus
   );
   const { ledgerBookId } = useAppSelector((state) => state.cityBasicInfo);
-  const { userId, cityList } = useAppSelector((state) => state.userInfo.data);
+  const { userId } = useAppSelector((state) => state.userInfo.data);
 
   const dispatch = useAppDispatch();
 
-  // 從 db 獲取 city 資料
-  useEffect(() => {
-    if (cityList.length !== 0) {
-      dispatch(getCityInfo(cityList[0]));
-      console.log('go fetch');
-    }
-    // 要改成從 db 匯入
-  }, [cityList]);
+  // useEffect(() => {
+  //   if (cityList.length !== 0) {
+  //     dispatch(getCityInfo(cityList[0]));
+  //     console.log('go fetch');
+  //   }
+  // }, [cityList]);
 
-  useEffect(() => {
-    if (ledgerBookId.length !== 0) {
-      dispatch(getLedgerList(ledgerBookId));
-    }
-  }, [ledgerBookId]);
+  // useEffect(() => {
+  //   if (ledgerBookId.length !== 0) {
+  //     dispatch(getLedgerList(ledgerBookId));
+  //   }
+  // }, [ledgerBookId]);
 
   // 監聽使用者（關閉/離開）網頁動態 -> 送到 db
   useEffect(() => {

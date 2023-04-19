@@ -29,7 +29,6 @@ const initialState: CityBasicInfoState = {
 export const getCityInfo = createAsyncThunk(
   'cityBasicInfo/getCityInfo',
   async (cityId: string) => {
-    // const cityId: string = 'YFbhq5M8vFBIUMMWZhqo'; //TODO: import from other State
     try {
       const response = await fetchCityInfo(cityId);
       return response.data;

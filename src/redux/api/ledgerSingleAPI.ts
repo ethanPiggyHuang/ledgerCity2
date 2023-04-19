@@ -10,15 +10,17 @@ import {
 import { LedgerDataState } from '../reducers/ledgerSingleSlice';
 
 export async function postLedger(
+  cityId: string,
+  ledgerBookId: string,
   ledgerData: LedgerDataState,
   availableGrids: { yIndex: number; xIndex: number }[]
 ) {
   const ledgerRef = await addDoc(
-    collection(db, 'ledgerBooks', 'UcrgCxiJxo3oA7vvwYtd', 'ledgers'),
+    collection(db, 'ledgerBooks', ledgerBookId, 'ledgers'),
     { ...ledgerData, recordTime: serverTimestamp() }
   );
 
-  const housesRef = doc(db, 'cities', 'YFbhq5M8vFBIUMMWZhqo');
+  const housesRef = doc(db, 'cities', cityId);
   const newPosition =
     availableGrids[Math.floor(Math.random() * availableGrids.length)]; //TODO: 可以調整選位子邏輯
   await updateDoc(housesRef, {

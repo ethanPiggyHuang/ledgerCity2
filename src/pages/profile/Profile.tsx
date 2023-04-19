@@ -9,13 +9,13 @@ import { Account } from './Account';
 
 export const Profile: React.FC = () => {
   const { userId } = useAppSelector((state) => state.userInfo.data);
-  const constId = 'myCPVIkcOYalDVvdj9hngfml3yq2'; //TODO: 要改成可變動的
-  const cooperatorLocation = useAppSelector(
-    (state) => state.userActivity.data[constId]?.currentPage
-  );
-  const { isEditingCity, fadeOutTime, latestActiveTime } = useAppSelector(
-    (state) => state.userActivity.data[constId]
-  );
+  // const constId = 'myCPVIkcOYalDVvdj9hngfml3yq2'; //TODO: 要改成可變動的
+  // const cooperatorLocation = useAppSelector(
+  //   (state) => state.userActivity.data[constId]?.currentPage
+  // );
+  // const { isEditingCity, fadeOutTime, latestActiveTime } = useAppSelector(
+  //   (state) => state.userActivity.data[constId]
+  // );
   const dispatch = useAppDispatch();
 
   // 監聽使用者進入頁面 -> 送到 db

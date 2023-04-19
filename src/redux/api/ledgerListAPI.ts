@@ -43,7 +43,7 @@ export async function fetchLedgerList(
   }
 ) {
   const ledgersRef = collection(db, 'ledgerBooks', ledgerBookId, 'ledgers');
-  const { field, whereFilterOp, value } = queryParams;
+  // const { field, whereFilterOp, value } = queryParams;
   // const q = query(ledgersRef, where(field, whereFilterOp, value));
   const q = query(ledgersRef, orderBy('timeLedger'));
 

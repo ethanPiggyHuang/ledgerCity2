@@ -11,6 +11,7 @@ import { Profile } from './pages/profile/Profile';
 // import { initializeApp } from 'firebase/app';
 // import { app } from './config/firebase';
 import AuthRoute from './component/AuthRoute';
+import Header from './component/Header';
 
 export interface IApplicationProps {}
 
@@ -20,6 +21,7 @@ const App: React.FunctionComponent<IApplicationProps> = (props) => {
       <Reset />
       <GlobalStyle />
       <AuthRoute>
+        <Header />
         <Routes>
           <Route path="/city" element={<GameMap />} />
           {/* //TODO */}

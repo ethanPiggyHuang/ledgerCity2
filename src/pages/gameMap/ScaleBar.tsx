@@ -10,9 +10,9 @@ import { gridGap, gridLength } from '../../utils/gameSettings';
 
 export const ScaleBar: React.FC = () => {
   const { scale } = useAppSelector((state) => state.cityArrangement);
-  const { currentPage } = useAppSelector(
-    (state) => state.userActivity.data.myCPVIkcOYalDVvdj9hngfml3yq2
-  );
+  // const { currentPage } = useAppSelector(
+  //   (state) => state.userActivity.data.myCPVIkcOYalDVvdj9hngfml3yq2
+  // );
   const dispatch = useAppDispatch();
   const { housesPosition } = useAppSelector((state) => state.cityArrangement);
   const cityHeight = (gridLength + gridGap) * housesPosition.length;
@@ -22,12 +22,12 @@ export const ScaleBar: React.FC = () => {
   useEffect(() => {
     const scrollEvent = (event: WheelEvent) => {
       // TODO: 要限定在 city 才 listen 此 scroll event
-      if (currentPage === 'city') {
-        event.preventDefault();
-        const wheel = event.deltaY / 3000;
-        const zoom = Math.pow(1 + Math.abs(wheel) / 2, wheel > 0 ? 1 : -1);
-        setTimeout(() => dispatch(ADJUST_SCALE(zoom)), 10);
-      }
+      // if (currentPage === 'city') {
+      event.preventDefault();
+      const wheel = event.deltaY / 3000;
+      const zoom = Math.pow(1 + Math.abs(wheel) / 2, wheel > 0 ? 1 : -1);
+      setTimeout(() => dispatch(ADJUST_SCALE(zoom)), 10);
+      // }
     };
     window.addEventListener('wheel', scrollEvent, {
       passive: false,

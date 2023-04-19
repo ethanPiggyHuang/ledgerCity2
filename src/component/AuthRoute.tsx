@@ -7,6 +7,9 @@ import {
   GET_ACCOUNT_INFO,
   CREATE_ACCOUNT,
 } from '../redux/reducers/userInfoSlice';
+import { getCityInfo } from '../redux/reducers/cityBasicInfoSlice';
+import { getLedgerList } from '../redux/reducers/ledgerListSlice';
+import { onSnapshot } from 'firebase/firestore';
 
 export interface IAuthRouteProps {
   children?: React.ReactNode; //TODO ??
@@ -18,6 +21,8 @@ const AuthRoute: React.FunctionComponent<IAuthRouteProps> = (props) => {
   const { isAuthing, isLogin } = useAppSelector(
     (state) => state.userInfo.loginStatus
   );
+  const { ledgerBookId } = useAppSelector((state) => state.cityBasicInfo);
+  const { cityList } = useAppSelector((state) => state.userInfo.data);
 
   const auth = getAuth();
 
@@ -46,6 +51,19 @@ const AuthRoute: React.FunctionComponent<IAuthRouteProps> = (props) => {
 
     return () => AuthCheck();
   }, [auth]);
+
+  // useEffect(() => {
+  //   if (cityList.length !== 0) {
+  //     dispatch(getCityInfo(cityList[0]));
+  //     console.log('go fetch');
+  //   }
+  // }, [cityList]);
+
+  // useEffect(() => {
+  //   if (ledgerBookId.length !== 0) {
+  //     dispatch(getLedgerList(ledgerBookId));
+  //   }
+  // }, [ledgerBookId]);
 
   if (isAuthing) return <LoadingText>loading...</LoadingText>;
 

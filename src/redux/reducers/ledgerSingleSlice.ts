@@ -54,6 +54,8 @@ export const ledgerSubmit = createAsyncThunk(
     const allStates = getState() as RootState;
     const ledgerSingle = allStates.ledgerSingle;
     const data = ledgerSingle.data;
+    const ledgerBookId = allStates.cityBasicInfo.ledgerBookId;
+    const cityId = allStates.userInfo.data.cityList[0];
     const { userId } = allStates.userInfo.data;
     const ledgerData = {
       ...data,
@@ -70,8 +72,8 @@ export const ledgerSubmit = createAsyncThunk(
       });
     });
     console.log('available', availableGrids);
-    if (availableGrids.length === 0) alert('not enough grids'); //TODO: auto expand grid
-    await postLedger(ledgerData, availableGrids);
+    // if (availableGrids.length === 0) alert('not enough grids'); //TODO: auto expand grid
+    await postLedger(cityId, ledgerBookId, ledgerData, availableGrids);
   }
 );
 
@@ -79,7 +81,7 @@ export const ledgerUpdate = createAsyncThunk(
   'ledger/ledgerUpdate',
   async (arg, { getState }) => {
     const allStates = getState() as RootState;
-    const ledgerBookId = 'UcrgCxiJxo3oA7vvwYtd';
+    const ledgerBookId = allStates.cityBasicInfo.ledgerBookId;
     const { userId } = allStates.userInfo.data;
     const { ledgerId, data } = allStates.ledgerSingle;
 

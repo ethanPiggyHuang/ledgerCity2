@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { fetchLedgerList, deleteLedger } from '../api/ledgerListAPI';
 import { LedgerDataState } from './ledgerSingleSlice';
+import { RootState } from '../store';
 
 interface LedgerListState {
   dataList: { ledgerId: string; data: LedgerDataState }[];
@@ -27,7 +28,6 @@ const initialState: LedgerListState = {
 export const getLedgerList = createAsyncThunk(
   'statistics/getLedgerList',
   async (ledgerBookId: string) => {
-    // const ledgerBookId: string = 'UcrgCxiJxo3oA7vvwYtd'; //TODO: import from other State
     const response = await fetchLedgerList(ledgerBookId, {
       field: 'timeYear',
       whereFilterOp: '>=',
@@ -48,8 +48,9 @@ export const getLedgerList = createAsyncThunk(
 
 export const deleteSingleLedger = createAsyncThunk(
   'statistics/deleteSingleLedger',
-  async (ledgerId: string) => {
-    const ledgerBookId: string = 'UcrgCxiJxo3oA7vvwYtd'; //TODO: import from other State
+  async (ledgerId: string, { getState }) => {
+    const allState = getState() as RootState;
+    const ledgerBookId = allState.cityBasicInfo.ledgerBookId;
     await deleteLedger(ledgerBookId, ledgerId);
     return ledgerId;
   }
@@ -67,6 +68,12 @@ export const ledgerList = createSlice({
     },
     chooseLabel: (state, action: PayloadAction<string>) => {
       state.choices.chosenLabel = action.payload;
+    },
+    UPDATE_LEDGER_LIST: (
+      state,
+      action: PayloadAction<{ ledgerId: string; data: LedgerDataState }[]>
+    ) => {
+      state.dataList = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -99,6 +106,7 @@ export const ledgerList = createSlice({
   },
 });
 
-export const { chooseYear, chooseMonth, chooseLabel } = ledgerList.actions;
+export const { chooseYear, chooseMonth, chooseLabel, UPDATE_LEDGER_LIST } =
+  ledgerList.actions;
 
 export default ledgerList.reducer;
