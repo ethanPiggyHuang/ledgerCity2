@@ -20,16 +20,6 @@ export const LoginPanel: React.FunctionComponent<IloginPageProps> = () => {
     dispatch(AUTHING_TOGGLE(true));
     signInWithPopup(auth, new GoogleAuthProvider())
       .then((response) => {
-        // console.log('isAuthing', isAuthing);
-        // console.log('uid', response.user.uid);
-        // console.log('user', response.user.photoURL);
-        // console.log('displayName', response.user.displayName);
-        // console.log('email', response.user.email);
-        // console.log('帳號建立(UTC +0)', response.user.metadata.creationTime);
-        // console.log('最後登入(UTC +0)', response.user.metadata.lastSignInTime);
-        // console.log('user', response.user);
-        // dispatch(LOGGED_IN());
-        // navigate('/');
         dispatch(AUTHING_TOGGLE(false));
       })
       .catch((error) => {

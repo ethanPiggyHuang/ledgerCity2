@@ -134,3 +134,7 @@ export async function updateLocation(userId: string, location: string) {
     latestActiveTime: serverTimestamp(),
   });
 }
+
+export async function POST_NICKNAME(userId: string, userNickName: string) {
+  await updateDoc(doc(db, 'users', userId), { userNickName: userNickName });
+}

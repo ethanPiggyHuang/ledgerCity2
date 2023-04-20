@@ -31,7 +31,9 @@ interface LedgerDatabaseState {
 
 const Header: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { ledgerBookId } = useAppSelector((state) => state.cityBasicInfo);
+  const { ledgerBookId, cityName } = useAppSelector(
+    (state) => state.cityBasicInfo
+  );
   const { cityList } = useAppSelector((state) => state.userInfo.data);
 
   const auth = getAuth();
@@ -83,7 +85,7 @@ const Header: React.FC = () => {
     }
   }, [ledgerBookId]);
 
-  return <Wrapper>Header</Wrapper>;
+  return <Wrapper>{cityName}</Wrapper>;
 };
 
 export default Header;

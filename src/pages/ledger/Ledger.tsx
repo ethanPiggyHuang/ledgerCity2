@@ -98,6 +98,7 @@ to {
 const Wrap = styled.div<WrapProps>`
   padding: 20px;
   position: absolute;
+  z-index: 1;
   bottom: 0;
   max-height: 50vh;
   overflow: scroll;
@@ -108,12 +109,12 @@ const Wrap = styled.div<WrapProps>`
   ${({ $state }) =>
     $state === 'normal'
       ? css`
-          animation: ${fadeOut} 1s linear 1;
-          transform: translateY(300px);
-        `
-      : css`
           animation: ${showUp} 1s linear 1;
           transform: translateY(0px);
+        `
+      : css`
+          animation: ${fadeOut} 1s linear 1;
+          transform: translateY(300px);
         `}
 `;
 

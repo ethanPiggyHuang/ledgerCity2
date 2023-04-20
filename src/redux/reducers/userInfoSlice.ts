@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { fetchLedgerList } from '../api/ledgerListAPI';
-import { createAccount, getAccountInfo } from '../api/userAPI';
+import { createAccount, getAccountInfo, POST_NICKNAME } from '../api/userAPI';
+import { RootState } from '../store';
 
 export interface UserDataState {
   userId: string;
@@ -32,6 +33,10 @@ export interface UserInfoState {
     isAuthing: boolean;
     isLoading: boolean;
   };
+  editStatus: {
+    isNickNameEdit: boolean;
+    inputText: string;
+  };
   data: UserDataState;
 }
 
@@ -41,6 +46,10 @@ const initialState: UserInfoState = {
     isLogin: false,
     isAuthing: true,
     isLoading: false,
+  },
+  editStatus: {
+    isNickNameEdit: false,
+    inputText: '',
   },
   data: {
     userId: '',
@@ -93,6 +102,16 @@ export const GET_ACCOUNT_INFO = createAsyncThunk(
   }
 );
 
+export const SAVE_NICKNAME = createAsyncThunk(
+  'userInfo/SAVE_NICKNAME',
+  async (userNickName: string, { getState }) => {
+    const allStates = getState() as RootState;
+    const { userId } = allStates.userInfo.data;
+    await POST_NICKNAME(userId, userNickName);
+    return userNickName;
+  }
+);
+
 export const userInfo = createSlice({
   name: 'userInfo',
   initialState,
@@ -120,6 +139,13 @@ export const userInfo = createSlice({
       console.log('log out');
       state.data = initialState.data;
       state.loginStatus = initialState.loginStatus;
+    },
+    EDIT_NICKNAME_ACTIVATE: (state, action: PayloadAction<string>) => {
+      state.editStatus.isNickNameEdit = true;
+      state.editStatus.inputText = action.payload;
+    },
+    TYPING_NICKNAME: (state, action: PayloadAction<string>) => {
+      state.editStatus.inputText = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -158,10 +184,29 @@ export const userInfo = createSlice({
       .addCase(GET_ACCOUNT_INFO.rejected, (state) => {
         state.status = 'failed';
         alert('get account info rejected');
+      })
+      .addCase(SAVE_NICKNAME.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(SAVE_NICKNAME.fulfilled, (state, action) => {
+        state.status = 'idle';
+        state.editStatus.isNickNameEdit = false;
+        state.data.userNickName = action.payload;
+        console.log('nickname updated');
+      })
+      .addCase(SAVE_NICKNAME.rejected, (state) => {
+        state.status = 'failed';
+        alert('get account info rejected');
       });
   },
 });
 
-export const { AUTHING_TOGGLE, LOGGED_IN, LOG_OUT } = userInfo.actions;
+export const {
+  AUTHING_TOGGLE,
+  LOGGED_IN,
+  LOG_OUT,
+  EDIT_NICKNAME_ACTIVATE,
+  TYPING_NICKNAME,
+} = userInfo.actions;
 
 export default userInfo.reducer;
