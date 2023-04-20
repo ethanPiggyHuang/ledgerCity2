@@ -72,7 +72,7 @@ export const Account: React.FC = () => {
 
 const Wrap = styled.div`
   width: 100vw;
-  height: 100vh;
+  // height: 100vh;
   padding: 20px;
   position: relative;
   // display: flex;

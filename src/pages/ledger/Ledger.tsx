@@ -82,13 +82,13 @@ from {
   transform: translateY(0);
 }
 to {
-  transform: translateY(300px);
+  transform: translateY(800px);
 }
 `;
 
 const showUp = keyframes`
 from {
-  transform: translateY(300px);
+  transform: translateY(800px);
 }
 to {
   transform: translateY(0px);
@@ -100,7 +100,7 @@ const Wrap = styled.div<WrapProps>`
   position: absolute;
   z-index: 1;
   bottom: 0;
-  max-height: 50vh;
+  max-height: 80vh;
   overflow: scroll;
   display: flex;
   border: 1px solid lightblue;
@@ -114,7 +114,7 @@ const Wrap = styled.div<WrapProps>`
         `
       : css`
           animation: ${fadeOut} 1s linear 1;
-          transform: translateY(300px);
+          transform: translateY(800px);
         `}
 `;
 

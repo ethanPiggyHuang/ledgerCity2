@@ -1,29 +1,67 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { doc, onSnapshot } from 'firebase/firestore';
-import { db } from '../../config/firebase';
-import { GET_COOP_FRIEND_ACTIVITY } from '../../redux/reducers/usersActivitySlice';
+import {
+  TYPING_FRIEND_EMAIL,
+  QUEST_FRIEND,
+  FRIEND_REQUEST,
+} from '../../redux/reducers/userInfoSlice';
 
 export const Social: React.FC = () => {
-  const { userId, friends } = useAppSelector((state) => state.userInfo.data);
+  const { userId, friends, cityList } = useAppSelector(
+    (state) => state.userInfo.data
+  );
+  const { cityName } = useAppSelector((state) => state.cityBasicInfo);
   const friendIds = friends.map((friend) => friend.userId);
 
   const dispatch = useAppDispatch();
 
+  const { emailInput, queryResult } = useAppSelector(
+    (state) => state.userInfo.editStatus
+  );
+
   return (
     <Wrap>
-      {/* {friends.map((friend) => (
+      <p>輸入好友 gmail</p>
+      <input
+        value={emailInput}
+        onChange={(event) => {
+          dispatch(TYPING_FRIEND_EMAIL(event.target.value));
+        }}
+      />
+
+      <button
+        onClick={() => {
+          dispatch(QUEST_FRIEND(emailInput));
+        }}
+      >
+        查詢
+      </button>
+      <br />
+      <br />
+      {queryResult.length !== 0 && (
         <>
-          <img src={friend.portraitUrl} alt={`protrait of ${friend.name}`} />
-          <p>{`name: ${friend.name}`}</p>
-          <p>{`email: ${friend.email}`}</p>
-          <p>{`isFriend: ${friend.friendStatus}`}</p>
-          <p>{`isCoop: ${friend.coopStatus}`}</p>
-          <p>{`coopCity:${friend.coopCityId}`}</p>
+          <p>{`名字：${queryResult[0].userName}`}</p>
+          <p>{`暱稱：${queryResult[0].userNickName}`}</p>
+          {queryResult[0]?.userPortraitUrl && (
+            <img
+              src={queryResult[0].userPortraitUrl}
+              alt={`portait of ${queryResult[0].userName}`}
+            />
+          )}
           <br />
+          <button
+            onClick={() => {
+              const friendId = queryResult[0].userId;
+              const cityId = cityList[0];
+              dispatch(FRIEND_REQUEST({ friendId, cityId }));
+            }}
+          >
+            加好友並共管城市
+          </button>
+          <p>{`共管城市：${cityName}`}</p>
         </>
-      ))} */}
+      )}
     </Wrap>
   );
 };

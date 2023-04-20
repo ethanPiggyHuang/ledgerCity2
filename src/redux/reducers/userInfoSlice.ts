@@ -1,6 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { fetchLedgerList } from '../api/ledgerListAPI';
-import { createAccount, getAccountInfo, POST_NICKNAME } from '../api/userAPI';
+import {
+  createAccount,
+  getAccountInfo,
+  POST_NICKNAME,
+  FIND_ACCOUNT_MATCH,
+  NEW_FRIEND_REQUEST,
+} from '../api/userAPI';
 import { RootState } from '../store';
 
 export interface UserDataState {
@@ -36,6 +42,8 @@ export interface UserInfoState {
   editStatus: {
     isNickNameEdit: boolean;
     inputText: string;
+    emailInput: string;
+    queryResult: UserDataState[];
   };
   data: UserDataState;
 }
@@ -50,6 +58,8 @@ const initialState: UserInfoState = {
   editStatus: {
     isNickNameEdit: false,
     inputText: '',
+    emailInput: '',
+    queryResult: [],
   },
   data: {
     userId: '',
@@ -112,6 +122,27 @@ export const SAVE_NICKNAME = createAsyncThunk(
   }
 );
 
+export const QUEST_FRIEND = createAsyncThunk(
+  'userInfo/QUEST_FRIEND',
+  async (friendEmail: string, { getState }) => {
+    // const allStates = getState() as RootState;
+    // const { userId } = allStates.userInfo.data;
+    const fullEmail = `${friendEmail}@gmail.com`;
+    const response = await FIND_ACCOUNT_MATCH(fullEmail);
+    return response.result;
+  }
+);
+
+export const FRIEND_REQUEST = createAsyncThunk(
+  'userInfo/FRIEND_REQUEST',
+  async (payload: { friendId: string; cityId: string }, { getState }) => {
+    const { cityId, friendId } = payload;
+    const allStates = getState() as RootState;
+    const { userId } = allStates.userInfo.data;
+    const response = await NEW_FRIEND_REQUEST(userId, friendId, cityId);
+  }
+);
+
 export const userInfo = createSlice({
   name: 'userInfo',
   initialState,
@@ -146,6 +177,9 @@ export const userInfo = createSlice({
     },
     TYPING_NICKNAME: (state, action: PayloadAction<string>) => {
       state.editStatus.inputText = action.payload;
+    },
+    TYPING_FRIEND_EMAIL: (state, action: PayloadAction<string>) => {
+      state.editStatus.emailInput = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -197,6 +231,29 @@ export const userInfo = createSlice({
       .addCase(SAVE_NICKNAME.rejected, (state) => {
         state.status = 'failed';
         alert('get account info rejected');
+      })
+      .addCase(QUEST_FRIEND.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(QUEST_FRIEND.fulfilled, (state, action) => {
+        state.status = 'idle';
+        if (action.payload.length === 0) alert('無此帳號，請再次確認');
+        state.editStatus.queryResult = action.payload;
+      })
+      .addCase(QUEST_FRIEND.rejected, (state) => {
+        state.status = 'failed';
+        alert('searching friend rejected');
+      })
+      .addCase(FRIEND_REQUEST.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(FRIEND_REQUEST.fulfilled, (state, action) => {
+        state.status = 'idle';
+        console.log('request sent');
+      })
+      .addCase(FRIEND_REQUEST.rejected, (state) => {
+        state.status = 'failed';
+        alert('friend request rejected');
       });
   },
 });
@@ -207,6 +264,7 @@ export const {
   LOG_OUT,
   EDIT_NICKNAME_ACTIVATE,
   TYPING_NICKNAME,
+  TYPING_FRIEND_EMAIL,
 } = userInfo.actions;
 
 export default userInfo.reducer;

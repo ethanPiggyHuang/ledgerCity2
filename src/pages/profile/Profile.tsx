@@ -27,9 +27,9 @@ export const Profile: React.FC = () => {
 
   return (
     <Wrap>
-      {/* <Social /> */}
       <Account />
-      {/* <Setting /> */}
+      <Social />
+      <Setting />
       <NavBar />
     </Wrap>
   );

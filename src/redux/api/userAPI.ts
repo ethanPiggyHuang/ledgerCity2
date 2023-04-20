@@ -8,6 +8,9 @@ import {
   serverTimestamp,
   updateDoc,
   arrayUnion,
+  query,
+  where,
+  getDocs,
 } from 'firebase/firestore';
 import { rtdb } from '../../config/firebase';
 import { ref, set } from 'firebase/database';
@@ -137,4 +140,47 @@ export async function updateLocation(userId: string, location: string) {
 
 export async function POST_NICKNAME(userId: string, userNickName: string) {
   await updateDoc(doc(db, 'users', userId), { userNickName: userNickName });
+  console.log(userId, userNickName);
+}
+
+export async function FIND_ACCOUNT_MATCH(email: string) {
+  const q = query(collection(db, 'users'), where('userEmail', '==', email));
+  const querySnapshot = await getDocs(q);
+  let result: UserDataState[] = [];
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    console.log(doc.id, ' => ', doc.data());
+    result.push(doc.data() as UserDataState);
+  });
+  console.log(result);
+  return new Promise<{ result: UserDataState[] }>((resolve) =>
+    resolve({ result })
+  );
+}
+
+export async function NEW_FRIEND_REQUEST(
+  userId: string,
+  friendId: string,
+  cityId: string
+) {
+  const friendData = {
+    coopCityId: cityId,
+    coopStatus: 'invited',
+    friendStatus: 'invited',
+    userId: userId,
+  };
+  const slefData = {
+    coopCityId: cityId,
+    coopStatus: 'inviting',
+    friendStatus: 'inviting',
+    userId: friendId,
+  };
+
+  await updateDoc(doc(db, 'users', userId), {
+    friends: arrayUnion(slefData),
+  });
+
+  await updateDoc(doc(db, 'users', friendId), {
+    friends: arrayUnion(friendData),
+  });
 }
