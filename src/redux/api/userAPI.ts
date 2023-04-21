@@ -90,7 +90,7 @@ export async function getAccountInfo(userInfo: {
   let friendResponse: FriendStatusState[] = [];
   friendStatus.forEach((doc) => {
     // console.log(doc.id, ' => ', doc.data());
-    friendResponse.push(doc.data().status as FriendStatusState);
+    friendResponse.push(doc.data() as FriendStatusState);
   });
   console.log('friendResponse', friendResponse);
   if (docSnap.exists()) {
@@ -172,13 +172,9 @@ export async function NEW_FRIEND_REQUEST(
     userId: friendId,
   };
 
-  await setDoc(doc(db, 'users', userId, 'friends', friendId), {
-    status: slefData,
-  });
+  await setDoc(doc(db, 'users', userId, 'friends', friendId), slefData);
 
-  await setDoc(doc(db, 'users', friendId, 'friends', userId), {
-    status: friendData,
-  });
+  await setDoc(doc(db, 'users', friendId, 'friends', userId), friendData);
 }
 
 export async function fetchFrinedInfo(friendId: string) {
@@ -191,29 +187,20 @@ export async function fetchFrinedInfo(friendId: string) {
   }
 }
 
-export async function updateCityAccessibility(
+export async function AGREE_TO_COOPERATION(
   userId: string,
   friendId: string,
-  cityId: string
+  newCityList: string[]
 ) {
-  const friendData = {
-    coopCityId: cityId,
-    coopStatus: 'friend',
-    friendStatus: 'beenInvited',
-    userId: userId,
-  };
-  const slefData = {
-    coopCityId: cityId,
-    coopStatus: 'friend',
-    friendStatus: 'inviting',
-    userId: friendId,
-  };
-
-  await updateDoc(doc(db, 'users', userId), {
-    friends: arrayUnion(slefData),
+  await updateDoc(doc(db, 'users', userId, 'friends', friendId), {
+    coopStatus: 'coorperated',
   });
 
-  await updateDoc(doc(db, 'users', friendId), {
-    friends: arrayUnion(friendData),
+  await updateDoc(doc(db, 'users', friendId, 'friends', userId), {
+    coopStatus: 'coorperated',
+  });
+
+  await updateDoc(doc(db, 'users', userId), {
+    cityList: newCityList,
   });
 }

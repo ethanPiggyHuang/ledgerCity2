@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   FETCH_COORPERATE_LOCATION,
   fetchFrinedInfo,
-  updateCityAccessibility,
+  AGREE_TO_COOPERATION,
 } from '../api/userAPI';
 import { DocumentData } from '@firebase/firestore-types';
 import { RootState } from '../store';
@@ -49,9 +49,11 @@ export const AGREE_COOPERATIONS = createAsyncThunk(
     { getState }
   ) => {
     const allStates = getState() as RootState;
+    const cityList = allStates.userInfo.data.cityList;
     const { userId, friendId, cityId } = payload;
+    const newCityList = [cityId, ...cityList];
     console.log(friendId);
-    const response = await updateCityAccessibility(userId, friendId, cityId);
+    await AGREE_TO_COOPERATION(userId, friendId, newCityList);
 
     // return response?.data;
   }
@@ -100,7 +102,7 @@ export const usersActivity = createSlice({
       })
       .addCase(AGREE_COOPERATIONS.fulfilled, (state, action) => {
         state.status = 'idle';
-        console.log('succeed');
+        console.log('agreement succeed');
       })
       .addCase(AGREE_COOPERATIONS.rejected, (state) => {
         state.status = 'failed';
