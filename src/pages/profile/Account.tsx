@@ -5,17 +5,24 @@ import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { GET_COOP_FRIEND_ACTIVITY } from '../../redux/reducers/usersActivitySlice';
 import { getAuth, signOut } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom';
+import { redirect, useNavigate } from 'react-router-dom';
 import {
   LOG_OUT,
   EDIT_NICKNAME_ACTIVATE,
   TYPING_NICKNAME,
   SAVE_NICKNAME,
+  CITY_REDIRECTION,
 } from '../../redux/reducers/userInfoSlice';
 
 export const Account: React.FC = () => {
-  const { userId, userName, userNickName, userEmail, userPortraitUrl } =
-    useAppSelector((state) => state.userInfo.data);
+  const {
+    userId,
+    userName,
+    userNickName,
+    userEmail,
+    userPortraitUrl,
+    cityList,
+  } = useAppSelector((state) => state.userInfo.data);
   const { isNickNameEdit, inputText } = useAppSelector(
     (state) => state.userInfo.editStatus
   );
@@ -66,6 +73,21 @@ export const Account: React.FC = () => {
       >
         Sign out
       </button>
+      <br />
+      <br />
+      <p>我的城市：</p>
+      {cityList.map((cityId) => (
+        <div key={cityId}>
+          <CityName
+            onClick={() => {
+              dispatch(CITY_REDIRECTION({ userId, cityId }));
+            }}
+          >
+            {cityId}
+          </CityName>
+          <button onClick={() => navigate('/')}>go to</button>
+        </div>
+      ))}
     </Wrap>
   );
 };
@@ -85,4 +107,11 @@ const NickNameInput = styled.input`
   font-size: 20px;
   margin-left: auto;
   text-align: left;
+`;
+
+const CityName = styled.p`
+  &:hover {
+    cursor: pointer;
+    background-color: lightblue;
+  }
 `;

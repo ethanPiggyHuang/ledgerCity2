@@ -35,7 +35,6 @@ const initialState: UsersActivityState = {
 export const GET_FRIENDS_INFO = createAsyncThunk(
   'userInfo/GET_FRIENDS_INFO',
   async (friendId: string) => {
-    console.log('here', friendId);
     const response = await fetchFrinedInfo(friendId);
 
     return response?.data;
@@ -53,9 +52,7 @@ export const AGREE_COOPERATIONS = createAsyncThunk(
     const { userId, friendId, cityId } = payload;
     const newCityList = [cityId, ...cityList];
     console.log(friendId);
-    await AGREE_TO_COOPERATION(userId, friendId, newCityList);
-
-    // return response?.data;
+    await AGREE_TO_COOPERATION(userId, friendId, cityId, newCityList);
   }
 );
 
@@ -88,7 +85,6 @@ export const usersActivity = createSlice({
       .addCase(GET_FRIENDS_INFO.fulfilled, (state, action) => {
         state.status = 'idle';
         if (action.payload) {
-          console.log(action.payload);
           state.friendsInfo = [...state.friendsInfo, action.payload];
         }
       })
@@ -98,11 +94,10 @@ export const usersActivity = createSlice({
       })
       .addCase(AGREE_COOPERATIONS.pending, (state) => {
         state.status = 'loading';
-        //要跳出提示「帳號創建中」
       })
-      .addCase(AGREE_COOPERATIONS.fulfilled, (state, action) => {
+      .addCase(AGREE_COOPERATIONS.fulfilled, (state) => {
         state.status = 'idle';
-        console.log('agreement succeed');
+        alert('agreement succeed');
       })
       .addCase(AGREE_COOPERATIONS.rejected, (state) => {
         state.status = 'failed';

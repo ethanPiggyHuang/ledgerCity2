@@ -6,7 +6,7 @@ import { db } from '../../config/firebase';
 import { GET_COOP_FRIEND_ACTIVITY } from '../../redux/reducers/usersActivitySlice';
 
 export const Setting: React.FC = () => {
-  const { userId } = useAppSelector((state) => state.userInfo.data);
+  const { userId, cityList } = useAppSelector((state) => state.userInfo.data);
 
   const dispatch = useAppDispatch();
 
@@ -29,9 +29,9 @@ export const Setting: React.FC = () => {
 
 const Wrap = styled.div`
   width: 100vw;
-  height: 100vh;
+  // height: 100vh;
   padding: 20px;
-  position: relative;
+  // position: relative;
   // display: flex;
   gap: 20px;
 `;

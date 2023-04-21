@@ -92,7 +92,6 @@ export async function getAccountInfo(userInfo: {
     // console.log(doc.id, ' => ', doc.data());
     friendResponse.push(doc.data() as FriendStatusState);
   });
-  console.log('friendResponse', friendResponse);
   if (docSnap.exists()) {
     const data = docSnap.data() as UserDataState; //TODO typescript
     return new Promise<{
@@ -178,11 +177,9 @@ export async function NEW_FRIEND_REQUEST(
 }
 
 export async function fetchFrinedInfo(friendId: string) {
-  console.log(friendId);
   const docSnap = await getDoc(doc(db, 'users', friendId));
   if (docSnap.exists()) {
     const data = docSnap.data() as UserDataState; //TODO typescript
-    console.log(docSnap.data());
     return new Promise<{ data: UserDataState }>((resolve) => resolve({ data }));
   }
 }
@@ -190,6 +187,7 @@ export async function fetchFrinedInfo(friendId: string) {
 export async function AGREE_TO_COOPERATION(
   userId: string,
   friendId: string,
+  cityId: string,
   newCityList: string[]
 ) {
   await updateDoc(doc(db, 'users', userId, 'friends', friendId), {
@@ -200,6 +198,16 @@ export async function AGREE_TO_COOPERATION(
     coopStatus: 'coorperated',
   });
 
+  await updateDoc(doc(db, 'users', userId), {
+    cityList: newCityList,
+  });
+
+  await updateDoc(doc(db, 'cities', cityId), {
+    accessUsers: arrayUnion(userId),
+  });
+}
+
+export async function updateCityList(userId: string, newCityList: string[]) {
   await updateDoc(doc(db, 'users', userId), {
     cityList: newCityList,
   });

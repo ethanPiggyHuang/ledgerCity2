@@ -30,7 +30,7 @@ export const Ledger: React.FC = () => {
   useEffect(() => {
     if (userId) {
       updateLocation(userId, 'ledger');
-      console.log(userId, 'update');
+      // console.log(userId, 'update');
     }
   }, [userId]);
 

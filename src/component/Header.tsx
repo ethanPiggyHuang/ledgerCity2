@@ -14,6 +14,7 @@ import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { LedgerDataState } from '../redux/reducers/ledgerSingleSlice';
+import { useNavigate } from 'react-router-dom';
 
 interface LedgerDatabaseState {
   timeLedger: number;
@@ -35,7 +36,7 @@ const Header: React.FC = () => {
     (state) => state.cityBasicInfo
   );
   const { cityList } = useAppSelector((state) => state.userInfo.data);
-
+  const navigate = useNavigate();
   const auth = getAuth();
 
   useEffect(() => {
@@ -45,9 +46,18 @@ const Header: React.FC = () => {
         const cityInfo = doc.data();
         dispatch(UPDATE_CITY_INFO(cityInfo as CityBasicInfoState));
       });
+      console.log('now', cityList);
+      navigate('/');
       return () => unsubscribe();
     }
   }, [cityList]);
+
+  // useEffect(() => {
+  //   if (cityList.length !== 0) {
+  //     console.log('now', cityList[0]);
+  //     // navigate('/');
+  //   }
+  // }, [cityList]);
 
   useEffect(() => {
     if (ledgerBookId.length !== 0) {
@@ -68,7 +78,6 @@ const Header: React.FC = () => {
               data: { ledgerId: string; data: LedgerDatabaseState },
               index: number
             ) => {
-              if (index === 0) console.log('record', data.data.recordTime);
               const recordTime = data.data.recordTime
                 ? new Date(data.data.recordTime.seconds * 1000).getTime()
                 : 0;

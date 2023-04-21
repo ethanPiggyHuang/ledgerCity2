@@ -22,7 +22,6 @@ export const Social: React.FC = () => {
     if (userId && friendsInfo.length === 0) {
       friendIds.forEach((friendId) => {
         dispatch(GET_FRIENDS_INFO(friendId));
-        console.log('active');
       });
     }
   }, [userId, friendsInfo]);
@@ -32,18 +31,6 @@ export const Social: React.FC = () => {
   const { emailInput, queryResult } = useAppSelector(
     (state) => state.userInfo.editStatus
   );
-
-  const invetingFriends = friends
-    .filter((friend) => friend.friendStatus === 'inviting')
-    .map((friend) => friend.userId);
-  const beenInvitedFriends = friends
-    .filter((friend) => friend.friendStatus === 'beenInvited')
-    .map((friend) => friend.userId);
-  const isFriend = friends
-    .filter((friend) => friend.friendStatus === 'friend')
-    .map((friend) => friend.userId);
-
-  console.log('e', friendIds);
 
   return (
     <Wrap>
@@ -90,7 +77,7 @@ export const Social: React.FC = () => {
       <p>＊＊朋友清單＊＊</p>
       {friendsInfo.length !== 0 &&
         friendsInfo.map((friend, index) => (
-          <p key={index}>
+          <div key={index}>
             <p>{`朋友名字：${friend.userName}`}</p>
             <span>{`/朋友狀態：${
               friends.find((user) => user.userId === friend.userId)
@@ -119,7 +106,7 @@ export const Social: React.FC = () => {
                 同意邀請
               </button>
             )}
-          </p>
+          </div>
         ))}
     </Wrap>
   );
@@ -127,7 +114,7 @@ export const Social: React.FC = () => {
 
 const Wrap = styled.div`
   width: 100vw;
-  height: 100vh;
+  // height: 100vh;
   padding: 20px;
   position: relative;
   // display: flex;

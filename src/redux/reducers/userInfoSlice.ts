@@ -6,6 +6,7 @@ import {
   POST_NICKNAME,
   FIND_ACCOUNT_MATCH,
   NEW_FRIEND_REQUEST,
+  updateCityList,
 } from '../api/userAPI';
 import { RootState } from '../store';
 
@@ -147,6 +148,18 @@ export const FRIEND_REQUEST = createAsyncThunk(
   }
 );
 
+export const CITY_REDIRECTION = createAsyncThunk(
+  'userInfo/CITY_REDIRECTION',
+  async (payload: { userId: string; cityId: string }, { getState }) => {
+    const { userId, cityId } = payload;
+    const allStates = getState() as RootState;
+    const cityList = allStates.userInfo.data.cityList;
+    const newCityList = [cityId, ...cityList.filter((city) => city !== cityId)];
+    await updateCityList(userId, newCityList);
+    return newCityList;
+  }
+);
+
 export const userInfo = createSlice({
   name: 'userInfo',
   initialState,
@@ -217,7 +230,6 @@ export const userInfo = createSlice({
           // const cityId = action.payload.cityList[0];
           // state.data.cityList = [cityId];
           state.data = action.payload.data;
-          console.log('eaa', action.payload.friendResponse[0]);
           state.friends = action.payload.friendResponse;
           // // state.friends = action.payload.friendResponse;
         }
@@ -256,9 +268,21 @@ export const userInfo = createSlice({
       })
       .addCase(FRIEND_REQUEST.fulfilled, (state, action) => {
         state.status = 'idle';
-        console.log('request sent');
+        alert('request sent');
       })
       .addCase(FRIEND_REQUEST.rejected, (state) => {
+        state.status = 'failed';
+        alert('friend request rejected');
+      })
+      .addCase(CITY_REDIRECTION.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(CITY_REDIRECTION.fulfilled, (state, action) => {
+        state.status = 'idle';
+        alert('request redirect');
+        state.data.cityList = action.payload;
+      })
+      .addCase(CITY_REDIRECTION.rejected, (state) => {
         state.status = 'failed';
         alert('friend request rejected');
       });
