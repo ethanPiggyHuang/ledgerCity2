@@ -14,7 +14,7 @@ import {
 } from 'firebase/firestore';
 import { rtdb } from '../../config/firebase';
 import { ref, set } from 'firebase/database';
-import { UserDataState } from '../reducers/userInfoSlice';
+import { UserDataState, FriendStatusState } from '../reducers/userInfoSlice';
 
 export async function createAccount(userInfo: {
   userId: string;
@@ -85,25 +85,21 @@ export async function getAccountInfo(userInfo: {
     userPortraitUrl,
   });
   const docSnap = await getDoc(doc(db, 'users', userId));
+  const q = query(collection(db, 'users', userId, 'friends'));
+  const friendStatus = await getDocs(q);
+  let friendResponse: FriendStatusState[] = [];
+  friendStatus.forEach((doc) => {
+    // console.log(doc.id, ' => ', doc.data());
+    friendResponse.push(doc.data().status as FriendStatusState);
+  });
+  console.log('friendResponse', friendResponse);
   if (docSnap.exists()) {
     const data = docSnap.data() as UserDataState; //TODO typescript
-    return new Promise<{ data: UserDataState }>((resolve) => resolve({ data }));
+    return new Promise<{
+      data: UserDataState;
+      friendResponse: FriendStatusState[];
+    }>((resolve) => resolve({ data, friendResponse }));
   }
-  // const cityRef = await addDoc(collection(db, 'cities'), initailCityData);
-  // const ledgerBookRef = await addDoc(collection(db, 'ledgerBooks'), {
-  //   cityId: cityRef.id,
-  // });
-  // await updateDoc(doc(db, 'cities', cityRef.id), {
-  //   ledgerBookId: ledgerBookRef.id,
-  // });
-  // await updateDoc(doc(db, 'users', userId), {
-  //   cityList: arrayUnion(cityRef.id),
-  // });
-
-  // return new Promise<{ data: { cityId: string; ledgerBookId: string } }>(
-  //   (resolve) =>
-  //     resolve({ data: { cityId: cityRef.id, ledgerBookId: ledgerBookRef.id } })
-  // );
 }
 
 export async function postFadeOutTime(userId: string) {
@@ -165,13 +161,50 @@ export async function NEW_FRIEND_REQUEST(
 ) {
   const friendData = {
     coopCityId: cityId,
-    coopStatus: 'invited',
-    friendStatus: 'invited',
+    coopStatus: 'beenInvited',
+    friendStatus: 'beenInvited',
     userId: userId,
   };
   const slefData = {
     coopCityId: cityId,
     coopStatus: 'inviting',
+    friendStatus: 'inviting',
+    userId: friendId,
+  };
+
+  await setDoc(doc(db, 'users', userId, 'friends', friendId), {
+    status: slefData,
+  });
+
+  await setDoc(doc(db, 'users', friendId, 'friends', userId), {
+    status: friendData,
+  });
+}
+
+export async function fetchFrinedInfo(friendId: string) {
+  console.log(friendId);
+  const docSnap = await getDoc(doc(db, 'users', friendId));
+  if (docSnap.exists()) {
+    const data = docSnap.data() as UserDataState; //TODO typescript
+    console.log(docSnap.data());
+    return new Promise<{ data: UserDataState }>((resolve) => resolve({ data }));
+  }
+}
+
+export async function updateCityAccessibility(
+  userId: string,
+  friendId: string,
+  cityId: string
+) {
+  const friendData = {
+    coopCityId: cityId,
+    coopStatus: 'friend',
+    friendStatus: 'beenInvited',
+    userId: userId,
+  };
+  const slefData = {
+    coopCityId: cityId,
+    coopStatus: 'friend',
     friendStatus: 'inviting',
     userId: friendId,
   };

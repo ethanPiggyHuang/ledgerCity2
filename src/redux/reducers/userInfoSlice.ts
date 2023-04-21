@@ -16,13 +16,6 @@ export interface UserDataState {
   userEmail: string | null;
   userPortraitUrl: string | null;
   cityList: string[];
-  friends: {
-    userId: string;
-    name: string;
-    friendStatus: 'inviting' | 'beenInvited' | 'friend';
-    coopStatus: 'none' | 'inviting' | 'beenInvited' | 'coorperated';
-    coopCityId: string | null;
-  }[];
   subLabels: { [key: string]: string[] };
   trophy: { list: number[]; citizens: number[] };
   gameSetting: {
@@ -32,6 +25,14 @@ export interface UserDataState {
   };
 }
 
+export interface FriendStatusState {
+  userId: string;
+  name: string;
+  friendStatus: 'inviting' | 'beenInvited' | 'friend';
+  coopStatus: 'none' | 'inviting' | 'beenInvited' | 'coorperated';
+  coopCityId: string | null;
+}
+
 export interface UserInfoState {
   status: 'idle' | 'loading' | 'failed';
   loginStatus: {
@@ -39,6 +40,7 @@ export interface UserInfoState {
     isAuthing: boolean;
     isLoading: boolean;
   };
+  friends: FriendStatusState[];
   editStatus: {
     isNickNameEdit: boolean;
     inputText: string;
@@ -61,6 +63,7 @@ const initialState: UserInfoState = {
     emailInput: '',
     queryResult: [],
   },
+  friends: [],
   data: {
     userId: '',
     userName: null,
@@ -68,7 +71,6 @@ const initialState: UserInfoState = {
     userEmail: null,
     userPortraitUrl: null,
     cityList: [],
-    friends: [],
     subLabels: { food: [''] },
     trophy: { list: [], citizens: [] },
     gameSetting: { hasMusic: false, hasHints: false, isRecordContinue: false },
@@ -108,7 +110,7 @@ export const GET_ACCOUNT_INFO = createAsyncThunk(
     const userPortraitUrl = photoURL || '';
     const user = { userId: uid, userName, userEmail, userPortraitUrl };
     const response = await getAccountInfo(user);
-    if (response) return response.data;
+    if (response) return response;
   }
 );
 
@@ -116,6 +118,8 @@ export const SAVE_NICKNAME = createAsyncThunk(
   'userInfo/SAVE_NICKNAME',
   async (userNickName: string, { getState }) => {
     const allStates = getState() as RootState;
+    const userFriendList = allStates.userInfo.friends;
+    // const friends = allStates.userInfo.data.friends;
     const { userId } = allStates.userInfo.data;
     await POST_NICKNAME(userId, userNickName);
     return userNickName;
@@ -212,7 +216,10 @@ export const userInfo = createSlice({
         if (action.payload) {
           // const cityId = action.payload.cityList[0];
           // state.data.cityList = [cityId];
-          state.data = action.payload;
+          state.data = action.payload.data;
+          console.log('eaa', action.payload.friendResponse[0]);
+          state.friends = action.payload.friendResponse;
+          // // state.friends = action.payload.friendResponse;
         }
       })
       .addCase(GET_ACCOUNT_INFO.rejected, (state) => {

@@ -6,8 +6,7 @@ import { db } from '../../config/firebase';
 import { GET_COOP_FRIEND_ACTIVITY } from '../../redux/reducers/usersActivitySlice';
 
 export const Setting: React.FC = () => {
-  const { userId, friends } = useAppSelector((state) => state.userInfo.data);
-  const friendIds = friends.map((friend) => friend.userId);
+  const { userId } = useAppSelector((state) => state.userInfo.data);
 
   const dispatch = useAppDispatch();
 
