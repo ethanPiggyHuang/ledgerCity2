@@ -6,8 +6,8 @@ import {
   saveCityAsync,
   draggableToggle,
 } from '../../redux/reducers/cityArrangementSlice';
-import chocolate_world from '../../utils/chocolate_world.mp3';
-import hammer_2 from '../../utils/hammer_2.wav';
+import chocolate_world from '../../assets/chocolate_world.mp3';
+import hammer_2 from '../../assets/hammer_2.wav';
 
 export const RearrangeOptions: React.FC = () => {
   const { dragMode } = useAppSelector((state) => state.cityArrangement);

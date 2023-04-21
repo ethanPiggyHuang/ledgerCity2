@@ -12,7 +12,7 @@ import {
   UPDATE_CITY_LOCATION,
 } from '../../redux/reducers/cityArrangementSlice';
 import { gridGap, gridLength, houseWidth } from '../../utils/gameSettings';
-import hammer_ice from '../../utils/hammer_ice.wav';
+import hammer_ice from '../../assets/hammer_ice.wav';
 import { HouseOfFood } from './housesSvg/HouseOfFood';
 import { HouseOfClothes } from './housesSvg/HouseOfClothes';
 import { HouseOfDrinks } from './housesSvg/HouseOfDrinks';

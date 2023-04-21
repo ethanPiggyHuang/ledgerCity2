@@ -15,6 +15,8 @@ import { db } from '../config/firebase';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { LedgerDataState } from '../redux/reducers/ledgerSingleSlice';
 import { useNavigate } from 'react-router-dom';
+import { ReactComponent as ReactBanner } from '../assets/banner.svg';
+import { Banner } from '../component/Banner';
 
 interface LedgerDatabaseState {
   timeLedger: number;
@@ -52,13 +54,6 @@ const Header: React.FC = () => {
     }
   }, [cityList]);
 
-  // useEffect(() => {
-  //   if (cityList.length !== 0) {
-  //     console.log('now', cityList[0]);
-  //     // navigate('/');
-  //   }
-  // }, [cityList]);
-
   useEffect(() => {
     if (ledgerBookId.length !== 0) {
       const q = query(
@@ -94,14 +89,54 @@ const Header: React.FC = () => {
     }
   }, [ledgerBookId]);
 
-  return <Wrapper>{cityName}</Wrapper>;
+  return (
+    <Wrapper>
+      <Banner />
+      <BannerText value={'培根市'} />
+    </Wrapper>
+  );
 };
 
 export default Header;
 
 const Wrapper = styled.div`
   position: fixed;
+  transform: translate(45%, 10%);
   z-index: 3;
-  top: 0;
-  font-size: 40px;
+  top: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const BannerText = styled.input`
+  position: absolute;
+  color: #ae7a00;
+  font-size: 60px;
+  height: 65%;
+  padding: 20px;
+  text-align: center;
+  border: none;
+  
+  background-color: rgba(0, 0, 0, 0);
+  width: 50%;
+
+  &: focus {
+    outline: none;
+    box-shadow: none;
+    border: none;
+    border-radius: 10px;
+    background-color: cornsilk;
+    opacity: 0.6;
+  }
+  &: hover {
+    background-color: cornsilk;
+    opacity: 0.6;
+    border-radius: 10px;
+  }
+  &: focus:hover {
+    outline: none;
+    box-shadow: none;
+    border: none;
+}
 `;

@@ -97,4 +97,5 @@ export const GameMap: React.FC = () => {
 const Wrapper = styled.div`
   height: 100vh;
   position: relative;
+  background: linear-gradient(#c8e2cc, #98d5da);
 `;
