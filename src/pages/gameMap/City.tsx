@@ -17,6 +17,7 @@ import { HouseOfFood } from './housesSvg/HouseOfFood';
 import { HouseOfClothes } from './housesSvg/HouseOfClothes';
 import { HouseOfDrinks } from './housesSvg/HouseOfDrinks';
 import { HouseOfPlants } from './housesSvg/HouseOfPlants';
+import { HouseGrid } from './housesSvg/HouseGrid';
 
 export const City: React.FC = () => {
   const cityBasicInfo = useAppSelector((state) => state.cityBasicInfo);
@@ -100,39 +101,42 @@ export const City: React.FC = () => {
                   }}
                 >
                   {house.type !== '' && (
-                    <House
-                      $lengthAttrs={`${houseWidth * scale}px`}
-                      $fontSizeAttrs={`${24 * scale}px`}
-                      $type={house.type}
-                      draggable={dragMode === 'houses'}
-                      onDragStart={(event: React.DragEvent) => {
-                        if (dragMode !== 'houses') return;
-                        const target = event.target as HTMLDivElement;
-                        target.style.opacity = '0.01';
-                        dispatch(
-                          dragHouseStart({
-                            id: house.id,
-                            target: house.type,
-                            pastIndex: { xIndex, yIndex },
-                          })
-                        );
-                      }}
-                      onDragEnd={(event: React.DragEvent) => {
-                        if (dragMode !== 'houses') return;
-                        const target = event.target as HTMLDivElement;
-                        target.style.opacity = '1';
-                      }}
-                    >
-                      {house.type === '食物' ? (
-                        <HouseOfFood />
-                      ) : house.type === '服裝' ? (
-                        <HouseOfClothes />
-                      ) : house.type === '飲料' ? (
-                        <HouseOfDrinks />
-                      ) : (
-                        <HouseOfPlants />
-                      )}
-                    </House>
+                    <>
+                      <HouseGrid houseType={house.type} />
+                      <House
+                        $lengthAttrs={`${houseWidth * scale}px`}
+                        $fontSizeAttrs={`${24 * scale}px`}
+                        $type={house.type}
+                        draggable={dragMode === 'houses'}
+                        onDragStart={(event: React.DragEvent) => {
+                          if (dragMode !== 'houses') return;
+                          const target = event.target as HTMLDivElement;
+                          target.style.opacity = '0.01';
+                          dispatch(
+                            dragHouseStart({
+                              id: house.id,
+                              target: house.type,
+                              pastIndex: { xIndex, yIndex },
+                            })
+                          );
+                        }}
+                        onDragEnd={(event: React.DragEvent) => {
+                          if (dragMode !== 'houses') return;
+                          const target = event.target as HTMLDivElement;
+                          target.style.opacity = '1';
+                        }}
+                      >
+                        {house.type === '食物' ? (
+                          <HouseOfFood />
+                        ) : house.type === '服裝' ? (
+                          <HouseOfClothes />
+                        ) : house.type === '飲品' ? (
+                          <HouseOfDrinks />
+                        ) : (
+                          <HouseOfPlants />
+                        )}
+                      </House>
+                    </>
                   )}
                 </Grid>
               );
@@ -199,8 +203,8 @@ const Grid = styled.div.attrs<GridProps>(({ $lengthAttrs }) => ({
     height: $lengthAttrs,
   },
 }))<GridProps>`
-  // border: 1px solid lightblue;
-
+  border: 1px solid lightblue;
+  position: relative;
   background-color: ${({ $status, $type }) =>
     $status === 1
       ? 'lightgreen'
@@ -224,6 +228,9 @@ const House = styled.div.attrs<HouseProps>(
 )<HouseProps>`
   border-radius: 10px;
   display: flex;
+  // position: absolute;
+  // index: 2;
+  // top: 0;
   align-items: center;
   justify-content: center;
 `;

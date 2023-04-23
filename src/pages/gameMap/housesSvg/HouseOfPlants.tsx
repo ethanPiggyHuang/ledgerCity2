@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../../redux/hooks';
 import { houseWidth } from '../../../utils/gameSettings';
+import { HouseGrid } from './HouseGrid';
 
 const Wrapper = styled.div`
   position: absolute;
