@@ -2,7 +2,7 @@ import React, { ReactNode, useState } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { chooseLabel, chooseMonth } from '../../redux/reducers/ledgerListSlice';
-import { mainLabels } from '../../utils/gameSettings';
+import { mainLabels, labelColorCodes } from '../../utils/gameSettings';
 
 interface BarChartSetting {
   svgHeight: number;
@@ -31,16 +31,6 @@ export const BarChart: React.FC = () => {
     yShrinkRatio: 0.9,
     labelDY: 20,
   };
-  const colorCodes = [
-    '#c23f3f',
-    '#cf9741',
-    '#d6d176',
-    '#a9ce56',
-    '#6cd4c2',
-    '#7674cf',
-    '#666666',
-    '#83580b',
-  ];
 
   const rawDatas = ledgerList.map((ledger) => {
     return {
@@ -110,7 +100,7 @@ export const BarChart: React.FC = () => {
     value: number,
     monthValue: number,
     { svgHeight, svgWidth, barWidth, yShrinkRatio }: BarChartSetting,
-    colorCodes: string[],
+    labelColorCodes: string[],
     xMax: number,
     yMax: number,
     index: number
@@ -140,7 +130,7 @@ export const BarChart: React.FC = () => {
     value: number,
     monthValue: number,
     { svgHeight, svgWidth, barWidth, yShrinkRatio }: BarChartSetting,
-    colorCodes: string[],
+    labelColorCodes: string[],
     xMax: number,
     yMax: number,
     index: number,
@@ -173,7 +163,7 @@ export const BarChart: React.FC = () => {
           dispatch(chooseLabel(''));
         }}
         d={dScript}
-        fill={colorCodes[labelIndex]}
+        fill={labelColorCodes[labelIndex]}
       />
     );
   };
@@ -196,7 +186,7 @@ export const BarChart: React.FC = () => {
 
   return (
     <Wrap>
-      <ChartTitle>{`BarChart：${chosenYear}年各月份花費`}</ChartTitle>
+      <ChartTitle>{`${chosenYear}年各月份花費`}</ChartTitle>
       {/* TODO: NaN 奇怪錯誤，應該與 initial state 無法 render 相關 */}
       {loadingStatus === 'idle' && !hasCategory && (
         <BarSvg>
@@ -205,7 +195,7 @@ export const BarChart: React.FC = () => {
               value,
               monthValue,
               barChartSetting,
-              colorCodes,
+              labelColorCodes,
               xMax,
               yMax,
               index
@@ -228,7 +218,7 @@ export const BarChart: React.FC = () => {
                   value,
                   monthValue,
                   barChartSetting,
-                  colorCodes,
+                  labelColorCodes,
                   xMax,
                   yMax,
                   index,
@@ -243,17 +233,19 @@ export const BarChart: React.FC = () => {
           <path d={`M 0 300 L 0 0 Z`} stroke="black" />
         </BarSvg>
       )}
-      <button onClick={() => setDisplayMonths(12)}>全年</button>
-      {chosenYear === currentYear && (
-        <button onClick={() => setDisplayMonths(3)}>近3個月</button>
-      )}
-      <span>{`  `}</span>
-      <button onClick={() => setHasCategory(!hasCategory)}>
-        {hasCategory ? '隱藏類別' : '顯示類別'}
-      </button>
-      <button onClick={() => setLabelsDisplay(new Array(8).fill(true))}>
-        類別全開
-      </button>
+      <Buttons>
+        <button onClick={() => setDisplayMonths(12)}>全年</button>
+        {chosenYear === currentYear && (
+          <button onClick={() => setDisplayMonths(3)}>近3個月</button>
+        )}
+        <span>{`  `}</span>
+        <button onClick={() => setHasCategory(!hasCategory)}>
+          {hasCategory ? '隱藏類別' : '顯示類別'}
+        </button>
+        <button onClick={() => setLabelsDisplay(new Array(8).fill(true))}>
+          類別全開
+        </button>
+      </Buttons>
 
       {hasCategory && (
         <LabelWrap>
@@ -261,7 +253,7 @@ export const BarChart: React.FC = () => {
             <>
               <LabelColor
                 $display={labelsDisplay[index]}
-                $backgroundColor={colorCodes[index]}
+                $backgroundColor={labelColorCodes[index]}
                 onClick={() => {
                   let newArr = [...labelsDisplay];
                   newArr[index] = !newArr[index];
@@ -294,10 +286,15 @@ const Wrap = styled.div`
   padding: 10px;
   width: 100%;
   position: relative;
-  border: 1px solid lightblue;
   overflow: scroll;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 const ChartTitle = styled.p`
+  text-align: center;
+  font-size: 28px;
+  color: #808080;
   width: 100%;
 `;
 const BarSvg = styled.svg`
@@ -313,7 +310,10 @@ const BarPath = styled.path`
     opacity: 1;
   }
 `;
-
+const Buttons = styled.div`
+  display: flex;
+  padding-bottom: 20px;
+`;
 const LabelX = styled.text`
   font-size: 14px;
   text-anchor: middle;

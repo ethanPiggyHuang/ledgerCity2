@@ -119,5 +119,5 @@ const BlackCurtain = styled.div`
   left: 0;
   z-index: 3;
   background-color: black;
-  opacity: 0.6;
+  opacity: 0.3;
 `;

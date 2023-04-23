@@ -19,7 +19,7 @@ const initialState: LedgerListState = {
   choices: {
     chosenLedgerId: '',
     chosenYear: 2023,
-    chosenMonth: 0,
+    chosenMonth: 4,
     chosenLabel: '',
   },
   status: 'idle',

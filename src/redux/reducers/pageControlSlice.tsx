@@ -3,12 +3,14 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 export interface PageControlState {
   pageChosen: 'ledger' | 'statistics' | 'profile' | 'city';
   ledgerPosition: 'minimize' | 'normal' | 'expand';
+  chartType: 'oneMonth' | 'monthly' | 'split';
   status: 'idle' | 'loading' | 'failed';
 }
 
 const initialState: PageControlState = {
   pageChosen: 'city',
   ledgerPosition: 'minimize',
+  chartType: 'oneMonth',
   status: 'idle',
 };
 
@@ -28,10 +30,17 @@ export const pageControl = createSlice({
     ) => {
       state.ledgerPosition = action.payload;
     },
+    CHANGE_CHART_TYPE: (
+      state,
+      action: PayloadAction<'oneMonth' | 'monthly' | 'split'>
+    ) => {
+      state.chartType = action.payload;
+    },
   },
   extraReducers: (builder) => {},
 });
 
-export const { SWITCH_PAGE, CHANGE_LEDGER_POSITION } = pageControl.actions;
+export const { SWITCH_PAGE, CHANGE_LEDGER_POSITION, CHANGE_CHART_TYPE } =
+  pageControl.actions;
 
 export default pageControl.reducer;

@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { chooseLabel } from '../../redux/reducers/ledgerListSlice';
-import { mainLabels } from '../../utils/gameSettings';
+import { mainLabels, labelColorCodes } from '../../utils/gameSettings';
 
 interface PieChartSetting {
   svgHeight: number;
@@ -31,14 +31,6 @@ export const PieChart: React.FC = () => {
     radius: 140,
     preservedDy: 10,
   };
-  const colorCodes = [
-    '#c23f3f',
-    '#cf9741',
-    '#d6d176',
-    '#a9ce56',
-    '#6cd4c2',
-    '#7674cf',
-  ];
 
   const rawDatas = ledgerList.map((ledger) => {
     return {
@@ -96,7 +88,7 @@ export const PieChart: React.FC = () => {
     ratio: number,
     label: string,
     { radius, preservedDy }: PieChartSetting,
-    colorCodes: string[],
+    labelColorCodes: string[],
     index: number
   ): ReactNode => {
     const origin = { x: 0, y: preservedDy };
@@ -124,31 +116,41 @@ export const PieChart: React.FC = () => {
           dispatch(chooseLabel(label));
         }}
         d={dScript}
-        fill={colorCodes[index % 6]}
+        fill={labelColorCodes[index % 6]}
       />
     );
   };
 
   return (
     <Wrap>
-      <ChartTitle>{`PieChart：${chosenMonth}月各類別花費`}</ChartTitle>
+      <ChartTitle>{`${chosenMonth}月各類別花費`}</ChartTitle>
       {loadingStatus === 'idle' && chosenMonth !== 0 && (
-        <PieSvg
-          $svgHeight={pieChartSetting.svgHeight}
-          $svgWidth={pieChartSetting.svgWidth}
-        >
-          {conbined.map(({ startAngle, ratio, label }, index) =>
-            drawSector(
-              startAngle,
-              ratio,
-              label,
-              pieChartSetting,
-              colorCodes,
-              index
-            )
-          )}
-        </PieSvg>
+        <ChartWrap>
+          <PieSvg
+            $svgHeight={pieChartSetting.svgHeight}
+            $svgWidth={pieChartSetting.svgWidth}
+          >
+            {conbined.map(({ startAngle, ratio, label }, index) =>
+              drawSector(
+                startAngle,
+                ratio,
+                label,
+                pieChartSetting,
+                labelColorCodes,
+                index
+              )
+            )}
+          </PieSvg>
+        </ChartWrap>
       )}
+      <LabelWrap>
+        {mainLabels.map((label, index) => (
+          <>
+            <LabelColor $backgroundColor={labelColorCodes[index]} />
+            <LabelText>{label}</LabelText>
+          </>
+        ))}
+      </LabelWrap>
     </Wrap>
   );
 };
@@ -156,6 +158,9 @@ export const PieChart: React.FC = () => {
 type PieSvgProps = {
   $svgHeight: number;
   $svgWidth: number;
+};
+type LabelColorProps = {
+  $backgroundColor: string;
 };
 
 const Wrap = styled.div`
@@ -165,6 +170,14 @@ const Wrap = styled.div`
 `;
 const ChartTitle = styled.p`
   width: 100%;
+  font-size: 28px;
+  color: #808080;
+  text-align: center;
+`;
+const ChartWrap = styled.div`
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
 `;
 const PieSvg = styled.svg<PieSvgProps>`
   padding-top: 0px;
@@ -179,4 +192,25 @@ const PiePath = styled.path`
     opacity: 1;
     transform: translate(0, -10px);
   }
+`;
+
+const LabelWrap = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  margin: auto;
+  width: 40%;
+  gap: 8px;
+`;
+
+const LabelColor = styled.div<LabelColorProps>`
+  width: 16px;
+  height: 16px;
+  border: grey solid 1px;
+  opacity: 0.7;
+  background-color: ${({ $backgroundColor }) => `${$backgroundColor}`};
+  cursor: pointer;
+`;
+const LabelText = styled.p`
+  height: 10px;
+  cursor: pointer;
 `;
