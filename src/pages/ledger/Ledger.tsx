@@ -14,10 +14,13 @@ import { Label } from './Label';
 import { Payment } from './Payment';
 import { Calculator } from './Calculator';
 import { updateLocation } from '../../redux/api/userAPI';
-import { NavBar } from '../gameMap/NavBar';
+import { ReactComponent as Receipt } from '../../assets/receipt.svg';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 export const Ledger: React.FC = () => {
   const { userId } = useAppSelector((state) => state.userInfo.data);
+  const { number } = useAppSelector((state) => state.ledgerSingle.data.amount);
   const { ledgerId } = useAppSelector((state) => state.ledgerSingle);
   const { item, labelMain, amount } = useAppSelector(
     (state) => state.ledgerSingle.data
@@ -36,7 +39,7 @@ export const Ledger: React.FC = () => {
 
   return (
     <Wrap $state={ledgerPosition}>
-      <MainBoard>
+      {/* <MainBoard>
         <TimeBar />
         <Section>
           <Label />
@@ -69,8 +72,20 @@ export const Ledger: React.FC = () => {
             確認
           </ConfirmButton>
         </BoardFooter>
+      </MainBoard> */}
+      <Background />
+      <MainBoard>
+        <Header>
+          <CrossIconWrap>
+            <CrossIcon icon={faXmark} />
+          </CrossIconWrap>
+          <TimeBar />
+        </Header>
+        <SecondRow>
+          <Payment />
+          <Amount>{`$ ${number}`}</Amount>
+        </SecondRow>
       </MainBoard>
-      <br />
     </Wrap>
   );
 };
@@ -88,58 +103,95 @@ to {
 
 const showUp = keyframes`
 from {
-  transform: translateY(800px);
+  transform: translateY(800px)  translateX(75%);
 }
 to {
-  transform: translateY(0px);
+  transform: translateY(0px)  translateX(75%);
 }
 `;
 
 const Wrap = styled.div<WrapProps>`
-  padding: 20px;
+  width 40%;
   position: absolute;
-  z-index: 1;
+  z-index: 3;
   bottom: 0;
-  max-height: 80vh;
-  overflow: scroll;
+  // max-height: 80vh;
   display: flex;
-  border: 1px solid lightblue;
   flex-wrap: wrap;
   gap: 20px;
+  overflow: hidden;
+  // background-image: url('../../assets/receipt.svg');
   ${({ $state }) =>
     $state === 'normal'
       ? css`
-          animation: ${showUp} 1s linear 1;
-          transform: translateY(0px);
+          // animation: ${showUp} 1s linear 1;
+          transform: translateY(0px) translateX(75%);
         `
       : css`
-          animation: ${fadeOut} 1s linear 1;
+          // animation: ${fadeOut} 1s linear 1;
           transform: translateY(800px);
         `}
 `;
 
-const ModeOptions = styled.div`
-  height: 50px;
-  width: 100%;
+const Background = styled(Receipt)`
+  overflow: clip;
   display: flex;
-  justify-content: space-between;
-  border: 1px solid lightblue;
+  justify-content: center;
+  // position: absolute;
+  // z-index: 3;
+`;
+const MainBoard = styled.div`
+  position: absolute;
+  top: 0;
+  width: 100%;
+  padding-top: 15px;
+  // background-color: white;
 `;
 
-const ModeOption = styled.div`
-  width: 30%;
-  border: 1px solid lightblue;
+const Header = styled.div`
+  height: 60px;
+  width: 100%;
+  border-bottom: 3px solid #e6e6e6;
   display: flex;
   justify-content: center;
   align-items: center;
 `;
 
-const MainBoard = styled.div`
+const SecondRow = styled.div`
+  height: 93px;
   width: 100%;
-  border: 1px solid lightblue;
+  border-bottom: 3px solid #e6e6e6;
   display: flex;
-  flex-wrap: wrap;
+  // justify-content: center;
+  align-items: center;
 `;
+
+const CrossIconWrap = styled.div`
+  position: absolute;
+  left: 21px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+`;
+const CrossIcon = styled(FontAwesomeIcon)`
+  height: 27px;
+  color: #808080;
+`;
+const Amount = styled.p`
+  padding-right: 25px;
+  color: #808080;
+  font-size: 36px;
+  margin-left: auto;
+`;
+const PaymentMethod = styled.div`
+  width: 72px;
+  height: 108px;
+  background-color: #ebebeb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 const Section = styled.div`
   height: 450px;
   width: 50%;

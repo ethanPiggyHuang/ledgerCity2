@@ -35,7 +35,7 @@ const initialState: LedgerSingleState = {
     item: '',
     labelMain: '',
     labelSubs: [],
-    payWho: '',
+    payWho: 'Ethan', //TODO
     payHow: 'cash',
     amount: { currency: '', number: 0, numberNT: 0 },
     recordTime: 0,
@@ -200,13 +200,22 @@ export const ledgerSingle = createSlice({
       state.calculationHolder.number = 0;
     },
     paySelectPerson: (state, action: PayloadAction<string>) => {
-      state.data.payWho = action.payload;
+      if (state.data.payWho === 'Ethan') {
+        state.data.payWho = 'Hazel';
+      }
+      state.data.payWho = 'Ethan'; //TODO
     },
     paySelectMethod: (
       state,
       action: PayloadAction<'cash' | 'creditCard' | 'mobile'>
     ) => {
-      state.data.payHow = action.payload;
+      const options: ('cash' | 'creditCard' | 'mobile')[] = [
+        'cash',
+        'creditCard',
+        'mobile',
+      ];
+      const index = options.findIndex((option) => option === action.payload);
+      state.data.payHow = options[(index + 1) % 3];
     },
     timeEdit: (
       state,

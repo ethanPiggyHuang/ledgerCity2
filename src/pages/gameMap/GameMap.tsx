@@ -16,6 +16,7 @@ import { getCityInfo } from '../../redux/reducers/cityBasicInfoSlice';
 import { getLedgerList } from '../../redux/reducers/ledgerListSlice';
 import { Button } from '../../component/Button';
 import { Ledger } from '../ledger/Ledger';
+import Footer from '../../component/Footer';
 
 export const GameMap: React.FC = () => {
   const { isLogin, isAuthing } = useAppSelector(
@@ -23,6 +24,7 @@ export const GameMap: React.FC = () => {
   );
   const { ledgerBookId } = useAppSelector((state) => state.cityBasicInfo);
   const { userId } = useAppSelector((state) => state.userInfo.data);
+  const { pageChosen } = useAppSelector((state) => state.pageControl);
 
   const dispatch = useAppDispatch();
 
@@ -87,7 +89,9 @@ export const GameMap: React.FC = () => {
       <RearrangeOptions />
       <NavBar />
       <ScaleBar />
-      <Ledger />
+      {pageChosen === 'ledger' && <Ledger />}
+
+      <Footer />
       {/* <CityShiftControl type={'down'} /> */}
       {/* <Button type={'edit'}></Button> */}
     </Wrapper>

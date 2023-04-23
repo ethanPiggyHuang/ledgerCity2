@@ -5,6 +5,9 @@ import {
   paySelectPerson,
   paySelectMethod,
 } from '../../redux/reducers/ledgerSingleSlice';
+import { ReactComponent as Cash } from '../../assets/cash.svg';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCreditCard } from '@fortawesome/free-solid-svg-icons';
 
 export const Payment: React.FC = () => {
   const { payWho, payHow } = useAppSelector((state) => state.ledgerSingle.data);
@@ -22,39 +25,43 @@ export const Payment: React.FC = () => {
   ];
 
   return (
-    <>
-      <PaymentInfo>
-        <PaidByWhoText>誰買單？</PaidByWhoText>
-        <PaidByWho>
-          {people.map((name, index) => (
-            <PersonOption
-              key={name}
-              $isChosen={name === payWho}
-              onClick={() => {
-                dispatch(paySelectPerson(name));
-              }}
-            >
-              <Portrait />
-              <Name>{name}</Name>
-            </PersonOption>
-          ))}
-        </PaidByWho>
-        <PaidHowText>支付工具</PaidHowText>
-        <PaidMethods>
-          {methods.map((method) => (
-            <PaidMethod
-              key={method.en}
-              $isChosen={method.en === payHow}
-              onClick={() => {
-                dispatch(paySelectMethod(method.en));
-              }}
-            >
-              {method.ch}
-            </PaidMethod>
-          ))}
-        </PaidMethods>
-      </PaymentInfo>
-    </>
+    <PaymentInfo>
+      <PaidMethods>
+        {methods.map((method) => (
+          <PaidMethod
+            key={method.en}
+            $isChosen={method.en === payHow}
+            onClick={() => {
+              dispatch(paySelectMethod(method.en));
+            }}
+          >
+            <PaidMethodIcon>
+              {method.en === 'cash' ? (
+                <Cash />
+              ) : (
+                <FontAwesomeIcon icon={faCreditCard} />
+              )}
+            </PaidMethodIcon>
+            <PaidMethodText>{method.ch}</PaidMethodText>
+          </PaidMethod>
+        ))}
+      </PaidMethods>
+      <PaidByWho>
+        {people.map((name, index) => (
+          <PersonOption
+            key={name}
+            // $isChosen={true}
+            $isChosen={name === payWho}
+            onClick={() => {
+              dispatch(paySelectPerson(name));
+            }}
+          >
+            <Name>{name}</Name>
+            <Name>付款</Name>
+          </PersonOption>
+        ))}
+      </PaidByWho>
+    </PaymentInfo>
   );
 };
 
@@ -66,38 +73,56 @@ type PaidMethodProps = {
 };
 
 const PaymentInfo = styled.div`
-  margin: 10px auto 0;
-  height: 35%;
-  width: 90%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 8px 20px;
-  border: 1px solid lightblue;
-`;
-const PaidByWhoText = styled.div`
-  height: 100%;
-  width: 15%;
-  border: 1px solid lightblue;
+  gap: 10%;
+  height: 80%;
+  width: 25%;
+  margin-left: 15px;
   display: flex;
   justify-content: center;
   align-items: center;
 `;
-const PaidByWho = styled.div`
+const PaidMethods = styled.div`
   height: 100%;
+  width: 45%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ebebeb;
+  border-radius: 10px;
+`;
+const PaidMethod = styled.div<PaidMethodProps>`
+  width: 100%;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  gap: 6px;
+  display: ${({ $isChosen }) => ($isChosen ? 'flex' : 'none')};
+`;
+const PaidMethodIcon = styled(Cash)`
+  width: 100%;
+  height: 32px;
+  color: #808080;
+`;
+const PaidMethodText = styled.p`
+  width: 100%;
+  color: #808080;
+  display: flex;
+  font-size: 18px;
+  justify-content: center;
+`;
+
+const PaidByWho = styled(PaidMethods)`
   width: 50%;
-  display: flex;
-  border: 1px solid lightblue;
 `;
 const PersonOption = styled.div<PersonOptionProps>`
-  width: 40%;
-  border: 1px solid lightblue;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
   cursor: pointer;
-  background-color: ${({ $isChosen }) => ($isChosen ? 'lightblue' : '')};
+  gap: 6px;
+  display: ${({ $isChosen }) => ($isChosen ? 'flex' : 'none')};
 `;
 const Portrait = styled.img`
   height: 100px;
@@ -106,8 +131,11 @@ const Portrait = styled.img`
   background-color: white;
 `;
 const Name = styled.p`
-  height: 20px;
-  border: 1px solid lightblue;
+  width: 100%;
+  color: #808080;
+  display: flex;
+  font-size: 18px;
+  justify-content: center;
 `;
 const PaidHowText = styled.div`
   height: 100%;
@@ -117,24 +145,4 @@ const PaidHowText = styled.div`
   justify-content: center;
   align-items: center;
   margin-left: auto;
-`;
-const PaidMethods = styled.div`
-  height: 100%;
-  width: 15%;
-
-  border: 1px solid lightblue;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-`;
-const PaidMethod = styled.p<PaidMethodProps>`
-  width: 100%;
-  border: 1px solid lightblue;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  background-color: ${({ $isChosen }) => ($isChosen ? 'lightblue' : '')};
 `;

@@ -26,4 +26,4 @@ export const labelColorCodes: string[] = [
 
 export const gridGap = 0;
 export const gridLength = 160;
-export const houseWidth = 100;
+export const houseWidth = 120;

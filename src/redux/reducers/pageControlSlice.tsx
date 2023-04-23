@@ -1,11 +1,13 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface PageControlState {
+  pageChosen: 'ledger' | 'statistics' | 'profile';
   ledgerPosition: 'minimize' | 'normal' | 'expand';
   status: 'idle' | 'loading' | 'failed';
 }
 
 const initialState: PageControlState = {
+  pageChosen: 'ledger',
   ledgerPosition: 'normal',
   status: 'idle',
 };
@@ -14,6 +16,12 @@ export const pageControl = createSlice({
   name: 'cityBasicInfo',
   initialState,
   reducers: {
+    SWITCH_PAGE: (
+      state,
+      action: PayloadAction<'ledger' | 'statistics' | 'profile'>
+    ) => {
+      state.pageChosen = action.payload;
+    },
     CHANGE_LEDGER_POSITION: (
       state,
       action: PayloadAction<'minimize' | 'normal' | 'expand'>
@@ -24,6 +32,6 @@ export const pageControl = createSlice({
   extraReducers: (builder) => {},
 });
 
-export const { CHANGE_LEDGER_POSITION } = pageControl.actions;
+export const { SWITCH_PAGE, CHANGE_LEDGER_POSITION } = pageControl.actions;
 
 export default pageControl.reducer;
