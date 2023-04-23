@@ -26,18 +26,20 @@ export const TimeBar: React.FC = () => {
   const time = new Date(ledgerTime);
   const timeInSeconds = time.getTime();
   const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
-  const scopes = [
-    // { scope: 'year', text: `${new Date(ledgerTime).getFullYear()}年` },
-    // { scope: 'month', text: `${new Date(ledgerTime).getMonth() + 1}月` },
-    // { scope: 'date',  text: `${new Date(ledgerTime).getDate()} 日` },
-    // { scope: 'day', text: `星期${weekdays[new Date(ledgerTime).getDay()]}` },
-  ];
+  // const scopes = [
+  // { scope: 'year', text: `${new Date(ledgerTime).getFullYear()}年` },
+  // { scope: 'month', text: `${new Date(ledgerTime).getMonth() + 1}月` },
+  // { scope: 'date',  text: `${new Date(ledgerTime).getDate()} 日` },
+  // { scope: 'day', text: `星期${weekdays[new Date(ledgerTime).getDay()]}` },
+  // ];
 
   const text =
     today.getDate() === new Date(ledgerTime).getDate() &&
     Math.abs(today.getTime() - time.getTime()) < 86400 * 1000
       ? '今日'
-      : `${time.getMonth() + 1} / ${time.getDate()}`;
+      : `${time.getMonth() + 1} / ${time.getDate()} (${
+          weekdays[time.getDay()]
+        })`;
 
   return (
     <Wrapper>
@@ -81,7 +83,7 @@ export const TimeBar: React.FC = () => {
 
 const Wrapper = styled.div`
   height: 40px;
-  width: 200px;
+  width: 250px;
   border-radius: 20px;
   color: #dabd7a;
 

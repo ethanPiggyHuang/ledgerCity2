@@ -1,14 +1,14 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface PageControlState {
-  pageChosen: 'ledger' | 'statistics' | 'profile';
+  pageChosen: 'ledger' | 'statistics' | 'profile' | 'city';
   ledgerPosition: 'minimize' | 'normal' | 'expand';
   status: 'idle' | 'loading' | 'failed';
 }
 
 const initialState: PageControlState = {
-  pageChosen: 'ledger',
-  ledgerPosition: 'normal',
+  pageChosen: 'city',
+  ledgerPosition: 'minimize',
   status: 'idle',
 };
 

@@ -17,6 +17,8 @@ import { getLedgerList } from '../../redux/reducers/ledgerListSlice';
 import { Button } from '../../component/Button';
 import { Ledger } from '../ledger/Ledger';
 import Footer from '../../component/Footer';
+import { Statistics } from '../statistics/Statistics';
+import { Profile } from '../profile/Profile';
 
 export const GameMap: React.FC = () => {
   const { isLogin, isAuthing } = useAppSelector(
@@ -89,7 +91,12 @@ export const GameMap: React.FC = () => {
       <RearrangeOptions />
       <NavBar />
       <ScaleBar />
+      {(pageChosen === 'statistics' || pageChosen === 'profile') && (
+        <BlackCurtain />
+      )}
       {pageChosen === 'ledger' && <Ledger />}
+      {pageChosen === 'statistics' && <Statistics />}
+      {pageChosen === 'profile' && <Profile />}
 
       <Footer />
       {/* <CityShiftControl type={'down'} /> */}
@@ -102,4 +109,15 @@ const Wrapper = styled.div`
   height: 100vh;
   position: relative;
   background: linear-gradient(#c8e2cc, #98d5da);
+  overflow: hidden;
+`;
+const BlackCurtain = styled.div`
+  height: calc(100vh - 100px);
+  width: 100vw;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  background-color: black;
+  opacity: 0.6;
 `;

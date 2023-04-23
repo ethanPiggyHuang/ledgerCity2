@@ -17,6 +17,8 @@ import { updateLocation } from '../../redux/api/userAPI';
 import { ReactComponent as Receipt } from '../../assets/receipt.svg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { CHANGE_LEDGER_POSITION } from '../../redux/reducers/pageControlSlice';
+import { DailyLedger } from './DailyLedger';
 
 export const Ledger: React.FC = () => {
   const { userId } = useAppSelector((state) => state.userInfo.data);
@@ -39,48 +41,19 @@ export const Ledger: React.FC = () => {
 
   return (
     <Wrap $state={ledgerPosition}>
-      {/* <MainBoard>
-        <TimeBar />
-        <Section>
-          <Label />
-          <Payment />
-        </Section>
-        <Section>
-          <Calculator />
-        </Section>
-        <BoardFooter>
-          <RecordPerson>{`記錄者：`}</RecordPerson>
-          <ConfirmButton
-            onClick={() => {
-              if (labelMain === '') {
-                alert('請選擇一個主要標籤');
-                return;
-              } else if (amount.number === 0) {
-                alert('請輸入花費金額');
-                return;
-              } else if (item === '') {
-                alert('請填入帳目品項');
-                return;
-              }
-              if (ledgerId === '') {
-                dispatch(ledgerSubmit());
-              } else {
-                dispatch(ledgerUpdate());
-              }
-            }}
-          >
-            確認
-          </ConfirmButton>
-        </BoardFooter>
-      </MainBoard> */}
       <Background />
+
       <MainBoard>
         <Header>
           <CrossIconWrap>
-            <CrossIcon icon={faXmark} />
+            <CrossIcon
+              icon={faXmark}
+              onClick={() => dispatch(CHANGE_LEDGER_POSITION('minimize'))}
+            />
           </CrossIconWrap>
           <TimeBar />
         </Header>
+        {ledgerPosition === 'minimize' && <DailyLedger />}
         <SecondRow>
           <Payment />
           <Amount>{`$ ${number}`}</Amount>
@@ -106,6 +79,11 @@ export const Ledger: React.FC = () => {
           <CheckIcon icon={faCheck} />
         </ConfirmButton>
       </MainBoard>
+      {ledgerPosition !== 'expand' && (
+        <AddNewWrap onClick={() => dispatch(CHANGE_LEDGER_POSITION('expand'))}>
+          <AddNewButton>+ 新紀錄</AddNewButton>
+        </AddNewWrap>
+      )}
     </Wrap>
   );
 };
@@ -114,16 +92,16 @@ type WrapProps = { $state: 'minimize' | 'normal' | 'expand' };
 
 const fadeOut = keyframes`
 from {
-  transform: translateY(0);
+  transform: translateY(0) translateX(75%);
 }
 to {
-  transform: translateY(800px);
+  transform: translateY(900px) translateX(75%);
 }
 `;
 
 const showUp = keyframes`
 from {
-  transform: translateY(800px)  translateX(75%);
+  transform: translateY(900px)  translateX(75%);
 }
 to {
   transform: translateY(0px)  translateX(75%);
@@ -141,14 +119,19 @@ const Wrap = styled.div<WrapProps>`
   gap: 20px;
   overflow: hidden;
   ${({ $state }) =>
-    $state === 'normal'
+    $state === 'minimize'
       ? css`
           // animation: ${showUp} 1s linear 1;
-          transform: translateY(0px) translateX(75%);
+          transform: translateY(665px) translateX(75%);
+        `
+      : $state === 'normal'
+      ? css`
+          // animation: ${showUp} 1s linear 1;
+          transform: translateY(440px) translateX(75%);
         `
       : css`
           // animation: ${fadeOut} 1s linear 1;
-          transform: translateY(800px);
+          transform: translateY(0px) translateX(75%);
         `}
 `;
 
@@ -156,8 +139,6 @@ const Background = styled(Receipt)`
   overflow: clip;
   display: flex;
   justify-content: center;
-  // position: absolute;
-  // z-index: 3;
 `;
 const MainBoard = styled.div`
   position: absolute;
@@ -165,7 +146,6 @@ const MainBoard = styled.div`
   width: 100%;
   height: 100%;
   padding-top: 15px;
-  // background-color: white;
 `;
 
 const Header = styled.div`
@@ -219,37 +199,26 @@ const CheckIcon = styled(FontAwesomeIcon)`
   font-size: 36px;
 `;
 
-const PaymentMethod = styled.div`
-  width: 72px;
-  height: 108px;
-  background-color: #ebebeb;
+const AddNewWrap = styled.div`
+  position: absolute;
+  z-index: 5;
+  top: 198px;
+  height: 100px;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #f7f7f7;
 `;
 
-const Section = styled.div`
-  height: 450px;
-  width: 50%;
-  border: 1px solid lightblue;
-  // display: flex;
-  // justify-content: center;
-  // align-items: center;
-  // gap: 20px;
-`;
-const BoardFooter = styled.div`
-  height: 80px;
-  width: 100%;
-  border: 1px solid lightblue;
+const AddNewButton = styled.div`
+  height: 44px;
+  width: 250px;
   display: flex;
   justify-content: center;
   align-items: center;
-`;
-const RecordPerson = styled.div`
-  height: 80%;
-  width: 20%;
-  border: 1px solid lightblue;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  font-size: 24px;
+  border-radius: 22px;
+  background-color: #ebebeb;
+  color: #808080;
 `;

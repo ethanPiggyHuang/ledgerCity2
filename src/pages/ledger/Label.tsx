@@ -32,8 +32,6 @@ export const Label: React.FC = () => {
   );
   const dispatch = useAppDispatch();
 
-  const labelChosen = labelMain === '' ? labelSubs : [labelMain, ...labelSubs];
-
   const labelIcons = [
     faUtensils,
     faMugHot,
