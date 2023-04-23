@@ -18,19 +18,19 @@ export const Calculator: React.FC = () => {
     '7',
     '8',
     '9',
-    'AC',
+    '⇤',
     '4',
     '5',
     '6',
-    'x',
+    '+',
     '1',
     '2',
     '3',
     '-',
     '0',
-    '⇤',
+    'AC',
     '=',
-    '+',
+    '',
   ];
 
   const thousandsSeparator: (number: number) => string = function (number) {
@@ -45,8 +45,8 @@ export const Calculator: React.FC = () => {
   };
 
   return (
-    <>
-      <AmountDisplay>
+    <Wrapper>
+      {/* <AmountDisplay>
         <Currency>NT$</Currency>
         <AmountInput
           readOnly //check better choice
@@ -72,7 +72,7 @@ export const Calculator: React.FC = () => {
           }}
         />
         <CurrencyExchange>NT$ 199</CurrencyExchange>
-      </AmountDisplay>
+      </AmountDisplay> */}
       <CalculatorButtons>
         {buttons.map((button, index) => (
           <CalculatorButton
@@ -97,7 +97,7 @@ export const Calculator: React.FC = () => {
           </CalculatorButton>
         ))}
       </CalculatorButtons>
-    </>
+    </Wrapper>
   );
 };
 
@@ -105,6 +105,15 @@ export const Calculator: React.FC = () => {
 //   $zoomRatio: number;
 //   $type: number;
 // };
+
+const Wrapper = styled.div`
+  position: absolute;
+  bottom: 0;
+  background-color: #292929;
+  width: 100%;
+  color: #f2f2f2;
+  font-size: 36px;
+`;
 
 const AmountDisplay = styled.div`
   margin: 10px auto 0;
@@ -153,7 +162,6 @@ const CalculatorButtons = styled.div`
   margin: 10px auto 0;
   width: 90%;
   height: calc(70% + 10px);
-  border: 1px solid lightblue;
   justify-content: center;
   align-items: center;
   padding: 8px 20px;
@@ -165,10 +173,8 @@ const CalculatorButtons = styled.div`
 const CalculatorButton = styled.div`
   height: 60px;
   width: 22%;
-  font-size: 24px;
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid lightblue;
   cursor: pointer;
 `;

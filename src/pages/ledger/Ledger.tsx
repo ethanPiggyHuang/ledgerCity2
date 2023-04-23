@@ -16,7 +16,7 @@ import { Calculator } from './Calculator';
 import { updateLocation } from '../../redux/api/userAPI';
 import { ReactComponent as Receipt } from '../../assets/receipt.svg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
 
 export const Ledger: React.FC = () => {
   const { userId } = useAppSelector((state) => state.userInfo.data);
@@ -85,6 +85,26 @@ export const Ledger: React.FC = () => {
           <Payment />
           <Amount>{`$ ${number}`}</Amount>
         </SecondRow>
+        <Label />
+        <Calculator />
+        <ConfirmButton
+          onClick={() => {
+            if (labelMain === '') {
+              alert('請選擇標籤');
+              return;
+            } else if (amount.number === 0) {
+              alert('請輸入花費金額');
+              return;
+            }
+            if (ledgerId === '') {
+              dispatch(ledgerSubmit());
+            } else {
+              dispatch(ledgerUpdate());
+            }
+          }}
+        >
+          <CheckIcon icon={faCheck} />
+        </ConfirmButton>
       </MainBoard>
     </Wrap>
   );
@@ -113,14 +133,13 @@ to {
 const Wrap = styled.div<WrapProps>`
   width 40%;
   position: absolute;
-  z-index: 3;
+  z-index: 4;
   bottom: 0;
-  // max-height: 80vh;
+  height: 80vh;
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
   overflow: hidden;
-  // background-image: url('../../assets/receipt.svg');
   ${({ $state }) =>
     $state === 'normal'
       ? css`
@@ -144,6 +163,7 @@ const MainBoard = styled.div`
   position: absolute;
   top: 0;
   width: 100%;
+  height: 100%;
   padding-top: 15px;
   // background-color: white;
 `;
@@ -183,6 +203,22 @@ const Amount = styled.p`
   font-size: 36px;
   margin-left: auto;
 `;
+const ConfirmButton = styled.div`
+  position: absolute;
+  bottom: 0;
+  right: 30px;
+  padding: 20px 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+`;
+
+const CheckIcon = styled(FontAwesomeIcon)`
+  color: #dabd7a;
+  font-size: 36px;
+`;
+
 const PaymentMethod = styled.div`
   width: 72px;
   height: 108px;
@@ -216,14 +252,4 @@ const RecordPerson = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`;
-const ConfirmButton = styled.div`
-  height: 80%;
-  width: 75%;
-  border: 1px solid lightblue;
-  font-size: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
 `;
