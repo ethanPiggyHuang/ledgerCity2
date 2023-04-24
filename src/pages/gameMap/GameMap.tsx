@@ -7,11 +7,7 @@ import { ScaleBar } from './ScaleBar';
 import { DialogBoard } from '../../component/DialogBoard';
 import { CityShiftControl } from './CityShiftControl';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import {
-  postFadeOutTime,
-  postFadeOutTimeRT,
-  updateLocation,
-} from '../../redux/api/userAPI';
+import { postFadeOutTime, postFadeOutTimeRT } from '../../redux/api/userAPI';
 import { getCityInfo } from '../../redux/reducers/cityBasicInfoSlice';
 import { getLedgerList } from '../../redux/reducers/ledgerListSlice';
 import { Button } from '../../component/Button';
@@ -19,6 +15,7 @@ import { Ledger } from '../ledger/Ledger';
 import Footer from '../../component/Footer';
 import { Statistics } from '../statistics/Statistics';
 import { Profile } from '../profile/Profile';
+import { SWITCH_PAGE } from '../../redux/reducers/pageControlSlice';
 
 export const GameMap: React.FC = () => {
   const { isLogin, isAuthing } = useAppSelector(
@@ -26,7 +23,7 @@ export const GameMap: React.FC = () => {
   );
   const { ledgerBookId } = useAppSelector((state) => state.cityBasicInfo);
   const { userId } = useAppSelector((state) => state.userInfo.data);
-  const { pageChosen } = useAppSelector((state) => state.pageControl);
+  const { pageActivity } = useAppSelector((state) => state.pageControl);
 
   const dispatch = useAppDispatch();
 
@@ -80,7 +77,7 @@ export const GameMap: React.FC = () => {
 
   // 監聽使用者進入頁面 -> 送到 db
   useEffect(() => {
-    if (userId) updateLocation(userId, 'city');
+    if (userId) SWITCH_PAGE({ userId, pageActivity: 'city' });
   }, [userId]);
 
   return (
@@ -91,16 +88,15 @@ export const GameMap: React.FC = () => {
       {/* <RearrangeOptions /> */}
       {/* <NavBar /> */}
       {/* <ScaleBar /> */}
-      {(pageChosen === 'statistics' || pageChosen === 'profile') && (
+      {(pageActivity === 'statistics' || pageActivity === 'profile') && (
         <BlackCurtain />
       )}
-      {pageChosen === 'ledger' && <Ledger />}
-      {pageChosen === 'statistics' && <Statistics />}
-      {pageChosen === 'profile' && <Profile />}
+      {pageActivity === 'ledger' && <Ledger />}
+      {pageActivity === 'statistics' && <Statistics />}
+      {pageActivity === 'profile' && <Profile />}
 
       <Footer />
       {/* <CityShiftControl type={'down'} /> */}
-      {/* <Button type={'edit'}></Button> */}
     </Wrapper>
   );
 };

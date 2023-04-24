@@ -7,10 +7,17 @@ import {
 import { DocumentData } from '@firebase/firestore-types';
 import { RootState } from '../store';
 
+export type CurrentActionState =
+  | 'city'
+  | 'rearrange'
+  | 'ledger'
+  | 'statistics'
+  | 'profile'
+  | 'leave';
+
 interface SoloUserActivityState {
-  currentPage: 'city' | 'ledger' | 'statistics' | 'profile' | 'leave';
+  currentAction: CurrentActionState;
   fadeOutTime: number;
-  isEditingCity: boolean;
   latestActiveTime: number;
 }
 
@@ -25,7 +32,7 @@ export interface UsersActivityState {
       userPortraitUrl: string | null;
     };
   };
-  data: { [userId: string]: SoloUserActivityState } | {};
+  data: { [userId: string]: SoloUserActivityState };
 }
 
 const initialState: UsersActivityState = {
@@ -66,7 +73,7 @@ export const usersActivity = createSlice({
       state,
       action: PayloadAction<{
         userId: string;
-        currentPage: 'city' | 'ledger' | 'statistics' | 'profile' | 'leave';
+        currentPage: CurrentActionState;
         isEditingCity: boolean;
         fadeOutTimeSecond: number;
         latestActiveTimeSecond: number;

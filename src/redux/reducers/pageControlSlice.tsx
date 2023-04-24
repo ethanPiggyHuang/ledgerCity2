@@ -1,29 +1,44 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { updateActivity } from '../api/userAPI';
+import { RootState } from '../store';
+
+type CurrentActionState =
+  | 'city'
+  | 'rearrange'
+  | 'ledger'
+  | 'statistics'
+  | 'profile'
+  | 'leave';
 
 export interface PageControlState {
-  pageChosen: 'ledger' | 'statistics' | 'profile' | 'city';
+  pageActivity: CurrentActionState;
   ledgerPosition: 'minimize' | 'normal' | 'expand';
   chartType: 'oneMonth' | 'monthly' | 'split';
   status: 'idle' | 'loading' | 'failed';
 }
 
 const initialState: PageControlState = {
-  pageChosen: 'city',
+  pageActivity: 'city',
   ledgerPosition: 'minimize',
   chartType: 'oneMonth',
   status: 'idle',
 };
 
+export const SWITCH_PAGE = createAsyncThunk(
+  'pageControl/SWITCH_PAGE',
+  async (payload: { userId: string; pageActivity: CurrentActionState }) => {
+    const { userId, pageActivity } = payload;
+    await updateActivity(userId, pageActivity);
+    return pageActivity;
+  }
+);
+
+// TODO so so important ，將 switch_page 的 action 存到 db ，再更新 state.
+
 export const pageControl = createSlice({
-  name: 'cityBasicInfo',
+  name: 'pageControl',
   initialState,
   reducers: {
-    SWITCH_PAGE: (
-      state,
-      action: PayloadAction<'ledger' | 'statistics' | 'profile' | 'city'>
-    ) => {
-      state.pageChosen = action.payload;
-    },
     CHANGE_LEDGER_POSITION: (
       state,
       action: PayloadAction<'minimize' | 'normal' | 'expand'>
@@ -37,10 +52,23 @@ export const pageControl = createSlice({
       state.chartType = action.payload;
     },
   },
-  extraReducers: (builder) => {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(SWITCH_PAGE.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(SWITCH_PAGE.fulfilled, (state, action) => {
+        state.status = 'idle';
+        state.pageActivity = action.payload;
+      })
+      .addCase(SWITCH_PAGE.rejected, (state) => {
+        state.status = 'failed';
+        alert('登錄失敗');
+      });
+  },
 });
 
-export const { SWITCH_PAGE, CHANGE_LEDGER_POSITION, CHANGE_CHART_TYPE } =
+export const { CHANGE_LEDGER_POSITION, CHANGE_CHART_TYPE } =
   pageControl.actions;
 
 export default pageControl.reducer;

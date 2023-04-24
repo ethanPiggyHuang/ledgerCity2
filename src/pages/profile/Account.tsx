@@ -89,7 +89,7 @@ export const Account: React.FC = () => {
           <CityName
             onClick={() => {
               dispatch(CITY_REDIRECTION({ userId, cityId }));
-              dispatch(SWITCH_PAGE('city'));
+              dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }));
             }}
           >
             {cityNames[cityId]}

@@ -49,8 +49,7 @@ export async function createAccount(userInfo: {
     ...initialUserProfile,
   });
   await setDoc(doc(db, 'allUserStatus', userId), {
-    currentPage: 'city',
-    isEditingCity: false,
+    currentActivity: 'city',
     fadeOutTime: serverTimestamp(),
     latestActiveTime: serverTimestamp(),
   });
@@ -118,10 +117,9 @@ export async function FETCH_COORPERATE_LOCATION(userId: string) {
   }
 }
 
-export async function updateLocation(userId: string, location: string) {
-  // console.log('userId', userId);
+export async function updateActivity(userId: string, pageActivity: string) {
   await updateDoc(doc(db, 'allUserStatus', userId), {
-    currentPage: location,
+    currentActivity: pageActivity,
     latestActiveTime: serverTimestamp(),
   });
 }

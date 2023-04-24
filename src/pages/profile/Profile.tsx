@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { updateLocation } from '../../redux/api/userAPI';
 import { NavBar } from '../gameMap/NavBar';
 import { Social } from './Social';
 import { Setting } from './Setting';
@@ -26,13 +25,15 @@ export const Profile: React.FC = () => {
   // 監聽使用者進入頁面 -> 送到 db
   useEffect(() => {
     if (userId) {
-      updateLocation(userId, 'profile');
+      SWITCH_PAGE({ userId, pageActivity: 'profile' });
     }
   }, [userId]);
 
   return (
     <Wrap>
-      <CrossIconWrap onClick={() => dispatch(SWITCH_PAGE('city'))}>
+      <CrossIconWrap
+        onClick={() => dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }))}
+      >
         <CrossIcon icon={faXmark} />
       </CrossIconWrap>
       <Account />

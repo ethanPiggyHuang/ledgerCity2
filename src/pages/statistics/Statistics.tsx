@@ -11,7 +11,7 @@ import {
   chooseMonth,
 } from '../../redux/reducers/ledgerListSlice';
 import { getAuth, signOut } from 'firebase/auth';
-import { updateLocation } from '../../redux/api/userAPI';
+import { updateActivity } from '../../redux/api/userAPI';
 import { NavBar } from '../gameMap/NavBar';
 import {
   CHANGE_CHART_TYPE,
@@ -30,7 +30,7 @@ export const Statistics: React.FC = () => {
 
   // 監聽使用者進入頁面 -> 送到 db
   useEffect(() => {
-    if (userId) updateLocation(userId, 'statistics');
+    if (userId) SWITCH_PAGE({ userId, pageActivity: 'profile' });
   }, [userId]);
 
   // useEffect(() => {
@@ -41,7 +41,11 @@ export const Statistics: React.FC = () => {
     <Wrap>
       <Header>
         <Title>分析圖表</Title>
-        <CrossIconWrap onClick={() => dispatch(SWITCH_PAGE('city'))}>
+        <CrossIconWrap
+          onClick={() =>
+            dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }))
+          }
+        >
           <CrossIcon icon={faXmark} />
         </CrossIconWrap>
       </Header>
@@ -103,7 +107,7 @@ export const Statistics: React.FC = () => {
 const Wrap = styled.div`
   height: 70vh;
   width: 40vw;
-  transform: translateX(75%);
+  // transform: translateX(75%);
   position: absolute;
   bottom: 100px;
   z-index: 4;

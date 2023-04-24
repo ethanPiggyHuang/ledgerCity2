@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faChartPie,
@@ -12,21 +13,26 @@ import { SWITCH_PAGE } from '../redux/reducers/pageControlSlice';
 
 const Footer: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { pageChosen } = useAppSelector((state) => state.pageControl);
-  const labelOrder: { page: 'ledger' | 'statistics' | 'profile'; icon: any }[] =
-    [
-      { page: 'statistics', icon: faChartPie },
-      { page: 'ledger', icon: faFilePen },
-      { page: 'profile', icon: faUserGear },
-    ];
+  const { pageActivity } = useAppSelector((state) => state.pageControl);
+  const { userId } = useAppSelector((state) => state.userInfo.data);
+  const labelOrder: {
+    page: 'ledger' | 'statistics' | 'profile';
+    icon: IconDefinition;
+  }[] = [
+    { page: 'statistics', icon: faChartPie },
+    { page: 'ledger', icon: faFilePen },
+    { page: 'profile', icon: faUserGear },
+  ];
 
   return (
     <Wrapper>
       {labelOrder.map((label) => (
         <SectionLabel
           key={label.page}
-          onClick={() => dispatch(SWITCH_PAGE(label.page))}
-          $chosen={label.page === pageChosen}
+          onClick={() =>
+            dispatch(SWITCH_PAGE({ userId, pageActivity: label.page }))
+          }
+          $chosen={label.page === pageActivity}
         >
           <StyledFontAwesomeIcon icon={label.icon} />
         </SectionLabel>

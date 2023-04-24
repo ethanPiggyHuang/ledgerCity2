@@ -8,17 +8,16 @@ import {
   ledgerSubmit,
   ledgerUpdate,
 } from '../../redux/reducers/ledgerSingleSlice';
-import { getCityInfo } from '../../redux/reducers/cityBasicInfoSlice';
 import { TimeBar } from './TimeBar';
 import { Label } from './Label';
 import { Payment } from './Payment';
 import { Calculator } from './Calculator';
-import { updateLocation } from '../../redux/api/userAPI';
 import { ReactComponent as Receipt } from '../../assets/receipt.svg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { CHANGE_LEDGER_POSITION } from '../../redux/reducers/pageControlSlice';
 import { DailyLedger } from './DailyLedger';
+import { SWITCH_PAGE } from '../../redux/reducers/pageControlSlice';
 
 export const Ledger: React.FC = () => {
   const { userId } = useAppSelector((state) => state.userInfo.data);
@@ -34,7 +33,7 @@ export const Ledger: React.FC = () => {
   // 監聽使用者進入頁面 -> 送到 db
   useEffect(() => {
     if (userId) {
-      updateLocation(userId, 'ledger');
+      SWITCH_PAGE({ userId, pageActivity: 'ledger' });
       // console.log(userId, 'update');
     }
   }, [userId]);
@@ -108,7 +107,7 @@ to {
 `;
 
 const Wrap = styled.div<WrapProps>`
-  width 40%;
+  width: 40%;
   position: absolute;
   z-index: 4;
   bottom: 0;

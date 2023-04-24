@@ -203,7 +203,7 @@ const Grid = styled.div.attrs<GridProps>(({ $lengthAttrs }) => ({
     height: $lengthAttrs,
   },
 }))<GridProps>`
-  border: 1px solid lightblue;
+  /* border: 1px solid lightblue; */
   position: relative;
   background-color: ${({ $status, $type }) =>
     $status === 1

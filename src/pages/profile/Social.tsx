@@ -69,6 +69,7 @@ export const Social: React.FC = () => {
           <br />
           <button
             onClick={() => {
+              // TODO: choose city
               const friendId = queryResult[0].userId;
               const cityId = cityList[0];
               dispatch(FRIEND_REQUEST({ friendId, cityId }));
