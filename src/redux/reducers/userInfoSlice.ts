@@ -7,6 +7,7 @@ import {
   FIND_ACCOUNT_MATCH,
   NEW_FRIEND_REQUEST,
   updateCityList,
+  getCityName,
 } from '../api/userAPI';
 import { RootState } from '../store';
 
@@ -49,6 +50,9 @@ export interface UserInfoState {
     queryResult: UserDataState[];
   };
   data: UserDataState;
+  additionalData: {
+    cityNames: { [key: string]: string };
+  };
 }
 
 const initialState: UserInfoState = {
@@ -76,6 +80,7 @@ const initialState: UserInfoState = {
     trophy: { list: [], citizens: [] },
     gameSetting: { hasMusic: false, hasHints: false, isRecordContinue: false },
   },
+  additionalData: { cityNames: {} },
 };
 
 export const CREATE_ACCOUNT = createAsyncThunk(
@@ -160,6 +165,14 @@ export const CITY_REDIRECTION = createAsyncThunk(
   }
 );
 
+export const GET_CITY_NAME = createAsyncThunk(
+  'userInfo/GET_CITY_NAME',
+  async (cityId: string) => {
+    const response = await getCityName(cityId);
+    return { cityId, cityName: response?.cityName };
+  }
+);
+
 export const userInfo = createSlice({
   name: 'userInfo',
   initialState,
@@ -198,6 +211,12 @@ export const userInfo = createSlice({
     TYPING_FRIEND_EMAIL: (state, action: PayloadAction<string>) => {
       state.editStatus.emailInput = action.payload;
     },
+    UPDATE_INSTANT_FRIENDS_STATUS: (
+      state,
+      action: PayloadAction<FriendStatusState[]>
+    ) => {
+      state.friends = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -230,7 +249,6 @@ export const userInfo = createSlice({
           // const cityId = action.payload.cityList[0];
           // state.data.cityList = [cityId];
           state.data = action.payload.data;
-          state.friends = action.payload.friendResponse;
           // // state.friends = action.payload.friendResponse;
         }
       })
@@ -285,6 +303,21 @@ export const userInfo = createSlice({
       .addCase(CITY_REDIRECTION.rejected, (state) => {
         state.status = 'failed';
         alert('friend request rejected');
+      })
+      .addCase(GET_CITY_NAME.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(GET_CITY_NAME.fulfilled, (state, action) => {
+        state.status = 'idle';
+        const { cityId, cityName } = action.payload;
+        console.log('city', cityId, cityName);
+        if (cityId && cityName) {
+          state.additionalData.cityNames[cityId] = cityName;
+        }
+      })
+      .addCase(GET_CITY_NAME.rejected, (state) => {
+        state.status = 'failed';
+        alert('get city name rejected');
       });
   },
 });
@@ -296,6 +329,7 @@ export const {
   EDIT_NICKNAME_ACTIVATE,
   TYPING_NICKNAME,
   TYPING_FRIEND_EMAIL,
+  UPDATE_INSTANT_FRIENDS_STATUS,
 } = userInfo.actions;
 
 export default userInfo.reducer;

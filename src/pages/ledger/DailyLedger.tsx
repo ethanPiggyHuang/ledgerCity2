@@ -74,7 +74,7 @@ export const DailyLedger: React.FC = () => {
           (label) => label === ledger.data.labelMain
         );
         return (
-          <LedgerSingle>
+          <LedgerSingle key={ledger.ledgerId}>
             <LedgerOperation>
               <EditIcon icon={faPen}></EditIcon>
             </LedgerOperation>

@@ -17,18 +17,20 @@ interface SoloUserActivityState {
 export interface UsersActivityState {
   status: 'idle' | 'loading' | 'failed';
   friendsInfo: {
-    userId: string;
-    userName: string | null;
-    userNickName: string | null;
-    userEmail: string | null;
-    userPortraitUrl: string | null;
-  }[];
+    [key: string]: {
+      userId: string;
+      userName: string | null;
+      userNickName: string | null;
+      userEmail: string | null;
+      userPortraitUrl: string | null;
+    };
+  };
   data: { [userId: string]: SoloUserActivityState } | {};
 }
 
 const initialState: UsersActivityState = {
   status: 'idle',
-  friendsInfo: [],
+  friendsInfo: {},
   data: {},
 };
 
@@ -85,7 +87,8 @@ export const usersActivity = createSlice({
       .addCase(GET_FRIENDS_INFO.fulfilled, (state, action) => {
         state.status = 'idle';
         if (action.payload) {
-          state.friendsInfo = [...state.friendsInfo, action.payload];
+          const { userId } = action.payload;
+          state.friendsInfo[userId] = action.payload;
         }
       })
       .addCase(GET_FRIENDS_INFO.rejected, (state) => {

@@ -17,6 +17,10 @@ import { LedgerDataState } from '../redux/reducers/ledgerSingleSlice';
 import { useNavigate } from 'react-router-dom';
 import { ReactComponent as ReactBanner } from '../assets/banner.svg';
 import { Banner } from '../component/Banner';
+import {
+  UPDATE_INSTANT_FRIENDS_STATUS,
+  FriendStatusState,
+} from '../redux/reducers/userInfoSlice';
 
 interface LedgerDatabaseState {
   timeLedger: number;
@@ -37,7 +41,7 @@ const Header: React.FC = () => {
   const { ledgerBookId, cityName } = useAppSelector(
     (state) => state.cityBasicInfo
   );
-  const { cityList } = useAppSelector((state) => state.userInfo.data);
+  const { userId, cityList } = useAppSelector((state) => state.userInfo.data);
   const navigate = useNavigate();
   const auth = getAuth();
 
@@ -89,10 +93,27 @@ const Header: React.FC = () => {
     }
   }, [ledgerBookId]);
 
+  useEffect(() => {
+    if (userId) {
+      const unsub = onSnapshot(
+        collection(db, 'users', userId, 'friends'),
+        (querySnapshot) => {
+          const friends: any[] = [];
+          querySnapshot.forEach((doc) => friends.push(doc.data()));
+          if (friends.length !== 0) {
+            dispatch(UPDATE_INSTANT_FRIENDS_STATUS(friends));
+          }
+        }
+      );
+      return () => unsub();
+    }
+  }, [userId]);
+
   return (
     <Wrapper>
       <Banner />
-      <BannerText value={`${cityName}`} />
+      {/* TODO */}
+      <BannerText value={`${cityName}`} onChange={() => {}} />
     </Wrapper>
   );
 };

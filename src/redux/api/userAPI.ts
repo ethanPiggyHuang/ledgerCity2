@@ -85,19 +85,12 @@ export async function getAccountInfo(userInfo: {
     userPortraitUrl,
   });
   const docSnap = await getDoc(doc(db, 'users', userId));
-  const q = query(collection(db, 'users', userId, 'friends'));
-  const friendStatus = await getDocs(q);
-  let friendResponse: FriendStatusState[] = [];
-  friendStatus.forEach((doc) => {
-    // console.log(doc.id, ' => ', doc.data());
-    friendResponse.push(doc.data() as FriendStatusState);
-  });
+
   if (docSnap.exists()) {
     const data = docSnap.data() as UserDataState; //TODO typescript
     return new Promise<{
       data: UserDataState;
-      friendResponse: FriendStatusState[];
-    }>((resolve) => resolve({ data, friendResponse }));
+    }>((resolve) => resolve({ data }));
   }
 }
 
@@ -211,4 +204,14 @@ export async function updateCityList(userId: string, newCityList: string[]) {
   await updateDoc(doc(db, 'users', userId), {
     cityList: newCityList,
   });
+}
+
+export async function getCityName(cityId: string) {
+  const citySnap = await getDoc(doc(db, 'cities', cityId));
+  if (citySnap.exists()) {
+    const cityName = citySnap.data().cityName as string; //TODO typescript
+    return new Promise<{ cityName: string }>((resolve) =>
+      resolve({ cityName })
+    );
+  }
 }

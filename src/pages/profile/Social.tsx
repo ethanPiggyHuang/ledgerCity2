@@ -10,6 +10,8 @@ import {
   GET_FRIENDS_INFO,
   AGREE_COOPERATIONS,
 } from '../../redux/reducers/usersActivitySlice';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { db } from '../../config/firebase';
 
 export const Social: React.FC = () => {
   const { userId, cityList } = useAppSelector((state) => state.userInfo.data);
@@ -19,18 +21,21 @@ export const Social: React.FC = () => {
   const friendIds = friends.map((friend) => friend.userId);
 
   useEffect(() => {
-    if (userId && friendsInfo.length === 0) {
+    if (friends.length !== 0) {
       friendIds.forEach((friendId) => {
         dispatch(GET_FRIENDS_INFO(friendId));
+        console.log(friends);
       });
     }
-  }, [userId, friendsInfo]);
+  }, [friends]);
 
   const dispatch = useAppDispatch();
 
   const { emailInput, queryResult } = useAppSelector(
     (state) => state.userInfo.editStatus
   );
+
+  const friendsArray = Object.values(friendsInfo);
 
   return (
     <Wrap>
@@ -75,8 +80,8 @@ export const Social: React.FC = () => {
         </>
       )}
       <p>＊＊朋友清單＊＊</p>
-      {friendsInfo.length !== 0 &&
-        friendsInfo.map((friend, index) => (
+      {friendsArray.length !== 0 &&
+        friendsArray.map((friend, index) => (
           <div key={index}>
             <p>{`朋友名字：${friend.userName}`}</p>
             <span>{`/朋友狀態：${
@@ -94,7 +99,6 @@ export const Social: React.FC = () => {
               <button
                 onClick={() => {
                   const friendId = friend.userId;
-
                   const cityId = friends.find(
                     (user) => user.userId === friend.userId
                   )?.coopCityId;

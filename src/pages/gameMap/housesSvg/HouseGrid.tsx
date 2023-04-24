@@ -53,7 +53,7 @@ export const HouseGrid: React.FC<{ houseType: string }> = ({ houseType }) => {
           <rect id="Rectangle 45" width="160" height="245" fill="#D9D9D9" />
           <g
             id="_&#229;&#156;&#150;&#229;&#177;&#164;_1"
-            clip-path="url(#clip0_41_9392)"
+            clipPath="url(#clip0_41_9392)"
           ></g>
           <g id="Group 52">
             <g id="Group 37">
@@ -75,8 +75,8 @@ export const HouseGrid: React.FC<{ houseType: string }> = ({ houseType }) => {
                 />
                 <g id="Intersect" filter="url(#filter0_f_41_9392)">
                   <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
+                    fillRule="evenodd"
+                    clipRule="evenodd"
                     d="M1.89923 195.62V188.023H1.89935V195.62H1.89923ZM1.89923 222.209V203.217H1.89935V222.209H1.89923ZM1.89935 226.008H157.636L157.636 222.209H98.5337C93.2891 222.209 89.0375 217.958 89.0375 212.713C89.0375 207.469 93.2891 203.217 98.5337 203.217H157.636V195.62H102.106C100.008 195.62 98.3077 193.92 98.3077 191.822C98.3077 189.724 100.008 188.023 102.106 188.023H157.636V180.426H1.89935V188.023H85.2392C87.337 188.023 89.0376 189.724 89.0376 191.822C89.0376 193.92 87.337 195.62 85.2392 195.62H1.89935V203.217H49.8772C55.1218 203.217 59.3733 207.469 59.3733 212.713C59.3733 217.958 55.1218 222.209 49.8772 222.209H1.89935V226.008Z"
                     fill="#B4AA99"
                   />
@@ -97,8 +97,8 @@ export const HouseGrid: React.FC<{ houseType: string }> = ({ houseType }) => {
                 height="130.75"
                 rx="3.5"
                 stroke="#E2E9E6"
-                stroke-width="3"
-                stroke-dasharray="8 8"
+                strokeWidth="3"
+                strokeDasharray="8 8"
               />
             </g>
             <rect
@@ -109,7 +109,7 @@ export const HouseGrid: React.FC<{ houseType: string }> = ({ houseType }) => {
               height="108"
               rx="2.5"
               fill={floorColor}
-              fill-opacity="0.5"
+              fillOpacity="0.5"
               stroke="#FAFBFB"
             />
           </g>
@@ -122,7 +122,7 @@ export const HouseGrid: React.FC<{ houseType: string }> = ({ houseType }) => {
             width="157.737"
             height="47.5814"
             filterUnits="userSpaceOnUse"
-            color-interpolation-filters="sRGB"
+            colorInterpolationFilters="sRGB"
           >
             <feFlood floodOpacity="0" result="BackgroundImageFix" />
             <feBlend
