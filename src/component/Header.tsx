@@ -92,7 +92,7 @@ const Header: React.FC = () => {
   return (
     <Wrapper>
       <Banner />
-      <BannerText value={'培根市'} />
+      <BannerText value={`${cityName}`} />
     </Wrapper>
   );
 };
