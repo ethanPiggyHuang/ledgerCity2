@@ -85,7 +85,6 @@ export const Account: React.FC = () => {
           >
             {cityId}
           </CityName>
-          <button onClick={() => navigate('/')}>go to</button>
         </div>
       ))}
     </Wrap>
@@ -93,7 +92,7 @@ export const Account: React.FC = () => {
 };
 
 const Wrap = styled.div`
-  width: 100vw;
+  width: 100%;
   // height: 100vh;
   padding: 20px;
   position: relative;

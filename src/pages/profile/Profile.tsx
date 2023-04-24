@@ -6,6 +6,9 @@ import { NavBar } from '../gameMap/NavBar';
 import { Social } from './Social';
 import { Setting } from './Setting';
 import { Account } from './Account';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { SWITCH_PAGE } from '../../redux/reducers/pageControlSlice';
 
 export const Profile: React.FC = () => {
   const { userId } = useAppSelector((state) => state.userInfo.data);
@@ -27,19 +30,41 @@ export const Profile: React.FC = () => {
 
   return (
     <Wrap>
+      <CrossIconWrap onClick={() => dispatch(SWITCH_PAGE('city'))}>
+        <CrossIcon icon={faXmark} />
+      </CrossIconWrap>
       <Account />
       <Social />
       <Setting />
-      <NavBar />
     </Wrap>
   );
 };
 
 const Wrap = styled.div`
-  width: 100vw;
-  height: 100vh;
-  padding: 20px;
-  position: relative;
-  // display: flex;
-  gap: 20px;
+  height: 70vh;
+  width: 40vw;
+  transform: translateX(75%);
+  position: absolute;
+  bottom: 100px;
+  z-index: 4;
+  border: #ffffff 3px solid;
+  background-color: #f7f7f7;
+
+  border-radius: 20px 20px 0 0;
+
+  font-size: 20px;
+  color: #808080;
+`;
+
+const CrossIconWrap = styled.div`
+  // position: absolute;
+  left: 21px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+`;
+const CrossIcon = styled(FontAwesomeIcon)`
+  height: 27px;
+  color: #808080;
 `;

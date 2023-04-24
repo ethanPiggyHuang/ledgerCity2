@@ -20,7 +20,7 @@ export const pageControl = createSlice({
   reducers: {
     SWITCH_PAGE: (
       state,
-      action: PayloadAction<'ledger' | 'statistics' | 'profile'>
+      action: PayloadAction<'ledger' | 'statistics' | 'profile' | 'city'>
     ) => {
       state.pageChosen = action.payload;
     },

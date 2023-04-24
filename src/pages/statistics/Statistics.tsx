@@ -13,7 +13,12 @@ import {
 import { getAuth, signOut } from 'firebase/auth';
 import { updateLocation } from '../../redux/api/userAPI';
 import { NavBar } from '../gameMap/NavBar';
-import { CHANGE_CHART_TYPE } from '../../redux/reducers/pageControlSlice';
+import {
+  CHANGE_CHART_TYPE,
+  SWITCH_PAGE,
+} from '../../redux/reducers/pageControlSlice';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 export const Statistics: React.FC = () => {
   const { chosenYear } = useAppSelector((state) => state.ledgerList.choices);
@@ -36,6 +41,9 @@ export const Statistics: React.FC = () => {
     <Wrap>
       <Header>
         <Title>分析圖表</Title>
+        <CrossIconWrap onClick={() => dispatch(SWITCH_PAGE('city'))}>
+          <CrossIcon icon={faXmark} />
+        </CrossIconWrap>
       </Header>
       <Main>
         {chartType === 'oneMonth' && <PieChart></PieChart>}
@@ -151,4 +159,16 @@ const ChartType = styled.div`
     cursor: pointer;
     background-color: #c3c3c3;
   }
+`;
+const CrossIconWrap = styled.div`
+  position: absolute;
+  left: 21px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+`;
+const CrossIcon = styled(FontAwesomeIcon)`
+  height: 27px;
+  color: #808080;
 `;

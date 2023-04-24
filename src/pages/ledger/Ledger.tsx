@@ -42,7 +42,6 @@ export const Ledger: React.FC = () => {
   return (
     <Wrap $state={ledgerPosition}>
       <Background />
-
       <MainBoard>
         <Header>
           <CrossIconWrap>
@@ -172,6 +171,7 @@ const CrossIconWrap = styled.div`
   height: 60px;
   display: flex;
   align-items: center;
+  cursor: pointer;
 `;
 const CrossIcon = styled(FontAwesomeIcon)`
   height: 27px;

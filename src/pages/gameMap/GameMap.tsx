@@ -88,9 +88,9 @@ export const GameMap: React.FC = () => {
       {/* && status === 'loading' */}
       {!isLogin && !isAuthing && <DialogBoard />}
       <City />
-      <RearrangeOptions />
-      <NavBar />
-      <ScaleBar />
+      {/* <RearrangeOptions /> */}
+      {/* <NavBar /> */}
+      {/* <ScaleBar /> */}
       {(pageChosen === 'statistics' || pageChosen === 'profile') && (
         <BlackCurtain />
       )}
