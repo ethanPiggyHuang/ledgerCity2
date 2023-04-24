@@ -1,157 +1,236 @@
 import React, { useEffect } from 'react';
+import useSound from 'use-sound';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import {
   displayCity,
-  saveCityAsync,
   dropHouse,
   dragHouseStart,
   dragLightOn,
   dragLightOff,
-  draggableSwitch,
+  RECORD_DRAG_START,
+  UPDATE_CITY_LOCATION,
 } from '../../redux/reducers/cityArrangementSlice';
+import { gridGap, gridLength, houseWidth } from '../../utils/gameSettings';
+import hammer_ice from '../../assets/hammer_ice.wav';
+import { HouseOfFood } from './housesSvg/HouseOfFood';
+import { HouseOfClothes } from './housesSvg/HouseOfClothes';
+import { HouseOfDrinks } from './housesSvg/HouseOfDrinks';
+import { HouseOfPlants } from './housesSvg/HouseOfPlants';
+import { HouseGrid } from './housesSvg/HouseGrid';
 
 export const City: React.FC = () => {
   const cityBasicInfo = useAppSelector((state) => state.cityBasicInfo);
-  const { housesPosition, gridsStatus, isHouseDraggable } = useAppSelector(
-    (state) => state.cityArrangement
-  );
+  const { housesPosition, gridsStatus, dragMode, scale, cityShift } =
+    useAppSelector((state) => state.cityArrangement);
   const dispatch = useAppDispatch();
-  const wrapperWidth = 600;
-  const gap = 20;
-  const gridlength = 150;
-  const zoomRatio = 1; //TODO ratio
+  // TODO: 要再改成可以一鍵看到城市全貌
+  const cityWidth = (gridLength + gridGap) * housesPosition[0].length;
+  const cityHeight = (gridLength + gridGap) * housesPosition.length;
 
-  // console.log(housesPosition);
+  const [playHammerShort] = useSound(hammer_ice, { volume: 0.5 });
+
+  // console.log('top', cityShift.current.y, 'left', cityShift.current.x);
 
   useEffect(() => {
     dispatch(displayCity(cityBasicInfo));
   }, [cityBasicInfo, dispatch]);
 
   return (
-    <>
-      <Wrap $wrapperWidth={wrapperWidth} $gap={gap}>
-        {housesPosition.map((row, yIndex) => {
-          return row.map((house, xIndex) => {
-            return (
-              <Grid
-                $gridlength={gridlength}
-                $zoomRatio={zoomRatio}
-                $status={gridsStatus[yIndex][xIndex]}
-                key={xIndex}
-                // ref={testRef}
-                // onDragEnter={(e) => {
-                // }}
-                onDragLeave={(e) => dispatch(dragLightOff())}
-                onDragOver={(e) => {
-                  e.preventDefault();
-                  dispatch(dragLightOn({ xIndex, yIndex }));
-                }}
-                onDrop={(e) => {
-                  dispatch(dropHouse({ xIndex, yIndex }));
-                }}
-              >
-                {house.type !== '' && (
-                  <House
-                    $zoomRatio={zoomRatio}
-                    $type={house.type}
-                    draggable={isHouseDraggable}
-                    onDragStart={(e: any) => {
-                      //TODO any!?
-                      if (isHouseDraggable) {
-                        e.target.style.opacity = '0.01';
-                        console.log(house.id, house.type);
-                        dispatch(
-                          dragHouseStart({
-                            id: house.id,
-                            target: house.type,
-                            pastIndex: { xIndex, yIndex },
-                          })
-                        );
-                      }
-                    }}
-                    onDragEnd={(e: any) => {
-                      e.target.style.opacity = '1';
-                    }}
-                  >
-                    {house.type}
-                  </House>
-                )}
-              </Grid>
-            );
-          });
-        })}
-      </Wrap>
-      <button
-        onClick={() => {
-          isHouseDraggable
-            ? dispatch(saveCityAsync(cityBasicInfo.houses))
-            : dispatch(draggableSwitch());
-        }}
-      >
-        {isHouseDraggable ? '儲存' : '街道重建'}
-      </button>
-    </>
+    <CityRange
+      $widthAttrs={`${cityWidth * scale}px`}
+      $heightAttrs={`${cityHeight * scale}px`}
+      $topAttrs={`${cityShift.current.y}px`}
+      $leftAttrs={`${cityShift.current.x}px`}
+      draggable={dragMode === 'city'}
+      onDragStart={(event: React.DragEvent) => {
+        if (dragMode !== 'city') return;
+        const target = event.target as HTMLDivElement;
+        event.dataTransfer.setData('text/plain', '');
+        dispatch(
+          RECORD_DRAG_START({ mouseX: event.clientX, mouseY: event.clientY })
+        );
+        target.style.opacity = '0.01';
+      }}
+      onDragEnd={(event: React.DragEvent) => {
+        if (dragMode !== 'city') return;
+        const target = event.target as HTMLDivElement;
+        target.style.opacity = '1';
+        dispatch(
+          UPDATE_CITY_LOCATION({
+            mouseX: event.clientX,
+            mouseY: event.clientY,
+          })
+        );
+      }}
+    >
+      {housesPosition.map((row, yIndex) => {
+        return (
+          <Row
+            key={yIndex}
+            $paddingTopAttrs={`${gridGap * scale}px`}
+            $gapAttrs={`${gridGap * scale}px`}
+          >
+            {row.map((house, xIndex) => {
+              return (
+                <Grid
+                  $lengthAttrs={`${gridLength * scale}px`}
+                  $status={gridsStatus[yIndex][xIndex]}
+                  $type={house.type}
+                  key={xIndex}
+                  // ref={testRef}
+                  // onDragEnter={(e) => {
+                  // }}
+                  onDragLeave={(e) => {
+                    if (dragMode !== 'houses') return;
+                    dispatch(dragLightOff());
+                  }}
+                  onDragOver={(e) => {
+                    if (dragMode !== 'houses') return;
+                    e.preventDefault();
+                    dispatch(dragLightOn({ xIndex, yIndex }));
+                  }}
+                  onDrop={(e) => {
+                    if (dragMode !== 'houses') return;
+                    dispatch(dropHouse({ xIndex, yIndex }));
+                    if (gridsStatus[yIndex][xIndex] === 1) {
+                      playHammerShort();
+                      setTimeout(() => playHammerShort(), 500);
+                      setTimeout(() => playHammerShort(), 1000);
+                    }
+                  }}
+                >
+                  {house.type !== '' && (
+                    <>
+                      <HouseGrid houseType={house.type} />
+                      <House
+                        $lengthAttrs={`${houseWidth * scale}px`}
+                        $fontSizeAttrs={`${24 * scale}px`}
+                        $type={house.type}
+                        draggable={dragMode === 'houses'}
+                        onDragStart={(event: React.DragEvent) => {
+                          if (dragMode !== 'houses') return;
+                          const target = event.target as HTMLDivElement;
+                          target.style.opacity = '0.01';
+                          dispatch(
+                            dragHouseStart({
+                              id: house.id,
+                              target: house.type,
+                              pastIndex: { xIndex, yIndex },
+                            })
+                          );
+                        }}
+                        onDragEnd={(event: React.DragEvent) => {
+                          if (dragMode !== 'houses') return;
+                          const target = event.target as HTMLDivElement;
+                          target.style.opacity = '1';
+                        }}
+                      >
+                        {house.type === '食物' ? (
+                          <HouseOfFood />
+                        ) : house.type === '服裝' ? (
+                          <HouseOfClothes />
+                        ) : house.type === '飲品' ? (
+                          <HouseOfDrinks />
+                        ) : (
+                          <HouseOfPlants />
+                        )}
+                      </House>
+                    </>
+                  )}
+                </Grid>
+              );
+            })}
+          </Row>
+        );
+      })}
+    </CityRange>
   );
 };
 
-type WrapProps = {
-  $wrapperWidth: number;
-  $gap: number;
+type CityRangeProps = {
+  $widthAttrs: string;
+  $heightAttrs: string;
+  $topAttrs: string;
+  $leftAttrs: string;
+};
+type RowProps = {
+  $paddingTopAttrs: string;
+  $gapAttrs: string;
 };
 type GridProps = {
-  $gridlength: number;
-  $zoomRatio: number;
+  $lengthAttrs: string;
   $status: number;
-};
-type HouseProps = {
-  $zoomRatio: number;
   $type: string;
 };
+type HouseProps = {
+  $lengthAttrs: string;
+  $type: string;
+  $fontSizeAttrs: string;
+};
 
-const Wrap = styled.div<WrapProps>`
-  padding-top: 20px;
-  padding-left: 20px;
-  position: relative;
-  display: flex;
-  width: ${({ $wrapperWidth }) => `${$wrapperWidth}px`};
-  border: 1px solid lightblue;
+const CityRange = styled.div.attrs<CityRangeProps>(
+  ({ $widthAttrs, $heightAttrs, $topAttrs, $leftAttrs }) => ({
+    style: {
+      width: $widthAttrs,
+      height: $heightAttrs,
+      top: $topAttrs,
+      left: $leftAttrs,
+    },
+  })
+)<CityRangeProps>`
+  margin: auto;
+  position: absolute;
+  // border: 1px lightgrey solid;
   flex-wrap: wrap;
-  gap: ${({ $gap }) => `${$gap}px`};
+  cursor: pointer;
 `;
 
-const Grid = styled.div<GridProps>`
-  width: ${({ $gridlength, $zoomRatio }) => `${$gridlength * $zoomRatio}px`};
-  height: ${({ $gridlength, $zoomRatio }) => `${$gridlength * $zoomRatio}px`};
-  border: 1px solid lightblue;
-  box-sizing: border-box;
-  background-color: ${({ $status }) =>
-    $status === 1 ? 'lightgreen' : $status === -1 ? 'lightcoral' : ''};
+const Row = styled.div.attrs<RowProps>(({ $paddingTopAttrs, $gapAttrs }) => ({
+  style: {
+    paddingTop: $paddingTopAttrs,
+    gap: $gapAttrs,
+  },
+}))<RowProps>`
   display: flex;
   align-items: center;
   justify-content: center;
 `;
-const House = styled.div<HouseProps>`
-  border-radius: 10px;
-  width: ${({ $zoomRatio }) => `${130 * $zoomRatio}px`};
-  height: ${({ $zoomRatio }) => `${130 * $zoomRatio}px`};
-  background-color: ${({ $type }) => {
-    switch ($type) {
-      case '食物': {
-        return '#e46161';
-      }
-      case '飲料': {
-        return '#f1b963';
-      }
-      case '交通': {
-        return '#f8f398';
-      }
-      default: {
-        return '#cbf078';
-      }
-    }
-  }};
+
+const Grid = styled.div.attrs<GridProps>(({ $lengthAttrs }) => ({
+  style: {
+    width: $lengthAttrs,
+    height: $lengthAttrs,
+  },
+}))<GridProps>`
+  border: 1px solid lightblue;
+  position: relative;
+  background-color: ${({ $status, $type }) =>
+    $status === 1
+      ? 'lightgreen'
+      : $status === -1
+      ? 'lightcoral'
+      : $type !== ''
+      ? 'lightgrey'
+      : ''};
   display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+const House = styled.div.attrs<HouseProps>(
+  ({ $lengthAttrs, $fontSizeAttrs }) => ({
+    style: {
+      width: $lengthAttrs,
+      height: $lengthAttrs,
+      fontSize: $fontSizeAttrs,
+    },
+  })
+)<HouseProps>`
+  border-radius: 10px;
+  display: flex;
+  // position: absolute;
+  // index: 2;
+  // top: 0;
   align-items: center;
   justify-content: center;
 `;

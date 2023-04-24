@@ -9,12 +9,12 @@ export interface HouseState {
 }
 
 export interface CityBasicInfoState {
-  accessUsers: { id: string; name: string }[];
+  accessUsers: string[];
   citizen: string[];
   cityName: string;
   houses: HouseState[];
   ledgerBookId: string;
-  status: 'idle' | 'loading' | 'failed';
+  status?: 'idle' | 'loading' | 'failed';
 }
 
 const initialState: CityBasicInfoState = {
@@ -28,33 +28,44 @@ const initialState: CityBasicInfoState = {
 
 export const getCityInfo = createAsyncThunk(
   'cityBasicInfo/getCityInfo',
-  async () => {
-    const cityId: string = 'YFbhq5M8vFBIUMMWZhqo'; //TODO: import from other State
-    const response = await fetchCityInfo(cityId);
-    return response.data;
+  async (cityId: string) => {
+    try {
+      const response = await fetchCityInfo(cityId);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
   }
 );
 
 export const cityBasicInfo = createSlice({
   name: 'cityBasicInfo',
   initialState,
-  reducers: {},
+  reducers: {
+    UPDATE_CITY_INFO: (state, action: PayloadAction<CityBasicInfoState>) => {
+      state.cityName = action.payload.cityName;
+      state.accessUsers = action.payload.accessUsers;
+      state.citizen = action.payload.citizen;
+      state.houses = action.payload.houses;
+      state.ledgerBookId = action.payload.ledgerBookId;
+      state.status = 'idle';
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getCityInfo.pending, (state) => {
         state.status = 'loading';
       })
       .addCase(getCityInfo.fulfilled, (state, action) => {
-        state = { ...action.payload, status: 'idle' };
-        // console.log(
-        //   state.houses.map((house) => {
-        //     return {
-        //       type: house.type,
-        //       pos: house.position,
-        //     };
-        //   })
-        // );
-        return state;
+        console.log('gg', action.payload);
+        if (action.payload) {
+          state.cityName = action.payload.cityName;
+          state.accessUsers = action.payload.accessUsers;
+          state.citizen = action.payload.citizen;
+          state.houses = action.payload.houses;
+          state.ledgerBookId = action.payload.ledgerBookId;
+        }
+        state.status = 'idle';
       })
       .addCase(getCityInfo.rejected, (state) => {
         state.status = 'failed';
@@ -63,6 +74,6 @@ export const cityBasicInfo = createSlice({
   },
 });
 
-// export const {} = GameMainInfo.actions;
+export const { UPDATE_CITY_INFO } = cityBasicInfo.actions;
 
 export default cityBasicInfo.reducer;

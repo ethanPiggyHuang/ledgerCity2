@@ -1,35 +1,72 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
+import { ledgerEdit } from '../../redux/reducers/ledgerSingleSlice';
+import { deleteSingleLedger } from '../../redux/reducers/ledgerListSlice';
+import { useNavigate } from 'react-router-dom';
 
 export const LedgerDetail: React.FC = () => {
-  const ledgerList = useAppSelector((state) => state.ledgerList.data);
-  const { choosing } = useAppSelector((state) => state.ledgerList);
-  // const { item, amount } = ledgerList;
+  const ledgerList = useAppSelector((state) => state.ledgerList.dataList);
+  const { chosenYear, chosenMonth, chosenLabel } = useAppSelector(
+    (state) => state.ledgerList.choices
+  );
   const ledgerListDisplay = ledgerList.map((ledger) => {
     return {
       ledgerId: ledger.ledgerId,
-      item: ledger.item,
-      amount: ledger.amount.number,
-      date: new Date(ledger.timeLedger).toLocaleString(),
+      item: ledger.data.item,
+      amount: ledger.data.amount.number,
+      year: ledger.data.timeYear,
+      month: ledger.data.timeMonth,
+      labelMain: ledger.data.labelMain,
+      date: new Date(ledger.data.timeLedger).toLocaleString(),
     };
   });
-  // console.log(ledgerListDisplay);
 
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   return (
     <Wrap>
-      <LedgerRow $isChosen={false}>
+      <LedgerRow $isChosen={false} $isHeader={true}>
         <LedgerText>項目</LedgerText>
         <LedgerText>花費</LedgerText>
         <LedgerText>日期</LedgerText>
+        <LedgerText>動作</LedgerText>
       </LedgerRow>
       {ledgerListDisplay.map((ledger, index) => (
-        <LedgerRow key={index} $isChosen={choosing === ledger.ledgerId}>
+        <LedgerRow
+          key={index}
+          $isChosen={
+            chosenYear === ledger.year &&
+            chosenMonth === ledger.month &&
+            chosenLabel === ledger.labelMain
+          }
+          $isHeader={false}
+        >
           <LedgerText>{ledger.item}</LedgerText>
           <LedgerText>{ledger.amount}</LedgerText>
           <LedgerText>{ledger.date}</LedgerText>
+          <LedgerIcon
+            className="material-symbols-outlined"
+            onClick={() => {
+              const chosenLedger = ledgerList.find(
+                (data) => data.ledgerId === ledger.ledgerId
+              );
+              console.log(chosenLedger);
+              if (chosenLedger) {
+                dispatch(ledgerEdit(chosenLedger));
+                navigate('/ledger');
+              }
+            }}
+          >
+            edit
+          </LedgerIcon>
+          <LedgerIcon
+            className="material-symbols-outlined"
+            onClick={() => dispatch(deleteSingleLedger(ledger.ledgerId))}
+          >
+            delete
+          </LedgerIcon>
         </LedgerRow>
       ))}
     </Wrap>
@@ -38,6 +75,7 @@ export const LedgerDetail: React.FC = () => {
 
 type LedgerRowProps = {
   $isChosen: boolean;
+  $isHeader: boolean;
 };
 
 const Wrap = styled.div`
@@ -45,17 +83,26 @@ const Wrap = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
   width: 100%;
   border: 1px solid lightblue;
 `;
 const LedgerRow = styled.div<LedgerRowProps>`
   width: 100%;
-  height: 36px;
+  height: 40px;
   display: flex;
+  align-items: center;
   background-color: ${({ $isChosen }) => ($isChosen ? 'lightblue' : '')};
+  border: ${({ $isHeader }) => ($isHeader ? '2px solid darkblue' : '')};
+  font-weight: ${({ $isHeader }) => ($isHeader ? 'bold' : '')};
 `;
 const LedgerText = styled.p`
   width: 30%;
   text-align: center;
+`;
+
+const LedgerIcon = styled.p`
+  width: 15%;
+  text-align: center;
+  cursor: pointer;
 `;

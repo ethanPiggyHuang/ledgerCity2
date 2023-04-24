@@ -6,6 +6,38 @@ import { Counter } from './feature/counter/Counter';
 import { GameMap } from './pages/gameMap/GameMap';
 import { Ledger } from './pages/ledger/Ledger';
 import { Statistics } from './pages/statistics/Statistics';
+import { Profile } from './pages/profile/Profile';
+// import Login from './pages/login/Login';
+// import { initializeApp } from 'firebase/app';
+// import { app } from './config/firebase';
+import AuthRoute from './component/AuthRoute';
+import Header from './component/Header';
+
+export interface IApplicationProps {}
+
+const App: React.FunctionComponent<IApplicationProps> = (props) => {
+  return (
+    <BrowserRouter>
+      <Reset />
+      <GlobalStyle />
+      <AuthRoute>
+        <Header />
+        <Routes>
+          <Route path="/city" element={<GameMap />} />
+          {/* //TODO */}
+          {/* <Route path="/login" element={<Login />} /> */}
+          {/* <Route path="/counter" element={<Counter />} /> */}
+          {/* <Route path="/ledger" element={<Ledger />} /> */}
+          <Route path="/statistics" element={<Statistics />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="*" element={<Navigate to="/city" replace />} />
+        </Routes>
+      </AuthRoute>
+    </BrowserRouter>
+  );
+};
+
+export default App;
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -23,21 +55,3 @@ const GlobalStyle = createGlobalStyle`
     }
   }
 `;
-
-const App: React.FC = () => {
-  return (
-    <BrowserRouter>
-      <Reset />
-      <GlobalStyle />
-      <Routes>
-        <Route path="/" element={<GameMap />} />
-        <Route path="/counter" element={<Counter />} />
-        <Route path="/ledger" element={<Ledger />} />
-        <Route path="/statistics" element={<Statistics />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
-  );
-};
-
-export default App;

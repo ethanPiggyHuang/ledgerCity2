@@ -1,38 +1,73 @@
 import { db } from '../../config/firebase';
-import { getDocs, collection, query, where } from 'firebase/firestore';
+import {
+  getDocs,
+  collection,
+  query,
+  where,
+  doc,
+  orderBy,
+  deleteDoc,
+  updateDoc,
+  deleteField,
+  arrayRemove,
+} from 'firebase/firestore';
+import { WhereFilterOp } from '@firebase/firestore-types';
+import { HouseState } from '../reducers/cityBasicInfoSlice';
 
-export interface LedgerListStatus {
+export interface LedgerRecordedState {
   ledgerId: string;
-  timeLedger: number;
-  timeYear: number;
-  timeMonth: number;
-  item: string;
-  labelMain: string;
-  labelSubs: string[];
-  payWho: string;
-  payHow: 'cash' | 'creditCard' | 'mobile';
-  amount: {
-    currency: string;
-    number: number;
-    numberNT: number;
+  data: {
+    timeLedger: number;
+    timeYear: number;
+    timeMonth: number;
+    item: string;
+    labelMain: string;
+    labelSubs: string[];
+    payWho: string;
+    payHow: 'cash' | 'creditCard' | 'mobile';
+    amount: {
+      currency: string;
+      number: number;
+      numberNT: number;
+    };
+    recordWho: string;
+    recordTime: any; //TODO typescript
   };
-  imageUrl: string;
-  recordWho: string;
-  recordTime: any; //TODO typescript
 }
 
-export async function fetchLedgerList(ledgerBookId: string) {
+export async function fetchLedgerList(
+  ledgerBookId: string,
+  queryParams: {
+    // TODO: delete sometime
+    field: string;
+    whereFilterOp: WhereFilterOp;
+    value: string | number;
+  }
+) {
   const ledgersRef = collection(db, 'ledgerBooks', ledgerBookId, 'ledgers');
-  const q = query(ledgersRef, where('timeMonth', '==', 4));
+  // const { field, whereFilterOp, value } = queryParams;
+  // const q = query(ledgersRef, where(field, whereFilterOp, value));
+  const q = query(ledgersRef, orderBy('timeLedger'));
 
   const querySnapshot = await getDocs(q);
   let result: any[] = []; //TODO typescript
   querySnapshot.forEach((doc) => {
-    // console.log('id', doc.id);
-    result.push({ ledgerId: doc.id, ...doc.data() });
+    result.push({ ledgerId: doc.id, data: doc.data() });
   });
 
-  return new Promise<{ data: LedgerListStatus[] }>((resolve) =>
-    resolve({ data: result as LedgerListStatus[] })
+  return new Promise<{ dataList: LedgerRecordedState[] }>((resolve) =>
+    resolve({ dataList: result as LedgerRecordedState[] })
   );
+}
+
+export async function deleteLedger(
+  cityId: string,
+  newHouses: HouseState[],
+  ledgerBookId: string,
+  ledgerId: string
+) {
+  const cityRef = doc(db, 'cities', cityId);
+  const ledgerRef = doc(db, 'ledgerBooks', ledgerBookId, 'ledgers', ledgerId);
+  await deleteDoc(ledgerRef);
+  await updateDoc(cityRef, { houses: newHouses });
 }

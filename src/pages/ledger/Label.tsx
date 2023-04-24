@@ -3,19 +3,47 @@ import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import {
   itemKeyIn,
-  labelChooseType,
-  labelChoose,
+  labelChooseMain,
   labelRetrieve,
 } from '../../redux/reducers/ledgerSingleSlice';
+import {
+  mainLabels,
+  labelColorCodes,
+  subLabels,
+} from '../../utils/gameSettings';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faUtensils,
+  faMugHot,
+  faTrainSubway,
+  faShirt,
+  faGamepad,
+  faHouse,
+  faMobileScreenButton,
+  faBriefcaseMedical,
+  faGift,
+  faTags,
+  faClipboard,
+} from '@fortawesome/free-solid-svg-icons';
 
 export const Label: React.FC = () => {
-  const { labelChoosingType, labelMain, labelSubs, item } = useAppSelector(
-    (state) => state.ledgerSingle
+  const { labelMain, labelSubs, item } = useAppSelector(
+    (state) => state.ledgerSingle.data
   );
   const dispatch = useAppDispatch();
 
-  const labelChosen = labelMain === '' ? labelSubs : [labelMain, ...labelSubs];
-  // console.log(labelChoosing.type);
+  const labelIcons = [
+    faUtensils,
+    faMugHot,
+    faTrainSubway,
+    faShirt,
+    faGamepad,
+    faHouse,
+    faMobileScreenButton,
+    faBriefcaseMedical,
+    faGift,
+    faTags,
+  ];
 
   useEffect(() => {
     //TODO: onSnapshot
@@ -23,160 +51,118 @@ export const Label: React.FC = () => {
   }, []);
   // const time: DateConstructor = new Date();
 
-  const labelArray: string[] = [
-    '食物',
-    '飲料',
-    '交通',
-    '服裝',
-    '醫藥',
-    '娛樂',
-    '其他',
-    '社交',
-  ];
-
   return (
     <>
+      <LabelOptions>
+        {mainLabels.map((label, index) => (
+          <LabelOption
+            key={index}
+            $isChosen={labelMain === label}
+            $color={labelColorCodes[index]}
+            onClick={() => dispatch(labelChooseMain(label))}
+          >
+            <LabelIcons icon={labelIcons[index]} />
+            <LabelText>{label}</LabelText>
+          </LabelOption>
+        ))}
+      </LabelOptions>
       <ItemDisplay>
-        <LabelChosens>
-          {labelChosen.length !== 0 &&
-            labelChosen.map((name) => (
-              <LabelChosen
-                key={name}
-                onClick={() => {
-                  dispatch(labelRetrieve(name));
-                }}
-              >
-                {name}
-              </LabelChosen>
-            ))}
-        </LabelChosens>
+        <ItemIcon icon={faClipboard} />
         <ItemInput
           value={item}
+          placeholder="(備註)"
           onChange={(e) => dispatch(itemKeyIn(e.target.value))}
         />
       </ItemDisplay>
-      <LabelOptions>
-        <LabelTypes>
-          <LabelType
-            $isChosen={labelChoosingType === 'main'}
-            onClick={() => dispatch(labelChooseType('main'))}
+      <SubLabelOptions>
+        {subLabels[labelMain].map((subLabel) => (
+          <SubLabelOption
+            key={subLabel}
+            onClick={() => dispatch(itemKeyIn(subLabel))}
           >
-            主要標籤
-          </LabelType>
-          <LabelType
-            $isChosen={labelChoosingType === 'sub'}
-            onClick={() => dispatch(labelChooseType('sub'))}
-          >
-            次要標籤
-          </LabelType>
-        </LabelTypes>
-        <LabelButtons>
-          {labelArray.map((label, index) => (
-            <LabelButton
-              key={index}
-              $isChosen={labelMain === label}
-              onClick={() => dispatch(labelChoose(label))}
-            >
-              {label}
-            </LabelButton>
-          ))}
-        </LabelButtons>
-      </LabelOptions>
+            {subLabel}
+          </SubLabelOption>
+        ))}
+      </SubLabelOptions>
     </>
   );
 };
 
-type LabelTypeProps = {
+type LabelOptionProps = {
   $isChosen: boolean;
-};
-type LabelButtonProps = {
-  $isChosen: boolean;
+  $color: string;
 };
 
-const ItemDisplay = styled.div`
-  margin: 10px auto 0;
-  height: 20%;
-  width: 90%;
-  border: 1px solid lightblue;
+const LabelOptions = styled.div`
+  height: 145px;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 8px 20px;
+  background-color: #ebebeb;
+  gap: 18px;
 `;
-
-const LabelChosens = styled.div`
-  height: 80%;
-  width: 20%;
+const LabelOption = styled.div<LabelOptionProps>`
+  width: 57px;
+  height: 117px;
+  border-radius: 10px;
   display: flex;
-  flex-wrap: wrap;
   flex-direction: column;
-  gap: 5px;
+  justify-content: center;
+  align-items: center;
+  color: ${({ $color }) => `${$color}`};
+  background-color: ${({ $isChosen }) => ($isChosen ? '#FAFAFA' : '#ebebeb')};
 `;
-const LabelChosen = styled.div`
-  width: 50px;
-  height: 25px;
-  border-radius: 5px;
-  border: 1px solid lightblue;
+const LabelIcons = styled(FontAwesomeIcon)`
+  height: 46px;
+`;
+const LabelText = styled.div`
+  margin-top: 16px;
+  height: 32px;
+  font-size: 20px;
+  font-weight: bold;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: lightpink;
-  cursor: pointer; //TODO: delete cursor icon
+`;
+const ItemDisplay = styled.div`
+  margin: 0 10px;
+  height: 75px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #808080;
+  padding-left: 20px;
+  border-bottom: 3px solid #e6e6e6;
+`;
+const ItemIcon = styled(FontAwesomeIcon)`
+  height: 40px;
 `;
 const ItemInput = styled.input`
   height: 80%;
   width: 75%;
-  padding-right: 15px;
-  border: 1px solid lightblue;
+  padding-left: 15px;
+  font-size: 24px;
+  margin-right: auto;
+  margin-left: 30px;
+  text-align: left;
+  border: none;
+  color: #808080;
+  background-color: #f2f2f2;
+`;
+const SubLabelOptions = styled.div`
+  height: 75px;
+  display: flex;
+  align-items: center;
+`;
+const SubLabelOption = styled.div`
+  height: 38px;
+  margin-left: 15px;
+  padding: 0 38px;
   font-size: 20px;
-  margin-left: auto;
-  text-align: right;
-`;
-
-const LabelOptions = styled(ItemDisplay)`
-  height: 35%;
+  border-radius: 19px;
+  color: #808080;
+  background-color: #e6e6e6;
   display: flex;
-  justify-content: left;
-  border: 1px solid lightblue;
-`;
-const LabelTypes = styled.div`
-  height: 90%;
-  width: 20%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 10px;
-  border: 1px solid lightblue;
-`;
-const LabelType = styled.div<LabelTypeProps>`
-  height: 30%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 5px;
-  border: 1px solid lightblue;
-  cursor: pointer;
-  background-color: ${({ $isChosen }) => ($isChosen ? 'lightblue' : '')};
-`;
-const LabelButtons = styled.div`
-  height: 90%;
-  width: 75%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: start;
-  gap: 10px;
-  border: 1px solid lightblue;
-  margin-left: auto;
-  padding: 10px 20px;
-`;
-const LabelButton = styled.div<LabelButtonProps>`
-  height: 45px;
-  width: 45px;
-  border: 1px solid lightblue;
-  margin-top: auto;
-  display: flex;
-  justify-content: center;
   align-items: center;
   cursor: pointer;
-  background-color: ${({ $isChosen }) => ($isChosen ? 'lightblue' : '')};
 `;

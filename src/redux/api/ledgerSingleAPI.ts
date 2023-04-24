@@ -7,36 +7,20 @@ import {
   updateDoc,
   serverTimestamp,
 } from 'firebase/firestore';
-
-export interface LedgerDataStatus {
-  timeLedger: number;
-  timeYear: number;
-  timeMonth: number;
-  item: string;
-  labelMain: string;
-  labelSubs: string[];
-  payWho: string;
-  payHow: 'cash' | 'creditCard' | 'mobile';
-  amount: {
-    currency: string;
-    number: number;
-    numberNT: number;
-  };
-  imageUrl: string;
-  recordWho: string;
-}
+import { LedgerDataState } from '../reducers/ledgerSingleSlice';
 
 export async function postLedger(
-  ledgerData: LedgerDataStatus,
+  cityId: string,
+  ledgerBookId: string,
+  ledgerData: LedgerDataState,
   availableGrids: { yIndex: number; xIndex: number }[]
 ) {
   const ledgerRef = await addDoc(
-    collection(db, 'ledgerBooks', 'UcrgCxiJxo3oA7vvwYtd', 'ledgers'),
+    collection(db, 'ledgerBooks', ledgerBookId, 'ledgers'),
     { ...ledgerData, recordTime: serverTimestamp() }
   );
-  // console.log('id', ledgerRef.id);
 
-  const housesRef = doc(db, 'cities', 'YFbhq5M8vFBIUMMWZhqo');
+  const housesRef = doc(db, 'cities', cityId);
   const newPosition =
     availableGrids[Math.floor(Math.random() * availableGrids.length)]; //TODO: 可以調整選位子邏輯
   await updateDoc(housesRef, {
@@ -47,5 +31,13 @@ export async function postLedger(
       type: ledgerData.labelMain,
     }),
   });
-  // console.log('updated', newPosition.xIndex, newPosition.yIndex);
+}
+
+export async function updateLedger(
+  ledgerBookId: string,
+  ledgerId: string,
+  updateData: LedgerDataState
+) {
+  const ledgerRef = doc(db, 'ledgerBooks', ledgerBookId, 'ledgers', ledgerId);
+  await updateDoc(ledgerRef, { ...updateData, recordTime: serverTimestamp() });
 }
