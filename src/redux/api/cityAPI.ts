@@ -17,3 +17,8 @@ export async function updateHousePosition(
   const cityRef = doc(db, 'cities', cityId);
   await updateDoc(cityRef, { houses: newHouses });
 }
+
+export async function updateCityName(cityId: string, cityName: string) {
+  const cityRef = doc(db, 'cities', cityId);
+  await updateDoc(cityRef, { cityName: cityName });
+}

@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components/macro';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import {
   UPDATE_CITY_INFO,
   CityBasicInfoState,
+  CHANGE_CITY_NAME,
 } from '../redux/reducers/cityBasicInfoSlice';
 import {
   getLedgerList,
@@ -21,6 +22,12 @@ import {
   UPDATE_INSTANT_FRIENDS_STATUS,
   FriendStatusState,
 } from '../redux/reducers/userInfoSlice';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faVolumeHigh,
+  faVolumeXmark,
+  faFloppyDisk,
+} from '@fortawesome/free-solid-svg-icons';
 
 interface LedgerDatabaseState {
   timeLedger: number;
@@ -42,8 +49,8 @@ const Header: React.FC = () => {
     (state) => state.cityBasicInfo
   );
   const { userId, cityList } = useAppSelector((state) => state.userInfo.data);
+  const [isRenaming, setIsRenaming] = useState(false);
   const navigate = useNavigate();
-  const auth = getAuth();
 
   useEffect(() => {
     if (cityList.length !== 0) {
@@ -113,17 +120,45 @@ const Header: React.FC = () => {
   return (
     <Wrapper>
       <Banner />
-      {/* TODO */}
-      <BannerText value={`${cityName}`} onChange={() => {}} />
+      <TextWrapper>
+        <BannerText
+          $isRenaming={isRenaming}
+          value={`${cityName}`}
+          onClick={() => setIsRenaming(true)}
+          onChange={(event) => {
+            const target = event.target as HTMLInputElement;
+            dispatch(CHANGE_CITY_NAME(target.value));
+          }}
+          onKeyDown={(event) => {
+            if (event.code === 'Enter') {
+              const target = event.target as HTMLInputElement;
+              event.preventDefault();
+              // target.blur();
+            }
+          }}
+        ></BannerText>
+        <SaveIcon
+          $isRenaming={isRenaming}
+          icon={faFloppyDisk}
+          onClick={() => {}}
+        />
+      </TextWrapper>
     </Wrapper>
   );
 };
 
 export default Header;
 
+type BannerTextProps = {
+  $isRenaming: boolean;
+};
+type SaveIconProps = {
+  $isRenaming: boolean;
+};
+
 const Wrapper = styled.div`
   position: fixed;
-  transform: translate(45%, 10%);
+  transform: translate(50%, 10%);
   z-index: 3;
   top: 30px;
   display: flex;
@@ -131,34 +166,52 @@ const Wrapper = styled.div`
   align-items: center;
 `;
 
-const BannerText = styled.input`
+const TextWrapper = styled.div`
+  /* border: 1px solid black; */
   position: absolute;
+  height: 65%;
+  width: 50%;
+  display: flex;
+  align-items: bottom;
+`;
+
+const BannerText = styled.input<BannerTextProps>`
+  /* position: absolute; */
   color: #ae7a00;
   font-size: 48px;
-  height: 65%;
-  padding: 20px;
+  /* height: 65%; */
+  /* padding: 20px; */
   text-align: center;
   border: none;
+  border-bottom: ${({ $isRenaming }) =>
+    $isRenaming ? '2px solid #df9469' : 'none'};
 
   background-color: rgba(0, 0, 0, 0);
-  width: 50%;
+  width: 100%;
 
   &:focus {
     outline: none;
     box-shadow: none;
     border: none;
-    border-radius: 10px;
-    background-color: cornsilk;
-    opacity: 0.6;
+    border-bottom: 2px solid #df9469;
   }
   &:hover {
-    background-color: cornsilk;
-    opacity: 0.6;
-    border-radius: 10px;
+    border-bottom: 2px solid #df9469;
   }
   &:focus:hover {
     outline: none;
     box-shadow: none;
     border: none;
+    border-bottom: 2px solid #df9469;
   }
+`;
+
+const SaveIcon = styled(FontAwesomeIcon)<SaveIconProps>`
+  display: ${({ $isRenaming }) => ($isRenaming ? 'block' : 'none')};
+  font-size: 20px;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  color: #df9469;
+  cursor: pointer;
 `;

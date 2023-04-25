@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faChartPie,
   faUsers,
-  faPenToSquare,
+  faFilePen,
   faBed,
 } from '@fortawesome/free-solid-svg-icons';
 import mapPin from '../../assets/mapPin.png';
@@ -121,7 +121,7 @@ export const CooperatorTrace: React.FC = () => {
         </IconBlock>
         <IconBlock>
           <PagesIconBack>
-            <Icon icon={faPenToSquare} />
+            <Icon icon={faFilePen} />
           </PagesIconBack>
         </IconBlock>
         <IconBlock>

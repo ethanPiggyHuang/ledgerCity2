@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { fetchCityInfo } from '../api/cityAPI';
+import { fetchCityInfo, updateCityName } from '../api/cityAPI';
 
 export interface HouseState {
   type: string;
@@ -38,6 +38,19 @@ export const getCityInfo = createAsyncThunk(
   }
 );
 
+// export const CHANGE_CITY_NAME = createAsyncThunk(
+//   'cityBasicInfo/getCityInfo',
+//   async (payload: { cityId: string; cityName: string }) => {
+//     try {
+//       const { cityId, cityName } = payload;
+//       const response = await updateCityName(cityId, cityName);
+//       return response.data;
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   }
+// );
+
 export const cityBasicInfo = createSlice({
   name: 'cityBasicInfo',
   initialState,
@@ -49,6 +62,9 @@ export const cityBasicInfo = createSlice({
       state.houses = action.payload.houses;
       state.ledgerBookId = action.payload.ledgerBookId;
       state.status = 'idle';
+    },
+    CHANGE_CITY_NAME: (state, action: PayloadAction<string>) => {
+      state.cityName = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -71,9 +87,27 @@ export const cityBasicInfo = createSlice({
         state.status = 'failed';
         alert('getCityInfo rejected');
       });
+    // .addCase(CHANGE_CITY_NAME.pending, (state) => {
+    //   state.status = 'loading';
+    // })
+    // .addCase(CHANGE_CITY_NAME.fulfilled, (state, action) => {
+    //   console.log('gg', action.payload);
+    //   if (action.payload) {
+    //     state.cityName = action.payload.cityName;
+    //     state.accessUsers = action.payload.accessUsers;
+    //     state.citizen = action.payload.citizen;
+    //     state.houses = action.payload.houses;
+    //     state.ledgerBookId = action.payload.ledgerBookId;
+    //   }
+    //   state.status = 'idle';
+    // })
+    // .addCase(CHANGE_CITY_NAME.rejected, (state) => {
+    //   state.status = 'failed';
+    //   alert('getCityInfo rejected');
+    // })
   },
 });
 
-export const { UPDATE_CITY_INFO } = cityBasicInfo.actions;
+export const { UPDATE_CITY_INFO, CHANGE_CITY_NAME } = cityBasicInfo.actions;
 
 export default cityBasicInfo.reducer;

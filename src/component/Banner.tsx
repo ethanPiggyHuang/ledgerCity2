@@ -10,19 +10,12 @@ const Wrapper = styled.div`
   }
 `;
 
-const translate = keyframes`
-from {
-  transform: rotate(0deg) translateX(0) translateY(0);
-}
-to {
-  transform: rotate(10deg) translateX(10px) translateY(-20px);
-}
-`;
-
-const InteractiveGroup = styled.g`
-  &:hover {
-    animation: ${translate} 0.7s linear infinite alternate;
-  }
+const StyledSvg = styled.svg`
+  width: calc(50vw);
+  /* max-height: 50px; */
+  position: relative;
+  box-shadow: 0px 6px 4px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
 `;
 
 export const Banner: React.FC = () => {
@@ -30,17 +23,10 @@ export const Banner: React.FC = () => {
   // const dispatch = useAppDispatch();
 
   return (
-    <svg
-      width="calc( 1053/1920 * 100vw )"
-      // height="calc( 122 * 1053px / 100vw)"
+    <StyledSvg
       viewBox="0 0 1053 122"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      style={{
-        position: 'relative',
-        boxShadow: '0px 6px 4px rgba(0, 0, 0, 0.2)',
-        borderRadius: '10px',
-      }}
     >
       <rect width="1053" height="122" fill="#E7E7E7" />
       <g id="Frame" filter="url(#filter0_d_0_1)">
@@ -992,6 +978,6 @@ export const Banner: React.FC = () => {
           <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
       </defs>
-    </svg>
+    </StyledSvg>
   );
 };

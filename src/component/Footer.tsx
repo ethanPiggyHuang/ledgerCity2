@@ -6,8 +6,8 @@ import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faChartPie,
-  faUserGear,
   faFilePen,
+  faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 import { SWITCH_PAGE } from '../redux/reducers/pageControlSlice';
 
@@ -21,7 +21,7 @@ const Footer: React.FC = () => {
   }[] = [
     { page: 'statistics', icon: faChartPie },
     { page: 'ledger', icon: faFilePen },
-    { page: 'profile', icon: faUserGear },
+    { page: 'profile', icon: faUsers },
   ];
 
   return (
