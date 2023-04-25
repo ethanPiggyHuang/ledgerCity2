@@ -16,7 +16,6 @@ import {
   faPenToSquare,
   faBed,
 } from '@fortawesome/free-solid-svg-icons';
-// import { ReactComponent as UserPin } from '../../assets/mapPin.svg';
 import mapPin from '../../assets/mapPin.png';
 
 export const CooperatorTrace: React.FC = () => {
@@ -131,17 +130,22 @@ export const CooperatorTrace: React.FC = () => {
           </PagesIconBack>
         </IconBlock>
         <IconBlock></IconBlock>
-        {cooperatorsPortrait[0] && (
-          <UserPinWrap endPoint={`${getPinLocation(cooperatorsAction[0])}`}>
+        {coopFriends.map((coopFriend, index) => (
+          <UserPinWrap
+            key={index}
+            endPoint={`${getPinLocation(cooperatorsAction[index])}`}
+          >
             <UserPortraitWrap>
-              <UserPortrait
-                src={cooperatorsPortrait[0]}
-                alt={`portrait of ${cooperators}`}
-              />
+              {cooperatorsAction[index] && (
+                <UserPortrait
+                  src={cooperatorsPortrait[index] as string}
+                  alt={`portrait of ${coopFriend}`}
+                />
+              )}
             </UserPortraitWrap>
             <UserPin src={mapPin} />
           </UserPinWrap>
-        )}
+        ))}
       </IconBlocks>
     </Wrap>
   );
@@ -221,6 +225,15 @@ type UserPinWrapProps = {
   endPoint: string;
 };
 
+const move = keyframes`
+  from {
+    transform: translateY(-50%) translateX(300%);
+  }
+  to{
+    transform: translateY(-50%) translateX(100%);
+  }
+`;
+
 const UserPinWrap = styled.div<UserPinWrapProps>`
   position: absolute;
   width: 25%;
@@ -229,8 +242,8 @@ const UserPinWrap = styled.div<UserPinWrapProps>`
   display: flex;
   flex-direction: column;
   align-items: center;
+  /* animation: ${move} 1.5s ease-in-out forwards; */
 `;
-// animation: ${(props) => translateToCity(props)} 1.5s ease-in-out forwards;
 
 const UserPortraitWrap = styled.div`
   position: absolute;
