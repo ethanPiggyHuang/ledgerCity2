@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../../redux/hooks';
-import { houseWidth } from '../../../utils/gameSettings';
+import { citySetting } from '../../../utils/gameSettings';
 
 const Wrapper = styled.div`
   position: absolute;
@@ -28,6 +28,7 @@ const InteractiveGroup = styled.g`
 
 export const HouseOfFood: React.FC = () => {
   const { scale } = useAppSelector((state) => state.cityArrangement);
+  const { houseWidth } = citySetting;
   const widthNormalize = houseWidth / 205;
   // const dispatch = useAppDispatch();
 

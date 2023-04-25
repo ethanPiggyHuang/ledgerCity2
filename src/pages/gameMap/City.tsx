@@ -11,7 +11,7 @@ import {
   RECORD_DRAG_START,
   UPDATE_CITY_LOCATION,
 } from '../../redux/reducers/cityArrangementSlice';
-import { gridGap, gridLength, houseWidth } from '../../utils/gameSettings';
+import { citySetting } from '../../utils/gameSettings';
 import hammer_ice from '../../assets/hammer_ice.wav';
 import { HouseOfFood } from './housesSvg/HouseOfFood';
 import { HouseOfClothes } from './housesSvg/HouseOfClothes';
@@ -20,6 +20,7 @@ import { HouseOfPlants } from './housesSvg/HouseOfPlants';
 import { HouseGrid } from './housesSvg/HouseGrid';
 
 export const City: React.FC = () => {
+  const { gridGap, gridLength, houseWidth, cityPadding } = citySetting;
   const cityBasicInfo = useAppSelector((state) => state.cityBasicInfo);
   const { housesPosition, gridsStatus, dragMode, scale, cityShift } =
     useAppSelector((state) => state.cityArrangement);
@@ -38,10 +39,11 @@ export const City: React.FC = () => {
 
   return (
     <CityRange
-      $widthAttrs={`${cityWidth * scale}px`}
-      $heightAttrs={`${cityHeight * scale}px`}
+      $widthAttrs={`${cityWidth * scale + 2 * cityPadding}px`}
+      $heightAttrs={`${cityHeight * scale + 2 * cityPadding}px`}
       $topAttrs={`${cityShift.current.y}px`}
       $leftAttrs={`${cityShift.current.x}px`}
+      $padding={cityPadding}
       // draggable={dragMode === 'city'}
       // onDragStart={(event: React.DragEvent) => {
       //   if (dragMode !== 'city') return;
@@ -153,6 +155,7 @@ type CityRangeProps = {
   $heightAttrs: string;
   $topAttrs: string;
   $leftAttrs: string;
+  $padding: number;
 };
 type RowProps = {
   $paddingTopAttrs: string;
@@ -180,9 +183,9 @@ const CityRange = styled.div.attrs<CityRangeProps>(
   })
 )<CityRangeProps>`
   margin: auto;
-  padding-top: 200px;
   flex-wrap: wrap;
   height: fit-content;
+  padding: ${({ $padding }) => `${$padding}px`};
   /* position: absolute; */
   /* cursor: pointer; */
 `;

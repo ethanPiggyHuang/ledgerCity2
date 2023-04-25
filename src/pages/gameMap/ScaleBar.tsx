@@ -6,13 +6,15 @@ import {
   SET_SCALE,
   SET_CITY_LOCATION,
 } from '../../redux/reducers/cityArrangementSlice';
-import { gridGap, gridLength } from '../../utils/gameSettings';
+import { citySetting } from '../../utils/gameSettings';
 
 export const ScaleBar: React.FC = () => {
   const { scale } = useAppSelector((state) => state.cityArrangement);
   // const { currentPage } = useAppSelector(
   //   (state) => state.userActivity.data.myCPVIkcOYalDVvdj9hngfml3yq2
   // );
+  const { gridGap, gridLength } = citySetting;
+
   const dispatch = useAppDispatch();
   const { housesPosition } = useAppSelector((state) => state.cityArrangement);
   const cityHeight = (gridLength + gridGap) * housesPosition.length;

@@ -6,6 +6,7 @@ import {
   UPDATE_CITY_INFO,
   CityBasicInfoState,
   CHANGE_CITY_NAME,
+  UPDATE_CITY_NAME,
 } from '../redux/reducers/cityBasicInfoSlice';
 import {
   getLedgerList,
@@ -131,8 +132,8 @@ const Header: React.FC = () => {
           }}
           onKeyDown={(event) => {
             if (event.code === 'Enter') {
-              const target = event.target as HTMLInputElement;
               event.preventDefault();
+              // const target = event.target as HTMLInputElement;
               // target.blur();
             }
           }}
@@ -140,7 +141,10 @@ const Header: React.FC = () => {
         <SaveIcon
           $isRenaming={isRenaming}
           icon={faFloppyDisk}
-          onClick={() => {}}
+          onClick={() => {
+            dispatch(UPDATE_CITY_NAME({ cityId: cityList[0], cityName }));
+            setIsRenaming(false);
+          }}
         />
       </TextWrapper>
     </Wrapper>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../../redux/hooks';
 import {
-  gridLength,
+  citySetting,
   mainLabels,
   labelColorCodes,
 } from '../../../utils/gameSettings';
@@ -33,6 +33,7 @@ const InteractiveGroup = styled.g`
 `;
 
 export const HouseGrid: React.FC<{ houseType: string }> = ({ houseType }) => {
+  const { gridLength } = citySetting;
   const { scale } = useAppSelector((state) => state.cityArrangement);
   const widthNormalize = gridLength / 160;
   // const dispatch = useAppDispatch();

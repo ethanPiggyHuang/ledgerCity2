@@ -104,11 +104,16 @@ export const CooperatorTrace: React.FC = () => {
       <Title>協作市長動態</Title>
       <Background />
       <IconBlocks>
-        <IconBlock></IconBlock>
         <IconBlock>
+          <MapPathUpLeft />
+        </IconBlock>
+        <IconBlock>
+          <MapPathUpMiddle />
           <CityIcon src={cityIcon} />
         </IconBlock>
-        <IconBlock></IconBlock>
+        <IconBlock>
+          <MapPathUpRight />
+        </IconBlock>
         <IconBlock>
           <OffLineIconBack>
             <OffLineIcon icon={faBed} />
@@ -120,16 +125,19 @@ export const CooperatorTrace: React.FC = () => {
           </PagesIconBack>
         </IconBlock>
         <IconBlock>
+          <MapPath />
           <PagesIconBack>
             <Icon icon={faFilePen} />
           </PagesIconBack>
         </IconBlock>
         <IconBlock>
+          <MapPath />
           <PagesIconBack>
             <Icon icon={faUsers} />
           </PagesIconBack>
         </IconBlock>
         <IconBlock></IconBlock>
+
         {coopFriends.map((coopFriend, index) => (
           <UserPinWrap
             key={index}
@@ -179,6 +187,7 @@ const Background = styled.div`
 const CityIcon = styled.img`
   height: 100%;
   width: 100%;
+  z-index: 1;
   object-fit: contain;
 `;
 
@@ -202,6 +211,8 @@ const IconBlock = styled.div`
 const PagesIconBack = styled.div`
   width: 50px;
   height: 50px;
+  z-index: 1;
+
   border-radius: 25px;
   background-color: #f2f2f2;
   display: flex;
@@ -237,6 +248,7 @@ const move = keyframes`
 
 const UserPinWrap = styled.div<UserPinWrapProps>`
   position: absolute;
+  z-index: 2;
   width: 25%;
   height: 50%;
   transform: ${({ endPoint }) => endPoint};
@@ -270,4 +282,26 @@ const UserPin = styled.img`
   position: absolute;
   height: 100%;
   object-fit: scale-down;
+`;
+
+const MapPath = styled.div`
+  height: 8%;
+  position: absolute;
+  width: 25%;
+  z-index: 0;
+  background-color: #f2f2f2;
+  transform: translateX(-50%);
+`;
+
+const MapPathUpLeft = styled(MapPath)`
+  transform: translateX(25%) translateY(200%) rotate(-60deg);
+  width: 50%;
+`;
+const MapPathUpRight = styled(MapPath)`
+  transform: translateX(-25%) translateY(200%) rotate(60deg);
+  width: 50%;
+`;
+const MapPathUpMiddle = styled(MapPath)`
+  transform: translateY(200%) rotate(90deg);
+  width: 50%;
 `;

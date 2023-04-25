@@ -37,6 +37,9 @@ export const subLabels: { [key: string]: string[] } = {
   其他: ['繳稅'],
 };
 
-export const gridGap = 0;
-export const gridLength = 160;
-export const houseWidth = 120;
+export const citySetting = {
+  gridGap: 0,
+  gridLength: 160,
+  houseWidth: 120,
+  cityPadding: 200,
+};

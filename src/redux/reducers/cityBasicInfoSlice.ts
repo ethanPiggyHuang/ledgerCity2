@@ -38,18 +38,17 @@ export const getCityInfo = createAsyncThunk(
   }
 );
 
-// export const CHANGE_CITY_NAME = createAsyncThunk(
-//   'cityBasicInfo/getCityInfo',
-//   async (payload: { cityId: string; cityName: string }) => {
-//     try {
-//       const { cityId, cityName } = payload;
-//       const response = await updateCityName(cityId, cityName);
-//       return response.data;
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   }
-// );
+export const UPDATE_CITY_NAME = createAsyncThunk(
+  'cityBasicInfo/UPDATE_CITY_NAME',
+  async (payload: { cityId: string; cityName: string }) => {
+    try {
+      const { cityId, cityName } = payload;
+      await updateCityName(cityId, cityName);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
 
 export const cityBasicInfo = createSlice({
   name: 'cityBasicInfo',
@@ -73,7 +72,6 @@ export const cityBasicInfo = createSlice({
         state.status = 'loading';
       })
       .addCase(getCityInfo.fulfilled, (state, action) => {
-        console.log('gg', action.payload);
         if (action.payload) {
           state.cityName = action.payload.cityName;
           state.accessUsers = action.payload.accessUsers;
@@ -86,25 +84,18 @@ export const cityBasicInfo = createSlice({
       .addCase(getCityInfo.rejected, (state) => {
         state.status = 'failed';
         alert('getCityInfo rejected');
+      })
+      .addCase(UPDATE_CITY_NAME.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(UPDATE_CITY_NAME.fulfilled, (state) => {
+        alert('city name updated');
+        state.status = 'idle';
+      })
+      .addCase(UPDATE_CITY_NAME.rejected, (state) => {
+        state.status = 'failed';
+        alert('getCityInfo rejected');
       });
-    // .addCase(CHANGE_CITY_NAME.pending, (state) => {
-    //   state.status = 'loading';
-    // })
-    // .addCase(CHANGE_CITY_NAME.fulfilled, (state, action) => {
-    //   console.log('gg', action.payload);
-    //   if (action.payload) {
-    //     state.cityName = action.payload.cityName;
-    //     state.accessUsers = action.payload.accessUsers;
-    //     state.citizen = action.payload.citizen;
-    //     state.houses = action.payload.houses;
-    //     state.ledgerBookId = action.payload.ledgerBookId;
-    //   }
-    //   state.status = 'idle';
-    // })
-    // .addCase(CHANGE_CITY_NAME.rejected, (state) => {
-    //   state.status = 'failed';
-    //   alert('getCityInfo rejected');
-    // })
   },
 });
 
