@@ -28,11 +28,6 @@ export const Statistics: React.FC = () => {
   const dispatch = useAppDispatch();
   const auth = getAuth();
 
-  // 監聽使用者進入頁面 -> 送到 db
-  useEffect(() => {
-    if (userId) SWITCH_PAGE({ userId, pageActivity: 'profile' });
-  }, [userId]);
-
   // useEffect(() => {
   //   dispatch(getLedgerList());
   // }, [dispatch]);

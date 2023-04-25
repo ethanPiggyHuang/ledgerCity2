@@ -27,13 +27,13 @@ const initialState: PageControlState = {
 export const SWITCH_PAGE = createAsyncThunk(
   'pageControl/SWITCH_PAGE',
   async (payload: { userId: string; pageActivity: CurrentActionState }) => {
+    console.log('hi');
     const { userId, pageActivity } = payload;
+    console.log(pageActivity);
     await updateActivity(userId, pageActivity);
     return pageActivity;
   }
 );
-
-// TODO so so important ，將 switch_page 的 action 存到 db ，再更新 state.
 
 export const pageControl = createSlice({
   name: 'pageControl',

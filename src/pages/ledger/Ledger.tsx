@@ -17,7 +17,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { CHANGE_LEDGER_POSITION } from '../../redux/reducers/pageControlSlice';
 import { DailyLedger } from './DailyLedger';
-import { SWITCH_PAGE } from '../../redux/reducers/pageControlSlice';
 
 export const Ledger: React.FC = () => {
   const { userId } = useAppSelector((state) => state.userInfo.data);
@@ -29,14 +28,6 @@ export const Ledger: React.FC = () => {
   const { ledgerPosition } = useAppSelector((state) => state.pageControl);
 
   const dispatch = useAppDispatch();
-
-  // 監聽使用者進入頁面 -> 送到 db
-  useEffect(() => {
-    if (userId) {
-      SWITCH_PAGE({ userId, pageActivity: 'ledger' });
-      // console.log(userId, 'update');
-    }
-  }, [userId]);
 
   return (
     <Wrap $state={ledgerPosition}>

@@ -20,15 +20,6 @@ export const Profile: React.FC = () => {
   // );
   const dispatch = useAppDispatch();
 
-  useEffect(() => {}, []);
-
-  // 監聽使用者進入頁面 -> 送到 db
-  useEffect(() => {
-    if (userId) {
-      SWITCH_PAGE({ userId, pageActivity: 'profile' });
-    }
-  }, [userId]);
-
   return (
     <Wrap>
       <CrossIconWrap
