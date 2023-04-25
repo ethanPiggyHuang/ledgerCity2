@@ -66,7 +66,7 @@ const SectionLabel = styled.div<SectionLabelState>`
   display: flex;
   justify-content: center;
 
-  &: hover {
+  &:hover {
     transform: translateY(-20px);
   }
 `;

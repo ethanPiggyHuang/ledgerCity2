@@ -306,7 +306,7 @@ const BarPath = styled.path`
   opacity: 0.7;
   cursor: pointer;
 
-  &: hover {
+  &:hover {
     opacity: 1;
   }
 `;

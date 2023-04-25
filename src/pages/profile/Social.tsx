@@ -24,7 +24,6 @@ export const Social: React.FC = () => {
     if (friends.length !== 0) {
       friendIds.forEach((friendId) => {
         dispatch(GET_FRIENDS_INFO(friendId));
-        console.log(friends);
       });
     }
   }, [friends]);

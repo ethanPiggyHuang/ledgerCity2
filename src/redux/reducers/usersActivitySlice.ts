@@ -16,9 +16,10 @@ export type CurrentActionState =
   | 'leave';
 
 interface SoloUserActivityState {
-  currentAction: CurrentActionState;
-  fadeOutTime: number;
-  latestActiveTime: number;
+  lastActivity: CurrentActionState;
+  currentActivity: CurrentActionState;
+  fadeOutTimeSecond: number;
+  latestActiveTimeSecond: number;
 }
 
 export interface UsersActivityState {
@@ -32,13 +33,13 @@ export interface UsersActivityState {
       userPortraitUrl: string | null;
     };
   };
-  data: { [userId: string]: SoloUserActivityState };
+  coopInfo: { [key: string]: SoloUserActivityState };
 }
 
 const initialState: UsersActivityState = {
   status: 'idle',
   friendsInfo: {},
-  data: {},
+  coopInfo: {},
 };
 
 export const GET_FRIENDS_INFO = createAsyncThunk(
@@ -72,16 +73,26 @@ export const usersActivity = createSlice({
     GET_COOP_FRIEND_ACTIVITY: (
       state,
       action: PayloadAction<{
-        userId: string;
-        currentPage: CurrentActionState;
-        isEditingCity: boolean;
-        fadeOutTimeSecond: number;
-        latestActiveTimeSecond: number;
+        friendId: string;
+        data: {
+          currentActivity: CurrentActionState;
+          fadeOutTimeSecond: number;
+          latestActiveTimeSecond: number;
+        };
       }>
     ) => {
       if (action.payload) {
-        // const { userId } = action.payload;
-        // state.data[userId] = action.payload;
+        const { friendId } = action.payload;
+        const { currentActivity, fadeOutTimeSecond, latestActiveTimeSecond } =
+          action.payload.data;
+        const lastActivity =
+          state.coopInfo[friendId]?.currentActivity || 'city';
+        state.coopInfo[friendId] = {
+          currentActivity,
+          fadeOutTimeSecond,
+          latestActiveTimeSecond,
+          lastActivity,
+        };
       }
     },
   },

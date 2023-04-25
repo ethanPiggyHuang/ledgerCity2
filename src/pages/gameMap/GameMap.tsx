@@ -9,6 +9,7 @@ import Footer from '../../component/Footer';
 import { Statistics } from '../statistics/Statistics';
 import { Profile } from '../profile/Profile';
 import { SWITCH_PAGE } from '../../redux/reducers/pageControlSlice';
+import { CooperatorTrace } from './CooperatorTrace';
 
 export const GameMap: React.FC = () => {
   const { isLogin, isAuthing } = useAppSelector(
@@ -71,7 +72,7 @@ export const GameMap: React.FC = () => {
   useEffect(() => {
     if (userId) {
       SWITCH_PAGE({ userId, pageActivity: 'city' });
-      console.log('useEffect', userId);
+      // console.log('useEffect', userId);
     }
   }, [userId]);
 
@@ -83,6 +84,7 @@ export const GameMap: React.FC = () => {
       {/* <RearrangeOptions /> */}
       {/* <NavBar /> */}
       {/* <ScaleBar /> */}
+      <CooperatorTrace />
       {(pageActivity === 'statistics' || pageActivity === 'profile') && (
         <BlackCurtain />
       )}
