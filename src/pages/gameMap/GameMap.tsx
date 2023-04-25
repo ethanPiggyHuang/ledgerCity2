@@ -10,6 +10,7 @@ import { Statistics } from '../statistics/Statistics';
 import { Profile } from '../profile/Profile';
 import { SWITCH_PAGE } from '../../redux/reducers/pageControlSlice';
 import { CooperatorTrace } from './CooperatorTrace';
+import { RearrangeOptions } from './RearrangeOptions';
 
 export const GameMap: React.FC = () => {
   const { isLogin, isAuthing } = useAppSelector(
@@ -81,7 +82,7 @@ export const GameMap: React.FC = () => {
       {/* && status === 'loading' */}
       {!isLogin && !isAuthing && <DialogBoard />}
       <City />
-      {/* <RearrangeOptions /> */}
+      <RearrangeOptions />
       {/* <NavBar /> */}
       {/* <ScaleBar /> */}
       <CooperatorTrace />

@@ -161,7 +161,7 @@ const Wrap = styled.div`
 `;
 
 const Title = styled.div`
-  font-size: 18px;
+  font-size: 20px;
   letter-spacing: 16%;
   color: #ae7a00;
   font-weight: bold;
