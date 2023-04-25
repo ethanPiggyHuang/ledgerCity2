@@ -81,7 +81,9 @@ export const GameMap: React.FC = () => {
     <Wrapper>
       {/* && status === 'loading' */}
       {!isLogin && !isAuthing && <DialogBoard />}
-      <City />
+      <CityWrapper>
+        <City />
+      </CityWrapper>
       <RearrangeOptions />
       {/* <NavBar /> */}
       {/* <ScaleBar /> */}
@@ -114,4 +116,13 @@ const BlackCurtain = styled.div`
   z-index: 3;
   background-color: black;
   opacity: 0.3;
+`;
+const CityWrapper = styled.div`
+  width: 100vw;
+  height: 100vh;
+  overflow: scroll;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;

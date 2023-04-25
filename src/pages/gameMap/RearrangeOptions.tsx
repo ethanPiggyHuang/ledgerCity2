@@ -91,6 +91,7 @@ type IconBackProps = {
 
 const Wrapper = styled.div`
   position: absolute;
+  z-index: 4;
   left: 50px;
   top: 180px;
   display: flex;

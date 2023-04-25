@@ -42,7 +42,7 @@ export const City: React.FC = () => {
       $heightAttrs={`${cityHeight * scale}px`}
       $topAttrs={`${cityShift.current.y}px`}
       $leftAttrs={`${cityShift.current.x}px`}
-      draggable={dragMode === 'city'}
+      // draggable={dragMode === 'city'}
       onDragStart={(event: React.DragEvent) => {
         if (dragMode !== 'city') return;
         const target = event.target as HTMLDivElement;
@@ -180,8 +180,8 @@ const CityRange = styled.div.attrs<CityRangeProps>(
   })
 )<CityRangeProps>`
   margin: auto;
-  position: absolute;
-  // border: 1px lightgrey solid;
+  padding-top: 200px;
+  /* position: absolute; */
   flex-wrap: wrap;
   cursor: pointer;
 `;

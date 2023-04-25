@@ -153,6 +153,7 @@ export const CooperatorTrace: React.FC = () => {
 
 const Wrap = styled.div`
   position: absolute;
+  z-index: 4;
   right: 50px;
   top: 180px;
   display: flex;
