@@ -43,26 +43,26 @@ export const City: React.FC = () => {
       $topAttrs={`${cityShift.current.y}px`}
       $leftAttrs={`${cityShift.current.x}px`}
       // draggable={dragMode === 'city'}
-      onDragStart={(event: React.DragEvent) => {
-        if (dragMode !== 'city') return;
-        const target = event.target as HTMLDivElement;
-        event.dataTransfer.setData('text/plain', '');
-        dispatch(
-          RECORD_DRAG_START({ mouseX: event.clientX, mouseY: event.clientY })
-        );
-        target.style.opacity = '0.01';
-      }}
-      onDragEnd={(event: React.DragEvent) => {
-        if (dragMode !== 'city') return;
-        const target = event.target as HTMLDivElement;
-        target.style.opacity = '1';
-        dispatch(
-          UPDATE_CITY_LOCATION({
-            mouseX: event.clientX,
-            mouseY: event.clientY,
-          })
-        );
-      }}
+      // onDragStart={(event: React.DragEvent) => {
+      //   if (dragMode !== 'city') return;
+      //   const target = event.target as HTMLDivElement;
+      //   event.dataTransfer.setData('text/plain', '');
+      //   dispatch(
+      //     RECORD_DRAG_START({ mouseX: event.clientX, mouseY: event.clientY })
+      //   );
+      //   target.style.opacity = '0.01';
+      // }}
+      // onDragEnd={(event: React.DragEvent) => {
+      //   if (dragMode !== 'city') return;
+      //   const target = event.target as HTMLDivElement;
+      //   target.style.opacity = '1';
+      //   dispatch(
+      //     UPDATE_CITY_LOCATION({
+      //       mouseX: event.clientX,
+      //       mouseY: event.clientY,
+      //     })
+      //   );
+      // }}
     >
       {housesPosition.map((row, yIndex) => {
         return (
@@ -181,9 +181,10 @@ const CityRange = styled.div.attrs<CityRangeProps>(
 )<CityRangeProps>`
   margin: auto;
   padding-top: 200px;
-  /* position: absolute; */
   flex-wrap: wrap;
-  cursor: pointer;
+  height: fit-content;
+  /* position: absolute; */
+  /* cursor: pointer; */
 `;
 
 const Row = styled.div.attrs<RowProps>(({ $paddingTopAttrs, $gapAttrs }) => ({

@@ -134,16 +134,16 @@ const Wrapper = styled.div`
 const BannerText = styled.input`
   position: absolute;
   color: #ae7a00;
-  font-size: 60px;
+  font-size: 48px;
   height: 65%;
   padding: 20px;
   text-align: center;
   border: none;
-  
+
   background-color: rgba(0, 0, 0, 0);
   width: 50%;
 
-  &: focus {
+  &:focus {
     outline: none;
     box-shadow: none;
     border: none;
@@ -151,14 +151,14 @@ const BannerText = styled.input`
     background-color: cornsilk;
     opacity: 0.6;
   }
-  &: hover {
+  &:hover {
     background-color: cornsilk;
     opacity: 0.6;
     border-radius: 10px;
   }
-  &: focus:hover {
+  &:focus:hover {
     outline: none;
     box-shadow: none;
     border: none;
-}
+  }
 `;

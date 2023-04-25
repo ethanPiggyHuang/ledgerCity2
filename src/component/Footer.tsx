@@ -65,6 +65,7 @@ const SectionLabel = styled.div<SectionLabelState>`
   padding-top: 18px;
   display: flex;
   justify-content: center;
+  transition: transform 0.5s ease;
 
   &:hover {
     transform: translateY(-20px);

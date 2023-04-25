@@ -243,6 +243,7 @@ const UserPinWrap = styled.div<UserPinWrapProps>`
   display: flex;
   flex-direction: column;
   align-items: center;
+  transition: transform 1s ease;
   /* animation: ${move} 1.5s ease-in-out forwards; */
 `;
 
