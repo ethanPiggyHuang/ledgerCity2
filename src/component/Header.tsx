@@ -186,6 +186,8 @@ const BannerText = styled.input<BannerTextProps>`
   /* height: 65%; */
   /* padding: 20px; */
   text-align: center;
+  letter-spacing: 0.4em;
+  font-weight: bold;
   border: none;
   border-bottom: ${({ $isRenaming }) =>
     $isRenaming ? '2px solid #df9469' : 'none'};
@@ -194,18 +196,12 @@ const BannerText = styled.input<BannerTextProps>`
   width: 100%;
 
   &:focus {
-    outline: none;
-    box-shadow: none;
-    border: none;
     border-bottom: 2px solid #df9469;
   }
   &:hover {
     border-bottom: 2px solid #df9469;
   }
   &:focus:hover {
-    outline: none;
-    box-shadow: none;
-    border: none;
     border-bottom: 2px solid #df9469;
   }
 `;

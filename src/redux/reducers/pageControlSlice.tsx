@@ -19,7 +19,7 @@ export interface PageControlState {
 
 const initialState: PageControlState = {
   pageActivity: 'city',
-  ledgerPosition: 'minimize',
+  ledgerPosition: 'normal',
   chartType: 'oneMonth',
   status: 'idle',
 };

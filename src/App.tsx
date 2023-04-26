@@ -42,10 +42,31 @@ export default App;
 const GlobalStyle = createGlobalStyle`
   * {
     box-sizing: border-box;
+    /* 禁止文字選取  */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Edge */
+    user-select: none; /* Standard */
+    
   }
   body {
     // font-family: 'Poppins';
     // font-weight: 400;
+    background: linear-gradient(#c8e2cc, #98d5da);
+  }
+
+  input {
+    border: none;
+    &:focus {
+      outline: none;
+      box-shadow: none;
+      border: none;
+    }
+    &:focus:hover {
+      outline: none;
+      box-shadow: none;
+      border: none;
+    }
   }
   
   #root {

@@ -10,22 +10,11 @@ import {
   mainLabels,
   labelColorCodes,
   subLabels,
+  mainLabel,
 } from '../../utils/gameSettings';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faUtensils,
-  faMugHot,
-  faTrainSubway,
-  faShirt,
-  faGamepad,
-  faHouse,
-  faMobileScreenButton,
-  faBriefcaseMedical,
-  faGift,
-  faTags,
-  faClipboard,
-  faPen,
-} from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { faPen } from '@fortawesome/free-solid-svg-icons';
 
 export const DailyLedger: React.FC = () => {
   const { labelMain, labelSubs, timeLedger } = useAppSelector(
@@ -33,6 +22,8 @@ export const DailyLedger: React.FC = () => {
   );
   const { dataList } = useAppSelector((state) => state.ledgerList);
   const dispatch = useAppDispatch();
+  const labelSetting = mainLabel;
+  const labelIcons = mainLabel.map((label) => label.icon);
 
   const dailyLedger = dataList.filter(
     (ledger) =>
@@ -47,25 +38,6 @@ export const DailyLedger: React.FC = () => {
     0
   );
 
-  const labelIcons = [
-    faUtensils,
-    faMugHot,
-    faTrainSubway,
-    faShirt,
-    faGamepad,
-    faHouse,
-    faMobileScreenButton,
-    faBriefcaseMedical,
-    faGift,
-    faTags,
-  ];
-
-  useEffect(() => {
-    //TODO: onSnapshot
-    // dispatch(getCityInfo());
-  }, []);
-  // const time: DateConstructor = new Date();
-
   return (
     <Wrapper>
       <DailyAmount>{`$ ${dailyAmount}`}</DailyAmount>
@@ -73,18 +45,20 @@ export const DailyLedger: React.FC = () => {
         const index = mainLabels.findIndex(
           (label) => label === ledger.data.labelMain
         );
-        return (
-          <LedgerSingle key={ledger.ledgerId}>
-            <LedgerOperation>
-              <EditIcon icon={faPen}></EditIcon>
-            </LedgerOperation>
-            <LabelIconWrap $backGround={labelColorCodes[index]}>
-              <LabelIcon icon={labelIcons[index]}></LabelIcon>
-            </LabelIconWrap>
-            <LedgerItem>{ledger.data.item}</LedgerItem>
-            <LedgerAmount>{`$ ${ledger.data.amount.number}`}</LedgerAmount>
-          </LedgerSingle>
-        );
+        if (index > 0) {
+          return (
+            <LedgerSingle key={ledger.ledgerId}>
+              <LedgerOperation>
+                <EditIcon icon={faPen}></EditIcon>
+              </LedgerOperation>
+              <LabelIconWrap $backGround={labelSetting[index].colorCode}>
+                <LabelIcon icon={labelSetting[index].icon}></LabelIcon>
+              </LabelIconWrap>
+              <LedgerItem>{ledger.data.item}</LedgerItem>
+              <LedgerAmount>{`$ ${ledger.data.amount.number}`}</LedgerAmount>
+            </LedgerSingle>
+          );
+        }
       })}
     </Wrapper>
   );
@@ -94,10 +68,6 @@ type LabelIconWrapProps = {
   $backGround: string;
 };
 
-type LabelOptionProps = {
-  $isChosen: boolean;
-  $color: string;
-};
 const Wrapper = styled.div`
   min-height: 132px;
 `;
@@ -107,7 +77,7 @@ const DailyAmount = styled.div`
   right: 0px;
   top: 34px;
   height: 34px;
-  font-size: 28px;
+  font-size: 24px;
   font-weight: bold;
   margin-left: auto;
   margin-right: 30px;
@@ -119,6 +89,7 @@ const LedgerSingle = styled.div`
   align-items: center;
   background-color: #ebebeb;
   gap: 18px;
+  /* border: 1px solid black; */
 `;
 const LedgerOperation = styled.div`
   background-color: #ede9db;
@@ -127,34 +98,37 @@ const LedgerOperation = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 `;
 const EditIcon = styled(FontAwesomeIcon)`
-  height: 21px;
+  font-size: 22px;
   color: #c8c2ad;
 `;
 const LabelIconWrap = styled.div<LabelIconWrapProps>`
-  width: 34px;
-  height: 34px;
-  border-radius: 17px;
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
   background-color: ${({ $backGround }) => $backGround};
   display: flex;
   justify-content: center;
   align-items: center;
 `;
 const LabelIcon = styled(FontAwesomeIcon)`
-  height: 21px;
+  font-size: 20px;
   color: #f2f2f2;
 `;
 const LedgerItem = styled.div`
-  height: 34px;
-  font-size: 24px;
+  height: 100%;
+  font-size: 18px;
   display: flex;
   align-items: center;
   color: #6b6b6b;
 `;
 const LedgerAmount = styled.div`
-  height: 34px;
-  font-size: 24px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  font-size: 18px;
   margin-left: auto;
   margin-right: 30px;
   color: #6b6b6b;
@@ -167,7 +141,7 @@ const ItemInput = styled.input`
   height: 80%;
   width: 75%;
   padding-left: 15px;
-  font-size: 24px;
+  font-size: 2px;
   margin-right: auto;
   margin-left: 30px;
   text-align: left;

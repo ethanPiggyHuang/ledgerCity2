@@ -14,10 +14,11 @@ import { Payment } from './Payment';
 import { Calculator } from './Calculator';
 import { ReactComponent as Receipt } from '../../assets/receipt.svg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { CHANGE_LEDGER_POSITION } from '../../redux/reducers/pageControlSlice';
 import { DailyLedger } from './DailyLedger';
 import { ClosingButton } from '../../component/ClosingButton';
+import { Amount } from './Amount';
 
 export const Ledger: React.FC = () => {
   const { userId } = useAppSelector((state) => state.userInfo.data);
@@ -26,96 +27,85 @@ export const Ledger: React.FC = () => {
   const { item, labelMain, amount } = useAppSelector(
     (state) => state.ledgerSingle.data
   );
-  const { ledgerPosition } = useAppSelector((state) => state.pageControl);
+  const { ledgerPosition, pageActivity } = useAppSelector(
+    (state) => state.pageControl
+  );
 
   const dispatch = useAppDispatch();
 
   return (
-    <Wrap $state={ledgerPosition}>
+    <Wrap $state={ledgerPosition} $isShown={pageActivity === 'ledger'}>
       <Background />
       <MainBoard>
         <Header>
-          <ClosingButton size={60} />
+          {ledgerPosition === 'normal' && <ClosingButton size={60} />}
+          {ledgerPosition === 'expand' && (
+            <IconWrap
+              onClick={() => dispatch(CHANGE_LEDGER_POSITION('normal'))}
+            >
+              <Icon icon={faArrowLeft} />
+            </IconWrap>
+          )}
           <TimeBar />
         </Header>
-        {ledgerPosition === 'minimize' && <DailyLedger />}
-        <SecondRow>
-          <Payment />
-          <Amount>{`$ ${number}`}</Amount>
-        </SecondRow>
-        <Label />
-        <Calculator />
-        <ConfirmButton
-          onClick={() => {
-            if (labelMain === '') {
-              alert('請選擇標籤');
-              return;
-            } else if (amount.number === 0) {
-              alert('請輸入花費金額');
-              return;
-            }
-            if (ledgerId === '') {
-              dispatch(ledgerSubmit());
-            } else {
-              dispatch(ledgerUpdate());
-            }
-          }}
-        >
-          <CheckIcon icon={faCheck} />
-        </ConfirmButton>
+        {ledgerPosition === 'normal' && (
+          <>
+            <DailyLedger />
+            <AddNewWrap
+              onClick={() => dispatch(CHANGE_LEDGER_POSITION('expand'))}
+            >
+              <AddNewButton>+ 新紀錄</AddNewButton>
+            </AddNewWrap>
+          </>
+        )}
+
+        {ledgerPosition === 'expand' && (
+          <>
+            <SecondRow>
+              <Amount />
+              <Payment />
+            </SecondRow>
+            <Label />
+            <Calculator />
+            <ConfirmButton
+              onClick={() => {
+                if (labelMain === '') {
+                  alert('請選擇標籤');
+                  return;
+                } else if (amount.number === 0) {
+                  alert('請輸入花費金額');
+                  return;
+                }
+                if (ledgerId === '') {
+                  dispatch(ledgerSubmit());
+                } else {
+                  dispatch(ledgerUpdate());
+                }
+              }}
+            >
+              <CheckIcon icon={faCheck} />
+            </ConfirmButton>
+          </>
+        )}
       </MainBoard>
-      {ledgerPosition !== 'expand' && (
-        <AddNewWrap onClick={() => dispatch(CHANGE_LEDGER_POSITION('expand'))}>
-          <AddNewButton>+ 新紀錄</AddNewButton>
-        </AddNewWrap>
-      )}
     </Wrap>
   );
 };
 
-type WrapProps = { $state: 'minimize' | 'normal' | 'expand' };
-
-const fadeOut = keyframes`
-from {
-  transform: translateY(0) translateX(75%);
-}
-to {
-  transform: translateY(900px) translateX(75%);
-}
-`;
-
-const showUp = keyframes`
-from {
-  transform: translateY(900px)  translateX(75%);
-}
-to {
-  transform: translateY(0px)  translateX(75%);
-}
-`;
+type WrapProps = {
+  $state: 'minimize' | 'normal' | 'expand';
+  $isShown: boolean;
+};
 
 const Wrap = styled.div<WrapProps>`
   width: 40%;
   position: absolute;
   margin: 0 30%;
   z-index: 4;
-  bottom: 0;
   height: 80vh;
   overflow: hidden;
-  ${({ $state }) =>
-    $state === 'minimize'
-      ? css`
-          // animation: ${showUp} 1s linear 1;
-          transform: translateY(0px);
-        `
-      : $state === 'normal'
-      ? css`
-          // animation: ${showUp} 1s linear 1;
-          transform: translateY(0px);
-        `
-      : css`
-          // animation: ${fadeOut} 1s linear 1;
-          transform: translateY(0px);
-        `}
+  bottom: ${({ $isShown }) => ($isShown ? '0' : '-80%')};
+  transition: bottom 1s ease;
 `;
 
 const Background = styled(Receipt)`
@@ -132,7 +122,7 @@ const MainBoard = styled.div`
 `;
 
 const Header = styled.div`
-  height: 60px;
+  height: 10%;
   width: 100%;
   border-bottom: 3px solid #e6e6e6;
   display: flex;
@@ -141,15 +131,14 @@ const Header = styled.div`
 `;
 
 const SecondRow = styled.div`
-  height: 93px;
+  height: 12%;
   width: 100%;
   border-bottom: 3px solid #e6e6e6;
   display: flex;
-  // justify-content: center;
   align-items: center;
 `;
 
-const CrossIconWrap = styled.div`
+const IconWrap = styled.div`
   position: absolute;
   left: 21px;
   height: 60px;
@@ -157,21 +146,16 @@ const CrossIconWrap = styled.div`
   align-items: center;
   cursor: pointer;
 `;
-const CrossIcon = styled(FontAwesomeIcon)`
+const Icon = styled(FontAwesomeIcon)`
   height: 27px;
   color: #808080;
 `;
-const Amount = styled.p`
-  padding-right: 25px;
-  color: #808080;
-  font-size: 36px;
-  margin-left: auto;
-`;
 const ConfirmButton = styled.div`
+  width: 20%;
   position: absolute;
-  bottom: 0;
-  right: 30px;
-  padding: 20px 80px;
+  bottom: 2%;
+  right: 70px;
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -180,19 +164,20 @@ const ConfirmButton = styled.div`
 
 const CheckIcon = styled(FontAwesomeIcon)`
   color: #dabd7a;
-  font-size: 36px;
+  font-size: 20px;
 `;
 
 const AddNewWrap = styled.div`
   position: absolute;
   z-index: 5;
-  top: 198px;
-  height: 100px;
+  bottom: 0;
+  height: 80px;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #f7f7f7;
+  cursor: pointer;
 `;
 
 const AddNewButton = styled.div`

@@ -111,8 +111,32 @@ const Wrapper = styled.div`
   bottom: 0;
   background-color: #292929;
   width: 100%;
+  padding: 0 80px;
+  /* height: 35%; */
+`;
+
+const CalculatorButtons = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  /* align-items: end; */
+  justify-content: space-between;
+`;
+const CalculatorButton = styled.div`
+  /* height: 42px; */
+
+  margin: 5px 2%;
+  width: 20%;
   color: #f2f2f2;
-  font-size: 36px;
+  font-size: 20px;
+  line-height: 150%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  cursor: pointer;
+  &:hover {
+    background-color: #808080;
+  }
 `;
 
 const AmountDisplay = styled.div`
@@ -156,25 +180,4 @@ const CurrencyExchange = styled.div`
   align-items: center;
   display: none;
   //TODO currency exchange
-`;
-
-const CalculatorButtons = styled.div`
-  margin: 10px auto 0;
-  width: 90%;
-  height: calc(70% + 10px);
-  justify-content: center;
-  align-items: center;
-  padding: 8px 20px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 10px;
-`;
-const CalculatorButton = styled.div`
-  height: 60px;
-  width: 22%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
 `;

@@ -60,7 +60,7 @@ export const ScaleBar: React.FC = () => {
 const Wrapper = styled.div`
   position: absolute;
   z-index: 2;
-  bottom: 20px;
+  bottom: 200px;
   right: 20px;
   width: 150px;
 `;

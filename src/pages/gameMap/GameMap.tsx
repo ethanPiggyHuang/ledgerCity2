@@ -11,6 +11,7 @@ import { Profile } from '../profile/Profile';
 import { SWITCH_PAGE } from '../../redux/reducers/pageControlSlice';
 import { CooperatorTrace } from './CooperatorTrace';
 import { RearrangeOptions } from './RearrangeOptions';
+import { ScaleBar } from './ScaleBar';
 
 export const GameMap: React.FC = () => {
   const { isLogin, isAuthing } = useAppSelector(
@@ -96,7 +97,8 @@ export const GameMap: React.FC = () => {
           }}
         />
       )}
-      {pageActivity === 'ledger' && <Ledger />}
+      {/* {pageActivity === 'ledger' && <Ledger />} */}
+      <Ledger />
       {pageActivity === 'statistics' && <Statistics />}
       {pageActivity === 'profile' && <Profile />}
 

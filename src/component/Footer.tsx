@@ -57,8 +57,8 @@ const Wrapper = styled.div`
   align-items: center;
 `;
 const SectionLabel = styled.div<SectionLabelState>`
-  height: 120px;
-  width: ${({ $chosen }) => ($chosen ? '40%' : '30%')};
+  height: 100px;
+  width: ${({ $chosen }) => ($chosen ? '40%' : '34%')};
   background-color: ${({ $chosen }) => ($chosen ? '#f7f7f7' : '#ebebeb')};
   border-radius: 20px 20px 0 0;
   border: 2px solid white;
@@ -66,13 +66,13 @@ const SectionLabel = styled.div<SectionLabelState>`
   display: flex;
   justify-content: center;
   transition: transform 0.5s ease, width 0.5s ease;
+  cursor: pointer;
 
   &:hover {
     transform: translateY(-20px);
     width: 40%;
   }
 `;
-// width 0.5 ease-out
 
 const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
   color: #808080;
