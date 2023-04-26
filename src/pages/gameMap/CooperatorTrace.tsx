@@ -273,7 +273,6 @@ const UserPortraitWrap = styled.div`
 `;
 
 const UserPortrait = styled.img`
-  /* width: 100%; */
   height: 100%;
   object-fit: contain;
 `;
@@ -294,15 +293,21 @@ const MapPath = styled.div`
   transform: translateX(-50%);
 `;
 
-const MapPathUpLeft = styled(MapPath)`
-  transform: translateX(25%) translateY(200%) rotate(-60deg);
-  width: 50%;
+const MapPathUp = styled.div`
+  height: 70%;
+  position: absolute;
+  width: 6%;
+  z-index: 0;
+  background-color: #f2f2f2;
 `;
-const MapPathUpRight = styled(MapPath)`
-  transform: translateX(-25%) translateY(200%) rotate(60deg);
-  width: 50%;
+
+const MapPathUpLeft = styled(MapPathUp)`
+  transform: translateY(33%) translateX(200%) rotate(36deg);
 `;
-const MapPathUpMiddle = styled(MapPath)`
-  transform: translateY(200%) rotate(90deg);
-  width: 50%;
+const MapPathUpRight = styled(MapPathUp)`
+  transform: translateY(33%) translateX(-200%) rotate(-36deg);
+`;
+const MapPathUpMiddle = styled(MapPathUp)`
+  transform: translateY(50%);
+  height: 50%;
 `;

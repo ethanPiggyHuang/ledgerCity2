@@ -19,6 +19,7 @@ import {
 } from '../../redux/reducers/pageControlSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { ClosingButton } from '../../component/ClosingButton';
 
 export const Statistics: React.FC = () => {
   const { chosenYear } = useAppSelector((state) => state.ledgerList.choices);
@@ -36,13 +37,7 @@ export const Statistics: React.FC = () => {
     <Wrap>
       <Header>
         <Title>分析圖表</Title>
-        <CrossIconWrap
-          onClick={() =>
-            dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }))
-          }
-        >
-          <CrossIcon icon={faXmark} />
-        </CrossIconWrap>
+        <ClosingButton size={60} />
       </Header>
       <Main>
         {chartType === 'oneMonth' && <PieChart></PieChart>}

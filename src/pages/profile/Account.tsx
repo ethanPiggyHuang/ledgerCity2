@@ -101,6 +101,7 @@ export const Account: React.FC = () => {
 };
 
 const Wrap = styled.div`
+  margin-top: 60px;
   width: 100%;
   // height: 100vh;
   padding: 20px;

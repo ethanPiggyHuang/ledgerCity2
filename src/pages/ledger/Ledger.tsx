@@ -17,6 +17,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { CHANGE_LEDGER_POSITION } from '../../redux/reducers/pageControlSlice';
 import { DailyLedger } from './DailyLedger';
+import { ClosingButton } from '../../component/ClosingButton';
 
 export const Ledger: React.FC = () => {
   const { userId } = useAppSelector((state) => state.userInfo.data);
@@ -34,12 +35,7 @@ export const Ledger: React.FC = () => {
       <Background />
       <MainBoard>
         <Header>
-          <CrossIconWrap>
-            <CrossIcon
-              icon={faXmark}
-              onClick={() => dispatch(CHANGE_LEDGER_POSITION('minimize'))}
-            />
-          </CrossIconWrap>
+          <ClosingButton size={60} />
           <TimeBar />
         </Header>
         {ledgerPosition === 'minimize' && <DailyLedger />}
@@ -100,27 +96,25 @@ to {
 const Wrap = styled.div<WrapProps>`
   width: 40%;
   position: absolute;
+  margin: 0 30%;
   z-index: 4;
   bottom: 0;
   height: 80vh;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
   overflow: hidden;
   ${({ $state }) =>
     $state === 'minimize'
       ? css`
           // animation: ${showUp} 1s linear 1;
-          transform: translateY(665px) translateX(75%);
+          transform: translateY(0px);
         `
       : $state === 'normal'
       ? css`
           // animation: ${showUp} 1s linear 1;
-          transform: translateY(440px) translateX(75%);
+          transform: translateY(0px);
         `
       : css`
           // animation: ${fadeOut} 1s linear 1;
-          transform: translateY(0px) translateX(75%);
+          transform: translateY(0px);
         `}
 `;
 
