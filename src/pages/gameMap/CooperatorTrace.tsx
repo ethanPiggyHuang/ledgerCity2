@@ -263,8 +263,8 @@ const UserPortraitWrap = styled.div`
   position: absolute;
   z-index: 1;
   top: 6px;
-  width: 60px;
-  height: 60px;
+  max-width: 80%;
+  height: 60%;
   border-radius: 50%;
   border: 2px rgba(255, 255, 255, 0.6) solid;
   display: flex;
@@ -273,13 +273,14 @@ const UserPortraitWrap = styled.div`
 `;
 
 const UserPortrait = styled.img`
-  width: 60px;
-  height: 60px;
+  /* width: 100%; */
+  height: 100%;
   object-fit: contain;
 `;
 
 const UserPin = styled.img`
   position: absolute;
+  max-width: 100%;
   height: 100%;
   object-fit: scale-down;
 `;

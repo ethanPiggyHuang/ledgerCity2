@@ -37,8 +37,8 @@ export const Profile: React.FC = () => {
 const Wrap = styled.div`
   height: 70vh;
   width: 40vw;
-  transform: translateX(75%);
   position: absolute;
+  right: 0;
   bottom: 100px;
   z-index: 4;
   border: #ffffff 3px solid;

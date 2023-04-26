@@ -65,12 +65,14 @@ const SectionLabel = styled.div<SectionLabelState>`
   padding-top: 18px;
   display: flex;
   justify-content: center;
-  transition: transform 0.5s ease;
+  transition: transform 0.5s ease, width 0.5s ease;
 
   &:hover {
     transform: translateY(-20px);
+    width: 40%;
   }
 `;
+// width 0.5 ease-out
 
 const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
   color: #808080;

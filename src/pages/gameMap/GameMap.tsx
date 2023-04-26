@@ -72,7 +72,7 @@ export const GameMap: React.FC = () => {
   // 監聽使用者進入頁面 -> 送到 db
   useEffect(() => {
     if (userId) {
-      SWITCH_PAGE({ userId, pageActivity: 'city' });
+      dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }));
       // console.log('useEffect', userId);
     }
   }, [userId]);
@@ -89,7 +89,12 @@ export const GameMap: React.FC = () => {
       {/* <ScaleBar /> */}
       <CooperatorTrace />
       {(pageActivity === 'statistics' || pageActivity === 'profile') && (
-        <BlackCurtain />
+        <BlackCurtain
+          onClick={() => {
+            dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }));
+            console.log('shift');
+          }}
+        />
       )}
       {pageActivity === 'ledger' && <Ledger />}
       {pageActivity === 'statistics' && <Statistics />}
@@ -115,7 +120,7 @@ const BlackCurtain = styled.div`
   left: 0;
   z-index: 3;
   background-color: black;
-  opacity: 0.3;
+  opacity: 0.4;
 `;
 const CityWrapper = styled.div`
   width: 100vw;

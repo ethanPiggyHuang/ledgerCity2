@@ -27,9 +27,7 @@ const initialState: PageControlState = {
 export const SWITCH_PAGE = createAsyncThunk(
   'pageControl/SWITCH_PAGE',
   async (payload: { userId: string; pageActivity: CurrentActionState }) => {
-    console.log('hi');
     const { userId, pageActivity } = payload;
-    console.log(pageActivity);
     await updateActivity(userId, pageActivity);
     return pageActivity;
   }
