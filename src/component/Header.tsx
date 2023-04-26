@@ -182,7 +182,7 @@ const TextWrapper = styled.div`
 const BannerText = styled.input<BannerTextProps>`
   /* position: absolute; */
   color: #ae7a00;
-  font-size: 48px;
+  font-size: 42px;
   /* height: 65%; */
   /* padding: 20px; */
   text-align: center;

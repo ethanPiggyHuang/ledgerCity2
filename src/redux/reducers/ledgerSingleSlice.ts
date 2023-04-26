@@ -287,7 +287,7 @@ export const ledgerSingle = createSlice({
         state.status = 'idle';
         alert('已登錄');
         state.data.item = '';
-        state.data.labelMain = '';
+        state.data.labelMain = '食物';
         state.data.labelSubs = [];
         state.data.amount = { currency: '', number: 0, numberNT: 0 };
         state.calculationHolder = {

@@ -1,20 +1,12 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import {
-  itemKeyIn,
-  labelChooseMain,
-  labelRetrieve,
-} from '../../redux/reducers/ledgerSingleSlice';
-import {
-  mainLabels,
-  labelColorCodes,
-  subLabels,
-  mainLabel,
-} from '../../utils/gameSettings';
+import { ledgerEdit } from '../../redux/reducers/ledgerSingleSlice';
+import { mainLabels, mainLabel } from '../../utils/gameSettings';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faPen } from '@fortawesome/free-solid-svg-icons';
+import { CHANGE_LEDGER_POSITION } from '../../redux/reducers/pageControlSlice';
 
 export const DailyLedger: React.FC = () => {
   const { labelMain, labelSubs, timeLedger } = useAppSelector(
@@ -31,8 +23,6 @@ export const DailyLedger: React.FC = () => {
       new Date(timeLedger).getDate()
   );
 
-  console.log(dailyLedger);
-
   const dailyAmount = dailyLedger.reduce(
     (acc, cur) => (acc += cur.data.amount.number),
     0
@@ -42,17 +32,28 @@ export const DailyLedger: React.FC = () => {
     <Wrapper>
       <DailyAmount>{`$ ${dailyAmount}`}</DailyAmount>
       {dailyLedger.map((ledger) => {
-        const index = mainLabels.findIndex(
+        const labelIndex = mainLabels.findIndex(
           (label) => label === ledger.data.labelMain
         );
-        if (index > 0) {
+        if (labelIndex > 0) {
           return (
             <LedgerSingle key={ledger.ledgerId}>
-              <LedgerOperation>
+              <LedgerOperation
+                onClick={() => {
+                  const chosenLedger = dataList.find(
+                    (data) => data.ledgerId === ledger.ledgerId
+                  );
+                  if (chosenLedger) {
+                    dispatch(ledgerEdit(chosenLedger));
+                    dispatch(CHANGE_LEDGER_POSITION('expand'));
+                    // navigate('/ledger');
+                  }
+                }}
+              >
                 <EditIcon icon={faPen}></EditIcon>
               </LedgerOperation>
-              <LabelIconWrap $backGround={labelSetting[index].colorCode}>
-                <LabelIcon icon={labelSetting[index].icon}></LabelIcon>
+              <LabelIconWrap $backGround={labelSetting[labelIndex].colorCode}>
+                <LabelIcon icon={labelSetting[labelIndex].icon}></LabelIcon>
               </LabelIconWrap>
               <LedgerItem>{ledger.data.item}</LedgerItem>
               <LedgerAmount>{`$ ${ledger.data.amount.number}`}</LedgerAmount>

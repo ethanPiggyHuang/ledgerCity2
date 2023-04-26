@@ -115,12 +115,12 @@ const Wrapper = styled.div`
   overflow: hidden;
 `;
 const BlackCurtain = styled.div`
-  height: calc(100vh - 100px);
+  height: 100vh;
   width: 100vw;
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 3;
+  z-index: 4;
   background-color: black;
   opacity: 0.4;
 `;

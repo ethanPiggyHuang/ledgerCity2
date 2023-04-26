@@ -78,8 +78,10 @@ const PaymentInfo = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-left: auto;
-  margin-right: 15px;
+  /* margin-left: auto;
+  margin-right: 15px; */
+  margin-right: auto;
+  margin-left: 15px;
 `;
 const PaidMethod = styled.div`
   height: 80%;

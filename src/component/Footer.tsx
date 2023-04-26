@@ -50,7 +50,7 @@ type SectionLabelState = {
 const Wrapper = styled.div`
   width: 100vw;
   position: fixed;
-  z-index: 3;
+  z-index: 5;
   bottom: -20px;
   display: flex;
   justify-content: center;
@@ -58,7 +58,7 @@ const Wrapper = styled.div`
 `;
 const SectionLabel = styled.div<SectionLabelState>`
   height: 100px;
-  width: ${({ $chosen }) => ($chosen ? '40%' : '34%')};
+  width: ${({ $chosen }) => ($chosen ? '40%' : '30%')};
   background-color: ${({ $chosen }) => ($chosen ? '#f7f7f7' : '#ebebeb')};
   border-radius: 20px 20px 0 0;
   border: 2px solid white;

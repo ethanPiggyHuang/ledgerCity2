@@ -62,8 +62,8 @@ export const Ledger: React.FC = () => {
         {ledgerPosition === 'expand' && (
           <>
             <SecondRow>
-              <Amount />
               <Payment />
+              <Amount />
             </SecondRow>
             <Label />
             <Calculator />
@@ -101,7 +101,7 @@ const Wrap = styled.div<WrapProps>`
   width: 40%;
   position: absolute;
   margin: 0 30%;
-  z-index: 4;
+  z-index: 6;
   height: 80vh;
   overflow: hidden;
   bottom: ${({ $isShown }) => ($isShown ? '0' : '-80%')};

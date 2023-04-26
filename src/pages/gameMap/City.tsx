@@ -108,7 +108,7 @@ export const City: React.FC = () => {
                       <House
                         $lengthAttrs={`${houseWidth * scale}px`}
                         $fontSizeAttrs={`${24 * scale}px`}
-                        $type={house.type}
+                        $isdraggable={dragMode === 'houses'}
                         draggable={dragMode === 'houses'}
                         onDragStart={(event: React.DragEvent) => {
                           if (dragMode !== 'houses') return;
@@ -168,8 +168,8 @@ type GridProps = {
 };
 type HouseProps = {
   $lengthAttrs: string;
-  $type: string;
   $fontSizeAttrs: string;
+  $isdraggable: boolean;
 };
 
 const CityRange = styled.div.attrs<CityRangeProps>(
@@ -232,9 +232,7 @@ const House = styled.div.attrs<HouseProps>(
 )<HouseProps>`
   border-radius: 10px;
   display: flex;
-  // position: absolute;
-  // index: 2;
-  // top: 0;
   align-items: center;
   justify-content: center;
+  cursor: ${({ $isdraggable }) => ($isdraggable ? 'grab' : '')};
 `;

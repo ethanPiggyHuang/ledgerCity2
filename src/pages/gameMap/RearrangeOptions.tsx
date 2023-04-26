@@ -112,8 +112,8 @@ const IconsWrapper = styled.div`
 `;
 
 const IconBack = styled.div<IconBackProps>`
-  width: 66px;
-  height: 66px;
+  width: 50px;
+  height: 50px;
   border-radius: 33px;
   display: flex;
   justify-content: center;
@@ -139,14 +139,14 @@ const IconBackConstruction = styled(IconBack)`
 
 const Icon = styled(FontAwesomeIcon)`
   color: #f2f2f2;
-  font-size: 36px;
+  font-size: 30px;
 `;
 
 const IconImg = styled.img`
-  height: 47px;
+  height: 40px;
 `;
 
 const ScaleText = styled.p`
-  font-size: 24px;
+  font-size: 20px;
   color: #f2f2f2;
 `;

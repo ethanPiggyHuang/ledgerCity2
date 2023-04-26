@@ -137,7 +137,6 @@ export const CooperatorTrace: React.FC = () => {
           </PagesIconBack>
         </IconBlock>
         <IconBlock></IconBlock>
-
         {coopFriends.map((coopFriend, index) => (
           <UserPinWrap
             key={index}

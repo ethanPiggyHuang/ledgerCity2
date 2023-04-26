@@ -14,9 +14,9 @@ type LabelOptionProps = {
   $isChosen: boolean;
   $color: string;
 };
-const AmountText = styled.div`
+const AmountText = styled.p`
   height: 10%;
-  margin-left: 15px;
+  margin: 0 15px;
   color: #808080;
   font-size: 28px;
   display: flex;
