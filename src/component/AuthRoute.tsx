@@ -7,7 +7,6 @@ import {
   GET_ACCOUNT_INFO,
   CREATE_ACCOUNT,
 } from '../redux/reducers/userInfoSlice';
-import { getCityInfo } from '../redux/reducers/cityBasicInfoSlice';
 import { getLedgerList } from '../redux/reducers/ledgerListSlice';
 import { onSnapshot } from 'firebase/firestore';
 
@@ -54,7 +53,7 @@ const AuthRoute: React.FunctionComponent<IAuthRouteProps> = (props) => {
 
   // useEffect(() => {
   //   if (cityList.length !== 0) {
-  //     dispatch(getCityInfo(cityList[0]));
+  //     dispatch(VISIT_CITY(cityList[0]));
   //     console.log('go fetch');
   //   }
   // }, [cityList]);

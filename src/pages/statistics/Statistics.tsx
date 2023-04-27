@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { PieChart } from './PieChart';
@@ -29,10 +28,6 @@ export const Statistics: React.FC = () => {
 
   const dispatch = useAppDispatch();
   const auth = getAuth();
-
-  // useEffect(() => {
-  //   dispatch(getLedgerList());
-  // }, [dispatch]);
 
   return (
     <Wrap $isShown={pageActivity === 'statistics'}>

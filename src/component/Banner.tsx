@@ -1,14 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import styled, { keyframes } from 'styled-components/macro';
+import React from 'react';
+import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
-
-const Wrapper = styled.div`
-  // position: absolute;
-  z-index: 2;
-  &:hover {
-    transform: translateY(-10px);
-  }
-`;
 
 const StyledSvg = styled.svg`
   width: calc(50vw);

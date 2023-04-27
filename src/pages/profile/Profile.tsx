@@ -1,12 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { NavBar } from '../gameMap/NavBar';
-import { Social } from './Social';
-import { Setting } from './Setting';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import { SWITCH_PAGE } from '../../redux/reducers/pageControlSlice';
 import { ClosingButton } from '../../component/ClosingButton';
 
 export const Profile: React.FC = () => {

@@ -16,6 +16,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUsers } from '@fortawesome/free-solid-svg-icons';
 import { SWITCH_PAGE } from '../../redux/reducers/pageControlSlice';
 import banner from '../../assets/banner.png';
+import { VISIT_CITY } from '../../redux/reducers/cityBasicInfoSlice';
 
 export const Social: React.FC = () => {
   const { userId, cityList } = useAppSelector((state) => state.userInfo.data);
@@ -166,6 +167,78 @@ export const Social: React.FC = () => {
                 </FriendCityWrap>
               </FriendInfo>
             ))}
+          {friendInfoCollection.length !== 0 &&
+            friendInfoCollection.map((friendInfo, index) => (
+              <FriendInfo key={friendInfo.userId}>
+                <FriendPorTraitWrap>
+                  <FriendPorTrait src={friendInfo.userPortraitUrl} />
+                </FriendPorTraitWrap>
+                <FriendInfoTextWrap>
+                  <FriendInfoText>{friendInfo.userNickName}</FriendInfoText>
+                  <FriendInfoTextMinor>
+                    {friendInfo.userEmail}
+                  </FriendInfoTextMinor>
+                  <FriendInfoTextMinor>{`最近活躍：${lastActiveDate(
+                    friendInfo.lastActiveTime
+                  )}`}</FriendInfoTextMinor>
+                </FriendInfoTextWrap>
+                <FriendCityWrap>
+                  <FriendInfoTextMinor>協作城市：</FriendInfoTextMinor>
+                  <CityBannerWrap>
+                    <MyCityText>{friendInfo.coopCityName}</MyCityText>
+                    <MyCityNoticeWrap
+                      onClick={() => {
+                        if (friendInfo.coopCityId === currentCityId) {
+                          return;
+                        } else {
+                          dispatch(
+                            CITY_REDIRECTION({
+                              userId,
+                              cityId: friendInfo.coopCityId,
+                            })
+                          );
+                          dispatch(
+                            SWITCH_PAGE({ userId, pageActivity: 'city' })
+                          );
+                        }
+                      }}
+                    >
+                      <MyCityNotice>
+                        {friendInfo.coopCityId === currentCityId
+                          ? '目前'
+                          : '前往'}
+                      </MyCityNotice>
+                    </MyCityNoticeWrap>
+                  </CityBannerWrap>
+                </FriendCityWrap>
+                <FriendCityWrap>
+                  <FriendInfoTextMinor>好友城市：</FriendInfoTextMinor>
+                  {friendInfo.personalCityName === '' ? (
+                    <FriendCityInfoText>無個人城市</FriendCityInfoText>
+                  ) : (
+                    <CityBannerWrap>
+                      <MyCityText>{friendInfo.personalCityName}</MyCityText>
+                      <FriendsCityNoticeWrap
+                        onClick={() => {
+                          dispatch(VISIT_CITY(friendInfo.coopCityId));
+                          // dispatch(
+                          //   CITY_REDIRECTION({
+                          //     userId,
+                          //     cityId: friendInfo.personalCityId,
+                          //   })
+                          // );
+                          // dispatch(
+                          //   SWITCH_PAGE({ userId, pageActivity: 'city' })
+                          // );
+                        }}
+                      >
+                        <MyCityNotice>造訪</MyCityNotice>
+                      </FriendsCityNoticeWrap>
+                    </CityBannerWrap>
+                  )}
+                </FriendCityWrap>
+              </FriendInfo>
+            ))}
         </FriendListWrap>
       </FriendListsWrap>
 
@@ -295,7 +368,7 @@ const FriendListWrap = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 10px;
+  gap: 20px;
 `;
 
 const FriendListTitle = styled.p`

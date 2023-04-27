@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import {
@@ -44,12 +44,6 @@ export const Label: React.FC = () => {
     faGift,
     faTags,
   ];
-
-  useEffect(() => {
-    //TODO: onSnapshot
-    // dispatch(getCityInfo());
-  }, []);
-  // const time: DateConstructor = new Date();
 
   return (
     <>

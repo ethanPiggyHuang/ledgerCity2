@@ -69,7 +69,9 @@ export const CooperatorTrace: React.FC = () => {
   }, [friends]);
 
   useEffect(() => {
-    if (coopFriends.length !== 0) {
+    if (accessUsers.length !== 0 && accessUsers.includes(userId) === false) {
+      alert('not accessUser');
+    } else if (coopFriends.length !== 0) {
       coopFriends.forEach((friendId) => {
         const unsubscribe = onSnapshot(
           doc(db, 'allUserStatus', friendId),

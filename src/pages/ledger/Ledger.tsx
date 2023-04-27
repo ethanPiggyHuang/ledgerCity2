@@ -1,8 +1,5 @@
-import React, { useEffect } from 'react';
-import { Link, redirect } from 'react-router-dom';
-import styled, { keyframes, css } from 'styled-components/macro';
-import { doc, onSnapshot } from 'firebase/firestore';
-import { db } from '../../config/firebase';
+import React from 'react';
+import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import {
   ledgerSubmit,

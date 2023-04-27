@@ -38,7 +38,7 @@ interface LedgerDatabaseState {
 
 const Header: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { ledgerBookId, cityName } = useAppSelector(
+  const { ledgerBookId, cityName, accessUsers } = useAppSelector(
     (state) => state.cityBasicInfo
   );
   const { isRenaming } = useAppSelector((state) => state.cityArrangement);
@@ -59,36 +59,41 @@ const Header: React.FC = () => {
 
   useEffect(() => {
     if (ledgerBookId.length !== 0) {
-      const q = query(
-        collection(db, 'ledgerBooks', ledgerBookId, 'ledgers'),
-        orderBy('timeLedger')
-      );
+      if (accessUsers.findIndex((id) => id === userId) === -1) {
+        alert('visiting');
+        return;
+      } else {
+        const q = query(
+          collection(db, 'ledgerBooks', ledgerBookId, 'ledgers'),
+          orderBy('timeLedger')
+        );
 
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        let rawResult = [] as any;
-        querySnapshot.forEach((doc) => {
-          rawResult.push({ ledgerId: doc.id, data: doc.data() });
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+          let rawResult = [] as any;
+          querySnapshot.forEach((doc) => {
+            rawResult.push({ ledgerId: doc.id, data: doc.data() });
+          });
+
+          const convertedResult: { ledgerId: string; data: LedgerDataState }[] =
+            rawResult.map(
+              (
+                data: { ledgerId: string; data: LedgerDatabaseState },
+                index: number
+              ) => {
+                const recordTime = data.data.recordTime
+                  ? new Date(data.data.recordTime.seconds * 1000).getTime()
+                  : 0;
+                return {
+                  ...data,
+                  data: { ...data.data, recordTime },
+                };
+              }
+            );
+          dispatch(UPDATE_LEDGER_LIST(convertedResult));
         });
 
-        const convertedResult: { ledgerId: string; data: LedgerDataState }[] =
-          rawResult.map(
-            (
-              data: { ledgerId: string; data: LedgerDatabaseState },
-              index: number
-            ) => {
-              const recordTime = data.data.recordTime
-                ? new Date(data.data.recordTime.seconds * 1000).getTime()
-                : 0;
-              return {
-                ...data,
-                data: { ...data.data, recordTime },
-              };
-            }
-          );
-        dispatch(UPDATE_LEDGER_LIST(convertedResult));
-      });
-
-      return () => unsubscribe();
+        return () => unsubscribe();
+      }
     }
   }, [ledgerBookId]);
 
