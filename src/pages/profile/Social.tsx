@@ -28,6 +28,7 @@ export const Social: React.FC = () => {
     (state) => state.userActivity
   );
   const { pageActivity } = useAppSelector((state) => state.pageControl);
+  const currentCityId = cityList[0];
 
   const friendIds = friends.map((friend) => friend.userId);
 
@@ -65,10 +66,24 @@ export const Social: React.FC = () => {
     (state) => state.userInfo.editStatus
   );
 
-  console.log('cityNames', cityNames);
-
   const friendsArray = Object.values(friendsInfo);
-  // console.log('friendsArray', friendsArray);
+
+  const friendInfoCollection = friendsArray.map((friendInfo) => {
+    const friendId = friendInfo.userId;
+    const friendCityList = friendInfo.cityList;
+    const coopCityId =
+      friends.find((data) => data.userId === friendId)?.coopCityId || '';
+    const personalCityId =
+      friendCityList.find((data) => data !== coopCityId) || '';
+    return {
+      ...friendInfo,
+      lastActiveTime: coopInfo[friendId]?.latestActiveTimeSecond || 0,
+      coopCityId,
+      coopCityName: cityNames[coopCityId] || '',
+      personalCityId,
+      personalCityName: cityNames[personalCityId] || '',
+    };
+  });
 
   return (
     <Wrap $isShown={pageActivity === 'profile'}>
@@ -80,39 +95,36 @@ export const Social: React.FC = () => {
       <FriendListsWrap>
         <FriendListWrap>
           <FriendListTitle>協作好友清單</FriendListTitle>
-          {friendsArray.length !== 0 &&
-            friendsArray.map((friend, index) => (
-              <FriendInfo key={friend.userId}>
+          {friendInfoCollection.length !== 0 &&
+            friendInfoCollection.map((friendInfo, index) => (
+              <FriendInfo key={friendInfo.userId}>
                 <FriendPorTraitWrap>
-                  <FriendPorTrait src={friend.userPortraitUrl} />
+                  <FriendPorTrait src={friendInfo.userPortraitUrl} />
                 </FriendPorTraitWrap>
                 <FriendInfoTextWrap>
-                  <FriendInfoText>{friend.userNickName}</FriendInfoText>
-                  <FriendInfoTextMinor>{friend.userEmail}</FriendInfoTextMinor>
-                  <FriendInfoTextMinor>{`最後活躍：${lastActiveDate(
-                    coopInfo[friend.userId]?.latestActiveTimeSecond
+                  <FriendInfoText>{friendInfo.userNickName}</FriendInfoText>
+                  <FriendInfoTextMinor>
+                    {friendInfo.userEmail}
+                  </FriendInfoTextMinor>
+                  <FriendInfoTextMinor>{`最近活躍：${lastActiveDate(
+                    friendInfo.lastActiveTime
                   )}`}</FriendInfoTextMinor>
                 </FriendInfoTextWrap>
                 <FriendCityWrap>
                   <FriendInfoTextMinor>協作城市：</FriendInfoTextMinor>
                   <CityBannerWrap>
-                    <MyCityText>
-                      {
-                        cityNames[
-                          friends.find((data) => data.userId === friend.userId)
-                            ?.coopCityId as string
-                        ]
-                      }
-                    </MyCityText>
+                    <MyCityText>{friendInfo.coopCityName}</MyCityText>
                     <MyCityNoticeWrap
                       onClick={() => {
-                        const cityId = friends.find(
-                          (data) => data.userId === friend.userId
-                        )?.coopCityId;
-                        if (cityId === cityList[0]) {
+                        if (friendInfo.coopCityId === currentCityId) {
                           return;
-                        } else if (cityId) {
-                          dispatch(CITY_REDIRECTION({ userId, cityId }));
+                        } else {
+                          dispatch(
+                            CITY_REDIRECTION({
+                              userId,
+                              cityId: friendInfo.coopCityId,
+                            })
+                          );
                           dispatch(
                             SWITCH_PAGE({ userId, pageActivity: 'city' })
                           );
@@ -120,8 +132,7 @@ export const Social: React.FC = () => {
                       }}
                     >
                       <MyCityNotice>
-                        {friends.find((data) => data.userId === friend.userId)
-                          ?.coopCityId === cityList[0]
+                        {friendInfo.coopCityId === currentCityId
                           ? '目前'
                           : '前往'}
                       </MyCityNotice>
@@ -130,57 +141,27 @@ export const Social: React.FC = () => {
                 </FriendCityWrap>
                 <FriendCityWrap>
                   <FriendInfoTextMinor>好友城市：</FriendInfoTextMinor>
-                  {friendsInfo[friend.userId].cityList.find(
-                    (data) =>
-                      data !==
-                      friends.find((data) => data.userId === friend.userId)
-                        ?.coopCityId
-                  ) ? (
+                  {friendInfo.personalCityName === '' ? (
+                    <FriendCityInfoText>無個人城市</FriendCityInfoText>
+                  ) : (
                     <CityBannerWrap>
-                      <MyCityText>
-                        {
-                          cityNames[
-                            friendsInfo[friend.userId].cityList.find(
-                              (data) =>
-                                data !==
-                                friends.find(
-                                  (data) => data.userId === friend.userId
-                                )?.coopCityId
-                            ) || 0
-                          ]
-                        }
-                        {/* {
-                          cityNames[
-                            friendsInfo[friend.userId].cityList.find(
-                              (data) =>
-                                data !==
-                                friends.find(
-                                  (data) => data.userId === friend.userId
-                                )?.coopCityId
-                            ) || 0
-                          ]
-                        } */}
-                      </MyCityText>
+                      <MyCityText>{friendInfo.personalCityName}</MyCityText>
                       <FriendsCityNoticeWrap
                         onClick={() => {
-                          const cityId = friends.find(
-                            (data) => data.userId === friend.userId
-                          )?.coopCityId;
-                          if (cityId === cityList[0]) {
-                            return;
-                          } else if (cityId) {
-                            dispatch(CITY_REDIRECTION({ userId, cityId }));
-                            dispatch(
-                              SWITCH_PAGE({ userId, pageActivity: 'city' })
-                            );
-                          }
+                          dispatch(
+                            CITY_REDIRECTION({
+                              userId,
+                              cityId: friendInfo.personalCityId,
+                            })
+                          );
+                          dispatch(
+                            SWITCH_PAGE({ userId, pageActivity: 'city' })
+                          );
                         }}
                       >
                         <MyCityNotice>造訪</MyCityNotice>
                       </FriendsCityNoticeWrap>
                     </CityBannerWrap>
-                  ) : (
-                    <FriendCityInfoText>無個人城市</FriendCityInfoText>
                   )}
                 </FriendCityWrap>
               </FriendInfo>
