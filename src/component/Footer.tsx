@@ -9,7 +9,7 @@ import {
   faFilePen,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
-import { SWITCH_PAGE } from '../redux/reducers/pageControlSlice';
+import { SWITCH_PAGE, PANEL_CONTROL } from '../redux/reducers/pageControlSlice';
 
 const Footer: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -29,9 +29,10 @@ const Footer: React.FC = () => {
       {labelOrder.map((label) => (
         <SectionLabel
           key={label.page}
-          onClick={() =>
-            dispatch(SWITCH_PAGE({ userId, pageActivity: label.page }))
-          }
+          onClick={() => {
+            dispatch(SWITCH_PAGE({ userId, pageActivity: label.page }));
+            dispatch(PANEL_CONTROL('none'));
+          }}
           $chosen={label.page === pageActivity}
         >
           <StyledFontAwesomeIcon icon={label.icon} />

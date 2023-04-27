@@ -136,5 +136,6 @@ export const citySetting = {
   gridGap: 0,
   gridLength: 160,
   houseWidth: 120,
-  cityPadding: 200,
+  cityPaddingX: 400,
+  cityPaddingY: 200,
 };

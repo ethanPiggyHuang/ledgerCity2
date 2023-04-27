@@ -13,10 +13,10 @@ import { RootState } from '../store';
 
 export interface UserDataState {
   userId: string;
-  userName: string | null;
-  userNickName: string | null;
-  userEmail: string | null;
-  userPortraitUrl: string | null;
+  userName: string;
+  userNickName: string;
+  userEmail: string;
+  userPortraitUrl: string;
   cityList: string[];
   subLabels: { [key: string]: string[] };
   trophy: { list: number[]; citizens: number[] };
@@ -71,10 +71,10 @@ const initialState: UserInfoState = {
   friends: [],
   data: {
     userId: '',
-    userName: null,
+    userName: '',
     userNickName: '',
-    userEmail: null,
-    userPortraitUrl: null,
+    userEmail: '',
+    userPortraitUrl: '',
     cityList: [],
     subLabels: { food: [''] },
     trophy: { list: [], citizens: [] },
@@ -124,8 +124,6 @@ export const SAVE_NICKNAME = createAsyncThunk(
   'userInfo/SAVE_NICKNAME',
   async (userNickName: string, { getState }) => {
     const allStates = getState() as RootState;
-    const userFriendList = allStates.userInfo.friends;
-    // const friends = allStates.userInfo.data.friends;
     const { userId } = allStates.userInfo.data;
     await POST_NICKNAME(userId, userNickName);
     return userNickName;
@@ -191,9 +189,9 @@ export const userInfo = createSlice({
     ) => {
       const { uid, displayName, email, photoURL } = action.payload;
       state.data.userId = uid;
-      state.data.userName = displayName;
-      state.data.userPortraitUrl = photoURL;
-      state.data.userEmail = email;
+      state.data.userName = displayName || '';
+      state.data.userPortraitUrl = photoURL || '';
+      state.data.userEmail = email || '';
       state.loginStatus.isLogin = true;
     },
     LOG_OUT: (state) => {
@@ -201,9 +199,8 @@ export const userInfo = createSlice({
       state.data = initialState.data;
       state.loginStatus = initialState.loginStatus;
     },
-    EDIT_NICKNAME_ACTIVATE: (state, action: PayloadAction<string>) => {
+    EDIT_NICKNAME_ACTIVATE: (state) => {
       state.editStatus.isNickNameEdit = true;
-      state.editStatus.inputText = action.payload;
     },
     TYPING_NICKNAME: (state, action: PayloadAction<string>) => {
       state.editStatus.inputText = action.payload;
@@ -310,7 +307,6 @@ export const userInfo = createSlice({
       .addCase(GET_CITY_NAME.fulfilled, (state, action) => {
         state.status = 'idle';
         const { cityId, cityName } = action.payload;
-        console.log('city', cityId, cityName);
         if (cityId && cityName) {
           state.additionalData.cityNames[cityId] = cityName;
         }

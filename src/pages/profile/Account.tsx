@@ -42,47 +42,6 @@ export const Account: React.FC = () => {
 
   return (
     <Wrap>
-      <p>{`ID: ${userId}`}</p>
-      <p>{`名字: ${userName}`}</p>
-      <p>{`暱稱:`}</p>
-      {isNickNameEdit ? (
-        <NickNameInput
-          value={inputText}
-          onChange={(event) => {
-            dispatch(TYPING_NICKNAME(event.target.value));
-          }}
-        />
-      ) : (
-        <span> {userNickName}</span>
-      )}
-      <span
-        onClick={() => {
-          if (isNickNameEdit) {
-            dispatch(SAVE_NICKNAME(inputText));
-          } else {
-            const initialValue = userNickName || '';
-            dispatch(EDIT_NICKNAME_ACTIVATE(initialValue));
-          }
-        }}
-      >
-        {isNickNameEdit ? '儲存暱稱' : '修改暱稱'}
-      </span>
-      <p>{`email: ${userEmail}`}</p>
-      {userPortraitUrl && (
-        <img src={userPortraitUrl} alt={`portrait of ${userName}`} />
-      )}
-      <br />
-      <button
-        onClick={() => {
-          signOut(auth);
-          dispatch(LOG_OUT());
-          navigate('./city');
-        }}
-      >
-        Sign out
-      </button>
-      <br />
-      <br />
       <p>我的城市：</p>
       {cityList.map((cityId) => (
         <div key={cityId}>
@@ -103,10 +62,8 @@ export const Account: React.FC = () => {
 const Wrap = styled.div`
   margin-top: 60px;
   width: 100%;
-  // height: 100vh;
   padding: 20px;
   position: relative;
-  // display: flex;
   gap: 20px;
 `;
 

@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components/macro';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import {
   UPDATE_CITY_INFO,
@@ -8,27 +7,20 @@ import {
   CHANGE_CITY_NAME,
   UPDATE_CITY_NAME,
 } from '../redux/reducers/cityBasicInfoSlice';
-import {
-  getLedgerList,
-  UPDATE_LEDGER_LIST,
-} from '../redux/reducers/ledgerListSlice';
+import { RENAME_CITY } from '../redux/reducers/cityArrangementSlice';
+import { UPDATE_LEDGER_LIST } from '../redux/reducers/ledgerListSlice';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc } from 'firebase/firestore';
 import { LedgerDataState } from '../redux/reducers/ledgerSingleSlice';
 import { useNavigate } from 'react-router-dom';
-import { ReactComponent as ReactBanner } from '../assets/banner.svg';
 import { Banner } from '../component/Banner';
 import {
   UPDATE_INSTANT_FRIENDS_STATUS,
   FriendStatusState,
 } from '../redux/reducers/userInfoSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faVolumeHigh,
-  faVolumeXmark,
-  faFloppyDisk,
-} from '@fortawesome/free-solid-svg-icons';
+import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
 
 interface LedgerDatabaseState {
   timeLedger: number;
@@ -49,8 +41,8 @@ const Header: React.FC = () => {
   const { ledgerBookId, cityName } = useAppSelector(
     (state) => state.cityBasicInfo
   );
+  const { isRenaming } = useAppSelector((state) => state.cityArrangement);
   const { userId, cityList } = useAppSelector((state) => state.userInfo.data);
-  const [isRenaming, setIsRenaming] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -125,7 +117,7 @@ const Header: React.FC = () => {
         <BannerText
           $isRenaming={isRenaming}
           value={`${cityName}`}
-          onClick={() => setIsRenaming(true)}
+          onClick={() => dispatch(RENAME_CITY(true))}
           onChange={(event) => {
             const target = event.target as HTMLInputElement;
             dispatch(CHANGE_CITY_NAME(target.value));
@@ -143,7 +135,7 @@ const Header: React.FC = () => {
           icon={faFloppyDisk}
           onClick={() => {
             dispatch(UPDATE_CITY_NAME({ cityId: cityList[0], cityName }));
-            setIsRenaming(false);
+            dispatch(RENAME_CITY(false));
           }}
         />
       </TextWrapper>
@@ -162,7 +154,7 @@ type SaveIconProps = {
 
 const Wrapper = styled.div`
   position: fixed;
-  transform: translate(50%, 10%);
+  transform: translate(50%);
   z-index: 3;
   top: 30px;
   display: flex;

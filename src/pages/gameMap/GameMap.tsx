@@ -8,10 +8,15 @@ import { Ledger } from '../ledger/Ledger';
 import Footer from '../../component/Footer';
 import { Statistics } from '../statistics/Statistics';
 import { Profile } from '../profile/Profile';
-import { SWITCH_PAGE } from '../../redux/reducers/pageControlSlice';
+import {
+  SWITCH_PAGE,
+  PANEL_CONTROL,
+} from '../../redux/reducers/pageControlSlice';
+import { RENAME_CITY } from '../../redux/reducers/cityArrangementSlice';
 import { CooperatorTrace } from './CooperatorTrace';
 import { RearrangeOptions } from './RearrangeOptions';
 import { ScaleBar } from './ScaleBar';
+import { UserBar } from './UserBar';
 
 export const GameMap: React.FC = () => {
   const { isLogin, isAuthing } = useAppSelector(
@@ -19,6 +24,8 @@ export const GameMap: React.FC = () => {
   );
   const { userId } = useAppSelector((state) => state.userInfo.data);
   const { pageActivity } = useAppSelector((state) => state.pageControl);
+  const { isRenaming } = useAppSelector((state) => state.cityArrangement);
+  const { panelOpened } = useAppSelector((state) => state.pageControl);
 
   const dispatch = useAppDispatch();
 
@@ -79,10 +86,21 @@ export const GameMap: React.FC = () => {
   }, [userId]);
 
   return (
-    <Wrapper>
+    <Wrapper
+      onClick={() => {
+        if (isRenaming) dispatch(RENAME_CITY(false));
+      }}
+    >
       {/* && status === 'loading' */}
       {!isLogin && !isAuthing && <DialogBoard />}
-      <CityWrapper>
+      <UserBar />
+      <CityWrapper
+        onClick={() => {
+          if (panelOpened !== 'none') {
+            dispatch(PANEL_CONTROL('none'));
+          }
+        }}
+      >
         <City />
       </CityWrapper>
       <RearrangeOptions />
@@ -93,7 +111,7 @@ export const GameMap: React.FC = () => {
         <BlackCurtain
           onClick={() => {
             dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }));
-            console.log('shift');
+            dispatch(PANEL_CONTROL('none'));
           }}
         />
       )}

@@ -20,7 +20,8 @@ import { HouseOfPlants } from './housesSvg/HouseOfPlants';
 import { HouseGrid } from './housesSvg/HouseGrid';
 
 export const City: React.FC = () => {
-  const { gridGap, gridLength, houseWidth, cityPadding } = citySetting;
+  const { gridGap, gridLength, houseWidth, cityPaddingX, cityPaddingY } =
+    citySetting;
   const cityBasicInfo = useAppSelector((state) => state.cityBasicInfo);
   const { housesPosition, gridsStatus, dragMode, scale, cityShift } =
     useAppSelector((state) => state.cityArrangement);
@@ -39,11 +40,11 @@ export const City: React.FC = () => {
 
   return (
     <CityRange
-      $widthAttrs={`${cityWidth * scale + 2 * cityPadding}px`}
-      $heightAttrs={`${cityHeight * scale + 2 * cityPadding}px`}
+      $widthAttrs={`${cityWidth * scale + 2 * cityPaddingX}px`}
+      $heightAttrs={`${cityHeight * scale + 2 * cityPaddingY}px`}
       $topAttrs={`${cityShift.current.y}px`}
       $leftAttrs={`${cityShift.current.x}px`}
-      $padding={cityPadding}
+      $padding={cityPaddingY}
       // draggable={dragMode === 'city'}
       // onDragStart={(event: React.DragEvent) => {
       //   if (dragMode !== 'city') return;
@@ -185,7 +186,7 @@ const CityRange = styled.div.attrs<CityRangeProps>(
   margin: auto;
   flex-wrap: wrap;
   height: fit-content;
-  padding: ${({ $padding }) => `${$padding}px`};
+  padding: ${({ $padding }) => `${$padding}px ${2 * $padding}px`};
   /* position: absolute; */
   /* cursor: pointer; */
 `;

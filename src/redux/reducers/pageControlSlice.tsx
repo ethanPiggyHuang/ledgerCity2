@@ -14,6 +14,7 @@ export interface PageControlState {
   pageActivity: CurrentActionState;
   ledgerPosition: 'minimize' | 'normal' | 'expand';
   chartType: 'oneMonth' | 'monthly' | 'split';
+  panelOpened: 'none' | 'user';
   status: 'idle' | 'loading' | 'failed';
 }
 
@@ -21,6 +22,7 @@ const initialState: PageControlState = {
   pageActivity: 'city',
   ledgerPosition: 'normal',
   chartType: 'oneMonth',
+  panelOpened: 'none',
   status: 'idle',
 };
 
@@ -49,6 +51,9 @@ export const pageControl = createSlice({
     ) => {
       state.chartType = action.payload;
     },
+    PANEL_CONTROL: (state, action: PayloadAction<'none' | 'user'>) => {
+      state.panelOpened = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -66,7 +71,7 @@ export const pageControl = createSlice({
   },
 });
 
-export const { CHANGE_LEDGER_POSITION, CHANGE_CHART_TYPE } =
+export const { CHANGE_LEDGER_POSITION, CHANGE_CHART_TYPE, PANEL_CONTROL } =
   pageControl.actions;
 
 export default pageControl.reducer;

@@ -160,7 +160,7 @@ export const CooperatorTrace: React.FC = () => {
 
 const Wrap = styled.div`
   position: fixed;
-  z-index: 4;
+  z-index: 3;
   right: 50px;
   top: 180px;
   display: flex;
@@ -173,6 +173,7 @@ const Title = styled.div`
   letter-spacing: 16%;
   color: #ae7a00;
   font-weight: bold;
+  text-align: end;
 `;
 
 const Background = styled.div`

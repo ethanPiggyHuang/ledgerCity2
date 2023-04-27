@@ -17,6 +17,7 @@ export interface CityArrangementState {
     target: string;
     pastIndex: { xIndex: number; yIndex: number };
   };
+  isRenaming: boolean;
   status: 'idle' | 'loading' | 'failed';
   scale: number;
 }
@@ -31,6 +32,7 @@ const initialState: CityArrangementState = {
     current: { x: 0, y: 0 },
   },
   dragInfo: { id: '', target: '', pastIndex: { xIndex: 0, yIndex: 0 } },
+  isRenaming: false,
   status: 'idle',
   scale: 1,
 };
@@ -234,6 +236,9 @@ export const cityArrangement = createSlice({
     SET_SCALE: (state, action: PayloadAction<number>) => {
       state.scale = action.payload;
     },
+    RENAME_CITY: (state, action: PayloadAction<boolean>) => {
+      state.isRenaming = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -265,6 +270,7 @@ export const {
   draggableToggle,
   ADJUST_SCALE,
   SET_SCALE,
+  RENAME_CITY,
 } = cityArrangement.actions;
 
 export default cityArrangement.reducer;

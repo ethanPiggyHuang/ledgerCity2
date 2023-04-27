@@ -121,6 +121,9 @@ const IconBack = styled.div<IconBackProps>`
   background-color: black;
   opacity: ${({ $isActivate }) => ($isActivate ? '1' : '0.5')};
   cursor: pointer;
+  &:hover {
+    opacity: ${({ $isActivate }) => ($isActivate ? '1' : '0.7')};
+  }
 `;
 
 const active = keyframes`
