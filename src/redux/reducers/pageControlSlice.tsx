@@ -10,11 +10,14 @@ type CurrentActionState =
   | 'profile'
   | 'leave';
 
+type SocialSections = 'cooperated' | 'friend' | 'inviting';
+
 export interface PageControlState {
   pageActivity: CurrentActionState;
   ledgerPosition: 'minimize' | 'normal' | 'expand';
   chartType: 'oneMonth' | 'monthly' | 'split';
   panelOpened: 'none' | 'user';
+  socialSectionClosed: SocialSections[];
   status: 'idle' | 'loading' | 'failed';
 }
 
@@ -23,6 +26,7 @@ const initialState: PageControlState = {
   ledgerPosition: 'normal',
   chartType: 'oneMonth',
   panelOpened: 'none',
+  socialSectionClosed: [],
   status: 'idle',
 };
 
@@ -54,6 +58,18 @@ export const pageControl = createSlice({
     PANEL_CONTROL: (state, action: PayloadAction<'none' | 'user'>) => {
       state.panelOpened = action.payload;
     },
+    SOCIAL_SECTION_TOGGLE: (state, action: PayloadAction<SocialSections>) => {
+      if (state.socialSectionClosed.includes(action.payload)) {
+        state.socialSectionClosed = state.socialSectionClosed.filter(
+          (section) => section !== action.payload
+        );
+      } else {
+        state.socialSectionClosed = [
+          ...state.socialSectionClosed,
+          action.payload,
+        ];
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -71,7 +87,11 @@ export const pageControl = createSlice({
   },
 });
 
-export const { CHANGE_LEDGER_POSITION, CHANGE_CHART_TYPE, PANEL_CONTROL } =
-  pageControl.actions;
+export const {
+  CHANGE_LEDGER_POSITION,
+  CHANGE_CHART_TYPE,
+  PANEL_CONTROL,
+  SOCIAL_SECTION_TOGGLE,
+} = pageControl.actions;
 
 export default pageControl.reducer;

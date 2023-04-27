@@ -13,7 +13,10 @@ import {
 import { ClosingButton } from '../../component/ClosingButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUsers } from '@fortawesome/free-solid-svg-icons';
-import { SWITCH_PAGE } from '../../redux/reducers/pageControlSlice';
+import {
+  SOCIAL_SECTION_TOGGLE,
+  SWITCH_PAGE,
+} from '../../redux/reducers/pageControlSlice';
 import banner from '../../assets/banner.png';
 //TODO:
 import { VISIT_CITY } from '../../redux/reducers/cityBasicInfoSlice';
@@ -29,7 +32,9 @@ export const Social: React.FC = () => {
   const { friendsInfo, coopInfo } = useAppSelector(
     (state) => state.userActivity
   );
-  const { pageActivity } = useAppSelector((state) => state.pageControl);
+  const { pageActivity, socialSectionClosed } = useAppSelector(
+    (state) => state.pageControl
+  );
   const currentCityId = cityList[0];
 
   const friendIds = friends.map((friend) => friend.userId);
@@ -101,113 +106,204 @@ export const Social: React.FC = () => {
       </HeaderRow>
       <FriendListsWrap>
         <FriendListWrap>
-          <FriendListTitle>協作好友清單</FriendListTitle>
-          {friendInfoCollection.length !== 0 &&
-            friendInfoCollection.map(
-              (friendInfo, index) =>
-                friendInfo.coopStatus === 'coorperated' && (
-                  <FriendInfo key={friendInfo.userId}>
-                    <UserBasics
-                      payload={{
-                        userPortraitUrl: friendInfo.userPortraitUrl,
-                        userNickName: friendInfo.userNickName,
-                        userEmail: friendInfo.userEmail,
-                        lastActiveTime: friendInfo.lastActiveTime,
-                      }}
-                    />
-                    <FriendCityWrap>
-                      <FriendInfoTextMinor>協作城市：</FriendInfoTextMinor>
-                      <CityBannerWrap>
-                        <MyCityText>{friendInfo.coopCityName}</MyCityText>
-                        <MyCityNoticeWrap
-                          onClick={() => {
-                            if (friendInfo.coopCityId === currentCityId) {
-                              return;
-                            } else {
-                              dispatch(
-                                CITY_REDIRECTION({
-                                  userId,
-                                  cityId: friendInfo.coopCityId,
-                                })
-                              );
-                              dispatch(
-                                SWITCH_PAGE({ userId, pageActivity: 'city' })
-                              );
-                            }
-                          }}
-                        >
-                          <MyCityNotice>
-                            {friendInfo.coopCityId === currentCityId
-                              ? '目前'
-                              : '前往'}
-                          </MyCityNotice>
-                        </MyCityNoticeWrap>
-                      </CityBannerWrap>
-                    </FriendCityWrap>
-                    <FriendCityWrap>
-                      <FriendInfoTextMinor>好友城市：</FriendInfoTextMinor>
-                      {friendInfo.personalCityName === '' ? (
-                        <FriendCityInfoText>無個人城市</FriendCityInfoText>
-                      ) : (
+          <FriendListTitle
+            onClick={() => dispatch(SOCIAL_SECTION_TOGGLE('cooperated'))}
+          >
+            協作好友
+          </FriendListTitle>
+          <FriendInfoWrap
+            $isClosed={socialSectionClosed.includes('cooperated')}
+          >
+            {friendInfoCollection.length !== 0 &&
+              friendInfoCollection.map(
+                (friendInfo, index) =>
+                  friendInfo.coopStatus === 'coorperated' && (
+                    <FriendInfo key={friendInfo.userId}>
+                      <UserBasics
+                        payload={{
+                          userPortraitUrl: friendInfo.userPortraitUrl,
+                          userNickName: friendInfo.userNickName,
+                          userEmail: friendInfo.userEmail,
+                          lastActiveTime: friendInfo.lastActiveTime,
+                        }}
+                      />
+                      <FriendCityWrap>
+                        <FriendInfoTextMinor>協作城市：</FriendInfoTextMinor>
                         <CityBannerWrap>
-                          <MyCityText>{friendInfo.personalCityName}</MyCityText>
-                          <FriendsCityNoticeWrap
+                          <MyCityText>{friendInfo.coopCityName}</MyCityText>
+                          <MyCityNoticeWrap
                             onClick={() => {
-                              dispatch(
-                                CITY_REDIRECTION({
-                                  userId,
-                                  cityId: friendInfo.personalCityId,
-                                })
-                              );
-                              dispatch(
-                                SWITCH_PAGE({ userId, pageActivity: 'city' })
-                              );
+                              if (friendInfo.coopCityId === currentCityId) {
+                                return;
+                              } else {
+                                dispatch(
+                                  CITY_REDIRECTION({
+                                    userId,
+                                    cityId: friendInfo.coopCityId,
+                                  })
+                                );
+                                dispatch(
+                                  SWITCH_PAGE({ userId, pageActivity: 'city' })
+                                );
+                              }
                             }}
                           >
-                            <MyCityNotice>造訪</MyCityNotice>
-                          </FriendsCityNoticeWrap>
+                            <MyCityNotice>
+                              {friendInfo.coopCityId === currentCityId
+                                ? '目前'
+                                : '前往'}
+                            </MyCityNotice>
+                          </MyCityNoticeWrap>
                         </CityBannerWrap>
-                      )}
-                    </FriendCityWrap>
-                  </FriendInfo>
-                )
-            )}
+                      </FriendCityWrap>
+                      <FriendCityWrap>
+                        <FriendInfoTextMinor>好友城市：</FriendInfoTextMinor>
+                        {friendInfo.personalCityName === '' ? (
+                          <FriendCityInfoText>無個人城市</FriendCityInfoText>
+                        ) : (
+                          <CityBannerWrap>
+                            <MyCityText>
+                              {friendInfo.personalCityName}
+                            </MyCityText>
+                            <FriendsCityNoticeWrap
+                              onClick={() => {
+                                dispatch(
+                                  CITY_REDIRECTION({
+                                    userId,
+                                    cityId: friendInfo.personalCityId,
+                                  })
+                                );
+                                dispatch(
+                                  SWITCH_PAGE({ userId, pageActivity: 'city' })
+                                );
+                              }}
+                            >
+                              <MyCityNotice>造訪</MyCityNotice>
+                            </FriendsCityNoticeWrap>
+                          </CityBannerWrap>
+                        )}
+                      </FriendCityWrap>
+                    </FriendInfo>
+                  )
+              )}
+          </FriendInfoWrap>
         </FriendListWrap>
-      </FriendListsWrap>
+        <FriendListWrap>
+          <FriendListTitle
+            onClick={() => dispatch(SOCIAL_SECTION_TOGGLE('friend'))}
+          >
+            一般好友
+          </FriendListTitle>
+          <FriendInfoWrap $isClosed={socialSectionClosed.includes('friend')}>
+            {friendInfoCollection.length !== 0 &&
+              friendInfoCollection.map(
+                (friendInfo, index) =>
+                  // TODO 改成 是好友，但不是協作好友
+                  // friendInfo.friendStatus === 'friend' &&
+                  friendInfo.coopStatus === 'coorperated' && (
+                    <FriendInfo key={friendInfo.userId}>
+                      <UserBasics
+                        payload={{
+                          userPortraitUrl: friendInfo.userPortraitUrl,
+                          userNickName: friendInfo.userNickName,
+                          userEmail: friendInfo.userEmail,
+                          lastActiveTime: friendInfo.lastActiveTime,
+                        }}
+                      />
+                      <FriendCityWrap>
+                        <InvitationButton>邀請協作</InvitationButton>
+                        <InviteCityBannerWrap>
+                          <InviteCityText>
+                            {friendInfo.coopCityName}
+                          </InviteCityText>
+                          <FriendsCityNoticeWrap onClick={() => {}}>
+                            <MyCityNotice>切換</MyCityNotice>
+                          </FriendsCityNoticeWrap>
+                        </InviteCityBannerWrap>
+                        {/* TODO: function */}
+                        {/* TODO: cityOptions */}
+                      </FriendCityWrap>
+                      <FriendCityWrap>
+                        <FriendInfoTextMinor>好友城市：</FriendInfoTextMinor>
+                        {friendInfo.personalCityName === '' ? (
+                          <FriendCityInfoText>無個人城市</FriendCityInfoText>
+                        ) : (
+                          <CityBannerWrap>
+                            <MyCityText>
+                              {friendInfo.personalCityName}
+                            </MyCityText>
+                            <FriendsCityNoticeWrap
+                              onClick={() => {
+                                dispatch(
+                                  CITY_REDIRECTION({
+                                    userId,
+                                    cityId: friendInfo.personalCityId,
+                                  })
+                                );
+                                dispatch(
+                                  SWITCH_PAGE({ userId, pageActivity: 'city' })
+                                );
+                              }}
+                            >
+                              <MyCityNotice>造訪</MyCityNotice>
+                            </FriendsCityNoticeWrap>
+                          </CityBannerWrap>
+                        )}
+                      </FriendCityWrap>
+                    </FriendInfo>
+                  )
+              )}
+          </FriendInfoWrap>
+        </FriendListWrap>
+        <FriendListWrap>
+          <FriendListTitle
+            onClick={() => dispatch(SOCIAL_SECTION_TOGGLE('inviting'))}
+          >
+            友達未滿
+          </FriendListTitle>
+          <FriendInfoWrap $isClosed={socialSectionClosed.includes('inviting')}>
+            {friendInfoCollection.length !== 0 &&
+              friendInfoCollection.map(
+                (friendInfo, index) =>
+                  // TODO 改成 還在確認友情關係
+                  // friendInfo.friendStatus === 'friend' &&
+                  friendInfo.coopStatus === 'coorperated' && (
+                    <FriendInfo key={friendInfo.userId}>
+                      <UserBasics
+                        payload={{
+                          userPortraitUrl: friendInfo.userPortraitUrl,
+                          userNickName: friendInfo.userNickName,
+                          userEmail: friendInfo.userEmail,
+                          lastActiveTime: friendInfo.lastActiveTime,
+                        }}
+                      />
+                      <FriendCityWrap>
+                        <AgreeButton>同意好友</AgreeButton>
+                        <DisAgreeButton>不同意</DisAgreeButton>
+                      </FriendCityWrap>
+                      <FriendCityWrap>
+                        <WaitingButton>好友邀請中</WaitingButton>
+                      </FriendCityWrap>
+                    </FriendInfo>
+                  )
+              )}
+          </FriendInfoWrap>
+        </FriendListWrap>
 
-      {friendsArray.length !== 0 &&
-        friendsArray.map((friend, index) => (
-          <div key={index}>
-            <p>{`朋友名字：${friend.userName}`}</p>
-            <span>{`/朋友狀態：${
-              friends.find((user) => user.userId === friend.userId)
-                ?.friendStatus
-            }`}</span>
-            {friends.find((user) => user.userId === friend.userId)
-              ?.friendStatus === 'beenInvited' && <button>同意邀請</button>}
-            <br />
-            <span>{`/協作狀態：${
-              friends.find((user) => user.userId === friend.userId)?.coopStatus
-            }`}</span>
-            {friends.find((user) => user.userId === friend.userId)
-              ?.friendStatus === 'beenInvited' && (
-              <button
-                onClick={() => {
-                  const friendId = friend.userId;
-                  const cityId = friends.find(
-                    (user) => user.userId === friend.userId
-                  )?.coopCityId;
-                  if (cityId) {
-                    dispatch(AGREE_COOPERATIONS({ userId, friendId, cityId }));
-                  }
-                }}
-              >
-                同意邀請
-              </button>
-            )}
-          </div>
-        ))}
-      {/* <p>輸入好友 gmail</p>
+        {
+          <button
+            onClick={() => {
+              const friendId = '';
+              const cityId = '';
+              if (cityId) {
+                dispatch(AGREE_COOPERATIONS({ userId, friendId, cityId }));
+              }
+            }}
+          >
+            同意邀請funciton
+          </button>
+        }
+        {/* <p>輸入好友 gmail</p>
       <input
         value={emailInput}
         onChange={(event) => {
@@ -246,12 +342,17 @@ export const Social: React.FC = () => {
           <p>{`共管城市：${cityName}`}</p>
         </>
       )} */}
+      </FriendListsWrap>
     </Wrap>
   );
 };
 
 type WrapProps = {
   $isShown: boolean;
+};
+
+type FriendInfoWrapProps = {
+  $isClosed: boolean;
 };
 
 const Wrap = styled.div<WrapProps>`
@@ -290,14 +391,15 @@ const HeaderText = styled.p`
 `;
 
 const FriendListsWrap = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 100%;
+  height: calc(80vh - 60px);
+  overflow: scroll;
 `;
 
 const FriendListWrap = styled.div`
   width: 100%;
-  padding: 10px;
+  padding: 0 10px;
+  /* padding-bottom: 30px; */
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -305,6 +407,7 @@ const FriendListWrap = styled.div`
 `;
 
 const FriendListTitle = styled.p`
+  margin-top: 30px;
   padding: 10px 20px;
   border-radius: 20px;
   font-size: 20px;
@@ -313,6 +416,16 @@ const FriendListTitle = styled.p`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
+`;
+
+const FriendInfoWrap = styled.div<FriendInfoWrapProps>`
+  width: 100%;
+  transform: ${({ $isClosed }) => ($isClosed ? 'rotateX(90deg)' : '')};
+  /* TODO: normal height */
+  height: ${({ $isClosed }) => ($isClosed ? '0' : '100px')};
+  overflow: ${({ $isClosed }) => ($isClosed ? 'overflow' : 'scroll')};
+  transition: height 1.5s ease, transform 1s ease;
 `;
 
 const FriendInfo = styled.div`
@@ -320,21 +433,8 @@ const FriendInfo = styled.div`
   width: 100%;
   /* justify-content: center; */
   align-items: center;
-  gap: 20px;
+  gap: 10px;
   position: relative;
-`;
-
-const FriendPorTraitWrap = styled.div`
-  height: 55px;
-  width: 55px;
-  border-radius: 50%;
-  border: 3px rgba(128, 128, 128, 0.6) solid;
-  overflow: hidden;
-`;
-
-const FriendPorTrait = styled.img`
-  height: 100%;
-  object-fit: contain;
 `;
 
 const FriendInfoTextWrap = styled.div`
@@ -343,9 +443,6 @@ const FriendInfoTextWrap = styled.div`
   padding-top: 5px;
   display: flex;
   flex-direction: column;
-`;
-const FriendInfoText = styled.p`
-  margin-bottom: auto;
 `;
 const FriendInfoTextMinor = styled.p`
   font-size: 12px;
@@ -374,6 +471,13 @@ const CityBannerWrap = styled.div`
   cursor: pointer;
 `;
 
+const InviteCityBannerWrap = styled(CityBannerWrap)`
+  height: 18px;
+  width: 70%;
+  margin: auto;
+  opacity: 0.5;
+`;
+
 const MyCityText = styled.div`
   font-size: 14px;
   color: #ae7a00;
@@ -382,9 +486,11 @@ const MyCityText = styled.div`
   justify-content: center;
 `;
 
+const InviteCityText = styled(MyCityText)`
+  font-size: 12px;
+`;
+
 const MyCityNoticeWrap = styled.div`
-  /* font-size: 18px; */
-  /* line-height: 36px; */
   width: 100%;
   height: 22px;
   color: #ae7a00;
@@ -419,5 +525,41 @@ const MyCityNotice = styled.div`
 const FriendsCityNoticeWrap = styled(MyCityNoticeWrap)`
   &:hover {
     opacity: 1;
+  }
+`;
+
+const ButtonTemplate = styled.button`
+  margin: auto;
+  padding: 3px 0;
+  width: 80px;
+  border: #f2f2f2 2px solid;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: filter 0.5s ease;
+  &:hover {
+    filter: brightness(1.1);
+  }
+`;
+
+const InvitationButton = styled(ButtonTemplate)`
+  background-color: #f0d2aa;
+  color: #ae7a00;
+`;
+
+const AgreeButton = styled(ButtonTemplate)`
+  background-color: #ccf0aa;
+  color: #7dae00;
+`;
+
+const DisAgreeButton = styled(ButtonTemplate)`
+  background-color: #f0acaa;
+  color: #ae2600;
+`;
+const WaitingButton = styled(ButtonTemplate)`
+  background-color: #e6e6e6;
+  color: #808080;
+  cursor: default;
+  &:hover {
+    filter: brightness(1);
   }
 `;
