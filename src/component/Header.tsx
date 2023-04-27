@@ -129,6 +129,7 @@ const Header: React.FC = () => {
               // target.blur();
             }
           }}
+          onBlur={() => dispatch(RENAME_CITY(false))}
         ></BannerText>
         <SaveIcon
           $isRenaming={isRenaming}

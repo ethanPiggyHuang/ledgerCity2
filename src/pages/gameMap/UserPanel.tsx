@@ -6,18 +6,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faRightFromBracket,
   faFloppyDisk,
+  faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import { SWITCH_PAGE } from '../../redux/reducers/pageControlSlice';
+import {
+  PANEL_CONTROL,
+  SWITCH_PAGE,
+} from '../../redux/reducers/pageControlSlice';
 import { ClosingButton } from '../../component/ClosingButton';
 import {
   LOG_OUT,
-  EDIT_NICKNAME_ACTIVATE,
+  EDIT_NICKNAME_SWITCH,
   TYPING_NICKNAME,
   SAVE_NICKNAME,
   CITY_REDIRECTION,
   GET_CITY_NAME,
 } from '../../redux/reducers/userInfoSlice';
 import { useNavigate } from 'react-router-dom';
+import banner from '../../assets/banner.png';
 
 export const UserPanel: React.FC = () => {
   const {
@@ -65,9 +70,8 @@ export const UserPanel: React.FC = () => {
               onChange={(event) => {
                 dispatch(TYPING_NICKNAME(event.target.value));
               }}
-              onClick={() => {
-                dispatch(EDIT_NICKNAME_ACTIVATE());
-              }}
+              onClick={() => dispatch(EDIT_NICKNAME_SWITCH(true))}
+              onBlur={() => dispatch(EDIT_NICKNAME_SWITCH(false))}
             />
             {isNickNameEdit && (
               <SaveIcon
@@ -79,10 +83,27 @@ export const UserPanel: React.FC = () => {
             )}
           </NickNameWrap>
 
-          <AccountText>{userEmail}</AccountText>
+          <AccountText onClick={() => {}}>{userEmail}</AccountText>
         </AccountTextWrap>
       </AccountBasicWrap>
-
+      <MyCitiesWrap>
+        <MyCitiesText>{`我的城市：`}</MyCitiesText>
+        {cityList.map((cityId) => (
+          <MyCityWrap>
+            <BannerWrap>
+              <MyCityText>{cityNames[cityId]}</MyCityText>
+              <MyCityNoticeWrap
+                onClick={() => {
+                  dispatch(CITY_REDIRECTION({ userId, cityId }));
+                  dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }));
+                }}
+              >
+                <MyCityNotice>前往</MyCityNotice>
+              </MyCityNoticeWrap>
+            </BannerWrap>
+          </MyCityWrap>
+        ))}
+      </MyCitiesWrap>
       <IconBack
         onClick={() => {
           signOut(auth);
@@ -93,15 +114,18 @@ export const UserPanel: React.FC = () => {
         <LeaveIcon icon={faRightFromBracket} />
         <IconText>登出</IconText>
       </IconBack>
+      <CrossIconWrap onClick={() => dispatch(PANEL_CONTROL('none'))}>
+        <CrossIcon icon={faXmark} />
+      </CrossIconWrap>
     </Wrap>
   );
 };
 
 const Wrap = styled.div`
   /* height: 20vh; */
+  position: absolute;
   width: 30vw;
-  left: 50px;
-  top: 180px;
+  top: 80px;
   display: flex;
   flex-direction: column;
   gap: 17px;
@@ -165,13 +189,88 @@ const NickNameInput = styled.input`
 `;
 
 const SaveIcon = styled(FontAwesomeIcon)`
+  margin-left: 10px;
   font-size: 20px;
-  /* position: absolute;
-  bottom: 5px;
-  right: 5px; */
-  color: #df9469;
+  color: #808080;
   cursor: pointer;
   display: inline;
+`;
+
+const MyCitiesWrap = styled.div`
+  height: 100px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const MyCitiesText = styled.p`
+  font-size: 18px;
+  color: #ae7a00;
+  padding: 10px;
+  display: flex;
+  gap: 17px;
+`;
+
+const MyCityWrap = styled.div`
+  font-size: 18px;
+  color: #ae7a00;
+  display: flex;
+  padding-left: 10px;
+  gap: 17px;
+`;
+
+const BannerWrap = styled.div`
+  padding: 0 40px;
+  height: 36px;
+  /* overflow: hidden; */
+  display: flex;
+  justify-content: center;
+  background-image: url(${banner});
+  background-size: 100% 100%;
+  border-radius: 5px;
+  position: relative;
+  cursor: pointer;
+`;
+
+const MyCityText = styled.div`
+  font-size: 18px;
+  color: #ae7a00;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const MyCityNoticeWrap = styled.div`
+  /* font-size: 18px; */
+  /* line-height: 36px; */
+  width: 100%;
+  height: 100%;
+  color: #ae7a00;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  position: absolute;
+  opacity: 0;
+  padding-left: 5px;
+  cursor: pointer;
+  &:hover {
+    opacity: 0.5;
+  }
+`;
+
+const MyCityNotice = styled.div`
+  font-size: 14px;
+  margin-right: 3px;
+  line-height: 20px;
+  border-radius: 5px;
+  padding: 3px;
+  color: #f2f2f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  background-color: #ae7a00;
 `;
 
 const IconBack = styled.div`
@@ -207,9 +306,26 @@ const IconText = styled.div`
 `;
 
 const LeaveIcon = styled(FontAwesomeIcon)`
-  font-size: 30px;
+  font-size: 16px;
   color: #f2f2f2;
   &:hover {
     opacity: 0.7;
   }
+`;
+
+const CrossIconWrap = styled.div`
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  padding: 10px;
+
+  height: 20px;
+  width: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+`;
+const CrossIcon = styled(FontAwesomeIcon)`
+  color: #808080;
 `;

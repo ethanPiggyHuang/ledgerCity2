@@ -86,11 +86,7 @@ export const GameMap: React.FC = () => {
   }, [userId]);
 
   return (
-    <Wrapper
-      onClick={() => {
-        if (isRenaming) dispatch(RENAME_CITY(false));
-      }}
-    >
+    <Wrapper>
       {/* && status === 'loading' */}
       {!isLogin && !isAuthing && <DialogBoard />}
       <UserBar />

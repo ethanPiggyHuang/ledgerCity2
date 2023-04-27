@@ -4,10 +4,6 @@ import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { getAuth, signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import {
-  LOG_OUT,
-  EDIT_NICKNAME_ACTIVATE,
-  TYPING_NICKNAME,
-  SAVE_NICKNAME,
   CITY_REDIRECTION,
   GET_CITY_NAME,
 } from '../../redux/reducers/userInfoSlice';
@@ -40,23 +36,7 @@ export const Account: React.FC = () => {
   const auth = getAuth();
   const navigate = useNavigate();
 
-  return (
-    <Wrap>
-      <p>我的城市：</p>
-      {cityList.map((cityId) => (
-        <div key={cityId}>
-          <CityName
-            onClick={() => {
-              dispatch(CITY_REDIRECTION({ userId, cityId }));
-              dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }));
-            }}
-          >
-            {cityNames[cityId]}
-          </CityName>
-        </div>
-      ))}
-    </Wrap>
-  );
+  return <Wrap></Wrap>;
 };
 
 const Wrap = styled.div`

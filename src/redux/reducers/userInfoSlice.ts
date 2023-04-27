@@ -199,8 +199,8 @@ export const userInfo = createSlice({
       state.data = initialState.data;
       state.loginStatus = initialState.loginStatus;
     },
-    EDIT_NICKNAME_ACTIVATE: (state) => {
-      state.editStatus.isNickNameEdit = true;
+    EDIT_NICKNAME_SWITCH: (state, action: PayloadAction<boolean>) => {
+      state.editStatus.isNickNameEdit = action.payload;
     },
     TYPING_NICKNAME: (state, action: PayloadAction<string>) => {
       state.editStatus.inputText = action.payload;
@@ -322,7 +322,7 @@ export const {
   AUTHING_TOGGLE,
   LOGGED_IN,
   LOG_OUT,
-  EDIT_NICKNAME_ACTIVATE,
+  EDIT_NICKNAME_SWITCH,
   TYPING_NICKNAME,
   TYPING_FRIEND_EMAIL,
   UPDATE_INSTANT_FRIENDS_STATUS,
