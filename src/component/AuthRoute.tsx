@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
@@ -7,8 +7,6 @@ import {
   GET_ACCOUNT_INFO,
   CREATE_ACCOUNT,
 } from '../redux/reducers/userInfoSlice';
-import { getLedgerList } from '../redux/reducers/ledgerListSlice';
-import { onSnapshot } from 'firebase/firestore';
 
 export interface IAuthRouteProps {
   children?: React.ReactNode; //TODO ??

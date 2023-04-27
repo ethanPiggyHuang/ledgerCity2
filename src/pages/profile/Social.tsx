@@ -9,8 +9,6 @@ import {
   GET_FRIENDS_INFO,
   AGREE_COOPERATIONS,
 } from '../../redux/reducers/usersActivitySlice';
-import { doc, onSnapshot } from 'firebase/firestore';
-import { db } from '../../config/firebase';
 import { ClosingButton } from '../../component/ClosingButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUsers } from '@fortawesome/free-solid-svg-icons';

@@ -157,6 +157,7 @@ export const CITY_REDIRECTION = createAsyncThunk(
     const { userId, cityId } = payload;
     const allStates = getState() as RootState;
     const cityList = allStates.userInfo.data.cityList;
+    //TODO!!!!
     const newCityList = [cityId, ...cityList.filter((city) => city !== cityId)];
     await updateCityList(userId, newCityList);
     return newCityList;

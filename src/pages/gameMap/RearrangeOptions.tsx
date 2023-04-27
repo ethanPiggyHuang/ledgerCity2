@@ -16,6 +16,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import reconstruct from '../../assets/reconstruct.png';
 import { SET_SCALE } from '../../redux/reducers/cityArrangementSlice';
+import iconReconstruct from '../../assets/iconReconstruct.png';
 
 export const RearrangeOptions: React.FC = () => {
   const { dragMode } = useAppSelector((state) => state.cityArrangement);
@@ -25,6 +26,8 @@ export const RearrangeOptions: React.FC = () => {
   const [playHammer, { stop }] = useSound(hammer_2, { volume: 0.8 });
 
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  const [show, setShow] = useState(true);
 
   const handleConstruction = () => {
     if (dragMode === 'houses') {
@@ -60,6 +63,8 @@ export const RearrangeOptions: React.FC = () => {
 
   return (
     <Wrapper>
+      {/* TODO */}
+      {/* <IconImage src={iconReconstruct} onClick={() => setShow(!show)} /> */}
       <Title>城市經營</Title>
       <IconsWrapper>
         <IconBackConstruction
@@ -79,7 +84,6 @@ export const RearrangeOptions: React.FC = () => {
           <Icon icon={isMusicPlay ? faVolumeHigh : faVolumeXmark} />
         </IconBack>
       </IconsWrapper>
-
       <audio src={chocolate_world} preload={'metadata'} loop ref={audioRef} />
     </Wrapper>
   );
@@ -156,4 +160,12 @@ const IconImg = styled.img`
 const ScaleText = styled.p`
   font-size: 20px;
   color: #f2f2f2;
+`;
+
+const IconImage = styled.img`
+  height: 200px;
+  cursor: pointer;
+  &:hover {
+    transform: translateY(-10px);
+  }
 `;
