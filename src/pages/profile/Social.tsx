@@ -2,9 +2,8 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import {
-  TYPING_FRIEND_EMAIL,
-  QUEST_FRIEND,
-  FRIEND_REQUEST,
+  CITY_REDIRECTION,
+  GET_CITY_NAME,
 } from '../../redux/reducers/userInfoSlice';
 import {
   GET_FRIENDS_INFO,
@@ -12,13 +11,34 @@ import {
 } from '../../redux/reducers/usersActivitySlice';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../config/firebase';
+import { ClosingButton } from '../../component/ClosingButton';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUsers } from '@fortawesome/free-solid-svg-icons';
+import { SWITCH_PAGE } from '../../redux/reducers/pageControlSlice';
+import banner from '../../assets/banner.png';
 
 export const Social: React.FC = () => {
   const { userId, cityList } = useAppSelector((state) => state.userInfo.data);
   const { friends } = useAppSelector((state) => state.userInfo);
   const { cityName } = useAppSelector((state) => state.cityBasicInfo);
-  const { friendsInfo } = useAppSelector((state) => state.userActivity);
+  const { cityNames } = useAppSelector(
+    (state) => state.userInfo.additionalData
+  );
+  const { friendsInfo, coopInfo } = useAppSelector(
+    (state) => state.userActivity
+  );
+  const { pageActivity } = useAppSelector((state) => state.pageControl);
+
   const friendIds = friends.map((friend) => friend.userId);
+
+  const lastActiveDate = (timeInSecond: number): string => {
+    const currentInSecond = new Date().getTime();
+    const result = Math.round((currentInSecond / 1000 - timeInSecond) / 86400);
+    if (result < 1) {
+      return '今日';
+    }
+    return `${result}日前`;
+  };
 
   useEffect(() => {
     if (friends.length !== 0) {
@@ -28,58 +48,146 @@ export const Social: React.FC = () => {
     }
   }, [friends]);
 
+  useEffect(() => {
+    const friendIds = Object.keys(friendsInfo);
+    if (friendIds.length !== 0) {
+      const allFriendsCityId = friendIds
+        .map((friendId) => friendsInfo[friendId].cityList)
+        .flat();
+      // console.log(allFriendsCityId);
+      allFriendsCityId.forEach((cityId) => dispatch(GET_CITY_NAME(cityId)));
+    }
+  }, [friendsInfo]);
+
   const dispatch = useAppDispatch();
 
   const { emailInput, queryResult } = useAppSelector(
     (state) => state.userInfo.editStatus
   );
 
+  console.log('cityNames', cityNames);
+
   const friendsArray = Object.values(friendsInfo);
+  // console.log('friendsArray', friendsArray);
 
   return (
-    <Wrap>
-      <p>輸入好友 gmail</p>
-      <input
-        value={emailInput}
-        onChange={(event) => {
-          dispatch(TYPING_FRIEND_EMAIL(event.target.value));
-        }}
-      />
+    <Wrap $isShown={pageActivity === 'profile'}>
+      <HeaderRow>
+        <ClosingButton size={50} />
+        <SocialIcon icon={faUsers} />
+        <HeaderText>協作</HeaderText>
+      </HeaderRow>
+      <FriendListsWrap>
+        <FriendListWrap>
+          <FriendListTitle>協作好友清單</FriendListTitle>
+          {friendsArray.length !== 0 &&
+            friendsArray.map((friend, index) => (
+              <FriendInfo key={friend.userId}>
+                <FriendPorTraitWrap>
+                  <FriendPorTrait src={friend.userPortraitUrl} />
+                </FriendPorTraitWrap>
+                <FriendInfoTextWrap>
+                  <FriendInfoText>{friend.userNickName}</FriendInfoText>
+                  <FriendInfoTextMinor>{friend.userEmail}</FriendInfoTextMinor>
+                  <FriendInfoTextMinor>{`最後活躍：${lastActiveDate(
+                    coopInfo[friend.userId]?.latestActiveTimeSecond
+                  )}`}</FriendInfoTextMinor>
+                </FriendInfoTextWrap>
+                <FriendCityWrap>
+                  <FriendInfoTextMinor>協作城市：</FriendInfoTextMinor>
+                  <CityBannerWrap>
+                    <MyCityText>
+                      {
+                        cityNames[
+                          friends.find((data) => data.userId === friend.userId)
+                            ?.coopCityId as string
+                        ]
+                      }
+                    </MyCityText>
+                    <MyCityNoticeWrap
+                      onClick={() => {
+                        const cityId = friends.find(
+                          (data) => data.userId === friend.userId
+                        )?.coopCityId;
+                        if (cityId === cityList[0]) {
+                          return;
+                        } else if (cityId) {
+                          dispatch(CITY_REDIRECTION({ userId, cityId }));
+                          dispatch(
+                            SWITCH_PAGE({ userId, pageActivity: 'city' })
+                          );
+                        }
+                      }}
+                    >
+                      <MyCityNotice>
+                        {friends.find((data) => data.userId === friend.userId)
+                          ?.coopCityId === cityList[0]
+                          ? '目前'
+                          : '前往'}
+                      </MyCityNotice>
+                    </MyCityNoticeWrap>
+                  </CityBannerWrap>
+                </FriendCityWrap>
+                <FriendCityWrap>
+                  <FriendInfoTextMinor>好友城市：</FriendInfoTextMinor>
+                  {friendsInfo[friend.userId].cityList.find(
+                    (data) =>
+                      data !==
+                      friends.find((data) => data.userId === friend.userId)
+                        ?.coopCityId
+                  ) ? (
+                    <CityBannerWrap>
+                      <MyCityText>
+                        {
+                          cityNames[
+                            friendsInfo[friend.userId].cityList.find(
+                              (data) =>
+                                data !==
+                                friends.find(
+                                  (data) => data.userId === friend.userId
+                                )?.coopCityId
+                            ) || 0
+                          ]
+                        }
+                        {/* {
+                          cityNames[
+                            friendsInfo[friend.userId].cityList.find(
+                              (data) =>
+                                data !==
+                                friends.find(
+                                  (data) => data.userId === friend.userId
+                                )?.coopCityId
+                            ) || 0
+                          ]
+                        } */}
+                      </MyCityText>
+                      <FriendsCityNoticeWrap
+                        onClick={() => {
+                          const cityId = friends.find(
+                            (data) => data.userId === friend.userId
+                          )?.coopCityId;
+                          if (cityId === cityList[0]) {
+                            return;
+                          } else if (cityId) {
+                            dispatch(CITY_REDIRECTION({ userId, cityId }));
+                            dispatch(
+                              SWITCH_PAGE({ userId, pageActivity: 'city' })
+                            );
+                          }
+                        }}
+                      >
+                        <MyCityNotice>造訪</MyCityNotice>
+                      </FriendsCityNoticeWrap>
+                    </CityBannerWrap>
+                  ) : (
+                    <FriendCityInfoText>無個人城市</FriendCityInfoText>
+                  )}
+                </FriendCityWrap>
+              </FriendInfo>
+            ))}
+        </FriendListWrap>
+      </FriendListsWrap>
 
-      <button
-        onClick={() => {
-          dispatch(QUEST_FRIEND(emailInput));
-        }}
-      >
-        查詢
-      </button>
-      <br />
-      <br />
-      {queryResult.length !== 0 && (
-        <>
-          <p>{`名字：${queryResult[0].userName}`}</p>
-          <p>{`暱稱：${queryResult[0].userNickName}`}</p>
-          {queryResult[0]?.userPortraitUrl && (
-            <img
-              src={queryResult[0].userPortraitUrl}
-              alt={`portait of ${queryResult[0].userName}`}
-            />
-          )}
-          <br />
-          <button
-            onClick={() => {
-              // TODO: choose city
-              const friendId = queryResult[0].userId;
-              const cityId = cityList[0];
-              dispatch(FRIEND_REQUEST({ friendId, cityId }));
-            }}
-          >
-            加好友並共管城市
-          </button>
-          <p>{`共管城市：${cityName}`}</p>
-        </>
-      )}
-      <p>＊＊朋友清單＊＊</p>
       {friendsArray.length !== 0 &&
         friendsArray.map((friend, index) => (
           <div key={index}>
@@ -112,15 +220,217 @@ export const Social: React.FC = () => {
             )}
           </div>
         ))}
+      {/* <p>輸入好友 gmail</p>
+      <input
+        value={emailInput}
+        onChange={(event) => {
+          dispatch(TYPING_FRIEND_EMAIL(event.target.value));
+        }}
+      />
+
+      <button
+        onClick={() => {
+          dispatch(QUEST_FRIEND(emailInput));
+        }}
+      >
+        查詢
+      </button> 
+      {queryResult.length !== 0 && (
+        <>
+          <p>{`名字：${queryResult[0].userName}`}</p>
+          <p>{`暱稱：${queryResult[0].userNickName}`}</p>
+          {queryResult[0]?.userPortraitUrl && (
+            <img
+              src={queryResult[0].userPortraitUrl}
+              alt={`portait of ${queryResult[0].userName}`}
+            />
+          )}
+          <br />
+          <button
+            onClick={() => {
+              // TODO: choose city
+              const friendId = queryResult[0].userId;
+              const cityId = cityList[0];
+              dispatch(FRIEND_REQUEST({ friendId, cityId }));
+            }}
+          >
+            加好友並共管城市
+          </button>
+          <p>{`共管城市：${cityName}`}</p>
+        </>
+      )} */}
     </Wrap>
   );
 };
 
-const Wrap = styled.div`
-  width: 100vw;
-  // height: 100vh;
-  padding: 20px;
-  position: relative;
-  // display: flex;
+type WrapProps = {
+  $isShown: boolean;
+};
+
+const Wrap = styled.div<WrapProps>`
+  border: #ffffff 3px solid;
+  background-color: #f2f2f2;
+  border-radius: 20px 20px 0 0;
+  color: #808080;
+
+  width: 40%;
+  height: 80vh;
+  position: absolute;
+  right: 0;
+  z-index: 6;
+  overflow: hidden;
+  bottom: ${({ $isShown }) => ($isShown ? '0' : 'calc(-80%)')};
+  transition: bottom 1s ease;
+`;
+
+const HeaderRow = styled.div`
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 3px solid #e6e6e6;
+`;
+
+const SocialIcon = styled(FontAwesomeIcon)`
+  color: #808080;
+  font-size: 24px;
+`;
+
+const HeaderText = styled.p`
+  padding-left: 10px;
+  line-height: 60px;
+  font-size: 20px;
+`;
+
+const FriendListsWrap = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const FriendListWrap = styled.div`
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+`;
+
+const FriendListTitle = styled.p`
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 20px;
+  color: #dabd7a;
+  background-color: #ebebeb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const FriendInfo = styled.div`
+  display: flex;
+  width: 100%;
+  /* justify-content: center; */
+  align-items: center;
   gap: 20px;
+  position: relative;
+`;
+
+const FriendPorTraitWrap = styled.div`
+  height: 55px;
+  width: 55px;
+  border-radius: 50%;
+  border: 3px rgba(128, 128, 128, 0.6) solid;
+  overflow: hidden;
+`;
+
+const FriendPorTrait = styled.img`
+  height: 100%;
+  object-fit: contain;
+`;
+
+const FriendInfoTextWrap = styled.div`
+  width: 35%;
+  height: 100%;
+  padding-top: 5px;
+  display: flex;
+  flex-direction: column;
+`;
+const FriendInfoText = styled.p`
+  margin-bottom: auto;
+`;
+const FriendInfoTextMinor = styled.p`
+  font-size: 12px;
+  opacity: 0.6;
+  padding-top: 3px;
+`;
+const FriendCityInfoText = styled(FriendInfoTextMinor)`
+  line-height: 22px;
+`;
+const FriendCityWrap = styled(FriendInfoTextWrap)`
+  width: 20%;
+`;
+
+const CityBannerWrap = styled.div`
+  width: auto;
+  margin-top: 3px;
+  padding: 0 10px;
+  height: 24px;
+  /* overflow: hidden; */
+  display: flex;
+  justify-content: center;
+  background-image: url(${banner});
+  background-size: 100% 100%;
+  border-radius: 5px;
+  position: relative;
+  cursor: pointer;
+`;
+
+const MyCityText = styled.div`
+  font-size: 14px;
+  color: #ae7a00;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const MyCityNoticeWrap = styled.div`
+  /* font-size: 18px; */
+  /* line-height: 36px; */
+  width: 100%;
+  height: 22px;
+  color: #ae7a00;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  position: absolute;
+  opacity: 0;
+  padding-left: 5px;
+  cursor: pointer;
+  transition: opacity 0.5s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+`;
+
+const MyCityNotice = styled.div`
+  font-size: 12px;
+  margin-right: 3px;
+  line-height: 22px;
+  border-radius: 5px;
+  padding: 1px 3px;
+  color: #f2f2f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  background-color: #ae7a00;
+`;
+
+const FriendsCityNoticeWrap = styled(MyCityNoticeWrap)`
+  &:hover {
+    opacity: 1;
+  }
 `;

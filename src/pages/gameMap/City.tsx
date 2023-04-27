@@ -236,4 +236,7 @@ const House = styled.div.attrs<HouseProps>(
   align-items: center;
   justify-content: center;
   cursor: ${({ $isdraggable }) => ($isdraggable ? 'grab' : '')};
+  &:active {
+    cursor: grabbing;
+  }
 `;

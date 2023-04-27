@@ -25,6 +25,7 @@ export const Statistics: React.FC = () => {
   const { chosenYear } = useAppSelector((state) => state.ledgerList.choices);
   const { userId } = useAppSelector((state) => state.userInfo.data);
   const { chartType } = useAppSelector((state) => state.pageControl);
+  const { pageActivity } = useAppSelector((state) => state.pageControl);
 
   const dispatch = useAppDispatch();
   const auth = getAuth();
@@ -34,11 +35,22 @@ export const Statistics: React.FC = () => {
   // }, [dispatch]);
 
   return (
-    <Wrap>
+    <Wrap $isShown={pageActivity === 'statistics'}>
       <Header>
         <Title>分析圖表</Title>
         <ClosingButton size={60} />
       </Header>
+      <ChartTypes>
+        <ChartType onClick={() => dispatch(CHANGE_CHART_TYPE('oneMonth'))}>
+          當月分析
+        </ChartType>
+        <ChartType onClick={() => dispatch(CHANGE_CHART_TYPE('monthly'))}>
+          每月變化
+        </ChartType>
+        <ChartType onClick={() => dispatch(CHANGE_CHART_TYPE('split'))}>
+          分帳結算
+        </ChartType>
+      </ChartTypes>
       <Main>
         {chartType === 'oneMonth' && <PieChart></PieChart>}
         {chartType === 'monthly' && (
@@ -79,35 +91,31 @@ export const Statistics: React.FC = () => {
         <br />
         <NavBar /> */}
       </Main>
-      <ChartTypes>
-        <ChartType onClick={() => dispatch(CHANGE_CHART_TYPE('oneMonth'))}>
-          當月分析
-        </ChartType>
-        <ChartType onClick={() => dispatch(CHANGE_CHART_TYPE('monthly'))}>
-          每月變化
-        </ChartType>
-        <ChartType onClick={() => dispatch(CHANGE_CHART_TYPE('split'))}>
-          分帳結算
-        </ChartType>
-      </ChartTypes>
     </Wrap>
   );
 };
 
-const Wrap = styled.div`
-  height: 70vh;
-  width: 40vw;
-  // transform: translateX(75%);
-  position: absolute;
-  bottom: 100px;
-  z-index: 4;
-  border: #ffffff 3px solid;
-  background-color: #f7f7f7;
+type WrapProps = {
+  $isShown: boolean;
+};
 
-  border-radius: 20px 20px 0 0;
+const Wrap = styled.div<WrapProps>`
+  border: #ffffff 3px solid;
+  background-color: #ebebeb;
+  border-radius: 20px;
+  color: #808080;
+
+  width: ${({ $isShown }) => ($isShown ? '100%' : '40%')};
+  height: calc(100vh - 80px);
+  position: absolute;
+  left: 0;
+  z-index: 6;
+  overflow: hidden;
+  bottom: ${({ $isShown }) => ($isShown ? '80px' : '-100%')};
+  transition: bottom 1s ease, width 1.5s ease;
 `;
 const Header = styled.div`
-  height: 95px;
+  height: 60px;
   width: 100%;
   border-bottom: 3px solid #e6e6e6;
   display: flex;
@@ -117,6 +125,31 @@ const Header = styled.div`
 const Title = styled.p`
   color: #808080;
   font-size: 32px;
+`;
+
+const ChartTypes = styled.div`
+  top: 60px;
+  display: flex;
+  width: 100%;
+  height: 60px;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ChartType = styled.div`
+  font-size: 24px;
+  width: 20%;
+  height: 80%;
+  background-color: #ebebeb;
+  color: #808080;
+  border-radius: 33px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  &:hover {
+    cursor: pointer;
+    background-color: #c3c3c3;
+  }
 `;
 const Main = styled.div``;
 const Select = styled.select``;
@@ -131,29 +164,7 @@ const ChartWrap = styled.div`
 const LedgerWarp = styled(ChartWrap)`
   overflow: scroll;
 `;
-const ChartTypes = styled.div`
-  position: absolute;
-  bottom: 20px;
-  display: flex;
-  width: 100%;
-  justify-content: space-around;
-`;
 
-const ChartType = styled.div`
-  height: 66px;
-  font-size: 24px;
-  width: 27%;
-  background-color: #ebebeb;
-  color: #808080;
-  border-radius: 33px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  &:hover {
-    cursor: pointer;
-    background-color: #c3c3c3;
-  }
-`;
 const CrossIconWrap = styled.div`
   position: absolute;
   left: 21px;

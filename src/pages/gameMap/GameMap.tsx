@@ -7,7 +7,6 @@ import { postFadeOutTime, postFadeOutTimeRT } from '../../redux/api/userAPI';
 import { Ledger } from '../ledger/Ledger';
 import Footer from '../../component/Footer';
 import { Statistics } from '../statistics/Statistics';
-import { Profile } from '../profile/Profile';
 import {
   SWITCH_PAGE,
   PANEL_CONTROL,
@@ -17,6 +16,7 @@ import { CooperatorTrace } from './CooperatorTrace';
 import { RearrangeOptions } from './RearrangeOptions';
 import { ScaleBar } from './ScaleBar';
 import { UserBar } from './UserBar';
+import { Social } from '../profile/Social';
 
 export const GameMap: React.FC = () => {
   const { isLogin, isAuthing } = useAppSelector(
@@ -103,23 +103,29 @@ export const GameMap: React.FC = () => {
       {/* <NavBar /> */}
       {/* <ScaleBar /> */}
       <CooperatorTrace />
-      {(pageActivity === 'statistics' || pageActivity === 'profile') && (
-        <BlackCurtain
-          onClick={() => {
-            dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }));
-            dispatch(PANEL_CONTROL('none'));
-          }}
-        />
-      )}
+      {/* {(pageActivity === 'statistics' || pageActivity === 'profile') && ( */}
+      <BlackCurtain
+        $isShown={pageActivity === 'statistics' || pageActivity === 'profile'}
+        onClick={() => {
+          dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }));
+          dispatch(PANEL_CONTROL('none'));
+        }}
+      />
+      {/* )} */}
       {/* {pageActivity === 'ledger' && <Ledger />} */}
       <Ledger />
-      {pageActivity === 'statistics' && <Statistics />}
-      {pageActivity === 'profile' && <Profile />}
+      {/* TODO */}
+      {/* <Statistics /> */}
+      <Social />
 
       <Footer />
       {/* <CityShiftControl type={'down'} /> */}
     </Wrapper>
   );
+};
+
+type BlackCurtainProps = {
+  $isShown: boolean;
 };
 
 const Wrapper = styled.div`
@@ -128,15 +134,16 @@ const Wrapper = styled.div`
   background: linear-gradient(#c8e2cc, #98d5da);
   overflow: hidden;
 `;
-const BlackCurtain = styled.div`
+const BlackCurtain = styled.div<BlackCurtainProps>`
   height: 100vh;
   width: 100vw;
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 4;
+  z-index: ${({ $isShown }) => ($isShown ? '4' : '-2')};
   background-color: black;
-  opacity: 0.4;
+  opacity: ${({ $isShown }) => ($isShown ? '0.5' : '0')};
+  transition: opacity 1s ease;
 `;
 const CityWrapper = styled.div`
   width: 100vw;

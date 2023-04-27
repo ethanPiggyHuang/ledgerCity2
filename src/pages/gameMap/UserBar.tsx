@@ -70,6 +70,27 @@ const Text = styled.p`
   font-weight: bold;
 `;
 
+const giggle = keyframes`
+  0%{
+    transform: translateY(0px);
+  }
+  15%{
+    transform: translateY(-8px);
+  }
+  30%{
+    transform: translateY(0px);
+  }
+  45%{
+    transform: translateY(-8px);
+  }
+  60%{
+    transform: translateY(0px);
+  }
+  100%{
+    transform: translateY(0px);
+  }
+`;
+
 const PorTraitWrap = styled.div`
   height: 50px;
   width: 50px;
@@ -77,6 +98,9 @@ const PorTraitWrap = styled.div`
   border: 2px rgba(255, 255, 255, 0.6) solid;
   overflow: hidden;
   cursor: pointer;
+  &:hover {
+    animation: ${giggle} 1.5s linear infinite;
+  }
 `;
 
 const PorTrait = styled.img`

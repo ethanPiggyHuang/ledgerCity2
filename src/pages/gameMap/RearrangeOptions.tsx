@@ -119,10 +119,14 @@ const IconBack = styled.div<IconBackProps>`
   justify-content: center;
   align-items: center;
   background-color: black;
+  box-shadow: 3px black solid;
   opacity: ${({ $isActivate }) => ($isActivate ? '1' : '0.5')};
   cursor: pointer;
   &:hover {
     opacity: ${({ $isActivate }) => ($isActivate ? '1' : '0.7')};
+  }
+  &:active {
+    transform: translateY(3px);
   }
 `;
 

@@ -125,18 +125,16 @@ const Header: React.FC = () => {
           onKeyDown={(event) => {
             if (event.code === 'Enter') {
               event.preventDefault();
-              // const target = event.target as HTMLInputElement;
-              // target.blur();
             }
           }}
-          onBlur={() => dispatch(RENAME_CITY(false))}
+          onBlur={() => setTimeout(() => dispatch(RENAME_CITY(false)), 100)}
         ></BannerText>
         <SaveIcon
           $isRenaming={isRenaming}
           icon={faFloppyDisk}
           onClick={() => {
             dispatch(UPDATE_CITY_NAME({ cityId: cityList[0], cityName }));
-            dispatch(RENAME_CITY(false));
+            // dispatch(RENAME_CITY(false));
           }}
         />
       </TextWrapper>
@@ -186,6 +184,7 @@ const BannerText = styled.input<BannerTextProps>`
     $isRenaming ? '2px solid #df9469' : 'none'};
 
   background-color: rgba(0, 0, 0, 0);
+  border-bottom: 2px solid rgba(0, 0, 0, 0);
   width: 100%;
 
   &:focus {
@@ -202,9 +201,10 @@ const BannerText = styled.input<BannerTextProps>`
 const SaveIcon = styled(FontAwesomeIcon)<SaveIconProps>`
   display: ${({ $isRenaming }) => ($isRenaming ? 'block' : 'none')};
   font-size: 20px;
+  z-index: 9;
   position: absolute;
   bottom: 5px;
-  right: 5px;
+  right: -5px;
   color: #df9469;
   cursor: pointer;
 `;

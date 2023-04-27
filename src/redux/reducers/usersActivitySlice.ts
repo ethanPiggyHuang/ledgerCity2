@@ -27,18 +27,21 @@ export interface UsersActivityState {
   friendsInfo: {
     [key: string]: {
       userId: string;
-      userName: string | null;
-      userNickName: string | null;
-      userEmail: string | null;
-      userPortraitUrl: string | null;
+      userName: string;
+      userNickName: string;
+      userEmail: string;
+      userPortraitUrl: string;
+      cityList: string[];
     };
   };
+  friendsCityName: { [key: string]: string };
   coopInfo: { [key: string]: SoloUserActivityState };
 }
 
 const initialState: UsersActivityState = {
   status: 'idle',
   friendsInfo: {},
+  friendsCityName: {}, //TODO: fetchFriend's city name
   coopInfo: {},
 };
 

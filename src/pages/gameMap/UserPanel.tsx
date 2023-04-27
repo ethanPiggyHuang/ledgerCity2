@@ -57,12 +57,9 @@ export const UserPanel: React.FC = () => {
   return (
     <Wrap>
       <AccountBasicWrap>
-        {userPortraitUrl && (
-          <PorTraitWrap>
-            <PorTrait src={userPortraitUrl} alt={`portrait of ${userName}`} />
-          </PorTraitWrap>
-        )}
-
+        <PorTraitWrap>
+          <PorTrait src={userPortraitUrl} alt={`portrait of ${userNickName}`} />
+        </PorTraitWrap>
         <AccountTextWrap>
           <NickNameWrap>
             <NickNameInput
@@ -71,7 +68,9 @@ export const UserPanel: React.FC = () => {
                 dispatch(TYPING_NICKNAME(event.target.value));
               }}
               onClick={() => dispatch(EDIT_NICKNAME_SWITCH(true))}
-              onBlur={() => dispatch(EDIT_NICKNAME_SWITCH(false))}
+              onBlur={() =>
+                setTimeout(() => dispatch(EDIT_NICKNAME_SWITCH(false)), 100)
+              }
             />
             {isNickNameEdit && (
               <SaveIcon
@@ -88,19 +87,20 @@ export const UserPanel: React.FC = () => {
       </AccountBasicWrap>
       <MyCitiesWrap>
         <MyCitiesText>{`我的城市：`}</MyCitiesText>
-        {cityList.map((cityId) => (
-          <MyCityWrap>
-            <BannerWrap>
+        {cityList.map((cityId, index) => (
+          <MyCityWrap key={cityId}>
+            <CityBannerWrap>
               <MyCityText>{cityNames[cityId]}</MyCityText>
               <MyCityNoticeWrap
                 onClick={() => {
+                  if (index === 0) return;
                   dispatch(CITY_REDIRECTION({ userId, cityId }));
                   dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }));
                 }}
               >
-                <MyCityNotice>前往</MyCityNotice>
+                <MyCityNotice>{index === 0 ? '目前' : '前往'}</MyCityNotice>
               </MyCityNoticeWrap>
-            </BannerWrap>
+            </CityBannerWrap>
           </MyCityWrap>
         ))}
       </MyCitiesWrap>
@@ -138,7 +138,7 @@ const Wrap = styled.div`
 
 const AccountBasicWrap = styled.div`
   height: 100px;
-  padding: 10px;
+  padding: 20px 0 0 20px;
   display: flex;
   gap: 17px;
 `;
@@ -149,7 +149,6 @@ const PorTraitWrap = styled.div`
   border-radius: 50%;
   border: 3px rgba(128, 128, 128, 0.6) solid;
   overflow: hidden;
-  cursor: pointer;
 `;
 
 const PorTrait = styled.img`
@@ -157,7 +156,7 @@ const PorTrait = styled.img`
   object-fit: contain;
 `;
 
-const AccountTextWrap = styled.p`
+const AccountTextWrap = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -167,15 +166,18 @@ const AccountTextWrap = styled.p`
 
 const AccountText = styled.span`
   color: #808080;
+  font-size: 14px;
+  opacity: 0.6;
 `;
 const NickNameWrap = styled.div``;
 const NickNameInput = styled.input`
   padding-right: 15px;
-  font-size: 16px;
+  font-size: 18px;
   background-color: #f7f7f7;
   color: #808080;
   width: 100px;
   display: inline;
+  border-bottom: 2px solid rgba(0, 0, 0, 0);
 
   &:focus {
     border-bottom: 2px solid #808080;
@@ -190,7 +192,7 @@ const NickNameInput = styled.input`
 
 const SaveIcon = styled(FontAwesomeIcon)`
   margin-left: 10px;
-  font-size: 20px;
+  /* font-size: 10px; */
   color: #808080;
   cursor: pointer;
   display: inline;
@@ -220,7 +222,7 @@ const MyCityWrap = styled.div`
   gap: 17px;
 `;
 
-const BannerWrap = styled.div`
+const CityBannerWrap = styled.div`
   padding: 0 40px;
   height: 36px;
   /* overflow: hidden; */
@@ -254,6 +256,8 @@ const MyCityNoticeWrap = styled.div`
   opacity: 0;
   padding-left: 5px;
   cursor: pointer;
+  transition: opacity 0.8s ease;
+
   &:hover {
     opacity: 0.5;
   }
@@ -294,23 +298,24 @@ const IconText = styled.div`
   height: 50px;
   border-radius: 33px;
   position: absolute;
-  background-color: black;
+  background-color: darkred;
   color: white;
   display: flex;
   justify-content: center;
   align-items: center;
   opacity: 0;
+  transition: opacity 0.3s ease;
   &:hover {
-    opacity: 0.8;
+    opacity: 0.9;
   }
 `;
 
 const LeaveIcon = styled(FontAwesomeIcon)`
   font-size: 16px;
   color: #f2f2f2;
-  &:hover {
-    opacity: 0.7;
-  }
+  /* &:hover {
+    opacity: 0;
+  } */
 `;
 
 const CrossIconWrap = styled.div`

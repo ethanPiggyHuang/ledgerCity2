@@ -18,10 +18,11 @@ const Footer: React.FC = () => {
   const labelOrder: {
     page: 'ledger' | 'statistics' | 'profile';
     icon: IconDefinition;
+    textCh: string;
   }[] = [
-    { page: 'statistics', icon: faChartPie },
-    { page: 'ledger', icon: faFilePen },
-    { page: 'profile', icon: faUsers },
+    { page: 'statistics', icon: faChartPie, textCh: '分析' },
+    { page: 'ledger', icon: faFilePen, textCh: '記帳' },
+    { page: 'profile', icon: faUsers, textCh: '協作' },
   ];
 
   return (
@@ -36,6 +37,7 @@ const Footer: React.FC = () => {
           $chosen={label.page === pageActivity}
         >
           <StyledFontAwesomeIcon icon={label.icon} />
+          <Text>{label.textCh}</Text>
         </SectionLabel>
       ))}
     </Wrapper>
@@ -78,4 +80,11 @@ const SectionLabel = styled.div<SectionLabelState>`
 const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
   color: #808080;
   height: 50px;
+`;
+
+const Text = styled.p`
+  line-height: 50px;
+  padding-left: 10px;
+  color: #808080;
+  font-size: 24px;
 `;
