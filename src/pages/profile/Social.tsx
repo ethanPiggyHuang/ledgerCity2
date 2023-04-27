@@ -3,6 +3,7 @@ import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import {
   CITY_REDIRECTION,
+  FriendStatusState,
   GET_CITY_NAME,
 } from '../../redux/reducers/userInfoSlice';
 import {
@@ -14,7 +15,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUsers } from '@fortawesome/free-solid-svg-icons';
 import { SWITCH_PAGE } from '../../redux/reducers/pageControlSlice';
 import banner from '../../assets/banner.png';
+//TODO:
 import { VISIT_CITY } from '../../redux/reducers/cityBasicInfoSlice';
+import { UserBasics } from '../../component/UserBasics';
 
 export const Social: React.FC = () => {
   const { userId, cityList } = useAppSelector((state) => state.userInfo.data);
@@ -34,7 +37,9 @@ export const Social: React.FC = () => {
   const lastActiveDate = (timeInSecond: number): string => {
     const currentInSecond = new Date().getTime();
     const result = Math.round((currentInSecond / 1000 - timeInSecond) / 86400);
-    if (result < 1) {
+    if (timeInSecond === 0) {
+      return '暫無資料';
+    } else if (result < 1) {
       return '今日';
     }
     return `${result}日前`;
@@ -70,12 +75,15 @@ export const Social: React.FC = () => {
   const friendInfoCollection = friendsArray.map((friendInfo) => {
     const friendId = friendInfo.userId;
     const friendCityList = friendInfo.cityList;
-    const coopCityId =
-      friends.find((data) => data.userId === friendId)?.coopCityId || '';
+    const findFriendCondition = (user: FriendStatusState) =>
+      user.userId === friendId;
+    const coopCityId = friends.find(findFriendCondition)?.coopCityId || '';
     const personalCityId =
       friendCityList.find((data) => data !== coopCityId) || '';
     return {
       ...friendInfo,
+      friendStatus: friends.find(findFriendCondition)?.friendStatus || '',
+      coopStatus: friends.find(findFriendCondition)?.coopStatus || '',
       lastActiveTime: coopInfo[friendId]?.latestActiveTimeSecond || 0,
       coopCityId,
       coopCityName: cityNames[coopCityId] || '',
@@ -95,148 +103,75 @@ export const Social: React.FC = () => {
         <FriendListWrap>
           <FriendListTitle>協作好友清單</FriendListTitle>
           {friendInfoCollection.length !== 0 &&
-            friendInfoCollection.map((friendInfo, index) => (
-              <FriendInfo key={friendInfo.userId}>
-                <FriendPorTraitWrap>
-                  <FriendPorTrait src={friendInfo.userPortraitUrl} />
-                </FriendPorTraitWrap>
-                <FriendInfoTextWrap>
-                  <FriendInfoText>{friendInfo.userNickName}</FriendInfoText>
-                  <FriendInfoTextMinor>
-                    {friendInfo.userEmail}
-                  </FriendInfoTextMinor>
-                  <FriendInfoTextMinor>{`最近活躍：${lastActiveDate(
-                    friendInfo.lastActiveTime
-                  )}`}</FriendInfoTextMinor>
-                </FriendInfoTextWrap>
-                <FriendCityWrap>
-                  <FriendInfoTextMinor>協作城市：</FriendInfoTextMinor>
-                  <CityBannerWrap>
-                    <MyCityText>{friendInfo.coopCityName}</MyCityText>
-                    <MyCityNoticeWrap
-                      onClick={() => {
-                        if (friendInfo.coopCityId === currentCityId) {
-                          return;
-                        } else {
-                          dispatch(
-                            CITY_REDIRECTION({
-                              userId,
-                              cityId: friendInfo.coopCityId,
-                            })
-                          );
-                          dispatch(
-                            SWITCH_PAGE({ userId, pageActivity: 'city' })
-                          );
-                        }
+            friendInfoCollection.map(
+              (friendInfo, index) =>
+                friendInfo.coopStatus === 'coorperated' && (
+                  <FriendInfo key={friendInfo.userId}>
+                    <UserBasics
+                      payload={{
+                        userPortraitUrl: friendInfo.userPortraitUrl,
+                        userNickName: friendInfo.userNickName,
+                        userEmail: friendInfo.userEmail,
+                        lastActiveTime: friendInfo.lastActiveTime,
                       }}
-                    >
-                      <MyCityNotice>
-                        {friendInfo.coopCityId === currentCityId
-                          ? '目前'
-                          : '前往'}
-                      </MyCityNotice>
-                    </MyCityNoticeWrap>
-                  </CityBannerWrap>
-                </FriendCityWrap>
-                <FriendCityWrap>
-                  <FriendInfoTextMinor>好友城市：</FriendInfoTextMinor>
-                  {friendInfo.personalCityName === '' ? (
-                    <FriendCityInfoText>無個人城市</FriendCityInfoText>
-                  ) : (
-                    <CityBannerWrap>
-                      <MyCityText>{friendInfo.personalCityName}</MyCityText>
-                      <FriendsCityNoticeWrap
-                        onClick={() => {
-                          dispatch(
-                            CITY_REDIRECTION({
-                              userId,
-                              cityId: friendInfo.personalCityId,
-                            })
-                          );
-                          dispatch(
-                            SWITCH_PAGE({ userId, pageActivity: 'city' })
-                          );
-                        }}
-                      >
-                        <MyCityNotice>造訪</MyCityNotice>
-                      </FriendsCityNoticeWrap>
-                    </CityBannerWrap>
-                  )}
-                </FriendCityWrap>
-              </FriendInfo>
-            ))}
-          {friendInfoCollection.length !== 0 &&
-            friendInfoCollection.map((friendInfo, index) => (
-              <FriendInfo key={friendInfo.userId}>
-                <FriendPorTraitWrap>
-                  <FriendPorTrait src={friendInfo.userPortraitUrl} />
-                </FriendPorTraitWrap>
-                <FriendInfoTextWrap>
-                  <FriendInfoText>{friendInfo.userNickName}</FriendInfoText>
-                  <FriendInfoTextMinor>
-                    {friendInfo.userEmail}
-                  </FriendInfoTextMinor>
-                  <FriendInfoTextMinor>{`最近活躍：${lastActiveDate(
-                    friendInfo.lastActiveTime
-                  )}`}</FriendInfoTextMinor>
-                </FriendInfoTextWrap>
-                <FriendCityWrap>
-                  <FriendInfoTextMinor>協作城市：</FriendInfoTextMinor>
-                  <CityBannerWrap>
-                    <MyCityText>{friendInfo.coopCityName}</MyCityText>
-                    <MyCityNoticeWrap
-                      onClick={() => {
-                        if (friendInfo.coopCityId === currentCityId) {
-                          return;
-                        } else {
-                          dispatch(
-                            CITY_REDIRECTION({
-                              userId,
-                              cityId: friendInfo.coopCityId,
-                            })
-                          );
-                          dispatch(
-                            SWITCH_PAGE({ userId, pageActivity: 'city' })
-                          );
-                        }
-                      }}
-                    >
-                      <MyCityNotice>
-                        {friendInfo.coopCityId === currentCityId
-                          ? '目前'
-                          : '前往'}
-                      </MyCityNotice>
-                    </MyCityNoticeWrap>
-                  </CityBannerWrap>
-                </FriendCityWrap>
-                <FriendCityWrap>
-                  <FriendInfoTextMinor>好友城市：</FriendInfoTextMinor>
-                  {friendInfo.personalCityName === '' ? (
-                    <FriendCityInfoText>無個人城市</FriendCityInfoText>
-                  ) : (
-                    <CityBannerWrap>
-                      <MyCityText>{friendInfo.personalCityName}</MyCityText>
-                      <FriendsCityNoticeWrap
-                        onClick={() => {
-                          dispatch(VISIT_CITY(friendInfo.coopCityId));
-                          // dispatch(
-                          //   CITY_REDIRECTION({
-                          //     userId,
-                          //     cityId: friendInfo.personalCityId,
-                          //   })
-                          // );
-                          // dispatch(
-                          //   SWITCH_PAGE({ userId, pageActivity: 'city' })
-                          // );
-                        }}
-                      >
-                        <MyCityNotice>造訪</MyCityNotice>
-                      </FriendsCityNoticeWrap>
-                    </CityBannerWrap>
-                  )}
-                </FriendCityWrap>
-              </FriendInfo>
-            ))}
+                    />
+                    <FriendCityWrap>
+                      <FriendInfoTextMinor>協作城市：</FriendInfoTextMinor>
+                      <CityBannerWrap>
+                        <MyCityText>{friendInfo.coopCityName}</MyCityText>
+                        <MyCityNoticeWrap
+                          onClick={() => {
+                            if (friendInfo.coopCityId === currentCityId) {
+                              return;
+                            } else {
+                              dispatch(
+                                CITY_REDIRECTION({
+                                  userId,
+                                  cityId: friendInfo.coopCityId,
+                                })
+                              );
+                              dispatch(
+                                SWITCH_PAGE({ userId, pageActivity: 'city' })
+                              );
+                            }
+                          }}
+                        >
+                          <MyCityNotice>
+                            {friendInfo.coopCityId === currentCityId
+                              ? '目前'
+                              : '前往'}
+                          </MyCityNotice>
+                        </MyCityNoticeWrap>
+                      </CityBannerWrap>
+                    </FriendCityWrap>
+                    <FriendCityWrap>
+                      <FriendInfoTextMinor>好友城市：</FriendInfoTextMinor>
+                      {friendInfo.personalCityName === '' ? (
+                        <FriendCityInfoText>無個人城市</FriendCityInfoText>
+                      ) : (
+                        <CityBannerWrap>
+                          <MyCityText>{friendInfo.personalCityName}</MyCityText>
+                          <FriendsCityNoticeWrap
+                            onClick={() => {
+                              dispatch(
+                                CITY_REDIRECTION({
+                                  userId,
+                                  cityId: friendInfo.personalCityId,
+                                })
+                              );
+                              dispatch(
+                                SWITCH_PAGE({ userId, pageActivity: 'city' })
+                              );
+                            }}
+                          >
+                            <MyCityNotice>造訪</MyCityNotice>
+                          </FriendsCityNoticeWrap>
+                        </CityBannerWrap>
+                      )}
+                    </FriendCityWrap>
+                  </FriendInfo>
+                )
+            )}
         </FriendListWrap>
       </FriendListsWrap>
 

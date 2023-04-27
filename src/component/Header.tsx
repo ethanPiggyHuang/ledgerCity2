@@ -60,8 +60,8 @@ const Header: React.FC = () => {
   useEffect(() => {
     if (ledgerBookId.length !== 0) {
       if (accessUsers.findIndex((id) => id === userId) === -1) {
-        alert('visiting');
         return;
+        //TODO: 非accessUsers
       } else {
         const q = query(
           collection(db, 'ledgerBooks', ledgerBookId, 'ledgers'),
