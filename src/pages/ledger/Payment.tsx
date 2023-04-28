@@ -81,7 +81,7 @@ const PaymentInfo = styled.div`
   /* margin-left: auto;
   margin-right: 15px; */
   margin-right: auto;
-  margin-left: 15px;
+  /* margin-left: 15px; */
 `;
 const PaidMethod = styled.div`
   height: 80%;

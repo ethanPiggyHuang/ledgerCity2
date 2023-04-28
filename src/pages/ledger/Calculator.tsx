@@ -14,24 +14,14 @@ export const Calculator: React.FC = () => {
   const { amount } = useAppSelector((state) => state.ledgerSingle.data);
   const dispatch = useAppDispatch();
 
-  const buttons: string[] = [
-    '7',
-    '8',
-    '9',
-    '⇤',
-    '4',
-    '5',
-    '6',
-    '+',
-    '1',
-    '2',
-    '3',
-    '-',
-    '0',
-    'AC',
-    '=',
-    '',
+  const buttons: string[][] = [
+    ['7', '8', '9', '⇤'],
+    ['4', '5', '6', '+'],
+    ['1', '2', '3', '-'],
+    ['0', 'AC', '.', '='],
   ];
+
+  //TODO: .的處理
 
   const thousandsSeparator: (number: number) => string = function (number) {
     const parts = number.toString().split('.');
@@ -74,27 +64,31 @@ export const Calculator: React.FC = () => {
         <CurrencyExchange>NT$ 199</CurrencyExchange>
       </AmountDisplay> */}
       <CalculatorButtons>
-        {buttons.map((button, index) => (
-          <CalculatorButton
-            key={index}
-            onClick={() => {
-              if (button === 'AC') {
-                dispatch(amountAllClear());
-              } else if (button === '⇤') {
-                dispatch(amountDelete());
-              } else if (button === '=') {
-                dispatch(amountCalculate());
-              } else if (['+', '-', 'x', '÷'].includes(button)) {
-                dispatch(
-                  amountHoldOperator(button as '' | '+' | '-' | 'x' | '÷')
-                );
-              } else {
-                dispatch(amountKeyNumber(button));
-              }
-            }}
-          >
-            {button}
-          </CalculatorButton>
+        {buttons.map((row, rowIndex) => (
+          <ButtonRow key={rowIndex}>
+            {row.map((button, index) => (
+              <CalculatorButton
+                key={`${rowIndex + index}`}
+                onClick={() => {
+                  if (button === 'AC') {
+                    dispatch(amountAllClear());
+                  } else if (button === '⇤') {
+                    dispatch(amountDelete());
+                  } else if (button === '=') {
+                    dispatch(amountCalculate());
+                  } else if (['+', '-', 'x', '÷'].includes(button)) {
+                    dispatch(
+                      amountHoldOperator(button as '' | '+' | '-' | 'x' | '÷')
+                    );
+                  } else {
+                    dispatch(amountKeyNumber(button));
+                  }
+                }}
+              >
+                {button}
+              </CalculatorButton>
+            ))}
+          </ButtonRow>
         ))}
       </CalculatorButtons>
     </Wrapper>
@@ -112,23 +106,31 @@ const Wrapper = styled.div`
   background-color: #292929;
   width: 100%;
   padding: 0 80px;
-  /* height: 35%; */
+  height: 35%;
 `;
 
 const CalculatorButtons = styled.div`
+  height: 100%;
+  /* display: flex; */
+  /* flex-wrap: wrap; */
+  /* align-items: end; */
+  /* justify-content: space-between; */
+`;
+const ButtonRow = styled.div`
+  height: 25%;
   display: flex;
-  flex-wrap: wrap;
   /* align-items: end; */
   justify-content: space-between;
 `;
+
 const CalculatorButton = styled.div`
-  /* height: 42px; */
+  height: 100%;
 
   margin: 5px 2%;
   width: 20%;
   color: #f2f2f2;
-  font-size: 20px;
-  line-height: 150%;
+  font-size: 24px;
+  /* line-height: 150%; */
   display: flex;
   justify-content: center;
   align-items: center;

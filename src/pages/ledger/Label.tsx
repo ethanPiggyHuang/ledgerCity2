@@ -66,7 +66,7 @@ export const Label: React.FC = () => {
             key={subLabel}
             onClick={() => dispatch(itemKeyIn(subLabel))}
           >
-            {subLabel}
+            {`# ${subLabel}`}
           </SubLabelOption>
         ))}
       </SubLabelOptions>
@@ -74,7 +74,7 @@ export const Label: React.FC = () => {
         <ItemIcon icon={faClipboard} />
         <ItemInput
           value={item}
-          placeholder="(備註)"
+          placeholder="(可增加註記)"
           onChange={(e) => dispatch(itemKeyIn(e.target.value))}
         />
       </ItemDisplay>
@@ -88,15 +88,16 @@ type LabelOptionProps = {
 };
 
 const LabelOptions = styled.div`
-  height: 15%;
+  height: 12%;
+  padding: 0 5px;
   display: flex;
   justify-content: space-around;
   align-items: center;
   background-color: #ebebeb;
 `;
 const LabelOption = styled.div<LabelOptionProps>`
-  width: 8%;
-  height: 90%;
+  width: 9%;
+  height: 66px;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -110,11 +111,10 @@ const LabelOption = styled.div<LabelOptionProps>`
   }
 `;
 const LabelIcons = styled(FontAwesomeIcon)`
-  height: 30px;
+  font-size: 24px;
 `;
 const LabelText = styled.div`
-  height: 32px;
-  /* font-weight: bold; */
+  height: 24px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -142,7 +142,7 @@ const ItemDisplay = styled.div`
   justify-content: center;
   align-items: center;
   color: #808080;
-  margin-left: 15px;
+  margin: 0 15px;
   border-bottom: 3px solid #e6e6e6;
 `;
 const ItemIcon = styled(FontAwesomeIcon)`
@@ -156,4 +156,7 @@ const ItemInput = styled.input`
   margin-right: auto;
   color: #808080;
   background-color: #f2f2f2;
+  ::placeholder {
+    color: #c8c8c8;
+  }
 `;

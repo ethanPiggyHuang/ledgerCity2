@@ -58,12 +58,11 @@ export const Ledger: React.FC = () => {
 
         {ledgerPosition === 'expand' && (
           <>
+            <Label />
             <SecondRow>
               <Payment />
               <Amount />
             </SecondRow>
-            <Label />
-            <Calculator />
             <ConfirmButton
               onClick={() => {
                 if (labelMain === '') {
@@ -82,6 +81,7 @@ export const Ledger: React.FC = () => {
             >
               <CheckIcon icon={faCheck} />
             </ConfirmButton>
+            <Calculator />
           </>
         )}
       </MainBoard>
@@ -129,7 +129,8 @@ const Header = styled.div`
 
 const SecondRow = styled.div`
   height: 12%;
-  width: 100%;
+  margin: 0 15px;
+  /* width: 100%; */
   border-bottom: 3px solid #e6e6e6;
   display: flex;
   align-items: center;
@@ -149,19 +150,24 @@ const Icon = styled(FontAwesomeIcon)`
 `;
 const ConfirmButton = styled.div`
   width: 20%;
-  position: absolute;
+  height: 10%;
+  /* position: absolute; */
   bottom: 2%;
-  right: 70px;
-
+  margin-left: auto;
+  margin-right: 15px;
+  border-radius: 5px;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  &:hover {
+    background-color: #ffffff;
+  }
 `;
 
 const CheckIcon = styled(FontAwesomeIcon)`
   color: #dabd7a;
-  font-size: 20px;
+  font-size: 28px;
 `;
 
 const AddNewWrap = styled.div`
