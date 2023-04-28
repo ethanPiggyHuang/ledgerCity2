@@ -128,7 +128,7 @@ export const Social: React.FC = () => {
                         }}
                       />
                       <FriendCityWrap>
-                        <FriendInfoTextMinor>協作城市：</FriendInfoTextMinor>
+                        <FriendInfoTextMinor>協作城市</FriendInfoTextMinor>
                         <CityBannerWrap>
                           <MyCityText>{friendInfo.coopCityName}</MyCityText>
                           <MyCityNoticeWrap
@@ -157,7 +157,7 @@ export const Social: React.FC = () => {
                         </CityBannerWrap>
                       </FriendCityWrap>
                       <FriendCityWrap>
-                        <FriendInfoTextMinor>好友城市：</FriendInfoTextMinor>
+                        <FriendInfoTextMinor>好友城市</FriendInfoTextMinor>
                         {friendInfo.personalCityName === '' ? (
                           <FriendCityInfoText>無個人城市</FriendCityInfoText>
                         ) : (
@@ -224,7 +224,7 @@ export const Social: React.FC = () => {
                         {/* TODO: cityOptions */}
                       </FriendCityWrap>
                       <FriendCityWrap>
-                        <FriendInfoTextMinor>好友城市：</FriendInfoTextMinor>
+                        <FriendInfoTextMinor>好友城市</FriendInfoTextMinor>
                         {friendInfo.personalCityName === '' ? (
                           <FriendCityInfoText>無個人城市</FriendCityInfoText>
                         ) : (
@@ -278,8 +278,11 @@ export const Social: React.FC = () => {
                         }}
                       />
                       <FriendCityWrap>
-                        <AgreeButton>同意好友</AgreeButton>
-                        <DisAgreeButton>不同意</DisAgreeButton>
+                        <FriendInfoTextMinor>好友邀請</FriendInfoTextMinor>
+                        <ButtonWrap>
+                          <AgreeButton>同意</AgreeButton>
+                          <DisAgreeButton>不同意</DisAgreeButton>
+                        </ButtonWrap>
                       </FriendCityWrap>
                       <FriendCityWrap>
                         <WaitingButton>好友邀請中</WaitingButton>
@@ -425,7 +428,7 @@ const FriendInfoWrap = styled.div<FriendInfoWrapProps>`
   /* TODO: normal height */
   height: ${({ $isClosed }) => ($isClosed ? '0' : '100px')};
   overflow: ${({ $isClosed }) => ($isClosed ? 'overflow' : 'scroll')};
-  transition: height 1.5s ease, transform 1s ease;
+  transition: height 1s ease, transform 0.7s ease;
 `;
 
 const FriendInfo = styled.div`
@@ -445,9 +448,11 @@ const FriendInfoTextWrap = styled.div`
   flex-direction: column;
 `;
 const FriendInfoTextMinor = styled.p`
+  line-height: 22px;
   font-size: 12px;
   opacity: 0.6;
   padding-top: 3px;
+  text-align: center;
 `;
 const FriendCityInfoText = styled(FriendInfoTextMinor)`
   line-height: 22px;
@@ -461,7 +466,6 @@ const CityBannerWrap = styled.div`
   margin-top: 3px;
   padding: 0 10px;
   height: 24px;
-  /* overflow: hidden; */
   display: flex;
   justify-content: center;
   background-image: url(${banner});
@@ -472,9 +476,9 @@ const CityBannerWrap = styled.div`
 `;
 
 const InviteCityBannerWrap = styled(CityBannerWrap)`
-  height: 18px;
-  width: 70%;
-  margin: auto;
+  /* height: 18px; */
+  /* width: 70%; */
+  /* margin: auto; */
   opacity: 0.5;
 `;
 
@@ -530,7 +534,8 @@ const FriendsCityNoticeWrap = styled(MyCityNoticeWrap)`
 
 const ButtonTemplate = styled.button`
   margin: auto;
-  padding: 3px 0;
+  padding: 1px 0;
+  font-size: 14px;
   width: 80px;
   border: #f2f2f2 2px solid;
   border-radius: 16px;
@@ -549,15 +554,22 @@ const InvitationButton = styled(ButtonTemplate)`
 const AgreeButton = styled(ButtonTemplate)`
   background-color: #ccf0aa;
   color: #7dae00;
+  font-size: 12px;
+`;
+
+const ButtonWrap = styled.div`
+  display: flex;
 `;
 
 const DisAgreeButton = styled(ButtonTemplate)`
   background-color: #f0acaa;
   color: #ae2600;
+  font-size: 12px;
 `;
 const WaitingButton = styled(ButtonTemplate)`
   background-color: #e6e6e6;
   color: #808080;
+  font-size: 12px;
   cursor: default;
   &:hover {
     filter: brightness(1);

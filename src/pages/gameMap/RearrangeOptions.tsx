@@ -64,26 +64,30 @@ export const RearrangeOptions: React.FC = () => {
   return (
     <Wrapper>
       {/* TODO */}
-      {/* <IconImage src={iconReconstruct} onClick={() => setShow(!show)} /> */}
-      <Title>城市經營</Title>
-      <IconsWrapper>
-        <IconBackConstruction
-          $isActivate={dragMode === 'houses'}
-          onClick={handleConstruction}
-        >
-          {dragMode === 'houses' ? (
-            <Icon icon={faFloppyDisk} />
-          ) : (
-            <IconImg src={reconstruct} />
-          )}
-        </IconBackConstruction>
-        <IconBack $isActivate={false} onClick={handleRescale}>
-          <ScaleText>{`${scale} x`}</ScaleText>
-        </IconBack>
-        <IconBack $isActivate={isMusicPlay} onClick={handleMusicToggle}>
-          <Icon icon={isMusicPlay ? faVolumeHigh : faVolumeXmark} />
-        </IconBack>
-      </IconsWrapper>
+      <IconImage src={iconReconstruct} onClick={() => setShow(!show)} />
+      {show && (
+        <>
+          <Title>城市經營</Title>
+          <IconsWrapper>
+            <IconBackConstruction
+              $isActivate={dragMode === 'houses'}
+              onClick={handleConstruction}
+            >
+              {dragMode === 'houses' ? (
+                <Icon icon={faFloppyDisk} />
+              ) : (
+                <IconImg src={reconstruct} />
+              )}
+            </IconBackConstruction>
+            <IconBack $isActivate={false} onClick={handleRescale}>
+              <ScaleText>{`${scale} x`}</ScaleText>
+            </IconBack>
+            <IconBack $isActivate={isMusicPlay} onClick={handleMusicToggle}>
+              <Icon icon={isMusicPlay ? faVolumeHigh : faVolumeXmark} />
+            </IconBack>
+          </IconsWrapper>
+        </>
+      )}
       <audio src={chocolate_world} preload={'metadata'} loop ref={audioRef} />
     </Wrapper>
   );
