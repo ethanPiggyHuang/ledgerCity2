@@ -14,7 +14,6 @@ export const LoginPanel: React.FunctionComponent<IloginPageProps> = () => {
   // );
 
   const auth = getAuth();
-  const navigate = useNavigate();
 
   const signInWithGoogle = async () => {
     dispatch(AUTHING_TOGGLE(true));

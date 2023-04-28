@@ -114,8 +114,7 @@ export const GameMap: React.FC = () => {
       {/* )} */}
       {/* {pageActivity === 'ledger' && <Ledger />} */}
       <Ledger />
-      {/* TODO */}
-      {/* <Statistics /> */}
+      <Statistics />
       <Social />
 
       <Footer />

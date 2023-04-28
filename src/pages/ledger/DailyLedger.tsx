@@ -46,7 +46,6 @@ export const DailyLedger: React.FC = () => {
                   if (chosenLedger) {
                     dispatch(ledgerEdit(chosenLedger));
                     dispatch(CHANGE_LEDGER_POSITION('expand'));
-                    // navigate('/ledger');
                   }
                 }}
               >

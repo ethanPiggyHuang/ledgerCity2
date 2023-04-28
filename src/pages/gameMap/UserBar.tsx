@@ -16,8 +16,6 @@ export const UserBar: React.FC = () => {
   const { panelOpened } = useAppSelector((state) => state.pageControl);
 
   const dispatch = useAppDispatch();
-  const auth = getAuth();
-  const navigate = useNavigate();
 
   return (
     <Wrapper>

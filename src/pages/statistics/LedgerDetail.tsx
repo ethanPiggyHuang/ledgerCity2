@@ -23,7 +23,6 @@ export const LedgerDetail: React.FC = () => {
   });
 
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
   return (
     <Wrap>
@@ -55,7 +54,6 @@ export const LedgerDetail: React.FC = () => {
               console.log(chosenLedger);
               if (chosenLedger) {
                 dispatch(ledgerEdit(chosenLedger));
-                navigate('/ledger');
               }
             }}
           >

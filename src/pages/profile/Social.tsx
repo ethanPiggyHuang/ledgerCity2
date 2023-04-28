@@ -128,7 +128,7 @@ export const Social: React.FC = () => {
                         }}
                       />
                       <FriendCityWrap>
-                        <FriendInfoTextMinor>協作城市</FriendInfoTextMinor>
+                        <FriendCityInfoTitle>協作城市</FriendCityInfoTitle>
                         <CityBannerWrap>
                           <MyCityText>{friendInfo.coopCityName}</MyCityText>
                           <MyCityNoticeWrap
@@ -157,7 +157,7 @@ export const Social: React.FC = () => {
                         </CityBannerWrap>
                       </FriendCityWrap>
                       <FriendCityWrap>
-                        <FriendInfoTextMinor>好友城市</FriendInfoTextMinor>
+                        <FriendCityInfoTitle>好友城市</FriendCityInfoTitle>
                         {friendInfo.personalCityName === '' ? (
                           <FriendCityInfoText>無個人城市</FriendCityInfoText>
                         ) : (
@@ -224,7 +224,7 @@ export const Social: React.FC = () => {
                         {/* TODO: cityOptions */}
                       </FriendCityWrap>
                       <FriendCityWrap>
-                        <FriendInfoTextMinor>好友城市</FriendInfoTextMinor>
+                        <FriendCityInfoTitle>好友城市</FriendCityInfoTitle>
                         {friendInfo.personalCityName === '' ? (
                           <FriendCityInfoText>無個人城市</FriendCityInfoText>
                         ) : (
@@ -278,7 +278,7 @@ export const Social: React.FC = () => {
                         }}
                       />
                       <FriendCityWrap>
-                        <FriendInfoTextMinor>好友邀請</FriendInfoTextMinor>
+                        <FriendCityInfoTitle>好友邀請</FriendCityInfoTitle>
                         <ButtonWrap>
                           <AgreeButton>同意</AgreeButton>
                           <DisAgreeButton>不同意</DisAgreeButton>
@@ -447,15 +447,17 @@ const FriendInfoTextWrap = styled.div`
   display: flex;
   flex-direction: column;
 `;
-const FriendInfoTextMinor = styled.p`
-  line-height: 22px;
-  font-size: 12px;
-  opacity: 0.6;
+const FriendCityInfoTitle = styled.p`
+  font-size: 16px;
   padding-top: 3px;
   text-align: center;
-`;
-const FriendCityInfoText = styled(FriendInfoTextMinor)`
   line-height: 22px;
+  color: #808080;
+`;
+const FriendCityInfoText = styled(FriendCityInfoTitle)`
+  opacity: 0.6;
+  line-height: 22px;
+  font-size: 12px;
 `;
 const FriendCityWrap = styled(FriendInfoTextWrap)`
   width: 20%;
@@ -479,7 +481,7 @@ const InviteCityBannerWrap = styled(CityBannerWrap)`
   /* height: 18px; */
   /* width: 70%; */
   /* margin: auto; */
-  opacity: 0.5;
+  opacity: 0.7;
 `;
 
 const MyCityText = styled.div`

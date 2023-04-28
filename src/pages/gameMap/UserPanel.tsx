@@ -108,7 +108,7 @@ export const UserPanel: React.FC = () => {
         onClick={() => {
           signOut(auth);
           dispatch(LOG_OUT());
-          navigate('./city');
+          navigate('./landing');
         }}
       >
         <LeaveIcon icon={faRightFromBracket} />

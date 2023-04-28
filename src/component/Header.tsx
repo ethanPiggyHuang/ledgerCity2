@@ -52,7 +52,7 @@ const Header: React.FC = () => {
         const cityInfo = doc.data();
         dispatch(UPDATE_CITY_INFO(cityInfo as CityBasicInfoState));
       });
-      navigate('/');
+      navigate('/city');
       return () => unsubscribe();
     }
   }, [cityList]);

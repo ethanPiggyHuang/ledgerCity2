@@ -2,16 +2,10 @@ import { Reset } from 'styled-reset';
 import { createGlobalStyle } from 'styled-components';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import React from 'react';
-import { Counter } from './feature/counter/Counter';
 import { GameMap } from './pages/gameMap/GameMap';
-import { Ledger } from './pages/ledger/Ledger';
-import { Statistics } from './pages/statistics/Statistics';
-// import Login from './pages/login/Login';
-// import { initializeApp } from 'firebase/app';
-// import { app } from './config/firebase';
 import AuthRoute from './component/AuthRoute';
 import Header from './component/Header';
-import { Social } from './pages/profile/Social';
+import { Landing } from './pages/landing/Landing';
 
 export interface IApplicationProps {}
 
@@ -24,12 +18,7 @@ const App: React.FunctionComponent<IApplicationProps> = (props) => {
         <Header />
         <Routes>
           <Route path="/city" element={<GameMap />} />
-          {/* //TODO */}
-          {/* <Route path="/login" element={<Login />} /> */}
-          {/* <Route path="/counter" element={<Counter />} /> */}
-          {/* <Route path="/ledger" element={<Ledger />} /> */}
-          {/* <Route path="/statistics" element={<Statistics />} /> */}
-          {/* <Route path="/profile" element={<Social />} /> */}
+          <Route path="/landing" element={<Landing />} />
           <Route path="*" element={<Navigate to="/city" replace />} />
         </Routes>
       </AuthRoute>

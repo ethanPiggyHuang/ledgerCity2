@@ -64,7 +64,7 @@ export const RearrangeOptions: React.FC = () => {
   return (
     <Wrapper>
       {/* TODO */}
-      <IconImage src={iconReconstruct} onClick={() => setShow(!show)} />
+      {/* <IconImage src={iconReconstruct} onClick={() => setShow(!show)} /> */}
       {show && (
         <>
           <Title>城市經營</Title>
