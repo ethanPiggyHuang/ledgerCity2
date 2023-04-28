@@ -31,13 +31,12 @@ export const LoginPanel: React.FunctionComponent<IloginPageProps> = () => {
 
   return (
     <Wrap>
-      <Title>登入</Title>
+      <Text>成為市長，開始管理城市吧！</Text>
+      <CityImage src={cityLandScape} />
       <LogInWrap onClick={() => signInWithGoogle()}>
         <GoogleLogo src={googleLogo} />
         以Google登入
       </LogInWrap>
-      <Text>成為市長，開始管理城市吧！</Text>
-      <CityImage src={cityLandScape} />
     </Wrap>
   );
 };
@@ -71,7 +70,7 @@ const LogInWrap = styled.div`
   font-weight: bold;
   color: #cc8159;
   border: 3px #cc8159 solid;
-  border-radius: 10px;
+  border-radius: 50px;
   padding: 10px 30px;
   background-color: #f2d6af7e;
   display: flex;
@@ -85,7 +84,8 @@ const LogInWrap = styled.div`
 `;
 
 const GoogleLogo = styled.img`
-  width: 60px;
+  max-width: 30px;
+  /* height: 100%; */
   display: block;
   /* transform: translateX(-50px) translateY(-22px) rotate(-7deg); */
 `;

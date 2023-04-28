@@ -18,6 +18,7 @@ export interface PageControlState {
   chartType: 'oneMonth' | 'monthly' | 'split';
   panelOpened: 'none' | 'user';
   socialSectionClosed: SocialSections[];
+  landingScrollY: number;
   status: 'idle' | 'loading' | 'failed';
 }
 
@@ -27,6 +28,7 @@ const initialState: PageControlState = {
   chartType: 'oneMonth',
   panelOpened: 'none',
   socialSectionClosed: [],
+  landingScrollY: 0,
   status: 'idle',
 };
 
@@ -70,6 +72,11 @@ export const pageControl = createSlice({
         ];
       }
     },
+    LANDING_SCROLL_Y: (state, action: PayloadAction<number>) => {
+      const delta =
+        state.landingScrollY + action.payload < 0 ? 0 : action.payload;
+      state.landingScrollY = state.landingScrollY + delta;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -92,6 +99,7 @@ export const {
   CHANGE_CHART_TYPE,
   PANEL_CONTROL,
   SOCIAL_SECTION_TOGGLE,
+  LANDING_SCROLL_Y,
 } = pageControl.actions;
 
 export default pageControl.reducer;
