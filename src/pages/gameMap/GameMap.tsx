@@ -17,6 +17,7 @@ import { RearrangeOptions } from './RearrangeOptions';
 import { ScaleBar } from './ScaleBar';
 import { UserBar } from './UserBar';
 import { Social } from '../profile/Social';
+import { useNavigate } from 'react-router-dom';
 
 export const GameMap: React.FC = () => {
   const { isLogin, isAuthing } = useAppSelector(
@@ -26,6 +27,8 @@ export const GameMap: React.FC = () => {
   const { pageActivity } = useAppSelector((state) => state.pageControl);
   const { isRenaming } = useAppSelector((state) => state.cityArrangement);
   const { panelOpened } = useAppSelector((state) => state.pageControl);
+
+  const navigate = useNavigate();
 
   const dispatch = useAppDispatch();
 
@@ -85,10 +88,14 @@ export const GameMap: React.FC = () => {
     }
   }, [userId]);
 
+  if (!isLogin && !isAuthing) {
+    navigate('/landing');
+  }
+
   return (
     <Wrapper>
       {/* && status === 'loading' */}
-      {!isLogin && !isAuthing && <DialogBoard />}
+      {/* {!isLogin && !isAuthing && <DialogBoard />} */}
       <UserBar />
       <CityWrapper
         onClick={() => {

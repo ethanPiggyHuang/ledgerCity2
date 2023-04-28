@@ -7,6 +7,7 @@ import {
   GET_ACCOUNT_INFO,
   CREATE_ACCOUNT,
 } from '../redux/reducers/userInfoSlice';
+import { useNavigate } from 'react-router-dom';
 
 export interface IAuthRouteProps {
   children?: React.ReactNode; //TODO ??
@@ -20,6 +21,8 @@ const AuthRoute: React.FunctionComponent<IAuthRouteProps> = (props) => {
   );
   const { ledgerBookId } = useAppSelector((state) => state.cityBasicInfo);
   const { cityList } = useAppSelector((state) => state.userInfo.data);
+
+  const navigate = useNavigate();
 
   const auth = getAuth();
 
@@ -42,6 +45,7 @@ const AuthRoute: React.FunctionComponent<IAuthRouteProps> = (props) => {
       } else {
         dispatch(AUTHING_TOGGLE(false));
         console.log('unauthorized');
+        navigate('/landing');
       }
     });
     // AuthCheck();

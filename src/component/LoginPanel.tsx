@@ -35,11 +35,6 @@ export const LoginPanel: React.FunctionComponent<IloginPageProps> = () => {
   );
 };
 
-// type CurtainProps = {
-//   $isLogin: boolean;
-//   $isDialog: boolean;
-// };
-
 const Wrap = styled.div`
   width: 50vw;
   height: 70vh;

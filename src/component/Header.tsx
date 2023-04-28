@@ -117,32 +117,38 @@ const Header: React.FC = () => {
 
   return (
     <Wrapper>
-      <Banner />
-      <TextWrapper>
-        <BannerText
-          $isRenaming={isRenaming}
-          value={`${cityName}`}
-          onClick={() => dispatch(RENAME_CITY(true))}
-          onChange={(event) => {
-            const target = event.target as HTMLInputElement;
-            dispatch(CHANGE_CITY_NAME(target.value));
-          }}
-          onKeyDown={(event) => {
-            if (event.code === 'Enter') {
-              event.preventDefault();
-            }
-          }}
-          onBlur={() => setTimeout(() => dispatch(RENAME_CITY(false)), 100)}
-        ></BannerText>
-        <SaveIcon
-          $isRenaming={isRenaming}
-          icon={faFloppyDisk}
-          onClick={() => {
-            dispatch(UPDATE_CITY_NAME({ cityId: cityList[0], cityName }));
-            // dispatch(RENAME_CITY(false));
-          }}
-        />
-      </TextWrapper>
+      {userId ? (
+        <>
+          <Banner />
+          <TextWrapper>
+            <BannerText
+              $isRenaming={isRenaming}
+              value={`${cityName}`}
+              onClick={() => dispatch(RENAME_CITY(true))}
+              onChange={(event) => {
+                const target = event.target as HTMLInputElement;
+                dispatch(CHANGE_CITY_NAME(target.value));
+              }}
+              onKeyDown={(event) => {
+                if (event.code === 'Enter') {
+                  event.preventDefault();
+                }
+              }}
+              onBlur={() => setTimeout(() => dispatch(RENAME_CITY(false)), 100)}
+            ></BannerText>
+            <SaveIcon
+              $isRenaming={isRenaming}
+              icon={faFloppyDisk}
+              onClick={() => {
+                dispatch(UPDATE_CITY_NAME({ cityId: cityList[0], cityName }));
+                // dispatch(RENAME_CITY(false));
+              }}
+            />
+          </TextWrapper>
+        </>
+      ) : (
+        ''
+      )}
     </Wrapper>
   );
 };
@@ -212,4 +218,8 @@ const SaveIcon = styled(FontAwesomeIcon)<SaveIconProps>`
   right: -5px;
   color: #df9469;
   cursor: pointer;
+`;
+
+const LandingBannerWrapper = styled.div`
+  transform: translateX(-50%) scale(0.6);
 `;
