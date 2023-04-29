@@ -266,5 +266,5 @@ const WalkingFigure = styled.img<WalkingFigureProps>`
   position: absolute;
   left: ${({ $scale, $left }) => `${$left * $scale + 400}px`};
   transition: left 0.5s linear;
-  z-index: 9;
+  z-index: 3;
 `;

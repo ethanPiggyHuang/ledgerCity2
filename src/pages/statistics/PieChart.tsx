@@ -3,6 +3,7 @@ import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { chooseLabel } from '../../redux/reducers/ledgerListSlice';
 import { mainLabels, labelColorCodes } from '../../utils/gameSettings';
+import { DoughnutChart } from './DoughnutChart';
 
 interface PieChartSetting {
   svgHeight: number;
@@ -121,9 +122,18 @@ export const PieChart: React.FC = () => {
     );
   };
 
+  const props = {
+    setting: { radius: 100, holeRatio: 0.2, hoverDelta: 20, labelDelta: 20 },
+    data: [
+      { label: '食物', value: 10, colorCode: '#333388' },
+      { label: '飲品', value: 50, colorCode: '#338888' },
+      { label: '交通', value: 30, colorCode: '#883388' },
+    ],
+  };
+
   return (
     <Wrap>
-      <ChartTitle>{`${chosenMonth}月各類別花費`}</ChartTitle>
+      {/* <ChartTitle>{`${chosenMonth}月各類別花費`}</ChartTitle>
       {loadingStatus === 'idle' && chosenMonth !== 0 && (
         <ChartWrap>
           <PieSvg
@@ -150,7 +160,8 @@ export const PieChart: React.FC = () => {
             <LabelText>{label}</LabelText>
           </>
         ))}
-      </LabelWrap>
+      </LabelWrap> */}
+      <DoughnutChart props={props} />
     </Wrap>
   );
 };
@@ -188,7 +199,7 @@ const PiePath = styled.path`
   opacity: 0.7;
   cursor: pointer;
 
-  &: hover {
+  &:hover {
     opacity: 1;
     transform: translate(0, -10px);
   }
