@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { PieChart } from './PieChart';
+import { GeneralAnalysis } from './GeneralAnalysis';
 import { BarChart } from './BarChart';
 import { LedgerDetail } from './LedgerDetail';
 import {
@@ -47,7 +47,7 @@ export const Statistics: React.FC = () => {
         </ChartType>
       </ChartTypes>
       <Main>
-        {chartType === 'oneMonth' && <PieChart></PieChart>}
+        {chartType === 'oneMonth' && <GeneralAnalysis />}
         {chartType === 'monthly' && (
           <>
             <Select
@@ -96,7 +96,7 @@ type WrapProps = {
 
 const Wrap = styled.div<WrapProps>`
   border: #ffffff 3px solid;
-  background-color: #ebebeb;
+  background-color: #f2f2f2;
   border-radius: 20px;
   color: #808080;
 

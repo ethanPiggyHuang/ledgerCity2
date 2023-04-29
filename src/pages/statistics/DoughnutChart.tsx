@@ -20,16 +20,15 @@ interface ChartSetting {
 }
 
 export const DoughnutChart: React.FC<Props> = ({ props }) => {
-  const { chosenYear, chosenMonth } = useAppSelector(
-    (state) => state.ledgerList.choices
-  );
-  // const dispatch = useAppDispatch();
+  const { chosenLabel } = useAppSelector((state) => state.ledgerList.choices);
+  const dispatch = useAppDispatch();
   const { radius, holeRatio, hoverDelta, labelDelta } = props.setting;
   const { data, title } = props;
 
   const bufferSpace = 20;
-  const svgHeight = 2 * (radius + hoverDelta + labelDelta + bufferSpace);
-  const svgWidth = svgHeight;
+  const abstractSpace = 50;
+  const svgWidth = 2 * (radius + hoverDelta + labelDelta + bufferSpace);
+  const svgHeight = svgWidth + abstractSpace;
 
   const totalValue = data.reduce((total, data) => (total += data.value), 0);
 
@@ -70,9 +69,10 @@ export const DoughnutChart: React.FC<Props> = ({ props }) => {
     index: number
   ): ReactNode => {
     const { sectorRatio, startAngle, label, colorCode } = data;
+
     const origin = {
       x: svgWidth / 2,
-      y: svgHeight / 2,
+      y: svgWidth / 2,
     };
     const midAngle = startAngle + sectorRatio * Math.PI;
     const endAngle = startAngle + sectorRatio * 2 * Math.PI;
@@ -120,17 +120,22 @@ export const DoughnutChart: React.FC<Props> = ({ props }) => {
     };
 
     return (
-      <SectorGroup key={index} $xShift={hoverShift.x} $yShift={hoverShift.y}>
+      <SectorGroup
+        key={index}
+        $xShift={hoverShift.x}
+        $yShift={hoverShift.y}
+        $isChosen={label === chosenLabel}
+      >
         <SectorPath
-          // key={`sector ${index}`}
-          // onClick={() => {
-          //   dispatch(chooseLabel(label));
-          // }}
-
+          onClick={() => {
+            label === chosenLabel
+              ? dispatch(chooseLabel(''))
+              : dispatch(chooseLabel(label));
+          }}
           d={colorDScript}
           fill={colorCode}
         />
-        <HolePath d={holeDScript} fill={'#ebebeb'} />
+        <HolePath d={holeDScript} fill={'#f2f2f2'} />
         <LabelName x={labelNameAnchor.x} y={labelNameAnchor.y}>
           {label}
         </LabelName>
@@ -144,16 +149,26 @@ export const DoughnutChart: React.FC<Props> = ({ props }) => {
   return (
     <ChartWrap>
       <PieSvg $svgHeight={svgHeight} $svgWidth={svgWidth}>
-        {conbinedData.map((data, index) => drawSector(data, index))}
-        <ChartSubtitle x={svgWidth / 2} y={svgHeight / 2 - 42}>
+        {conbinedData.map((data, index) =>
+          data.sectorRatio === 0 ? '' : drawSector(data, index)
+        )}
+        <ChartSubtitle x={svgWidth / 2} y={svgWidth / 2 - 42}>
           {title[0]}
         </ChartSubtitle>
-        <ChartTitle x={svgWidth / 2} y={svgHeight / 2}>
+        <ChartTitle x={svgWidth / 2} y={svgWidth / 2}>
           {title[1]}
         </ChartTitle>
-        <ChartSubtitle x={svgWidth / 2} y={svgHeight / 2 + 30}>
+        <ChartSubtitle x={svgWidth / 2} y={svgWidth / 2 + 30}>
           {title[2]}
         </ChartSubtitle>
+
+        <ChartAbstract x={svgWidth / 2} y={svgHeight - abstractSpace / 2}>
+          {chosenLabel === ''
+            ? `支出總額：${totalValue}元`
+            : `${chosenLabel}類支出：${
+                data.find((label) => label.label === chosenLabel)?.value
+              }元`}
+        </ChartAbstract>
       </PieSvg>
     </ChartWrap>
   );
@@ -167,13 +182,13 @@ type PieSvgProps = {
 type SectorGroupProps = {
   $xShift: number;
   $yShift: number;
+  $isChosen: boolean;
 };
 
 const ChartWrap = styled.div`
-  border: 1px solid lightblue;
   display: flex;
   justify-content: center;
-  padding: 20px 0;
+  transform: scale(1);
 `;
 const PieSvg = styled.svg<PieSvgProps>`
   padding-top: 0px;
@@ -183,6 +198,9 @@ const PieSvg = styled.svg<PieSvgProps>`
 
 const SectorGroup = styled.g<SectorGroupProps>`
   transition: transform 0.6s ease;
+  opacity: 0.7;
+  transform: ${({ $xShift, $yShift, $isChosen }) =>
+    $isChosen ? `translate(${$xShift}px, ${$yShift}px)` : ''};
   &:hover {
     transform: ${({ $xShift, $yShift }) =>
       `translate(${$xShift}px, ${$yShift}px)`};
@@ -226,4 +244,10 @@ const ChartTitle = styled.text`
 
 const ChartSubtitle = styled(ChartTitle)`
   font-size: 18px;
+`;
+
+const ChartAbstract = styled.text`
+  font-size: 24px;
+  fill: #808080;
+  text-anchor: middle;
 `;

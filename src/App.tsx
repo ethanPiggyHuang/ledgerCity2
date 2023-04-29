@@ -32,10 +32,10 @@ const GlobalStyle = createGlobalStyle`
   * {
     box-sizing: border-box;
     /* 禁止文字選取  */
-    -webkit-user-select: none; /* Safari */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* Edge */
-    user-select: none; /* Standard */
+    /* -webkit-user-select: none; /* Safari */
+    /* -moz-user-select: none; /* Firefox */
+    /* -ms-user-select: none; /* Edge */
+    /* user-select: none; /* Standard */
     
   }
   body {

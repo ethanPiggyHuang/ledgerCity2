@@ -84,6 +84,8 @@ const Wrap = styled.div`
   gap: 10px;
   width: 100%;
   border: 1px solid lightblue;
+  height: 300px;
+  overflow: scroll;
 `;
 const LedgerRow = styled.div<LedgerRowProps>`
   width: 100%;
