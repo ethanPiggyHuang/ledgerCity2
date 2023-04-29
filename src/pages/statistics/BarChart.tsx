@@ -3,6 +3,9 @@ import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { chooseLabel, chooseMonth } from '../../redux/reducers/ledgerListSlice';
 import { mainLabels, labelColorCodes } from '../../utils/gameSettings';
+import { CHART_SHOWN_SWITCH } from '../../redux/reducers/pageControlSlice';
+import { faAnglesLeft } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface BarChartSetting {
   svgHeight: number;
@@ -273,6 +276,10 @@ export const BarChart: React.FC = () => {
           ))}
         </LabelWrap>
       )}
+      <MinimizeWrap onClick={() => dispatch(CHART_SHOWN_SWITCH('monthOnly'))}>
+        <MinimizeIcon icon={faAnglesLeft} />
+        <MinimizeText>收合</MinimizeText>
+      </MinimizeWrap>
     </Wrap>
   );
 };
@@ -283,7 +290,6 @@ type LabelColorProps = {
 };
 
 const Wrap = styled.div`
-  padding: 10px;
   width: 100%;
   position: relative;
   overflow: scroll;
@@ -336,5 +342,33 @@ const LabelColor = styled.div<LabelColorProps>`
 `;
 const LabelText = styled.p`
   height: 10px;
+  cursor: pointer;
+`;
+
+const MinimizeWrap = styled.div`
+  position: absolute;
+  padding: 20px;
+  height: 100%;
+  left: 0px;
+  top: 0px;
+  text-align: center;
+
+  opacity: 0;
+  transition: opacity 1s ease;
+  &:hover {
+    opacity: 0.5;
+  }
+`;
+
+const MinimizeIcon = styled(FontAwesomeIcon)`
+  font-size: 20px;
+  color: #808080;
+  cursor: pointer;
+`;
+
+const MinimizeText = styled.p`
+  padding-top: 5px;
+  font-size: 16px;
+  color: #808080;
   cursor: pointer;
 `;

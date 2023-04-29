@@ -16,6 +16,7 @@ export interface PageControlState {
   pageActivity: CurrentActionState;
   ledgerPosition: 'minimize' | 'normal' | 'expand';
   chartType: 'oneMonth' | 'monthly' | 'split';
+  chartShown: 'yearAndMonth' | 'monthOnly' | 'monthAndDetail';
   panelOpened: 'none' | 'user';
   socialSectionClosed: SocialSections[];
   landingScrollY: number;
@@ -26,6 +27,7 @@ const initialState: PageControlState = {
   pageActivity: 'city',
   ledgerPosition: 'normal',
   chartType: 'oneMonth',
+  chartShown: 'monthOnly',
   panelOpened: 'none',
   socialSectionClosed: [],
   landingScrollY: 0,
@@ -77,6 +79,12 @@ export const pageControl = createSlice({
         state.landingScrollY + action.payload < 0 ? 0 : action.payload;
       state.landingScrollY = state.landingScrollY + delta;
     },
+    CHART_SHOWN_SWITCH: (
+      state,
+      action: PayloadAction<'yearAndMonth' | 'monthOnly' | 'monthAndDetail'>
+    ) => {
+      state.chartShown = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -100,6 +108,7 @@ export const {
   PANEL_CONTROL,
   SOCIAL_SECTION_TOGGLE,
   LANDING_SCROLL_Y,
+  CHART_SHOWN_SWITCH,
 } = pageControl.actions;
 
 export default pageControl.reducer;

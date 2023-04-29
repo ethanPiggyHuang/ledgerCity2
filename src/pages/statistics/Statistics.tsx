@@ -14,6 +14,7 @@ import { updateActivity } from '../../redux/api/userAPI';
 import { NavBar } from '../gameMap/NavBar';
 import {
   CHANGE_CHART_TYPE,
+  CHART_SHOWN_SWITCH,
   SWITCH_PAGE,
 } from '../../redux/reducers/pageControlSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -47,6 +48,17 @@ export const Statistics: React.FC = () => {
         </ChartType>
         <ChartType onClick={() => dispatch(CHANGE_CHART_TYPE('split'))}>
           分帳結算
+        </ChartType>
+        <ChartType onClick={() => dispatch(CHART_SHOWN_SWITCH('yearAndMonth'))}>
+          yearAndMonth
+        </ChartType>
+        <ChartType onClick={() => dispatch(CHART_SHOWN_SWITCH('monthOnly'))}>
+          monthOnly
+        </ChartType>
+        <ChartType
+          onClick={() => dispatch(CHART_SHOWN_SWITCH('monthAndDetail'))}
+        >
+          monthAndDetail
         </ChartType>
       </ChartTypes>
       <Main>

@@ -3,7 +3,12 @@ import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { chooseLabel, chooseMonth } from '../../redux/reducers/ledgerListSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons';
+import {
+  faAnglesLeft,
+  faCaretLeft,
+  faCaretRight,
+} from '@fortawesome/free-solid-svg-icons';
+import { CHART_SHOWN_SWITCH } from '../../redux/reducers/pageControlSlice';
 
 interface Props {
   props: {
@@ -24,6 +29,7 @@ export const DoughnutChart: React.FC<Props> = ({ props }) => {
   const { chosenLabel, chosenMonth } = useAppSelector(
     (state) => state.ledgerList.choices
   );
+  const { chartShown } = useAppSelector((state) => state.pageControl);
   const dispatch = useAppDispatch();
   const { radius, holeRatio, hoverDelta, labelDelta } = props.setting;
   const { data, title } = props;
@@ -122,6 +128,14 @@ export const DoughnutChart: React.FC<Props> = ({ props }) => {
       y: hoverDelta * Math.sin(midAngle),
     };
 
+    const handleClickingLabel = () => {
+      label === chosenLabel
+        ? dispatch(chooseLabel(''))
+        : dispatch(chooseLabel(label));
+      if (chartShown !== 'monthAndDetail')
+        dispatch(CHART_SHOWN_SWITCH('monthAndDetail'));
+    };
+
     return (
       <SectorGroup
         key={index}
@@ -132,11 +146,7 @@ export const DoughnutChart: React.FC<Props> = ({ props }) => {
         {sectorRatio === 1 ? (
           <>
             <CirclePath
-              onClick={() => {
-                label === chosenLabel
-                  ? dispatch(chooseLabel(''))
-                  : dispatch(chooseLabel(label));
-              }}
+              onClick={handleClickingLabel}
               cx={origin.x}
               cy={origin.y}
               r={radius}
@@ -152,11 +162,7 @@ export const DoughnutChart: React.FC<Props> = ({ props }) => {
         ) : (
           <>
             <SectorPath
-              onClick={() => {
-                label === chosenLabel
-                  ? dispatch(chooseLabel(''))
-                  : dispatch(chooseLabel(label));
-              }}
+              onClick={handleClickingLabel}
               d={colorDScript}
               fill={colorCode}
             />
@@ -167,11 +173,7 @@ export const DoughnutChart: React.FC<Props> = ({ props }) => {
         <LabelName
           x={labelNameAnchor.x}
           y={labelNameAnchor.y}
-          onClick={() => {
-            label === chosenLabel
-              ? dispatch(chooseLabel(''))
-              : dispatch(chooseLabel(label));
-          }}
+          onClick={handleClickingLabel}
         >
           {label}
         </LabelName>
@@ -239,6 +241,14 @@ export const DoughnutChart: React.FC<Props> = ({ props }) => {
           }}
         />
       </MonthSwitchWrap>
+      <SwitchModeWrap
+        onClick={() => dispatch(CHART_SHOWN_SWITCH('yearAndMonth'))}
+        $isHidden={chartShown === 'yearAndMonth'}
+      >
+        <SwitchModeIcon icon={faAnglesLeft} />
+        <SwitchModeText>查看</SwitchModeText>
+        <SwitchModeText>每月變化</SwitchModeText>
+      </SwitchModeWrap>
     </ChartWrap>
   );
 };
@@ -258,10 +268,15 @@ type ChartAbstractProps = {
   $color: string;
 };
 
+type SwitchModeWrapProps = {
+  $isHidden: boolean;
+};
+
 const ChartWrap = styled.div`
   display: flex;
   justify-content: center;
   transform: scale(1);
+  position: relative;
 `;
 const PieSvg = styled.svg<PieSvgProps>`
   padding-top: 0px;
@@ -357,4 +372,31 @@ const MonthSwitchIcon = styled(FontAwesomeIcon)`
   color: #808080;
   cursor: pointer;
   padding: 10px;
+`;
+
+const SwitchModeWrap = styled.div<SwitchModeWrapProps>`
+  position: absolute;
+  padding: 20px;
+  left: 0px;
+  top: 0px;
+  height: 100%;
+  text-align: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 1s ease;
+  display: ${({ $isHidden }) => ($isHidden ? 'none' : 'block')};
+  &:hover {
+    opacity: 0.5;
+  }
+`;
+
+const SwitchModeIcon = styled(FontAwesomeIcon)`
+  font-size: 20px;
+  color: #808080;
+`;
+
+const SwitchModeText = styled.p`
+  padding-top: 5px;
+  font-size: 16px;
+  color: #808080;
 `;

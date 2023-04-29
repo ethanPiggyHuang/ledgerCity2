@@ -15,10 +15,14 @@ import {
   faArrowDownLong,
   faTrashCan,
   faPen,
+  faAnglesRight,
 } from '@fortawesome/free-solid-svg-icons';
 import { mainLabel, labelIndex } from '../../utils/gameSettings';
 import { LedgerDataState } from '../../redux/reducers/ledgerSingleSlice';
-import { SWITCH_PAGE } from '../../redux/reducers/pageControlSlice';
+import {
+  CHART_SHOWN_SWITCH,
+  SWITCH_PAGE,
+} from '../../redux/reducers/pageControlSlice';
 import { CHANGE_LEDGER_POSITION } from '../../redux/reducers/pageControlSlice';
 
 export const LedgerDetail: React.FC = () => {
@@ -216,6 +220,10 @@ export const LedgerDetail: React.FC = () => {
             </LedgerRow>
           ))}
       </LedgerRowsWrap>
+      <MinimizeWrap onClick={() => dispatch(CHART_SHOWN_SWITCH('monthOnly'))}>
+        <MinimizeIcon icon={faAnglesRight} />
+        <MinimizeText>收合</MinimizeText>
+      </MinimizeWrap>
     </Wrap>
   );
 };
@@ -350,4 +358,32 @@ const LabelIconWrap = styled.div<LabelIconWrapProps>`
 const LabelIcon = styled(FontAwesomeIcon)`
   font-size: 20px;
   color: #f2f2f2;
+`;
+
+const MinimizeWrap = styled.div`
+  position: absolute;
+  padding: 20px;
+  right: -70px;
+  height: 100%;
+  top: 0px;
+  text-align: center;
+
+  opacity: 0;
+  transition: opacity 1s ease;
+  &:hover {
+    opacity: 0.5;
+  }
+`;
+
+const MinimizeIcon = styled(FontAwesomeIcon)`
+  font-size: 20px;
+  color: #808080;
+  cursor: pointer;
+`;
+
+const MinimizeText = styled.p`
+  padding-top: 5px;
+  font-size: 16px;
+  color: #808080;
+  cursor: pointer;
 `;
