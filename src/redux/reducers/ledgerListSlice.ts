@@ -73,7 +73,15 @@ export const ledgerList = createSlice({
       state.choices.chosenYear = action.payload;
     },
     chooseMonth: (state, action: PayloadAction<number>) => {
-      state.choices.chosenMonth = action.payload;
+      if (action.payload < 1) {
+        state.choices.chosenMonth = 12;
+        state.choices.chosenYear = state.choices.chosenYear - 1;
+      } else if (action.payload > 12) {
+        state.choices.chosenMonth = 1;
+        state.choices.chosenYear = state.choices.chosenYear + 1;
+      } else {
+        state.choices.chosenMonth = action.payload;
+      }
     },
     chooseLabel: (state, action: PayloadAction<string>) => {
       state.choices.chosenLabel = action.payload;

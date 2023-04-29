@@ -1,8 +1,9 @@
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { chooseLabel } from '../../redux/reducers/ledgerListSlice';
-import { mainLabels, labelColorCodes } from '../../utils/gameSettings';
+import { chooseLabel, chooseMonth } from '../../redux/reducers/ledgerListSlice';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 
 interface Props {
   props: {
@@ -20,7 +21,9 @@ interface ChartSetting {
 }
 
 export const DoughnutChart: React.FC<Props> = ({ props }) => {
-  const { chosenLabel } = useAppSelector((state) => state.ledgerList.choices);
+  const { chosenLabel, chosenMonth } = useAppSelector(
+    (state) => state.ledgerList.choices
+  );
   const dispatch = useAppDispatch();
   const { radius, holeRatio, hoverDelta, labelDelta } = props.setting;
   const { data, title } = props;
@@ -33,7 +36,7 @@ export const DoughnutChart: React.FC<Props> = ({ props }) => {
   const totalValue = data.reduce((total, data) => (total += data.value), 0);
 
   const sectorRatios = data.map((data) =>
-    data.value / totalValue === 1 ? 0.999999 : data.value / totalValue
+    totalValue === 0 ? 0 : data.value / totalValue
   );
 
   const startRatios = data.map((data, dataIndex) =>
@@ -72,7 +75,7 @@ export const DoughnutChart: React.FC<Props> = ({ props }) => {
 
     const origin = {
       x: svgWidth / 2,
-      y: svgWidth / 2,
+      y: svgHeight / 2,
     };
     const midAngle = startAngle + sectorRatio * Math.PI;
     const endAngle = startAngle + sectorRatio * 2 * Math.PI;
@@ -126,16 +129,41 @@ export const DoughnutChart: React.FC<Props> = ({ props }) => {
         $yShift={hoverShift.y}
         $isChosen={label === chosenLabel}
       >
-        <SectorPath
-          onClick={() => {
-            label === chosenLabel
-              ? dispatch(chooseLabel(''))
-              : dispatch(chooseLabel(label));
-          }}
-          d={colorDScript}
-          fill={colorCode}
-        />
-        <HolePath d={holeDScript} fill={'#f2f2f2'} />
+        {sectorRatio === 1 ? (
+          <>
+            <CirclePath
+              onClick={() => {
+                label === chosenLabel
+                  ? dispatch(chooseLabel(''))
+                  : dispatch(chooseLabel(label));
+              }}
+              cx={origin.x}
+              cy={origin.y}
+              r={radius}
+              fill={colorCode}
+            />
+            <CircleHolePath
+              cx={origin.x}
+              cy={origin.y}
+              r={holeRadius}
+              fill={'#f2f2f2'}
+            />
+          </>
+        ) : (
+          <>
+            <SectorPath
+              onClick={() => {
+                label === chosenLabel
+                  ? dispatch(chooseLabel(''))
+                  : dispatch(chooseLabel(label));
+              }}
+              d={colorDScript}
+              fill={colorCode}
+            />
+            <HolePath d={holeDScript} fill={'#f2f2f2'} />
+          </>
+        )}
+
         <LabelName
           x={labelNameAnchor.x}
           y={labelNameAnchor.y}
@@ -160,24 +188,57 @@ export const DoughnutChart: React.FC<Props> = ({ props }) => {
         {conbinedData.map((data, index) =>
           data.sectorRatio === 0 ? '' : drawSector(data, index)
         )}
-        <ChartSubtitle x={svgWidth / 2} y={svgWidth / 2 - 42}>
+        <ChartSubtitle x={svgWidth / 2 - 70} y={(abstractSpace * 2) / 3}>
           {title[0]}
         </ChartSubtitle>
-        <ChartTitle x={svgWidth / 2} y={svgWidth / 2}>
+        <ChartTitle x={svgWidth / 2} y={(abstractSpace * 2) / 3}>
           {title[1]}
         </ChartTitle>
-        <ChartSubtitle x={svgWidth / 2} y={svgWidth / 2 + 30}>
+        <ChartSubtitle x={svgWidth / 2 + 80} y={(abstractSpace * 2) / 3}>
           {title[2]}
         </ChartSubtitle>
 
-        <ChartAbstract x={svgWidth / 2} y={svgHeight - abstractSpace / 2}>
+        <ChartAbstract
+          x={svgWidth / 2}
+          y={svgHeight / 2 - 17}
+          $color={
+            data.find((label) => label.label === chosenLabel)?.colorCode ||
+            '#5b4105'
+          }
+          onClick={() => dispatch(chooseLabel(''))}
+        >
+          {chosenLabel === '' ? `支出總額：` : `${chosenLabel}類支出：`}
+        </ChartAbstract>
+        <ChartAbstract
+          x={svgWidth / 2}
+          y={svgHeight / 2 + 17}
+          $color={
+            data.find((label) => label.label === chosenLabel)?.colorCode ||
+            '#5b4105'
+          }
+          onClick={() => dispatch(chooseLabel(''))}
+        >
           {chosenLabel === ''
-            ? `支出總額：${totalValue}元`
-            : `${chosenLabel}類支出：${
-                data.find((label) => label.label === chosenLabel)?.value
-              }元`}
+            ? `${totalValue}元`
+            : `${data.find((label) => label.label === chosenLabel)?.value}元`}
         </ChartAbstract>
       </PieSvg>
+      <MonthSwitchWrap>
+        <MonthSwitchIcon
+          icon={faCaretLeft}
+          onClick={() => {
+            dispatch(chooseMonth(chosenMonth - 1));
+            dispatch(chooseLabel(''));
+          }}
+        />
+        <MonthSwitchIcon
+          icon={faCaretRight}
+          onClick={() => {
+            dispatch(chooseMonth(chosenMonth + 1));
+            dispatch(chooseLabel(''));
+          }}
+        />
+      </MonthSwitchWrap>
     </ChartWrap>
   );
 };
@@ -191,6 +252,10 @@ type SectorGroupProps = {
   $xShift: number;
   $yShift: number;
   $isChosen: boolean;
+};
+
+type ChartAbstractProps = {
+  $color: string;
 };
 
 const ChartWrap = styled.div`
@@ -222,6 +287,13 @@ const HolePath = styled(SectorPath)`
   cursor: default;
 `;
 
+const CirclePath = styled.circle`
+  cursor: pointer;
+`;
+const CircleHolePath = styled(CirclePath)`
+  cursor: default;
+`;
+
 const LabelName = styled.text`
   font-size: 16px;
   font-weight: bold;
@@ -245,7 +317,7 @@ const LabelRatio = styled.text`
 `;
 
 const ChartTitle = styled.text`
-  font-size: 36px;
+  font-size: 28px;
   fill: #808080;
   text-anchor: middle;
 `;
@@ -254,11 +326,35 @@ const ChartSubtitle = styled(ChartTitle)`
   font-size: 18px;
 `;
 
-const ChartAbstract = styled.text`
+const ChartAbstract = styled.text<ChartAbstractProps>`
   font-size: 24px;
   font-weight: bold;
-  /* opacity: 0.6; */
-  fill: #dabd7a;
+  opacity: 0.8;
+  fill: ${({ $color }) => $color};
 
   text-anchor: middle;
+  cursor: default;
+`;
+
+const MonthSwitchWrap = styled.div`
+  width: 360px;
+  height: 45px;
+  position: absolute;
+  top: 0;
+  display: flex;
+  padding-top: 7px;
+  justify-content: space-between;
+  opacity: 0;
+  transition: opacity 1s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+`;
+
+const MonthSwitchIcon = styled(FontAwesomeIcon)`
+  font-size: 20px;
+  color: #808080;
+  cursor: pointer;
+  padding: 10px;
 `;
