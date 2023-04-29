@@ -136,7 +136,15 @@ export const DoughnutChart: React.FC<Props> = ({ props }) => {
           fill={colorCode}
         />
         <HolePath d={holeDScript} fill={'#f2f2f2'} />
-        <LabelName x={labelNameAnchor.x} y={labelNameAnchor.y}>
+        <LabelName
+          x={labelNameAnchor.x}
+          y={labelNameAnchor.y}
+          onClick={() => {
+            label === chosenLabel
+              ? dispatch(chooseLabel(''))
+              : dispatch(chooseLabel(label));
+          }}
+        >
           {label}
         </LabelName>
         <LabelRatio x={labelRatioAnchor.x} y={labelRatioAnchor.y}>

@@ -18,8 +18,11 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { mainLabel, labelIndex } from '../../utils/gameSettings';
 import { LedgerDataState } from '../../redux/reducers/ledgerSingleSlice';
+import { SWITCH_PAGE } from '../../redux/reducers/pageControlSlice';
+import { CHANGE_LEDGER_POSITION } from '../../redux/reducers/pageControlSlice';
 
 export const LedgerDetail: React.FC = () => {
+  const { userId } = useAppSelector((state) => state.userInfo.data);
   const ledgerList = useAppSelector((state) => state.ledgerList.dataList);
   const { chosenYear, chosenMonth, chosenLabel, sortBy, sortDirection } =
     useAppSelector((state) => state.ledgerList.choices);
@@ -188,22 +191,26 @@ export const LedgerDetail: React.FC = () => {
               <LedgerText>{ledger.item}</LedgerText>
               <LedgerText>{ledger.amount}</LedgerText>
               <LedgerText>
-                <OperationIcon
+                <EditIcon
                   icon={faPen}
                   onClick={() => {
                     const chosenLedger = ledgerList.find(
                       (data) => data.ledgerId === ledger.ledgerId
                     );
-                    console.log(chosenLedger);
                     if (chosenLedger) {
                       dispatch(ledgerEdit(chosenLedger));
+                      dispatch(SWITCH_PAGE({ userId, pageActivity: 'ledger' }));
+                      dispatch(CHANGE_LEDGER_POSITION('expand'));
                     }
                   }}
                 />
-                <OperationIcon
+                <DeleteIcon
                   icon={faTrashCan}
                   className="material-symbols-outlined"
-                  onClick={() => dispatch(deleteSingleLedger(ledger.ledgerId))}
+                  onClick={
+                    () => alert('確定刪除嗎？')
+                    // dispatch(deleteSingleLedger(ledger.ledgerId))
+                  }
                 />
               </LedgerText>
             </LedgerRow>
@@ -247,10 +254,11 @@ const LedgerRowsWrap = styled.div`
 `;
 
 const LedgerRow = styled(HeaderRow)<LedgerRowProps>`
-  background-color: ${({ $isChosen }) => ($isChosen ? 'lightblue' : '#f2f2f2')};
+  background-color: ${({ $isChosen }) => ($isChosen ? '#dabd7a58' : '#f2f2f2')};
   color: #808080;
   font-weight: normal;
   justify-content: space-around;
+  border-radius: 10px;
 `;
 
 const HeaderText = styled.div<HeaderTextProps>`
@@ -310,11 +318,17 @@ const LedgerTextSmall = styled(LedgerText)`
   width: 12%;
 `;
 
-const OperationIcon = styled(FontAwesomeIcon)`
+const EditIcon = styled(FontAwesomeIcon)`
   font-size: 16px;
   cursor: pointer;
   opacity: 0.5;
   &:hover {
+    opacity: 1;
+  }
+`;
+const DeleteIcon = styled(EditIcon)`
+  &:hover {
+    color: #ad1818;
     opacity: 1;
   }
 `;

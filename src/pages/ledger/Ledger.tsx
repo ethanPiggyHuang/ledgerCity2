@@ -12,7 +12,10 @@ import { Calculator } from './Calculator';
 import { ReactComponent as Receipt } from '../../assets/receipt.svg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faCheck } from '@fortawesome/free-solid-svg-icons';
-import { CHANGE_LEDGER_POSITION } from '../../redux/reducers/pageControlSlice';
+import {
+  CHANGE_LEDGER_POSITION,
+  SWITCH_PAGE,
+} from '../../redux/reducers/pageControlSlice';
 import { DailyLedger } from './DailyLedger';
 import { ClosingButton } from '../../component/ClosingButton';
 import { Amount } from './Amount';
@@ -76,6 +79,7 @@ export const Ledger: React.FC = () => {
                   dispatch(ledgerSubmit());
                 } else {
                   dispatch(ledgerUpdate());
+                  dispatch(SWITCH_PAGE({ userId, pageActivity: 'statistics' }));
                 }
               }}
             >
