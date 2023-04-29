@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import useSound from 'use-sound';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
@@ -18,6 +18,7 @@ import { HouseOfClothes } from './housesSvg/HouseOfClothes';
 import { HouseOfDrinks } from './housesSvg/HouseOfDrinks';
 import { HouseOfPlants } from './housesSvg/HouseOfPlants';
 import { HouseGrid } from './housesSvg/HouseGrid';
+import mapPin from '../../assets/mapPin.png';
 
 export const City: React.FC = () => {
   const { gridGap, gridLength, houseWidth, cityPaddingX, cityPaddingY } =
@@ -26,13 +27,25 @@ export const City: React.FC = () => {
   const { housesPosition, gridsStatus, dragMode, scale, cityShift } =
     useAppSelector((state) => state.cityArrangement);
   const dispatch = useAppDispatch();
-  // TODO: 要再改成可以一鍵看到城市全貌
+  // TODO: 要再改成可以一鍵看到城市全貌?
   const cityWidth = (gridLength + gridGap) * housesPosition[0].length;
   const cityHeight = (gridLength + gridGap) * housesPosition.length;
+  const [figurePosition, setFigurePosition] = useState(0);
 
   const [playHammerShort] = useSound(hammer_ice, { volume: 0.5 });
 
-  // console.log('top', cityShift.current.y, 'left', cityShift.current.x);
+  useEffect(() => {
+    const handlePosition = () => {
+      setFigurePosition((prev) => prev + 30);
+    };
+    const interval = setInterval(handlePosition, 2000);
+    const timeout = setTimeout(() => clearInterval(interval), 8000);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
+  }, []);
 
   useEffect(() => {
     dispatch(displayCity(cityBasicInfo));
@@ -67,6 +80,8 @@ export const City: React.FC = () => {
       //   );
       // }}
     >
+      <WalkingFigure src={mapPin} $scale={scale} $left={figurePosition} />
+      <WalkingFigure src={mapPin} $scale={scale} $left={figurePosition * 2} />
       {housesPosition.map((row, yIndex) => {
         return (
           <Row
@@ -187,8 +202,7 @@ const CityRange = styled.div.attrs<CityRangeProps>(
   flex-wrap: wrap;
   height: fit-content;
   padding: ${({ $padding }) => `${$padding}px ${2 * $padding}px`};
-  /* position: absolute; */
-  /* cursor: pointer; */
+  position: relative;
 `;
 
 const Row = styled.div.attrs<RowProps>(({ $paddingTopAttrs, $gapAttrs }) => ({
@@ -200,6 +214,7 @@ const Row = styled.div.attrs<RowProps>(({ $paddingTopAttrs, $gapAttrs }) => ({
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1px blue solid;
 `;
 
 const Grid = styled.div.attrs<GridProps>(({ $lengthAttrs }) => ({
@@ -239,4 +254,17 @@ const House = styled.div.attrs<HouseProps>(
   &:active {
     cursor: grabbing;
   }
+`;
+
+type WalkingFigureProps = {
+  $scale: number;
+  $left: number;
+};
+
+const WalkingFigure = styled.img<WalkingFigureProps>`
+  height: ${({ $scale }) => `${$scale * 20}px`};
+  position: absolute;
+  left: ${({ $scale, $left }) => `${$left * $scale + 400}px`};
+  transition: left 0.5s linear;
+  z-index: 9;
 `;
