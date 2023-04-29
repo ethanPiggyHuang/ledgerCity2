@@ -8,6 +8,7 @@ interface Props {
   props: {
     setting: ChartSetting;
     data: { label: string; value: number; colorCode: string }[];
+    title: string[];
   };
 }
 
@@ -18,19 +19,13 @@ interface ChartSetting {
   labelDelta: number;
 }
 
-interface dataByLabel {
-  value: number;
-  ratio: number;
-  label: string;
-}
-
 export const DoughnutChart: React.FC<Props> = ({ props }) => {
-  // const { chosenYear, chosenMonth } = useAppSelector(
-  //   (state) => state.ledgerList.choices
-  // );
+  const { chosenYear, chosenMonth } = useAppSelector(
+    (state) => state.ledgerList.choices
+  );
   // const dispatch = useAppDispatch();
   const { radius, holeRatio, hoverDelta, labelDelta } = props.setting;
-  const data = props.data;
+  const { data, title } = props;
 
   const bufferSpace = 20;
   const svgHeight = 2 * (radius + hoverDelta + labelDelta + bufferSpace);
@@ -76,8 +71,8 @@ export const DoughnutChart: React.FC<Props> = ({ props }) => {
   ): ReactNode => {
     const { sectorRatio, startAngle, label, colorCode } = data;
     const origin = {
-      x: radius + hoverDelta + labelDelta + bufferSpace,
-      y: radius + hoverDelta + labelDelta + bufferSpace,
+      x: svgWidth / 2,
+      y: svgHeight / 2,
     };
     const midAngle = startAngle + sectorRatio * Math.PI;
     const endAngle = startAngle + sectorRatio * 2 * Math.PI;
@@ -150,6 +145,15 @@ export const DoughnutChart: React.FC<Props> = ({ props }) => {
     <ChartWrap>
       <PieSvg $svgHeight={svgHeight} $svgWidth={svgWidth}>
         {conbinedData.map((data, index) => drawSector(data, index))}
+        <ChartSubtitle x={svgWidth / 2} y={svgHeight / 2 - 42}>
+          {title[0]}
+        </ChartSubtitle>
+        <ChartTitle x={svgWidth / 2} y={svgHeight / 2}>
+          {title[1]}
+        </ChartTitle>
+        <ChartSubtitle x={svgWidth / 2} y={svgHeight / 2 + 30}>
+          {title[2]}
+        </ChartSubtitle>
       </PieSvg>
     </ChartWrap>
   );
@@ -178,6 +182,7 @@ const PieSvg = styled.svg<PieSvgProps>`
 `;
 
 const SectorGroup = styled.g<SectorGroupProps>`
+  transition: transform 0.6s ease;
   &:hover {
     transform: ${({ $xShift, $yShift }) =>
       `translate(${$xShift}px, ${$yShift}px)`};
@@ -211,4 +216,14 @@ const LabelRatio = styled.text`
   font-size: 20px;
   text-anchor: middle;
   fill: #5b4105;
+`;
+
+const ChartTitle = styled.text`
+  font-size: 36px;
+  fill: #808080;
+  text-anchor: middle;
+`;
+
+const ChartSubtitle = styled(ChartTitle)`
+  font-size: 18px;
 `;

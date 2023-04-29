@@ -84,51 +84,14 @@ export const PieChart: React.FC = () => {
     return { ...data, startAngle: startAngles[index] };
   });
 
-  const drawSector = (
-    startAngle: number,
-    ratio: number,
-    label: string,
-    { radius, preservedDy }: PieChartSetting,
-    labelColorCodes: string[],
-    index: number
-  ): ReactNode => {
-    const origin = { x: 0, y: preservedDy };
-    const endAngle = startAngle + 2 * Math.PI * ratio;
-    const startPoint = {
-      x: radius * Math.cos(startAngle) + origin.x,
-      y: radius * Math.sin(startAngle) + origin.y,
-    };
-    const endPoint = {
-      x: radius * Math.cos(endAngle) + origin.x,
-      y: radius * Math.sin(endAngle) + origin.y,
-    };
-    const largeArcFlag = ratio > 0.5 ? 1 : 0;
-
-    const dScript = `M ${startPoint.x + radius} ${
-      startPoint.y + radius
-    } A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endPoint.x + radius} ${
-      endPoint.y + radius
-    } L ${origin.x + radius} ${origin.y + radius} Z`;
-
-    return (
-      <PiePath
-        key={index}
-        onClick={() => {
-          dispatch(chooseLabel(label));
-        }}
-        d={dScript}
-        fill={labelColorCodes[index % 6]}
-      />
-    );
-  };
-
   const props = {
-    setting: { radius: 150, holeRatio: 0.65, hoverDelta: 10, labelDelta: 25 },
+    setting: { radius: 200, holeRatio: 0.65, hoverDelta: 10, labelDelta: 30 },
     data: [
       { label: '食物', value: 5, colorCode: labelColorCodes[0] },
       { label: '飲品', value: 50, colorCode: labelColorCodes[1] },
       { label: '交通', value: 30, colorCode: labelColorCodes[2] },
     ],
+    title: [`${chosenYear}年`, `${chosenMonth}月`, '分類支出圖'],
   };
 
   return (
@@ -161,67 +124,13 @@ export const PieChart: React.FC = () => {
           </>
         ))}
       </LabelWrap> */}
-      <DoughnutChart props={props} />
+      {loadingStatus === 'idle' && <DoughnutChart props={props} />}
     </Wrap>
   );
-};
-
-type PieSvgProps = {
-  $svgHeight: number;
-  $svgWidth: number;
-};
-type LabelColorProps = {
-  $backgroundColor: string;
 };
 
 const Wrap = styled.div`
   padding: 10px;
   position: relative;
   border: 1px solid lightblue;
-`;
-const ChartTitle = styled.p`
-  width: 100%;
-  font-size: 28px;
-  color: #808080;
-  text-align: center;
-`;
-const ChartWrap = styled.div`
-  display: flex;
-  justify-content: center;
-  padding: 20px 0;
-`;
-const PieSvg = styled.svg<PieSvgProps>`
-  padding-top: 0px;
-  height: ${({ $svgHeight }) => `${$svgHeight}px`};
-  width: ${({ $svgWidth }) => `${$svgWidth}px`};
-`;
-const PiePath = styled.path`
-  opacity: 0.7;
-  cursor: pointer;
-
-  &:hover {
-    opacity: 1;
-    transform: translate(0, -10px);
-  }
-`;
-
-const LabelWrap = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  margin: auto;
-  width: 40%;
-  gap: 8px;
-`;
-
-const LabelColor = styled.div<LabelColorProps>`
-  width: 16px;
-  height: 16px;
-  border: grey solid 1px;
-  opacity: 0.7;
-  background-color: ${({ $backgroundColor }) => `${$backgroundColor}`};
-  cursor: pointer;
-`;
-const LabelText = styled.p`
-  height: 10px;
-  cursor: pointer;
 `;
