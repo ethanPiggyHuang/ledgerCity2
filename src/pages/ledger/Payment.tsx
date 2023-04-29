@@ -15,9 +15,17 @@ import {
 export const Payment: React.FC = () => {
   const { payWho, payHow } = useAppSelector((state) => state.ledgerSingle.data);
   const { userNickName } = useAppSelector((state) => state.userInfo.data);
+  const { coopInfo, friendsInfo } = useAppSelector(
+    (state) => state.userActivity
+  );
   const dispatch = useAppDispatch();
+  const friendIds = Object.keys(coopInfo);
+  const friendNames =
+    friendIds.length === 0
+      ? []
+      : friendIds.map((id) => friendsInfo[id].userNickName);
 
-  const people = [userNickName as string, 'Hazel'];
+  const people = [userNickName, ...friendNames];
   const methods: { en: 'cash' | 'creditCard' | 'mobile'; ch: string }[] = [
     { en: 'cash', ch: '現金' },
     { en: 'mobile', ch: '行動支付' },
@@ -55,10 +63,12 @@ export const Payment: React.FC = () => {
       </PaidMethod>
       <PaidByWho
         onClick={() =>
-          dispatch(payPeopleSwitch({ name: payWho, list: people }))
+          people.length === 1
+            ? ''
+            : dispatch(payPeopleSwitch({ name: payWho, list: people }))
         }
       >
-        <PersonOption>
+        <PersonOption $isMultiple={people.length > 1}>
           <Name>{payWho}</Name>
           <PaidText>付款</PaidText>
         </PersonOption>
@@ -67,9 +77,9 @@ export const Payment: React.FC = () => {
   );
 };
 
-// type PaidMethodProps = {
-//   $isChosen: boolean;
-// };
+type PersonOptionProps = {
+  $isMultiple: boolean;
+};
 
 const PaymentInfo = styled.div`
   gap: 10%;
@@ -117,13 +127,13 @@ const PaidText = styled.p`
 const PaidByWho = styled(PaidMethod)`
   width: 50%;
 `;
-const PersonOption = styled.div`
+const PersonOption = styled.div<PersonOptionProps>`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
   gap: 6px;
-  cursor: pointer;
+  cursor: ${({ $isMultiple }) => ($isMultiple ? 'pointer' : 'default')};
 `;
 const Name = styled(PaidText)`
   font-size: 20px;

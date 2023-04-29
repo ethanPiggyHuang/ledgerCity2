@@ -26,47 +26,49 @@ export const LedgerDetail: React.FC = () => {
 
   return (
     <Wrap>
-      <LedgerRow $isChosen={false} $isHeader={true}>
-        <LedgerText>項目</LedgerText>
-        <LedgerText>花費</LedgerText>
-        <LedgerText>日期</LedgerText>
-        <LedgerText>動作</LedgerText>
-      </LedgerRow>
-      {ledgerListDisplay.map((ledger, index) => (
-        <LedgerRow
-          key={index}
-          $isChosen={
-            chosenYear === ledger.year &&
-            chosenMonth === ledger.month &&
-            chosenLabel === ledger.labelMain
-          }
-          $isHeader={false}
-        >
-          <LedgerText>{ledger.item}</LedgerText>
-          <LedgerText>{ledger.amount}</LedgerText>
-          <LedgerText>{ledger.date}</LedgerText>
-          <LedgerIcon
-            className="material-symbols-outlined"
-            onClick={() => {
-              const chosenLedger = ledgerList.find(
-                (data) => data.ledgerId === ledger.ledgerId
-              );
-              console.log(chosenLedger);
-              if (chosenLedger) {
-                dispatch(ledgerEdit(chosenLedger));
-              }
-            }}
+      <HeaderRow>
+        <HeaderText>項目</HeaderText>
+        <HeaderText>花費</HeaderText>
+        <HeaderText>日期</HeaderText>
+        <HeaderText>動作</HeaderText>
+      </HeaderRow>
+      <LedgerRowsWrap>
+        {ledgerListDisplay.map((ledger, index) => (
+          <LedgerRow
+            key={index}
+            $isChosen={
+              chosenYear === ledger.year &&
+              chosenMonth === ledger.month &&
+              chosenLabel === ledger.labelMain
+            }
+            $isHeader={false}
           >
-            edit
-          </LedgerIcon>
-          <LedgerIcon
-            className="material-symbols-outlined"
-            onClick={() => dispatch(deleteSingleLedger(ledger.ledgerId))}
-          >
-            delete
-          </LedgerIcon>
-        </LedgerRow>
-      ))}
+            <LedgerText>{ledger.item}</LedgerText>
+            <LedgerText>{ledger.amount}</LedgerText>
+            <LedgerText>{ledger.date}</LedgerText>
+            <LedgerIcon
+              className="material-symbols-outlined"
+              onClick={() => {
+                const chosenLedger = ledgerList.find(
+                  (data) => data.ledgerId === ledger.ledgerId
+                );
+                console.log(chosenLedger);
+                if (chosenLedger) {
+                  dispatch(ledgerEdit(chosenLedger));
+                }
+              }}
+            >
+              edit
+            </LedgerIcon>
+            <LedgerIcon
+              className="material-symbols-outlined"
+              onClick={() => dispatch(deleteSingleLedger(ledger.ledgerId))}
+            >
+              delete
+            </LedgerIcon>
+          </LedgerRow>
+        ))}
+      </LedgerRowsWrap>
     </Wrap>
   );
 };
@@ -77,25 +79,41 @@ type LedgerRowProps = {
 };
 
 const Wrap = styled.div`
-  padding: 20px;
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: 100%;
+  width: 500px;
   border: 1px solid lightblue;
   height: 300px;
-  overflow: scroll;
 `;
-const LedgerRow = styled.div<LedgerRowProps>`
+
+const HeaderRow = styled.div`
   width: 100%;
-  height: 40px;
+  min-height: 40px;
   display: flex;
   align-items: center;
-  background-color: ${({ $isChosen }) => ($isChosen ? 'lightblue' : '')};
-  border: ${({ $isHeader }) => ($isHeader ? '2px solid darkblue' : '')};
-  font-weight: ${({ $isHeader }) => ($isHeader ? 'bold' : '')};
+  justify-content: space-around;
+  font-weight: bold;
 `;
+const LedgerRowsWrap = styled.div`
+  overflow: scroll;
+`;
+
+const LedgerRow = styled(HeaderRow)<LedgerRowProps>`
+  background-color: ${({ $isChosen }) => ($isChosen ? 'lightblue' : '#f2f2f2')};
+  color: #808080;
+  font-weight: normal;
+`;
+
+const HeaderText = styled.p`
+  background-color: #ebebeb;
+  padding: 5px;
+  width: 15%;
+  text-align: center;
+  border-radius: 10px;
+`;
+
 const LedgerText = styled.p`
   width: 30%;
   text-align: center;
