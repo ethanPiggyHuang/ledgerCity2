@@ -17,7 +17,7 @@ import {
   SWITCH_PAGE,
 } from '../../redux/reducers/pageControlSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faXmark, faChartPie } from '@fortawesome/free-solid-svg-icons';
 import { ClosingButton } from '../../component/ClosingButton';
 
 export const Statistics: React.FC = () => {
@@ -32,7 +32,10 @@ export const Statistics: React.FC = () => {
   return (
     <Wrap $isShown={pageActivity === 'statistics'}>
       <Header>
-        <Title>分析圖表</Title>
+        {/* <SectionLabel> */}
+        <StyledFontAwesomeIcon icon={faChartPie} />
+        <Title>{'分析'}</Title>
+        {/* </SectionLabel> */}
         <ClosingButton size={60} />
       </Header>
       <ChartTypes>
@@ -117,9 +120,35 @@ const Header = styled.div`
   justify-content: center;
   align-items: center;
 `;
-const Title = styled.p`
+
+// const SectionLabel = styled.div`
+//   height: 100px;
+//   width: ${({ $chosen }) => ($chosen ? '40%' : '30%')};
+//   background-color: ${({ $chosen }) => ($chosen ? '#f7f7f7' : '#ebebeb')};
+//   border-radius: 20px 20px 0 0;
+//   border: 2px solid white;
+//   padding-top: 18px;
+//   display: flex;
+//   justify-content: center;
+//   transition: transform 0.5s ease, width 0.5s ease;
+//   cursor: pointer;
+
+//   &:hover {
+//     transform: translateY(-20px);
+//     width: 40%;
+//   }
+// `;
+
+const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
   color: #808080;
-  font-size: 32px;
+  height: 40px;
+`;
+
+const Title = styled.p`
+  padding-left: 10px;
+  line-height: 60px;
+  color: #808080;
+  font-size: 28px;
 `;
 
 const ChartTypes = styled.div`

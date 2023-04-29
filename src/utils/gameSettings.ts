@@ -12,6 +12,21 @@ import {
   faTags,
 } from '@fortawesome/free-solid-svg-icons';
 
+export const labelIndex: {
+  [key: string]: number;
+} = {
+  食物: 0,
+  飲品: 1,
+  交通: 2,
+  衣裝: 3,
+  娛樂: 4,
+  居家: 5,
+  '3C': 6,
+  醫藥: 7,
+  人際: 8,
+  其他: 9,
+};
+
 export const mainLabel: {
   name: string;
   colorCode: string;

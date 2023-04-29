@@ -118,6 +118,13 @@ export const GameMap: React.FC = () => {
           dispatch(PANEL_CONTROL('none'));
         }}
       />
+      <InvisibleCurtain
+        $isShown={pageActivity === 'ledger'}
+        onClick={() => {
+          dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }));
+          dispatch(PANEL_CONTROL('none'));
+        }}
+      />
       {/* )} */}
       {/* {pageActivity === 'ledger' && <Ledger />} */}
       <Ledger />
@@ -150,6 +157,9 @@ const BlackCurtain = styled.div<BlackCurtainProps>`
   background-color: black;
   opacity: ${({ $isShown }) => ($isShown ? '0.5' : '0')};
   transition: opacity 1s ease;
+`;
+const InvisibleCurtain = styled(BlackCurtain)`
+  opacity: 0;
 `;
 const CityWrapper = styled.div`
   width: 100vw;

@@ -248,6 +248,9 @@ const ChartSubtitle = styled(ChartTitle)`
 
 const ChartAbstract = styled.text`
   font-size: 24px;
-  fill: #808080;
+  font-weight: bold;
+  /* opacity: 0.6; */
+  fill: #dabd7a;
+
   text-anchor: middle;
 `;

@@ -10,6 +10,8 @@ interface LedgerListState {
     chosenYear: number;
     chosenMonth: number;
     chosenLabel: string;
+    sortBy: 'date' | 'label' | 'value';
+    sortDirection: 'ascending' | 'descending';
   };
   status: 'idle' | 'loading' | 'failed';
 }
@@ -21,6 +23,8 @@ const initialState: LedgerListState = {
     chosenYear: 2023,
     chosenMonth: 4,
     chosenLabel: '',
+    sortBy: 'date',
+    sortDirection: 'ascending',
   },
   status: 'idle',
 };
@@ -80,6 +84,17 @@ export const ledgerList = createSlice({
     ) => {
       state.dataList = action.payload;
     },
+    SORT_LIST: (state, action: PayloadAction<'date' | 'label' | 'value'>) => {
+      if (action.payload === state.choices.sortBy) {
+        state.choices.sortDirection =
+          state.choices.sortDirection === 'ascending'
+            ? 'descending'
+            : 'ascending';
+      } else {
+        state.choices.sortBy = action.payload;
+        state.choices.sortDirection = 'ascending';
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -111,7 +126,12 @@ export const ledgerList = createSlice({
   },
 });
 
-export const { chooseYear, chooseMonth, chooseLabel, UPDATE_LEDGER_LIST } =
-  ledgerList.actions;
+export const {
+  chooseYear,
+  chooseMonth,
+  chooseLabel,
+  UPDATE_LEDGER_LIST,
+  SORT_LIST,
+} = ledgerList.actions;
 
 export default ledgerList.reducer;
