@@ -95,6 +95,11 @@ export const ledgerSingle = createSlice({
   name: 'ledgerSingle',
   initialState,
   reducers: {
+    CLEAR_LEDGER_ID: (state) => {
+      state.ledgerId = '';
+      state.data.item = '';
+      state.data.amount.number = 0;
+    },
     ledgerEdit: (
       state,
       action: PayloadAction<{
@@ -304,6 +309,7 @@ export const ledgerSingle = createSlice({
 });
 
 export const {
+  CLEAR_LEDGER_ID,
   ledgerEdit,
   itemKeyIn,
   labelChooseMain,

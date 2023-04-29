@@ -104,6 +104,12 @@ const PaidMethod = styled.div`
   background-color: #ebebeb;
   border-radius: 10px;
   cursor: pointer;
+  &:hover {
+    filter: brightness(0.95);
+  }
+  &:active {
+    filter: brightness(1.1);
+  }
 `;
 
 const PaidCashIcon = styled(Cash)`

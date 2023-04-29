@@ -2,25 +2,24 @@ import React from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { ledgerEdit } from '../../redux/reducers/ledgerSingleSlice';
-import { mainLabels, mainLabel } from '../../utils/gameSettings';
+import { mainLabels, mainLabel, labelIndex } from '../../utils/gameSettings';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faPen } from '@fortawesome/free-solid-svg-icons';
 import { CHANGE_LEDGER_POSITION } from '../../redux/reducers/pageControlSlice';
 
 export const DailyLedger: React.FC = () => {
-  const { labelMain, labelSubs, timeLedger } = useAppSelector(
-    (state) => state.ledgerSingle.data
-  );
+  const { timeLedger } = useAppSelector((state) => state.ledgerSingle.data);
   const { dataList } = useAppSelector((state) => state.ledgerList);
   const dispatch = useAppDispatch();
   const labelSetting = mainLabel;
-  const labelIcons = mainLabel.map((label) => label.icon);
+  const ledgerTime = new Date(timeLedger);
 
   const dailyLedger = dataList.filter(
     (ledger) =>
-      new Date(ledger.data.recordTime).getDate() ===
-      new Date(timeLedger).getDate()
+      new Date(ledger.data.timeLedger).getDate() === ledgerTime.getDate() &&
+      ledger.data.timeMonth === ledgerTime.getMonth() + 1 &&
+      ledger.data.timeYear === ledgerTime.getFullYear()
   );
 
   const dailyAmount = dailyLedger.reduce(
@@ -31,35 +30,36 @@ export const DailyLedger: React.FC = () => {
   return (
     <Wrapper>
       <DailyAmount>{`$ ${dailyAmount}`}</DailyAmount>
-      {dailyLedger.map((ledger) => {
-        const labelIndex = mainLabels.findIndex(
-          (label) => label === ledger.data.labelMain
-        );
-        if (labelIndex > 0) {
-          return (
-            <LedgerSingle key={ledger.ledgerId}>
-              <LedgerOperation
-                onClick={() => {
-                  const chosenLedger = dataList.find(
-                    (data) => data.ledgerId === ledger.ledgerId
-                  );
-                  if (chosenLedger) {
-                    dispatch(ledgerEdit(chosenLedger));
-                    dispatch(CHANGE_LEDGER_POSITION('expand'));
-                  }
-                }}
-              >
-                <EditIcon icon={faPen}></EditIcon>
-              </LedgerOperation>
-              <LabelIconWrap $backGround={labelSetting[labelIndex].colorCode}>
-                <LabelIcon icon={labelSetting[labelIndex].icon}></LabelIcon>
-              </LabelIconWrap>
-              <LedgerItem>{ledger.data.item}</LedgerItem>
-              <LedgerAmount>{`$ ${ledger.data.amount.number}`}</LedgerAmount>
-            </LedgerSingle>
-          );
-        }
-      })}
+      <DailyLedgers>
+        {dailyLedger.map((ledger) => (
+          <LedgerSingle key={ledger.ledgerId}>
+            <LedgerOperation
+              onClick={() => {
+                const chosenLedger = dataList.find(
+                  (data) => data.ledgerId === ledger.ledgerId
+                );
+                if (chosenLedger) {
+                  dispatch(ledgerEdit(chosenLedger));
+                  dispatch(CHANGE_LEDGER_POSITION('expand'));
+                }
+              }}
+            >
+              <EditIcon icon={faPen}></EditIcon>
+            </LedgerOperation>
+            <LabelIconWrap
+              $backGround={
+                labelSetting[labelIndex[ledger.data.labelMain]].colorCode
+              }
+            >
+              <LabelIcon
+                icon={labelSetting[labelIndex[ledger.data.labelMain]].icon}
+              ></LabelIcon>
+            </LabelIconWrap>
+            <LedgerItem>{ledger.data.item}</LedgerItem>
+            <LedgerAmount>{`$ ${ledger.data.amount.number}`}</LedgerAmount>
+          </LedgerSingle>
+        ))}
+      </DailyLedgers>
     </Wrapper>
   );
 };
@@ -70,6 +70,7 @@ type LabelIconWrapProps = {
 
 const Wrapper = styled.div`
   min-height: 132px;
+  height: calc(90% - 80px);
 `;
 
 const DailyAmount = styled.div`
@@ -82,6 +83,11 @@ const DailyAmount = styled.div`
   margin-left: auto;
   margin-right: 30px;
   color: #dabd7a;
+`;
+
+const DailyLedgers = styled.div`
+  height: 100%;
+  overflow: scroll;
 `;
 const LedgerSingle = styled.div`
   height: 40px;
@@ -132,37 +138,4 @@ const LedgerAmount = styled.div`
   margin-left: auto;
   margin-right: 30px;
   color: #6b6b6b;
-`;
-
-const ItemIcon = styled(FontAwesomeIcon)`
-  height: 40px;
-`;
-const ItemInput = styled.input`
-  height: 80%;
-  width: 75%;
-  padding-left: 15px;
-  font-size: 2px;
-  margin-right: auto;
-  margin-left: 30px;
-  text-align: left;
-  border: none;
-  color: #808080;
-  background-color: #f2f2f2;
-`;
-const SubLabelOptions = styled.div`
-  height: 75px;
-  display: flex;
-  align-items: center;
-`;
-const SubLabelOption = styled.div`
-  height: 38px;
-  margin-left: 15px;
-  padding: 0 38px;
-  font-size: 20px;
-  border-radius: 19px;
-  color: #808080;
-  background-color: #e6e6e6;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
 `;

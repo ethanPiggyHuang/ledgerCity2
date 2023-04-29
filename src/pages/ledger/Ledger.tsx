@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import {
+  CLEAR_LEDGER_ID,
   ledgerSubmit,
   ledgerUpdate,
 } from '../../redux/reducers/ledgerSingleSlice';
@@ -11,7 +12,11 @@ import { Payment } from './Payment';
 import { Calculator } from './Calculator';
 import { ReactComponent as Receipt } from '../../assets/receipt.svg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faCheck } from '@fortawesome/free-solid-svg-icons';
+import {
+  faArrowLeft,
+  faCheck,
+  faPlus,
+} from '@fortawesome/free-solid-svg-icons';
 import {
   CHANGE_LEDGER_POSITION,
   SWITCH_PAGE,
@@ -43,7 +48,10 @@ export const Ledger: React.FC = () => {
             <IconWrap
               onClick={() => dispatch(CHANGE_LEDGER_POSITION('normal'))}
             >
-              <Icon icon={faArrowLeft} />
+              <Icon
+                icon={faArrowLeft}
+                onClick={() => dispatch(CLEAR_LEDGER_ID())}
+              />
             </IconWrap>
           )}
           <TimeBar />
@@ -51,10 +59,16 @@ export const Ledger: React.FC = () => {
         {ledgerPosition === 'normal' && (
           <>
             <DailyLedger />
-            <AddNewWrap
-              onClick={() => dispatch(CHANGE_LEDGER_POSITION('expand'))}
-            >
-              <AddNewButton>+ 新紀錄</AddNewButton>
+            <AddNewWrap>
+              <AddNewButton
+                onClick={() => {
+                  dispatch(CLEAR_LEDGER_ID());
+                  dispatch(CHANGE_LEDGER_POSITION('expand'));
+                }}
+              >
+                <AddNewIcon icon={faPlus} />
+                新紀錄
+              </AddNewButton>
             </AddNewWrap>
           </>
         )}
@@ -66,25 +80,31 @@ export const Ledger: React.FC = () => {
               <Payment />
               <Amount />
             </SecondRow>
-            <ConfirmButton
-              onClick={() => {
-                if (labelMain === '') {
-                  alert('請選擇標籤');
-                  return;
-                } else if (amount.number === 0) {
-                  alert('請輸入花費金額');
-                  return;
-                }
-                if (ledgerId === '') {
-                  dispatch(ledgerSubmit());
-                } else {
-                  dispatch(ledgerUpdate());
-                  dispatch(SWITCH_PAGE({ userId, pageActivity: 'statistics' }));
-                }
-              }}
-            >
-              <CheckIcon icon={faCheck} />
-            </ConfirmButton>
+            <ConfirmRow>
+              <ConfirmButton
+                $isAllowed={amount.number !== 0 && labelMain !== ''}
+                onClick={() => {
+                  if (amount.number === 0) {
+                    alert('請輸入花費金額');
+                    return;
+                  } else if (labelMain === '') {
+                    alert('請選擇類別');
+                    return;
+                  }
+                  if (ledgerId === '') {
+                    dispatch(ledgerSubmit());
+                  } else {
+                    dispatch(ledgerUpdate());
+                    dispatch(
+                      SWITCH_PAGE({ userId, pageActivity: 'statistics' })
+                    );
+                  }
+                }}
+              >
+                <CheckIcon icon={faCheck} />
+              </ConfirmButton>
+            </ConfirmRow>
+
             <Calculator />
           </>
         )}
@@ -96,6 +116,10 @@ export const Ledger: React.FC = () => {
 type WrapProps = {
   $state: 'minimize' | 'normal' | 'expand';
   $isShown: boolean;
+};
+
+type ConfirmButtonProps = {
+  $isAllowed: boolean;
 };
 
 const Wrap = styled.div<WrapProps>`
@@ -152,9 +176,17 @@ const Icon = styled(FontAwesomeIcon)`
   height: 27px;
   color: #808080;
 `;
-const ConfirmButton = styled.div`
-  width: 20%;
+
+const ConfirmRow = styled.div`
   height: 10%;
+  /* opacity: 0.5; */
+  &:hover {
+    filter: brightness(1.1);
+  }
+`;
+const ConfirmButton = styled.div<ConfirmButtonProps>`
+  width: 20%;
+  height: 100%;
   /* position: absolute; */
   bottom: 2%;
   margin-left: auto;
@@ -163,7 +195,9 @@ const ConfirmButton = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
+
+  background-color: #f2f2f2;
+  cursor: ${({ $isAllowed }) => ($isAllowed ? 'pointer' : 'not-allowed')};
   &:hover {
     background-color: #ffffff;
   }
@@ -184,7 +218,6 @@ const AddNewWrap = styled.div`
   justify-content: center;
   align-items: center;
   background-color: #f7f7f7;
-  cursor: pointer;
 `;
 
 const AddNewButton = styled.div`
@@ -197,4 +230,17 @@ const AddNewButton = styled.div`
   border-radius: 22px;
   background-color: #ebebeb;
   color: #808080;
+  cursor: pointer;
+  &:hover {
+    filter: brightness(0.95);
+  }
+  &:active {
+    filter: brightness(1.1);
+  }
+`;
+
+const AddNewIcon = styled(FontAwesomeIcon)`
+  font-size: 20px;
+  color: #808080;
+  padding-right: 5px;
 `;

@@ -321,7 +321,8 @@ const LedgerTextSmall = styled(LedgerText)`
 const EditIcon = styled(FontAwesomeIcon)`
   font-size: 16px;
   cursor: pointer;
-  opacity: 0.5;
+  opacity: 0.3;
+  padding: 0 8px;
   &:hover {
     opacity: 1;
   }

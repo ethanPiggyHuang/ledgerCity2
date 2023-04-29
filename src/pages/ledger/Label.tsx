@@ -74,7 +74,7 @@ export const Label: React.FC = () => {
         <ItemIcon icon={faClipboard} />
         <ItemInput
           value={item}
-          placeholder="(可增加註記)"
+          placeholder="（可增加註記）"
           onChange={(e) => dispatch(itemKeyIn(e.target.value))}
         />
       </ItemDisplay>
@@ -109,6 +109,9 @@ const LabelOption = styled.div<LabelOptionProps>`
   &:hover {
     background-color: #fafafa;
   }
+  &:active {
+    filter: brightness(1.1);
+  }
 `;
 const LabelIcons = styled(FontAwesomeIcon)`
   font-size: 24px;
@@ -134,6 +137,12 @@ const SubLabelOption = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
+  &:hover {
+    filter: brightness(0.95);
+  }
+  &:active {
+    filter: brightness(1.1);
+  }
 `;
 
 const ItemDisplay = styled.div`
