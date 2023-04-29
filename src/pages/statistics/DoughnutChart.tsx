@@ -32,7 +32,8 @@ export const DoughnutChart: React.FC<Props> = ({ props }) => {
   const { radius, holeRatio, hoverDelta, labelDelta } = props.setting;
   const data = props.data;
 
-  const svgHeight = 2 * (radius + hoverDelta + labelDelta);
+  const bufferSpace = 20;
+  const svgHeight = 2 * (radius + hoverDelta + labelDelta + bufferSpace);
   const svgWidth = svgHeight;
 
   const totalValue = data.reduce((total, data) => (total += data.value), 0);
@@ -51,8 +52,6 @@ export const DoughnutChart: React.FC<Props> = ({ props }) => {
         )
   );
 
-  console.log('sector', sectorRatios, 'start', startRatios);
-
   const startAngles = startRatios.map(
     (ratio) => -Math.PI / 2 + ratio * 2 * Math.PI
   );
@@ -66,14 +65,21 @@ export const DoughnutChart: React.FC<Props> = ({ props }) => {
   });
 
   const drawSector = (
-    startAngle: number,
-    sectorRatio: number,
-    label: string,
-    radius: number,
-    colorCode: string,
+    data: {
+      sectorRatio: number;
+      startAngle: number;
+      label: string;
+      value: number;
+      colorCode: string;
+    },
     index: number
   ): ReactNode => {
-    const origin = { x: 0, y: 0 };
+    const { sectorRatio, startAngle, label, colorCode } = data;
+    const origin = {
+      x: radius + hoverDelta + labelDelta + bufferSpace,
+      y: radius + hoverDelta + labelDelta + bufferSpace,
+    };
+    const midAngle = startAngle + sectorRatio * Math.PI;
     const endAngle = startAngle + sectorRatio * 2 * Math.PI;
     const startPoint = {
       x: radius * Math.cos(startAngle) + origin.x,
@@ -83,49 +89,68 @@ export const DoughnutChart: React.FC<Props> = ({ props }) => {
       x: radius * Math.cos(endAngle) + origin.x,
       y: radius * Math.sin(endAngle) + origin.y,
     };
+    const holeRadius = radius * holeRatio;
+    const angleAdjust = 0.01;
+    const holeStartPoint = {
+      x: holeRadius * Math.cos(startAngle - angleAdjust) + origin.x,
+      y: holeRadius * Math.sin(startAngle - angleAdjust) + origin.y,
+    };
+    const holeEndPoint = {
+      x: holeRadius * Math.cos(endAngle + angleAdjust) + origin.x,
+      y: holeRadius * Math.sin(endAngle + angleAdjust) + origin.y,
+    };
     const largeArcFlag = sectorRatio > 0.5 ? 1 : 0;
 
-    const dScript = `M ${startPoint.x + radius} ${
-      startPoint.y + radius
-    } A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endPoint.x + radius} ${
-      endPoint.y + radius
-    } L ${origin.x + radius} ${origin.y + radius} Z`;
+    const colorDScript = `M ${startPoint.x} ${startPoint.y} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endPoint.x} ${endPoint.y} L ${origin.x} ${origin.y} Z`;
+    const holeDScript = `M ${holeStartPoint.x} ${holeStartPoint.y} A ${holeRadius} ${holeRadius} 0 ${largeArcFlag} 1 ${holeEndPoint.x} ${holeEndPoint.y} L ${origin.x} ${origin.y} Z`;
+
+    const labelNameAnchor =
+      sectorRatio > 0.05
+        ? {
+            x: (radius - labelDelta) * Math.cos(midAngle) + origin.x,
+            y: (radius - labelDelta) * Math.sin(midAngle) + origin.y,
+          }
+        : {
+            x: (radius + 0.15 * labelDelta) * Math.cos(midAngle) + origin.x,
+            y: (radius + 0.15 * labelDelta) * Math.sin(midAngle) + origin.y,
+          };
+    const labelRatioAnchor = {
+      x: (radius + labelDelta) * Math.cos(midAngle) + origin.x,
+      y: (radius + labelDelta) * Math.sin(midAngle) + origin.y,
+    };
+
+    const hoverShift = {
+      x: hoverDelta * Math.cos(midAngle),
+      y: hoverDelta * Math.sin(midAngle),
+    };
 
     return (
-      <>
-        <PiePath
-          key={`sector ${index}`}
+      <SectorGroup key={index} $xShift={hoverShift.x} $yShift={hoverShift.y}>
+        <SectorPath
+          // key={`sector ${index}`}
           // onClick={() => {
           //   dispatch(chooseLabel(label));
           // }}
 
-          d={dScript}
+          d={colorDScript}
           fill={colorCode}
         />
-        <LabelX key={`label ${index}`} x={startAngle * 10} y={startAngle * 10}>
+        <HolePath d={holeDScript} fill={'#ebebeb'} />
+        <LabelName x={labelNameAnchor.x} y={labelNameAnchor.y}>
           {label}
-        </LabelX>
-      </>
+        </LabelName>
+        <LabelRatio x={labelRatioAnchor.x} y={labelRatioAnchor.y}>
+          {`${Math.round(sectorRatio * 100)}%`}
+        </LabelRatio>
+      </SectorGroup>
     );
   };
 
   return (
     <ChartWrap>
       <PieSvg $svgHeight={svgHeight} $svgWidth={svgWidth}>
-        {conbinedData.map(
-          ({ startAngle, sectorRatio, label, colorCode }, index) =>
-            drawSector(startAngle, sectorRatio, label, radius, colorCode, index)
-        )}
+        {conbinedData.map((data, index) => drawSector(data, index))}
       </PieSvg>
-
-      {/* <LabelWrap>
-        {mainLabels.map((label, index) => (
-          <>
-            <LabelColor $backgroundColor={labelColorCodes[index]} />
-            <LabelText>{label}</LabelText>
-          </>
-        ))}
-      </LabelWrap> */}
     </ChartWrap>
   );
 };
@@ -134,8 +159,10 @@ type PieSvgProps = {
   $svgHeight: number;
   $svgWidth: number;
 };
-type LabelColorProps = {
-  $backgroundColor: string;
+
+type SectorGroupProps = {
+  $xShift: number;
+  $yShift: number;
 };
 
 const ChartWrap = styled.div`
@@ -150,40 +177,38 @@ const PieSvg = styled.svg<PieSvgProps>`
   width: ${({ $svgWidth }) => `${$svgWidth}px`};
 `;
 
-const Sector = styled.div``;
-
-const PiePath = styled.path`
-  opacity: 0.7;
-  cursor: pointer;
-  /* 
+const SectorGroup = styled.g<SectorGroupProps>`
   &:hover {
-    opacity: 1;
-    transform: translate(0, -10px);
-  } */
+    transform: ${({ $xShift, $yShift }) =>
+      `translate(${$xShift}px, ${$yShift}px)`};
+  }
 `;
 
-const LabelWrap = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  margin: auto;
-  width: 40%;
-  gap: 8px;
-`;
-
-const LabelColor = styled.div<LabelColorProps>`
-  width: 16px;
-  height: 16px;
-  border: grey solid 1px;
-  opacity: 0.7;
-  background-color: ${({ $backgroundColor }) => `${$backgroundColor}`};
+const SectorPath = styled.path`
   cursor: pointer;
 `;
-const LabelText = styled.p`
-  height: 10px;
-  cursor: pointer;
+const HolePath = styled(SectorPath)`
+  cursor: default;
 `;
 
-const LabelX = styled.text`
-  font-size: 14px;
+const LabelName = styled.text`
+  font-size: 16px;
+  font-weight: bold;
   text-anchor: middle;
+
+  fill: #5b4105;
+  stroke: #f2f2f2;
+  stroke-width: 0.2px;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  /* text-shadow: 1px 1px 1px #f2f2f2; */
+`;
+
+const LabelRatio = styled.text`
+  font-size: 20px;
+  text-anchor: middle;
+  fill: #5b4105;
 `;

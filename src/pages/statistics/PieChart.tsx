@@ -123,11 +123,11 @@ export const PieChart: React.FC = () => {
   };
 
   const props = {
-    setting: { radius: 100, holeRatio: 0.2, hoverDelta: 20, labelDelta: 20 },
+    setting: { radius: 150, holeRatio: 0.65, hoverDelta: 10, labelDelta: 25 },
     data: [
-      { label: '食物', value: 10, colorCode: '#333388' },
-      { label: '飲品', value: 50, colorCode: '#338888' },
-      { label: '交通', value: 30, colorCode: '#883388' },
+      { label: '食物', value: 5, colorCode: labelColorCodes[0] },
+      { label: '飲品', value: 50, colorCode: labelColorCodes[1] },
+      { label: '交通', value: 30, colorCode: labelColorCodes[2] },
     ],
   };
 
