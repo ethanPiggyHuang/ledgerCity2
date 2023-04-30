@@ -13,6 +13,7 @@ interface BarChartSetting {
   barWidth: number;
   yShrinkRatio: number;
   labelDY: number;
+  xStart: number;
 }
 
 export const BarChart: React.FC = () => {
@@ -33,6 +34,7 @@ export const BarChart: React.FC = () => {
     barWidth: 35,
     yShrinkRatio: 0.9,
     labelDY: 20,
+    xStart: 60,
   };
 
   const rawDatas = ledgerList.map((ledger) => {
@@ -102,13 +104,14 @@ export const BarChart: React.FC = () => {
   const drawBar = (
     value: number,
     monthValue: number,
-    { svgHeight, svgWidth, barWidth, yShrinkRatio }: BarChartSetting,
+    { svgHeight, svgWidth, barWidth, yShrinkRatio, xStart }: BarChartSetting,
     labelColorCodes: string[],
     xMax: number,
     yMax: number,
     index: number
   ): ReactNode => {
-    const startPointX = (svgWidth / xMax) * (index + 0.5) - barWidth / 2;
+    const startPointX =
+      (svgWidth / xMax) * (index + 0.5) - barWidth / 2 + xStart;
     const barHeight = (value / yMax) * svgHeight * yShrinkRatio;
     const barTopY = svgHeight - barHeight;
 
@@ -132,7 +135,7 @@ export const BarChart: React.FC = () => {
   const drawCategoryBar = (
     value: number,
     monthValue: number,
-    { svgHeight, svgWidth, barWidth, yShrinkRatio }: BarChartSetting,
+    { svgHeight, svgWidth, barWidth, yShrinkRatio, xStart }: BarChartSetting,
     labelColorCodes: string[],
     xMax: number,
     yMax: number,
@@ -148,7 +151,8 @@ export const BarChart: React.FC = () => {
           yShrinkRatio;
       }
     }
-    const startPointX = (svgWidth / xMax) * (index + 0.5) - barWidth / 2;
+    const startPointX =
+      (svgWidth / xMax) * (index + 0.5) - barWidth / 2 + xStart;
     const barHeight = labelsDisplay[labelIndex]
       ? (value / yMax) * svgHeight * yShrinkRatio
       : 0;
@@ -173,7 +177,7 @@ export const BarChart: React.FC = () => {
 
   const setXLabel = (
     text: string,
-    { svgHeight, svgWidth, labelDY }: BarChartSetting,
+    { svgHeight, svgWidth, labelDY, xStart }: BarChartSetting,
     xMax: number,
     index: number
   ): ReactNode => {
@@ -181,7 +185,7 @@ export const BarChart: React.FC = () => {
     const labelY = svgHeight + labelDY;
 
     return (
-      <LabelX key={index} x={labelX} y={labelY}>
+      <LabelX key={index} x={labelX + xStart} y={labelY}>
         {text}
       </LabelX>
     );
@@ -221,33 +225,38 @@ export const BarChart: React.FC = () => {
           {yAdjRatios.map((yAdjRatio, index) => (
             <g key={yAdjRatio}>
               <path
-                d={`M 0 ${
+                d={`M ${barChartSetting.xStart} ${
                   barChartSetting.svgHeight -
                   barChartSetting.svgHeight *
                     yAdjRatio *
                     barChartSetting.yShrinkRatio
-                } H 10  Z`}
+                } H ${barChartSetting.xStart + 10}  Z`}
                 stroke={'#808080'}
               />
               <LabelY
-                x={40}
+                x={barChartSetting.xStart - 5}
                 y={
                   barChartSetting.svgHeight -
                   barChartSetting.svgHeight *
                     yAdjRatio *
-                    barChartSetting.yShrinkRatio
+                    barChartSetting.yShrinkRatio +
+                  5
                 }
               >
-                {Math.round(yValues[index])}
+                {`${Math.round(yValues[index])}${index === 0 ? '' : '元'}`}
               </LabelY>
             </g>
           ))}
+          {/* x axis */}
           <path
-            d={`M 0 ${barChartSetting.svgHeight} L ${barChartSetting.svgWidth} ${barChartSetting.svgHeight} Z`}
+            d={`M ${barChartSetting.xStart} ${barChartSetting.svgHeight} L ${
+              barChartSetting.xStart + barChartSetting.svgWidth
+            } ${barChartSetting.svgHeight} Z`}
             stroke="#808080"
           />
+          {/* y axis */}
           <path
-            d={`M 0 ${barChartSetting.svgHeight} L 0 0 Z`}
+            d={`M ${barChartSetting.xStart} ${barChartSetting.svgHeight} L ${barChartSetting.xStart} 0 Z`}
             stroke="#808080"
           />
         </BarSvg>
@@ -273,12 +282,42 @@ export const BarChart: React.FC = () => {
           {datas.map(({ xLabel }, index) =>
             setXLabel(xLabel, barChartSetting, xMax, index)
           )}
+          {/* TODO: Y axis label */}
+          {yAdjRatios.map((yAdjRatio, index) => (
+            <g key={yAdjRatio}>
+              <path
+                d={`M ${barChartSetting.xStart} ${
+                  barChartSetting.svgHeight -
+                  barChartSetting.svgHeight *
+                    yAdjRatio *
+                    barChartSetting.yShrinkRatio
+                } H ${barChartSetting.xStart + 10}  Z`}
+                stroke={'#808080'}
+              />
+              <LabelY
+                x={barChartSetting.xStart - 5}
+                y={
+                  barChartSetting.svgHeight -
+                  barChartSetting.svgHeight *
+                    yAdjRatio *
+                    barChartSetting.yShrinkRatio +
+                  5
+                }
+              >
+                {`${Math.round(yValues[index])}${index === 0 ? '' : '元'}`}
+              </LabelY>
+            </g>
+          ))}
+          {/* x axis */}
           <path
-            d={`M 0 ${barChartSetting.svgHeight} L ${barChartSetting.svgWidth} ${barChartSetting.svgHeight} Z`}
+            d={`M ${barChartSetting.xStart} ${barChartSetting.svgHeight} L ${
+              barChartSetting.xStart + barChartSetting.svgWidth
+            } ${barChartSetting.svgHeight} Z`}
             stroke="#808080"
           />
+          {/* y axis */}
           <path
-            d={`M 0 ${barChartSetting.svgHeight} L 0 0 Z`}
+            d={`M ${barChartSetting.xStart} ${barChartSetting.svgHeight} L ${barChartSetting.xStart} 0 Z`}
             stroke="#808080"
           />
         </BarSvg>
@@ -353,8 +392,8 @@ const ChartTitle = styled.p`
   margin-bottom: 50px;
 `;
 const BarSvg = styled.svg`
-  height: 300px;
-  width: 500px;
+  height: 360px;
+  width: 610px;
   // border: 1px solid lightblue;
 `;
 const BarPath = styled.path`
@@ -380,9 +419,9 @@ const LabelX = styled.text`
 `;
 
 const LabelY = styled.text`
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
-  text-anchor: middle;
+  text-anchor: end;
 
   fill: #5b4105;
   stroke: #f2f2f2;
