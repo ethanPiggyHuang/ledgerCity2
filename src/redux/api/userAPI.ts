@@ -85,6 +85,37 @@ export async function createAccount(userInfo: {
   }>((resolve) => resolve({ data: { cityId, ledgerBookId, userNickName } }));
 }
 
+export async function createNewCity(userId: string) {
+  const initailCityData = {
+    accessUsers: [userId],
+    citizen: [],
+    cityName: '記帳城市',
+    houses: [
+      {
+        height: 1,
+        ledgerId: '0',
+        position: { xIndex: 1, yIndex: 1 },
+        type: '市政廳',
+      },
+    ],
+  };
+
+  const cityRef = await addDoc(collection(db, 'cities'), initailCityData);
+  const ledgerBookRef = await addDoc(collection(db, 'ledgerBooks'), {
+    cityId: cityRef.id,
+  });
+  await updateDoc(doc(db, 'cities', cityRef.id), {
+    ledgerBookId: ledgerBookRef.id,
+  });
+  await updateDoc(doc(db, 'users', userId), {
+    cityList: arrayUnion(cityRef.id),
+  });
+
+  return new Promise<{
+    cityId: string;
+  }>((resolve) => resolve({ cityId: cityRef.id }));
+}
+
 export async function getAccountInfo(userInfo: {
   userId: string;
   userName: string;

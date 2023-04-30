@@ -8,6 +8,7 @@ import {
   NEW_FRIEND_REQUEST,
   updateCityList,
   getCityName,
+  createNewCity,
 } from '../api/userAPI';
 import { RootState } from '../store';
 
@@ -102,6 +103,15 @@ export const CREATE_ACCOUNT = createAsyncThunk(
   }
 );
 
+export const CREATE_NEW_CITY = createAsyncThunk(
+  'userInfo/CREATE_NEW_CITY',
+  async (userId: string) => {
+    const response = await createNewCity(userId);
+
+    return response.cityId;
+  }
+);
+
 export const GET_ACCOUNT_INFO = createAsyncThunk(
   'userInfo/GET_ACCOUNT_INFO',
   async (userInfo: {
@@ -157,7 +167,7 @@ export const CITY_REDIRECTION = createAsyncThunk(
     const { userId, cityId } = payload;
     const allStates = getState() as RootState;
     const cityList = allStates.userInfo.data.cityList;
-    //TODO!!!!
+    //TODO!!!!  要避免亂入別人城市
     const newCityList = [cityId, ...cityList.filter((city) => city !== cityId)];
     await updateCityList(userId, newCityList);
     return newCityList;
@@ -318,6 +328,18 @@ export const userInfo = createSlice({
       .addCase(GET_CITY_NAME.rejected, (state) => {
         state.status = 'failed';
         alert('get city name rejected');
+      })
+      .addCase(CREATE_NEW_CITY.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(CREATE_NEW_CITY.fulfilled, (state, action) => {
+        state.status = 'idle';
+        alert('new city');
+        state.data.cityList = [action.payload, ...state.data.cityList];
+      })
+      .addCase(CREATE_NEW_CITY.rejected, (state) => {
+        state.status = 'failed';
+        alert('add new city rejected');
       });
   },
 });

@@ -7,12 +7,12 @@ import {
   faRightFromBracket,
   faFloppyDisk,
   faXmark,
+  faCirclePlus,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   PANEL_CONTROL,
   SWITCH_PAGE,
 } from '../../redux/reducers/pageControlSlice';
-import { ClosingButton } from '../../component/ClosingButton';
 import {
   LOG_OUT,
   EDIT_NICKNAME_SWITCH,
@@ -20,6 +20,7 @@ import {
   SAVE_NICKNAME,
   CITY_REDIRECTION,
   GET_CITY_NAME,
+  CREATE_NEW_CITY,
 } from '../../redux/reducers/userInfoSlice';
 import { useNavigate } from 'react-router-dom';
 import banner from '../../assets/banner.png';
@@ -104,6 +105,18 @@ export const UserPanel: React.FC = () => {
             </CityBannerWrap>
           </MyCityWrap>
         ))}
+        {cityList.length < 2 && (
+          <MyCityWrap>
+            <AddNewCityWrap
+              onClick={() => {
+                alert('注意，每個帳號最多只能擁有兩座城市，請細心管理 :D');
+                dispatch(CREATE_NEW_CITY(userId));
+              }}
+            >
+              <AddNewIcon icon={faCirclePlus} />
+            </AddNewCityWrap>
+          </MyCityWrap>
+        )}
       </MyCitiesWrap>
       <IconBack
         onClick={() => {
@@ -234,6 +247,23 @@ const CityBannerWrap = styled.div`
   border-radius: 5px;
   position: relative;
   cursor: pointer;
+`;
+
+const AddNewCityWrap = styled(CityBannerWrap)`
+  border: 1.5px dashed #ae7a00;
+  background-image: none;
+  width: 152px;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  &:hover {
+    opacity: 0.5;
+  }
+`;
+
+const AddNewIcon = styled(FontAwesomeIcon)`
+  font-size: 16px;
+  color: #ae7a00;
 `;
 
 const MyCityText = styled.div`
