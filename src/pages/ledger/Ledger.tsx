@@ -25,6 +25,7 @@ import { DailyLedger } from './DailyLedger';
 import { ClosingButton } from '../../component/ClosingButton';
 import { Amount } from './Amount';
 import { CITY_SET_SHIFT } from '../../redux/reducers/cityArrangementSlice';
+import { citySetting } from '../../utils/gameSettings';
 
 export const Ledger: React.FC = () => {
   const { userId } = useAppSelector((state) => state.userInfo.data);
@@ -40,6 +41,7 @@ export const Ledger: React.FC = () => {
   const { nextHousePosition, scale } = useAppSelector(
     (state) => state.cityArrangement
   );
+  const { gridLength, cityPaddingX, cityPaddingY } = citySetting;
 
   const dispatch = useAppDispatch();
 
@@ -97,13 +99,13 @@ export const Ledger: React.FC = () => {
                     dispatch(
                       CITY_SET_SHIFT({
                         shiftX:
-                          -400 +
+                          -cityPaddingX +
                           window.innerWidth / 2 -
-                          (80 + nextHousePosition.xIndex * 160) * scale,
+                          (nextHousePosition.xIndex + 0.5) * gridLength * scale,
                         shiftY:
-                          -200 +
+                          -cityPaddingY +
                           window.innerHeight / 2 -
-                          (80 + nextHousePosition.yIndex * 160) * scale,
+                          (nextHousePosition.yIndex + 0.5) * gridLength * scale,
                       })
                     );
                   }}

@@ -3,9 +3,31 @@ import styled, { keyframes } from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../../redux/hooks';
 import { citySetting } from '../../../utils/gameSettings';
 
+const landing = keyframes`
+  0% {
+    transform: translateY(-100px);
+    opacity: 0;
+    animation-timing-function: ease-in;
+  }   
+  30% {
+    transform: translateY(-100px);
+    opacity: 1;
+    animation-timing-function: ease-in;
+  } 
+  80% {
+    transform: translateY(-40px);
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+  100% {
+    transform: translateY(0px);
+    animation-timing-function: ease-out;
+  }
+`;
+
 const Wrapper = styled.div`
   position: absolute;
   z-index: 2;
+  animation: ${landing} 1s forwards;
   &:hover {
     transform: translateY(-10px);
   }

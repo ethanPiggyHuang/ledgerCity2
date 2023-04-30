@@ -7,29 +7,36 @@ import {
   labelColorCodes,
 } from '../../../utils/gameSettings';
 
+const landing = keyframes`
+  0% {
+    transform: translateY(-100px);
+    opacity: 0;
+    animation-timing-function: ease-in;
+  }   
+  30% {
+    transform: translateY(-100px);
+    opacity: 1;
+    animation-timing-function: ease-in;
+  } 
+  50% {
+    transform: translateY(-40px);
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+  100% {
+    transform: translateY(0px);
+    animation-timing-function: ease-out;
+  }
+`;
+
 const Wrapper = styled.div`
   position: absolute;
   z-index: 0;
-  // display: none;
   top: 0;
-  // &:hover {
-  //   transform: translateY(-10px);
-  // }
+  animation: ${landing} 1s forwards;
 `;
 
-const translate = keyframes`
-from {
-  transform: rotate(0deg) translateX(0) translateY(0);
-}
-to {
-  transform: rotate(10deg) translateX(10px) translateY(-20px);
-}
-`;
-
-const InteractiveGroup = styled.g`
-  &:hover {
-    animation: ${translate} 0.7s linear infinite alternate;
-  }
+const StyledSvg = styled.svg`
+  /* animation: ${landing} 1s forwards; */
 `;
 
 export const HouseGrid: React.FC<{ houseType: string }> = ({ houseType }) => {
@@ -43,7 +50,7 @@ export const HouseGrid: React.FC<{ houseType: string }> = ({ houseType }) => {
 
   return (
     <Wrapper>
-      <svg
+      <StyledSvg
         width={`${160 * widthNormalize * scale}px`}
         height={`${245 * widthNormalize * scale}px`}
         viewBox="0 0 160 245"
@@ -146,7 +153,7 @@ export const HouseGrid: React.FC<{ houseType: string }> = ({ houseType }) => {
             />
           </clipPath>
         </defs>
-      </svg>
+      </StyledSvg>
     </Wrapper>
   );
 };
