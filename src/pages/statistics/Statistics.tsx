@@ -49,17 +49,6 @@ export const Statistics: React.FC = () => {
         <ChartType onClick={() => dispatch(CHANGE_CHART_TYPE('split'))}>
           分帳結算
         </ChartType>
-        <ChartType onClick={() => dispatch(CHART_SHOWN_SWITCH('yearAndMonth'))}>
-          yearAndMonth
-        </ChartType>
-        <ChartType onClick={() => dispatch(CHART_SHOWN_SWITCH('monthOnly'))}>
-          monthOnly
-        </ChartType>
-        <ChartType
-          onClick={() => dispatch(CHART_SHOWN_SWITCH('monthAndDetail'))}
-        >
-          monthAndDetail
-        </ChartType>
       </ChartTypes>
       <Main>
         {chartType === 'oneMonth' && <GeneralAnalysis />}

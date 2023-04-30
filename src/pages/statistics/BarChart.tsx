@@ -20,7 +20,7 @@ export const BarChart: React.FC = () => {
   const ledgerList = useAppSelector((state) => state.ledgerList.dataList);
   const { chosenYear } = useAppSelector((state) => state.ledgerList.choices);
   const [hasCategory, setHasCategory] = useState(false);
-  const [labelsDisplay, setLabelsDisplay] = useState(new Array(8).fill(true));
+  const [labelsDisplay, setLabelsDisplay] = useState(new Array(10).fill(true));
   const [displayMonths, setDisplayMonths] = useState(12);
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
@@ -29,8 +29,8 @@ export const BarChart: React.FC = () => {
 
   const barChartSetting = {
     svgHeight: 300,
-    svgWidth: 500,
-    barWidth: 40,
+    svgWidth: 550,
+    barWidth: 35,
     yShrinkRatio: 0.9,
     labelDY: 20,
   };
@@ -46,18 +46,18 @@ export const BarChart: React.FC = () => {
   });
 
   const totalMonths = [
-    { xLabel: '一月', monthValue: 1 },
-    { xLabel: '二月', monthValue: 2 },
-    { xLabel: '三月', monthValue: 3 },
-    { xLabel: '四月', monthValue: 4 },
-    { xLabel: '五月', monthValue: 5 },
-    { xLabel: '六月', monthValue: 6 },
-    { xLabel: '七月', monthValue: 7 },
-    { xLabel: '八月', monthValue: 8 },
-    { xLabel: '九月', monthValue: 9 },
-    { xLabel: '十月', monthValue: 10 },
-    { xLabel: '十一月', monthValue: 11 },
-    { xLabel: '十二月', monthValue: 12 },
+    { xLabel: '1月', monthValue: 1 },
+    { xLabel: '2月', monthValue: 2 },
+    { xLabel: '3月', monthValue: 3 },
+    { xLabel: '4月', monthValue: 4 },
+    { xLabel: '5月', monthValue: 5 },
+    { xLabel: '6月', monthValue: 6 },
+    { xLabel: '7月', monthValue: 7 },
+    { xLabel: '8月', monthValue: 8 },
+    { xLabel: '9月', monthValue: 9 },
+    { xLabel: '10月', monthValue: 10 },
+    { xLabel: '11月', monthValue: 11 },
+    { xLabel: '12月', monthValue: 12 },
   ];
 
   let months: { xLabel: string; monthValue: number }[];
@@ -187,6 +187,16 @@ export const BarChart: React.FC = () => {
     );
   };
 
+  const yRatios = [0, 0.25, 0.5, 0.75, 1];
+
+  const yScaleMaxDigits = (Math.log(yMax) * Math.LOG10E + 1) | 0;
+  const yScaleMax =
+    Math.ceil(yMax / Math.pow(10, yScaleMaxDigits - 1)) *
+    Math.pow(10, yScaleMaxDigits - 1);
+
+  const yValues = yRatios.map((ratio) => ratio * yScaleMax);
+  const yAdjRatios = yValues.map((value) => value / yMax);
+
   return (
     <Wrap>
       <ChartTitle>{`${chosenYear}年各月份花費`}</ChartTitle>
@@ -207,8 +217,39 @@ export const BarChart: React.FC = () => {
           {datas.map(({ xLabel }, index) =>
             setXLabel(xLabel, barChartSetting, xMax, index)
           )}
-          <path d={`M 0 300 L 500 300 Z`} stroke="black" />
-          <path d={`M 0 300 L 0 0 Z`} stroke="black" />
+          {/* TODO: Y axis label */}
+          {yAdjRatios.map((yAdjRatio, index) => (
+            <g key={yAdjRatio}>
+              <path
+                d={`M 0 ${
+                  barChartSetting.svgHeight -
+                  barChartSetting.svgHeight *
+                    yAdjRatio *
+                    barChartSetting.yShrinkRatio
+                } H 10  Z`}
+                stroke={'#808080'}
+              />
+              <LabelY
+                x={40}
+                y={
+                  barChartSetting.svgHeight -
+                  barChartSetting.svgHeight *
+                    yAdjRatio *
+                    barChartSetting.yShrinkRatio
+                }
+              >
+                {Math.round(yValues[index])}
+              </LabelY>
+            </g>
+          ))}
+          <path
+            d={`M 0 ${barChartSetting.svgHeight} L ${barChartSetting.svgWidth} ${barChartSetting.svgHeight} Z`}
+            stroke="#808080"
+          />
+          <path
+            d={`M 0 ${barChartSetting.svgHeight} L 0 0 Z`}
+            stroke="#808080"
+          />
         </BarSvg>
       )}
       {loadingStatus === 'idle' && hasCategory && (
@@ -232,8 +273,14 @@ export const BarChart: React.FC = () => {
           {datas.map(({ xLabel }, index) =>
             setXLabel(xLabel, barChartSetting, xMax, index)
           )}
-          <path d={`M 0 300 L 500 300 Z`} stroke="black" />
-          <path d={`M 0 300 L 0 0 Z`} stroke="black" />
+          <path
+            d={`M 0 ${barChartSetting.svgHeight} L ${barChartSetting.svgWidth} ${barChartSetting.svgHeight} Z`}
+            stroke="#808080"
+          />
+          <path
+            d={`M 0 ${barChartSetting.svgHeight} L 0 0 Z`}
+            stroke="#808080"
+          />
         </BarSvg>
       )}
       <Buttons>
@@ -299,12 +346,14 @@ const Wrap = styled.div`
 `;
 const ChartTitle = styled.p`
   text-align: center;
+  line-height: 50px;
   font-size: 28px;
   color: #808080;
   width: 100%;
+  margin-bottom: 50px;
 `;
 const BarSvg = styled.svg`
-  height: 350px;
+  height: 300px;
   width: 500px;
   // border: 1px solid lightblue;
 `;
@@ -321,14 +370,30 @@ const Buttons = styled.div`
   padding-bottom: 20px;
 `;
 const LabelX = styled.text`
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: bold;
   text-anchor: middle;
+
+  fill: #5b4105;
+  stroke: #f2f2f2;
+  stroke-width: 0.2px;
+`;
+
+const LabelY = styled.text`
+  font-size: 16px;
+  font-weight: bold;
+  text-anchor: middle;
+
+  fill: #5b4105;
+  stroke: #f2f2f2;
+  stroke-width: 0.2px;
 `;
 
 const LabelWrap = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  width: 320px;
 `;
 
 const LabelColor = styled.div<LabelColorProps>`
@@ -341,7 +406,7 @@ const LabelColor = styled.div<LabelColorProps>`
   cursor: pointer;
 `;
 const LabelText = styled.p`
-  height: 10px;
+  font-size: 16px;
   cursor: pointer;
 `;
 
