@@ -22,31 +22,31 @@ export const Landing: React.FC = () => {
     return () => window.removeEventListener('wheel', handleWheel);
   }, []);
 
-  const LedgerDemoAttrs = (
-    scrollY: number,
-    breakpoint: number
-  ): { leftAttrs: string; opacityAttrs: string } => {
-    const buffer = 300;
-    const pace = 0.2;
-    const convertedY = scrollY * pace;
-    let left: number;
-    let opacity: number;
-    if (convertedY <= breakpoint / 2) {
-      left = convertedY;
-      opacity = convertedY / 300;
-    } else if (convertedY <= breakpoint) {
-      left = convertedY;
-      opacity = 1;
-    } else if (convertedY <= breakpoint + buffer) {
-      left = breakpoint;
-      opacity = 1;
-    } else {
-      left = breakpoint * 2 + buffer - convertedY;
-      opacity = 1;
-    }
+  // const LedgerDemoAttrs = (
+  //   scrollY: number,
+  //   breakpoint: number
+  // ): { leftAttrs: string; opacityAttrs: string } => {
+  //   const buffer = 300;
+  //   const pace = 0.2;
+  //   const convertedY = scrollY * pace;
+  //   let left: number;
+  //   let opacity: number;
+  //   if (convertedY <= breakpoint / 2) {
+  //     left = convertedY;
+  //     opacity = convertedY / 300;
+  //   } else if (convertedY <= breakpoint) {
+  //     left = convertedY;
+  //     opacity = 1;
+  //   } else if (convertedY <= breakpoint + buffer) {
+  //     left = breakpoint;
+  //     opacity = 1;
+  //   } else {
+  //     left = breakpoint * 2 + buffer - convertedY;
+  //     opacity = 1;
+  //   }
 
-    return { leftAttrs: `${left}px`, opacityAttrs: `${opacity}` };
-  };
+  //   return { leftAttrs: `${left}px`, opacityAttrs: `${opacity}` };
+  // };
 
   return (
     <Wrapper>
@@ -55,8 +55,9 @@ export const Landing: React.FC = () => {
           <BannerLogo src={logoBanner} alt={'logo'} />
         </BannerLogoWrap>
         <LedgerDemo
-          $leftAttrs={`${LedgerDemoAttrs(landingScrollY, 550).leftAttrs}`}
-          $opacityAttrs={`${LedgerDemoAttrs(landingScrollY, 550).opacityAttrs}`}
+          $isShown={false}
+          // $leftAttrs={`${LedgerDemoAttrs(landingScrollY, 400).leftAttrs}`}
+          // $opacityAttrs={`${LedgerDemoAttrs(landingScrollY, 400).opacityAttrs}`}
         >
           <LabelDemo />
         </LedgerDemo>
@@ -109,18 +110,10 @@ const LoginSection = styled(IntroSection)`
 `;
 
 type LedgerDemoProps = {
-  $leftAttrs: string;
-  $opacityAttrs: string;
+  $isShown: boolean;
 };
 
-const LedgerDemo = styled.div.attrs<LedgerDemoProps>(
-  ({ $leftAttrs, $opacityAttrs }) => ({
-    style: {
-      left: $leftAttrs,
-      opacity: $opacityAttrs,
-    },
-  })
-)<LedgerDemoProps>`
+const LedgerDemo = styled.div<LedgerDemoProps>`
   position: absolute;
   width: 40%;
   background-color: #f2f2f2;
@@ -128,6 +121,9 @@ const LedgerDemo = styled.div.attrs<LedgerDemoProps>(
   border: 3px #808080 solid;
   overflow: hidden;
   height: 50%;
+  /* display: none; */
+  transition: opacity 1s ease;
+  opacity: ${({ $isShown }) => ($isShown ? '1' : '0')};
 `;
 
 const DemoTitle = styled.p`
