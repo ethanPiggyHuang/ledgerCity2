@@ -20,7 +20,8 @@ export const UserBar: React.FC = () => {
   return (
     <Wrapper>
       <TextWrap>
-        <Text>{`歡迎回來，${userNickName}市長`}</Text>
+        <Text>{`歡迎回來，`}</Text>
+        <Text>{`${userNickName}市長`}</Text>
       </TextWrap>
       <PorTraitWrap
         onClick={() => {
@@ -58,6 +59,7 @@ const TextWrap = styled.div`
   flex-direction: column;
   gap: 5px;
   justify-content: center;
+  align-items: end;
 `;
 
 const Text = styled.p`

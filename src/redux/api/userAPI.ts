@@ -22,12 +22,12 @@ export async function createAccount(userInfo: {
   userEmail: string;
   userPortraitUrl: string;
 }) {
-  const { userId } = userInfo;
+  const { userId, userName } = userInfo;
   const initialUserProfile = {
-    userNickName: '',
+    userNickName: userName,
     cityList: [],
     friends: [],
-    subLabels: { food: ['早餐', '午餐', '晚餐'] },
+    subLabels: {},
     trophy: { list: [], citizens: [] },
     gameSetting: { hasMusic: false, hasHints: false, isRecordContinue: false },
   };
@@ -44,30 +44,45 @@ export async function createAccount(userInfo: {
       },
     ],
   };
-  await setDoc(doc(db, 'users', userId), {
-    ...userInfo,
-    ...initialUserProfile,
-  });
-  await setDoc(doc(db, 'allUserStatus', userId), {
-    currentActivity: 'city',
-    fadeOutTime: serverTimestamp(),
-    latestActiveTime: serverTimestamp(),
-  });
-  const cityRef = await addDoc(collection(db, 'cities'), initailCityData);
-  const ledgerBookRef = await addDoc(collection(db, 'ledgerBooks'), {
-    cityId: cityRef.id,
-  });
-  await updateDoc(doc(db, 'cities', cityRef.id), {
-    ledgerBookId: ledgerBookRef.id,
-  });
-  await updateDoc(doc(db, 'users', userId), {
-    cityList: arrayUnion(cityRef.id),
-  });
 
-  return new Promise<{ data: { cityId: string; ledgerBookId: string } }>(
-    (resolve) =>
-      resolve({ data: { cityId: cityRef.id, ledgerBookId: ledgerBookRef.id } })
-  );
+  const userDocRef = doc(db, 'users', userId);
+
+  const docSnap = await getDoc(userDocRef);
+  let cityId: string;
+  let ledgerBookId: string;
+  let userNickName = '';
+  if (docSnap.exists()) {
+    userNickName = docSnap.data().userNickName;
+    cityId = docSnap.data().cityList[0];
+    const cityDocSnap = await getDoc(doc(db, 'cities', cityId));
+    ledgerBookId = cityDocSnap.data()?.ledgerBookId;
+  } else {
+    await setDoc(userDocRef, {
+      ...userInfo,
+      ...initialUserProfile,
+    });
+    await setDoc(doc(db, 'allUserStatus', userId), {
+      currentActivity: 'city',
+      fadeOutTime: serverTimestamp(),
+      latestActiveTime: serverTimestamp(),
+    });
+    const cityRef = await addDoc(collection(db, 'cities'), initailCityData);
+    cityId = cityRef.id;
+    const ledgerBookRef = await addDoc(collection(db, 'ledgerBooks'), {
+      cityId,
+    });
+    ledgerBookId = ledgerBookRef.id;
+    await updateDoc(doc(db, 'cities', cityRef.id), {
+      ledgerBookId,
+    });
+    await updateDoc(doc(db, 'users', userId), {
+      cityList: arrayUnion(cityRef.id),
+    });
+  }
+
+  return new Promise<{
+    data: { cityId: string; ledgerBookId: string; userNickName: string };
+  }>((resolve) => resolve({ data: { cityId, ledgerBookId, userNickName } }));
 }
 
 export async function getAccountInfo(userInfo: {

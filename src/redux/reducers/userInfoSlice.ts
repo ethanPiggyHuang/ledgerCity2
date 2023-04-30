@@ -225,12 +225,15 @@ export const userInfo = createSlice({
       .addCase(CREATE_ACCOUNT.fulfilled, (state, action) => {
         state.status = 'idle';
         state.loginStatus.isLogin = true;
-        const { cityId, ledgerBookId } = action.payload.data;
-        state.data.userId = action.payload.user.userId;
-        state.data.userName = action.payload.user.userName;
-        state.data.userPortraitUrl = action.payload.user.userPortraitUrl;
-        state.data.userEmail = action.payload.user.userEmail;
-        console.log('check', cityId, ledgerBookId);
+        const { cityId, userNickName } = action.payload.data;
+        const { userId, userName, userPortraitUrl, userEmail } =
+          action.payload.user;
+        state.data.userId = userId;
+        state.data.userName = userName;
+        state.data.userNickName = userNickName === '' ? userName : userNickName;
+        state.data.userPortraitUrl = userPortraitUrl;
+        state.data.userEmail = userEmail;
+        // console.log('check', cityId, ledgerBookId);
         state.data.cityList = [cityId];
       })
       .addCase(CREATE_ACCOUNT.rejected, (state) => {
