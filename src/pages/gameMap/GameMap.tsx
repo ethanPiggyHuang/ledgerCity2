@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
 import { City } from './City';
 import { DialogBoard } from '../../component/DialogBoard';
@@ -164,7 +164,7 @@ const InvisibleCurtain = styled(BlackCurtain)`
 const CityWrapper = styled.div`
   width: 100vw;
   height: 100vh;
-  overflow: scroll;
+  overflow: hidden;
 
   &::-webkit-scrollbar {
     display: none;

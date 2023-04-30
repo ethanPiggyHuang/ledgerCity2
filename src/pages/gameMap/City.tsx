@@ -19,6 +19,7 @@ import { HouseOfDrinks } from './housesSvg/HouseOfDrinks';
 import { HouseOfPlants } from './housesSvg/HouseOfPlants';
 import { HouseGrid } from './housesSvg/HouseGrid';
 import mapPin from '../../assets/mapPin.png';
+import character_green from '../../assets/character_green.png';
 
 export const City: React.FC = () => {
   const { gridGap, gridLength, houseWidth, cityPaddingX, cityPaddingY } =
@@ -31,6 +32,10 @@ export const City: React.FC = () => {
   const cityWidth = (gridLength + gridGap) * housesPosition[0].length;
   const cityHeight = (gridLength + gridGap) * housesPosition.length;
   const [figurePosition, setFigurePosition] = useState(0);
+  const [cityX, setCityX] = useState(0);
+  const [cityY, setCityY] = useState(0);
+  const [greenMoveX, setGreenMoveX] = useState(0);
+  const [greenMoveY, setGreenMoveY] = useState(0);
 
   const [playHammerShort] = useSound(hammer_ice, { volume: 0.5 });
 
@@ -51,12 +56,59 @@ export const City: React.FC = () => {
     dispatch(displayCity(cityBasicInfo));
   }, [cityBasicInfo, dispatch]);
 
+  useEffect(() => {
+    const handelScroll = (event: any) => {
+      setCityX((prev) => prev + event.deltaX / 10);
+      setCityY((prev) => prev + event.deltaY / 10);
+      // setTimeout(() => setCityX((prev) => prev + event.deltaX / 10), 20);
+      // setTimeout(() => setCityY((prev) => prev + event.deltaY / 10), 20);
+    };
+    window.addEventListener('wheel', handelScroll);
+    return () => window.removeEventListener('wheel', handelScroll);
+  }, []);
+
+  useEffect(() => {
+    const handelClick = (event: any) => {
+      setCityX(-300);
+      setCityY(-300);
+    };
+    window.addEventListener('click', handelClick);
+    return () => window.removeEventListener('click', handelClick);
+  }, []);
+
+  useEffect(() => {
+    const handelKeypress = (event: any) => {
+      if (event.code === 'ArrowDown' || event.code === 'KeyS') {
+        setCityY((prev) => prev - 5);
+        setGreenMoveY(0);
+        setGreenMoveX((prev) => (prev + 1) % 3);
+      }
+      if (event.code === 'ArrowUp' || event.code === 'KeyW') {
+        setCityY((prev) => prev + 5);
+        setGreenMoveY(1);
+        setGreenMoveX((prev) => (prev + 1) % 3);
+      }
+      if (event.code === 'ArrowRight' || event.code === 'KeyD') {
+        setCityX((prev) => prev - 5);
+        setGreenMoveY(3);
+        setGreenMoveX((prev) => (prev + 1) % 3);
+      }
+      if (event.code === 'ArrowLeft' || event.code === 'KeyA') {
+        setCityX((prev) => prev + 5);
+        setGreenMoveY(2);
+        setGreenMoveX((prev) => (prev + 1) % 3);
+      }
+    };
+    window.addEventListener('keydown', handelKeypress);
+    return () => window.removeEventListener('keydown', handelKeypress);
+  }, []);
+
   return (
     <CityRange
       $widthAttrs={`${cityWidth * scale + 2 * cityPaddingX}px`}
       $heightAttrs={`${cityHeight * scale + 2 * cityPaddingY}px`}
-      $topAttrs={`${cityShift.current.y}px`}
-      $leftAttrs={`${cityShift.current.x}px`}
+      $topAttrs={`${cityY}px`}
+      $leftAttrs={`${cityX}px`}
       $padding={cityPaddingY}
       // draggable={dragMode === 'city'}
       // onDragStart={(event: React.DragEvent) => {
@@ -82,6 +134,13 @@ export const City: React.FC = () => {
     >
       <WalkingFigure src={mapPin} $scale={scale} $left={figurePosition} />
       <WalkingFigure src={mapPin} $scale={scale} $left={figurePosition * 2} />
+      <CharacterWrap>
+        <Character
+          src={character_green}
+          $xIndex={greenMoveX}
+          $yIndex={greenMoveY}
+        />
+      </CharacterWrap>
       {housesPosition.map((row, yIndex) => {
         return (
           <Row
@@ -267,4 +326,25 @@ const WalkingFigure = styled.img<WalkingFigureProps>`
   left: ${({ $scale, $left }) => `${$left * $scale + 400}px`};
   transition: left 0.5s linear;
   z-index: 3;
+`;
+
+const CharacterWrap = styled.div`
+  position: fixed;
+  top: calc(50vh - 25px);
+  left: calc(50vw - 25px);
+  width: 52px;
+  height: 60px;
+  overflow: hidden;
+  /* border: black 1px solid; */
+  z-index: 3;
+`;
+type CharacterProps = {
+  $xIndex: number;
+  $yIndex: number;
+};
+const Character = styled.img<CharacterProps>`
+  height: 240px;
+  position: relative;
+  left: ${({ $xIndex }) => `${-40 - 54 * $xIndex}px`};
+  top: ${({ $yIndex }) => `${-60 * $yIndex}px`};
 `;

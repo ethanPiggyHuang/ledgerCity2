@@ -99,8 +99,6 @@ export const BarChart: React.FC = () => {
     return { label, isIncluded: true, data: dataByCategory };
   });
 
-  // console.log(datasCategory);
-
   const drawBar = (
     value: number,
     monthValue: number,
@@ -223,7 +221,7 @@ export const BarChart: React.FC = () => {
           )}
           {/* TODO: Y axis label */}
           {yAdjRatios.map((yAdjRatio, index) => (
-            <g key={yAdjRatio}>
+            <g key={`${index}${yAdjRatio}`}>
               <path
                 d={`M ${barChartSetting.xStart} ${
                   barChartSetting.svgHeight -
@@ -284,7 +282,7 @@ export const BarChart: React.FC = () => {
           )}
           {/* TODO: Y axis label */}
           {yAdjRatios.map((yAdjRatio, index) => (
-            <g key={yAdjRatio}>
+            <g key={`${index}${yAdjRatio}`}>
               <path
                 d={`M ${barChartSetting.xStart} ${
                   barChartSetting.svgHeight -
@@ -339,7 +337,7 @@ export const BarChart: React.FC = () => {
       {hasCategory && (
         <LabelWrap>
           {mainLabels.map((label, index) => (
-            <>
+            <Label key={index}>
               <LabelColor
                 $display={labelsDisplay[index]}
                 $backgroundColor={labelColorCodes[index]}
@@ -358,7 +356,7 @@ export const BarChart: React.FC = () => {
               >
                 {label}
               </LabelText>
-            </>
+            </Label>
           ))}
         </LabelWrap>
       )}
@@ -433,6 +431,10 @@ const LabelWrap = styled.div`
   flex-wrap: wrap;
   gap: 8px;
   width: 320px;
+`;
+
+const Label = styled.div`
+  display: flex;
 `;
 
 const LabelColor = styled.div<LabelColorProps>`

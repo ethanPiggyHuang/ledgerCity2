@@ -15,8 +15,6 @@ export const Landing: React.FC = () => {
 
   useEffect(() => {
     const handleWheel = (event: any) => {
-      console.log(event.deltaY);
-
       dispatch(LANDING_SCROLL_Y(event.deltaY));
     };
 
