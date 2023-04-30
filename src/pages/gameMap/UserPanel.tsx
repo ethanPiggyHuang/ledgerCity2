@@ -110,6 +110,7 @@ export const UserPanel: React.FC = () => {
             <AddNewCityWrap
               onClick={() => {
                 alert('注意，每個帳號最多只能擁有兩座城市，請細心管理 :D');
+                //need double confirm
                 dispatch(CREATE_NEW_CITY(userId));
               }}
             >

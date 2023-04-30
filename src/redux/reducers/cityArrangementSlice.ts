@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { updateHousePosition } from '../api/cityAPI';
-import { CityBasicInfoState, HouseState } from './cityBasicInfoSlice';
+import { updateHousePosition, pickRandomPosition } from '../api/cityAPI';
+import { CityBasicInfoState } from './cityBasicInfoSlice';
 import { RootState } from '../store';
 
 export interface CityArrangementState {
@@ -17,6 +17,7 @@ export interface CityArrangementState {
     target: string;
     pastIndex: { xIndex: number; yIndex: number };
   };
+  nextHousePosition: { xIndex: number; yIndex: number };
   isRenaming: boolean;
   status: 'idle' | 'loading' | 'failed';
   scale: number;
@@ -32,6 +33,7 @@ const initialState: CityArrangementState = {
     current: { x: 0, y: 0 },
   },
   dragInfo: { id: '', target: '', pastIndex: { xIndex: 0, yIndex: 0 } },
+  nextHousePosition: { xIndex: 0, yIndex: 0 },
   isRenaming: false,
   status: 'idle',
   scale: 1,
@@ -56,11 +58,35 @@ export const saveCityAsync = createAsyncThunk(
     const newHouses = houses.map((house) => {
       return { ...house, position: newPostions[house.ledgerId] };
     });
-    console.log(cityId, newHouses);
     try {
       await updateHousePosition(cityId, newHouses);
     } catch (error) {
       console.log(error);
+    }
+  }
+);
+
+export const GENERATE_AVAILABLE_POSITION = createAsyncThunk(
+  'cityArrangement/generateAvailablePosition',
+  async (arg, { getState }) => {
+    const allStates = getState() as RootState;
+    const housesPosition = allStates.cityArrangement.housesPosition;
+
+    let emptyPostions: { xIndex: number; yIndex: number }[] = [];
+    housesPosition.forEach((raw, yIndex) => {
+      raw.forEach((grid, xIndex) => {
+        if (grid.type === '') {
+          emptyPostions.push({ yIndex, xIndex });
+        }
+      });
+    });
+
+    try {
+      const response = await pickRandomPosition(emptyPostions);
+      if (response) return response.data;
+    } catch (error) {
+      console.log(error);
+      return { xIndex: 0, yIndex: 0 };
     }
   }
 );
@@ -253,6 +279,22 @@ export const cityArrangement = createSlice({
       .addCase(saveCityAsync.rejected, (state) => {
         state.status = 'failed';
         alert('街道重建儲存失敗');
+      })
+      .addCase(GENERATE_AVAILABLE_POSITION.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(GENERATE_AVAILABLE_POSITION.fulfilled, (state, action) => {
+        state.status = 'idle';
+        const yIndex = action.payload?.yIndex;
+        const xIndex = action.payload?.xIndex;
+        if (yIndex && xIndex) {
+          state.nextHousePosition = { yIndex, xIndex };
+        }
+        console.log(`下次位置 y:${yIndex},x:${xIndex}`);
+      })
+      .addCase(GENERATE_AVAILABLE_POSITION.rejected, (state) => {
+        state.status = 'failed';
+        alert('尋找新空位失敗');
       });
   },
 });
