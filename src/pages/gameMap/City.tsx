@@ -58,10 +58,8 @@ export const City: React.FC = () => {
 
   useEffect(() => {
     const handelScroll = (event: any) => {
-      setCityX((prev) => prev + event.deltaX / 10);
-      setCityY((prev) => prev + event.deltaY / 10);
-      // setTimeout(() => setCityX((prev) => prev + event.deltaX / 10), 20);
-      // setTimeout(() => setCityY((prev) => prev + event.deltaY / 10), 20);
+      setCityX((prev) => prev - event.deltaX / 10);
+      setCityY((prev) => prev - event.deltaY / 10);
     };
     window.addEventListener('wheel', handelScroll);
     return () => window.removeEventListener('wheel', handelScroll);
@@ -134,11 +132,15 @@ export const City: React.FC = () => {
     >
       <WalkingFigure src={mapPin} $scale={scale} $left={figurePosition} />
       <WalkingFigure src={mapPin} $scale={scale} $left={figurePosition * 2} />
-      <CharacterWrap>
+      <CharacterWrap
+        $widthAttrs={`${scale * 26}px`}
+        $heightAttrs={`${scale * 30}px`}
+      >
         <Character
           src={character_green}
           $xIndex={greenMoveX}
           $yIndex={greenMoveY}
+          $scale={scale}
         />
       </CharacterWrap>
       {housesPosition.map((row, yIndex) => {
@@ -328,12 +330,24 @@ const WalkingFigure = styled.img<WalkingFigureProps>`
   z-index: 3;
 `;
 
-const CharacterWrap = styled.div`
+type CharacterWrapProps = {
+  $widthAttrs: string;
+  $heightAttrs: string;
+};
+
+const CharacterWrap = styled.div.attrs<CharacterWrapProps>(
+  ({ $heightAttrs, $widthAttrs }) => ({
+    style: {
+      width: $widthAttrs,
+      height: $heightAttrs,
+    },
+  })
+)<CharacterWrapProps>`
   position: fixed;
   top: calc(50vh - 25px);
   left: calc(50vw - 25px);
-  width: 52px;
-  height: 60px;
+  /* width: 52px; */
+  /* height: 60px; */
   overflow: hidden;
   /* border: black 1px solid; */
   z-index: 3;
@@ -341,10 +355,11 @@ const CharacterWrap = styled.div`
 type CharacterProps = {
   $xIndex: number;
   $yIndex: number;
+  $scale: number;
 };
 const Character = styled.img<CharacterProps>`
-  height: 240px;
+  height: 400%;
   position: relative;
-  left: ${({ $xIndex }) => `${-40 - 54 * $xIndex}px`};
-  top: ${({ $yIndex }) => `${-60 * $yIndex}px`};
+  left: ${({ $xIndex, $scale }) => `${(-20 - 27 * $xIndex) * $scale}px`};
+  top: ${({ $yIndex, $scale }) => `${-30 * $yIndex * $scale}px`};
 `;
