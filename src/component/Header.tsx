@@ -176,7 +176,7 @@ const TextWrapper = styled.div`
   /* border: 1px solid black; */
   position: absolute;
   height: 65%;
-  width: 50%;
+  width: 70%;
   display: flex;
   align-items: bottom;
 `;
