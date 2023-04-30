@@ -61,17 +61,10 @@ export const ledgerSubmit = createAsyncThunk(
       ...data,
       recordWho: userId,
     };
-    const availableGrids: { yIndex: number; xIndex: number }[] = [];
-    // const houses = allStates.cityBasicInfo.houses;
-    const housesPosition = allStates.cityArrangement.housesPosition;
-    housesPosition.forEach((raw, yIndex) => {
-      raw.forEach((grid, xIndex) => {
-        if (grid.type === '') availableGrids.push({ yIndex, xIndex });
-      });
-    });
-    console.log('available', availableGrids);
+    const { nextHousePosition } = allStates.cityArrangement;
+
     // if (availableGrids.length === 0) alert('not enough grids'); //TODO: auto expand grid
-    await postLedger(cityId, ledgerBookId, ledgerData, availableGrids);
+    await postLedger(cityId, ledgerBookId, ledgerData, nextHousePosition);
   }
 );
 

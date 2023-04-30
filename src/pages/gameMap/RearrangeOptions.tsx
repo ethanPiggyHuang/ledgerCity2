@@ -5,6 +5,7 @@ import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import {
   saveCityAsync,
   draggableToggle,
+  CITY_SET_SHIFT,
 } from '../../redux/reducers/cityArrangementSlice';
 import chocolate_world from '../../assets/chocolate_world.mp3';
 import hammer_2 from '../../assets/hammer_2.wav';
@@ -13,6 +14,7 @@ import {
   faVolumeHigh,
   faVolumeXmark,
   faFloppyDisk,
+  faLandmarkDome,
 } from '@fortawesome/free-solid-svg-icons';
 import reconstruct from '../../assets/reconstruct.png';
 import {
@@ -20,11 +22,13 @@ import {
   GENERATE_AVAILABLE_POSITION,
 } from '../../redux/reducers/cityArrangementSlice';
 import iconReconstruct from '../../assets/iconReconstruct.png';
+import { citySetting } from '../../utils/gameSettings';
 
 export const RearrangeOptions: React.FC = () => {
   const { dragMode, nextHousePosition, scale, housesPosition } = useAppSelector(
     (state) => state.cityArrangement
   );
+  const { gridLength, cityPaddingX, cityPaddingY } = citySetting;
   const dispatch = useAppDispatch();
   const [isMusicPlay, setIsMusicPlay] = useState(false);
   const [playHammer, { stop }] = useSound(hammer_2, { volume: 0.8 });
@@ -63,12 +67,43 @@ export const RearrangeOptions: React.FC = () => {
     dispatch(SET_SCALE(scaleOptions[nextScaleIndex]));
   };
 
+  const handleRedirectCityHall = () => {
+    let hallPosition = { yIndex: 0, xIndex: 0 };
+    housesPosition.forEach((raw, yIndex) =>
+      raw.forEach((house, xIndex) => {
+        if (house.type === '市政廳') {
+          hallPosition = { ...hallPosition, yIndex, xIndex };
+        }
+      })
+    );
+
+    dispatch(
+      CITY_SET_SHIFT({
+        shiftX:
+          -cityPaddingX +
+          window.innerWidth / 2 -
+          (hallPosition.xIndex + 0.5) * gridLength * scale,
+        shiftY:
+          -cityPaddingY +
+          window.innerHeight / 2 -
+          (hallPosition.yIndex + 0.5) * gridLength * scale,
+      })
+    );
+  };
+
+  // TODO: 只在第一次進入遊戲時 redirect
+  // useEffect(() => {
+  //   handleRedirectCityHall();
+  // }, [housesPosition]);
+
   useEffect(() => {
     const { xIndex, yIndex } = nextHousePosition;
-    if (housesPosition[yIndex][xIndex].type !== '') {
+    if (
+      housesPosition[yIndex][xIndex]?.type !== '' ||
+      (xIndex === 0 && yIndex === 0)
+    ) {
       dispatch(GENERATE_AVAILABLE_POSITION());
     }
-    console.log('effect');
   }, [nextHousePosition, housesPosition]);
 
   return (
@@ -94,6 +129,9 @@ export const RearrangeOptions: React.FC = () => {
             </IconBack>
             <IconBack $isActivate={isMusicPlay} onClick={handleMusicToggle}>
               <Icon icon={isMusicPlay ? faVolumeHigh : faVolumeXmark} />
+            </IconBack>
+            <IconBack $isActivate={false} onClick={handleRedirectCityHall}>
+              <Icon icon={faLandmarkDome} />
             </IconBack>
           </IconsWrapper>
         </>
@@ -164,7 +202,7 @@ const IconBackConstruction = styled(IconBack)`
 
 const Icon = styled(FontAwesomeIcon)`
   color: #f2f2f2;
-  font-size: 30px;
+  font-size: 28px;
 `;
 
 const IconImg = styled.img`

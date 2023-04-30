@@ -64,7 +64,6 @@ export const Social: React.FC = () => {
       const allFriendsCityId = friendIds
         .map((friendId) => friendsInfo[friendId].cityList)
         .flat();
-      // console.log(allFriendsCityId);
       allFriendsCityId.forEach((cityId) => dispatch(GET_CITY_NAME(cityId)));
     }
   }, [friendsInfo]);

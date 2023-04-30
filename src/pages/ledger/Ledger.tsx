@@ -24,6 +24,7 @@ import {
 import { DailyLedger } from './DailyLedger';
 import { ClosingButton } from '../../component/ClosingButton';
 import { Amount } from './Amount';
+import { CITY_SET_SHIFT } from '../../redux/reducers/cityArrangementSlice';
 
 export const Ledger: React.FC = () => {
   const { userId } = useAppSelector((state) => state.userInfo.data);
@@ -34,6 +35,10 @@ export const Ledger: React.FC = () => {
   );
   const { ledgerPosition, pageActivity } = useAppSelector(
     (state) => state.pageControl
+  );
+
+  const { nextHousePosition, scale } = useAppSelector(
+    (state) => state.cityArrangement
   );
 
   const dispatch = useAppDispatch();
@@ -81,7 +86,30 @@ export const Ledger: React.FC = () => {
               <Amount />
             </SecondRow>
             <ConfirmRow>
-              <ConfirmButton
+              <ConfirmButton $isAllowed={true} onClick={() => {}}>
+                <CheckIcon
+                  icon={faCheck}
+                  style={{ color: 'red' }}
+                  onClick={() => {
+                    alert(
+                      `next:${nextHousePosition.xIndex} ${nextHousePosition.yIndex}`
+                    );
+                    dispatch(
+                      CITY_SET_SHIFT({
+                        shiftX:
+                          -400 +
+                          window.innerWidth / 2 -
+                          (80 + nextHousePosition.xIndex * 160) * scale,
+                        shiftY:
+                          -200 +
+                          window.innerHeight / 2 -
+                          (80 + nextHousePosition.yIndex * 160) * scale,
+                      })
+                    );
+                  }}
+                />
+              </ConfirmButton>
+              {/* <ConfirmButton
                 $isAllowed={amount.number !== 0 && labelMain !== ''}
                 onClick={() => {
                   if (amount.number === 0) {
@@ -102,7 +130,7 @@ export const Ledger: React.FC = () => {
                 }}
               >
                 <CheckIcon icon={faCheck} />
-              </ConfirmButton>
+              </ConfirmButton> */}
             </ConfirmRow>
 
             <Calculator />

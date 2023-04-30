@@ -172,7 +172,6 @@ export async function updateActivity(userId: string, pageActivity: string) {
 
 export async function POST_NICKNAME(userId: string, userNickName: string) {
   await updateDoc(doc(db, 'users', userId), { userNickName: userNickName });
-  console.log(userId, userNickName);
 }
 
 export async function FIND_ACCOUNT_MATCH(email: string) {
@@ -180,11 +179,8 @@ export async function FIND_ACCOUNT_MATCH(email: string) {
   const querySnapshot = await getDocs(q);
   let result: UserDataState[] = [];
   querySnapshot.forEach((doc) => {
-    // doc.data() is never undefined for query doc snapshots
-    console.log(doc.id, ' => ', doc.data());
     result.push(doc.data() as UserDataState);
   });
-  console.log(result);
   return new Promise<{ result: UserDataState[] }>((resolve) =>
     resolve({ result })
   );

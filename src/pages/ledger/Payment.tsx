@@ -33,8 +33,6 @@ export const Payment: React.FC = () => {
   ];
   const payHowIndex = methods.findIndex((method) => method.en === payHow);
 
-  console.log(payHow === 'cash');
-
   useEffect(() => {
     dispatch(
       payPeopleSwitch({

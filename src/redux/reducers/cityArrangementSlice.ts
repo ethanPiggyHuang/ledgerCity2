@@ -12,6 +12,10 @@ export interface CityArrangementState {
     dragStart: { x: number; y: number };
     current: { x: number; y: number };
   };
+  cityWheelShift: {
+    x: number;
+    y: number;
+  };
   dragInfo: {
     id: string;
     target: string;
@@ -32,6 +36,7 @@ const initialState: CityArrangementState = {
     dragStart: { x: 0, y: 0 },
     current: { x: 0, y: 0 },
   },
+  cityWheelShift: { x: 0, y: 0 },
   dragInfo: { id: '', target: '', pastIndex: { xIndex: 0, yIndex: 0 } },
   nextHousePosition: { xIndex: 0, yIndex: 0 },
   isRenaming: false,
@@ -265,6 +270,22 @@ export const cityArrangement = createSlice({
     RENAME_CITY: (state, action: PayloadAction<boolean>) => {
       state.isRenaming = action.payload;
     },
+    CITY_WHEEL_SHIFT: (
+      state,
+      action: PayloadAction<{ deltaX: number; deltaY: number }>
+    ) => {
+      const { deltaX, deltaY } = action.payload;
+      state.cityWheelShift.x = state.cityWheelShift.x - deltaX;
+      state.cityWheelShift.y = state.cityWheelShift.y - deltaY;
+    },
+    CITY_SET_SHIFT: (
+      state,
+      action: PayloadAction<{ shiftX: number; shiftY: number }>
+    ) => {
+      const { shiftX, shiftY } = action.payload;
+      state.cityWheelShift.x = shiftX;
+      state.cityWheelShift.y = shiftY;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -313,6 +334,8 @@ export const {
   ADJUST_SCALE,
   SET_SCALE,
   RENAME_CITY,
+  CITY_WHEEL_SHIFT,
+  CITY_SET_SHIFT,
 } = cityArrangement.actions;
 
 export default cityArrangement.reducer;

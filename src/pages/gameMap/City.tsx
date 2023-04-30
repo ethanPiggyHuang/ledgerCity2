@@ -10,6 +10,7 @@ import {
   dragLightOff,
   RECORD_DRAG_START,
   UPDATE_CITY_LOCATION,
+  CITY_WHEEL_SHIFT,
 } from '../../redux/reducers/cityArrangementSlice';
 import { citySetting } from '../../utils/gameSettings';
 import hammer_ice from '../../assets/hammer_ice.wav';
@@ -25,7 +26,7 @@ export const City: React.FC = () => {
   const { gridGap, gridLength, houseWidth, cityPaddingX, cityPaddingY } =
     citySetting;
   const cityBasicInfo = useAppSelector((state) => state.cityBasicInfo);
-  const { housesPosition, gridsStatus, dragMode, scale, cityShift } =
+  const { housesPosition, gridsStatus, dragMode, scale, cityWheelShift } =
     useAppSelector((state) => state.cityArrangement);
   const { pageActivity } = useAppSelector((state) => state.pageControl);
   const dispatch = useAppDispatch();
@@ -59,8 +60,18 @@ export const City: React.FC = () => {
 
   useEffect(() => {
     const handelWheel = (event: WheelEvent) => {
-      setCityX((prev) => prev - event.deltaX / 10);
-      setCityY((prev) => prev - event.deltaY / 10);
+      setTimeout(
+        () =>
+          dispatch(
+            CITY_WHEEL_SHIFT({
+              deltaX: event.deltaX / 10,
+              deltaY: event.deltaY / 10,
+            })
+          ),
+        1
+      );
+      // setCityX((prev) => prev - event.deltaX / 10);
+      // setCityY((prev) => prev - event.deltaY / 10);
     };
     if (pageActivity === 'city') {
       window.addEventListener('wheel', handelWheel);
@@ -82,22 +93,26 @@ export const City: React.FC = () => {
   // useEffect(() => {
   //   const handelKeypress = (event: any) => {
   //     if (event.code === 'ArrowDown' || event.code === 'KeyS') {
-  //       setCityY((prev) => prev - 5);
+  //       dispatch(CITY_WHEEL_SHIFT({ deltaX: 0, deltaY: 5 }));
+  //       // setCityY((prev) => prev - 5);
   //       setGreenMoveY(0);
   //       setGreenMoveX((prev) => (prev + 1) % 3);
   //     }
   //     if (event.code === 'ArrowUp' || event.code === 'KeyW') {
-  //       setCityY((prev) => prev + 5);
+  //       dispatch(CITY_WHEEL_SHIFT({ deltaX: 0, deltaY: -5 }));
+  //       // setCityY((prev) => prev + 5);
   //       setGreenMoveY(1);
   //       setGreenMoveX((prev) => (prev + 1) % 3);
   //     }
   //     if (event.code === 'ArrowRight' || event.code === 'KeyD') {
-  //       setCityX((prev) => prev - 5);
+  //       dispatch(CITY_WHEEL_SHIFT({ deltaX: 5, deltaY: 0 }));
+  //       // setCityX((prev) => prev - 5);
   //       setGreenMoveY(3);
   //       setGreenMoveX((prev) => (prev + 1) % 3);
   //     }
   //     if (event.code === 'ArrowLeft' || event.code === 'KeyA') {
-  //       setCityX((prev) => prev + 5);
+  //       dispatch(CITY_WHEEL_SHIFT({ deltaX: -5, deltaY: 0 }));
+  //       // setCityX((prev) => prev + 5);
   //       setGreenMoveY(2);
   //       setGreenMoveX((prev) => (prev + 1) % 3);
   //     }
@@ -110,9 +125,10 @@ export const City: React.FC = () => {
     <CityRange
       $widthAttrs={`${cityWidth * scale + 2 * cityPaddingX}px`}
       $heightAttrs={`${cityHeight * scale + 2 * cityPaddingY}px`}
-      $topAttrs={`${cityY}px`}
-      $leftAttrs={`${cityX}px`}
+      $topAttrs={`${cityWheelShift.y}px`}
+      $leftAttrs={`${cityWheelShift.x}px`}
       $padding={cityPaddingY}
+      $relocatMode={'newHouse'}
 
       // draggable={dragMode === 'city'}
       // onDragStart={(event: React.DragEvent) => {
@@ -239,6 +255,7 @@ type CityRangeProps = {
   $topAttrs: string;
   $leftAttrs: string;
   $padding: number;
+  $relocatMode: string;
 };
 type RowProps = {
   $paddingTopAttrs: string;
@@ -270,6 +287,10 @@ const CityRange = styled.div.attrs<CityRangeProps>(
   height: fit-content;
   padding: ${({ $padding }) => `${$padding}px ${2 * $padding}px`};
   position: relative;
+  transition: ${({ $relocatMode }) =>
+    $relocatMode === 'newHouse'
+      ? 'top 1s ease, left 1s ease'
+      : 'top 0.1s ease, left 0.1s ease'};
 `;
 
 const Row = styled.div.attrs<RowProps>(({ $paddingTopAttrs, $gapAttrs }) => ({
