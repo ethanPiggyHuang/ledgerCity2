@@ -88,30 +88,44 @@ export const Ledger: React.FC = () => {
               <Amount />
             </SecondRow>
             <ConfirmRow>
-              <ConfirmButton $isAllowed={true} onClick={() => {}}>
+              {/* <ConfirmButton $isAllowed={true} onClick={() => {}}>
                 <CheckIcon
                   icon={faCheck}
                   style={{ color: 'red' }}
                   onClick={() => {
-                    alert(
-                      `next:${nextHousePosition.xIndex} ${nextHousePosition.yIndex}`
+                    dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }));
+                    setTimeout(
+                      () =>
+                        dispatch(
+                          CITY_SET_SHIFT({
+                            shiftX:
+                              -cityPaddingX +
+                              window.innerWidth / 2 -
+                              (nextHousePosition.xIndex + 0.5) *
+                                gridLength *
+                                scale,
+                            shiftY:
+                              -cityPaddingY +
+                              window.innerHeight / 2 -
+                              (nextHousePosition.yIndex + 0.5) *
+                                gridLength *
+                                scale,
+                          })
+                        ),
+                      200
                     );
-                    dispatch(
-                      CITY_SET_SHIFT({
-                        shiftX:
-                          -cityPaddingX +
-                          window.innerWidth / 2 -
-                          (nextHousePosition.xIndex + 0.5) * gridLength * scale,
-                        shiftY:
-                          -cityPaddingY +
-                          window.innerHeight / 2 -
-                          (nextHousePosition.yIndex + 0.5) * gridLength * scale,
-                      })
+
+                    setTimeout(
+                      () =>
+                        dispatch(
+                          SWITCH_PAGE({ userId, pageActivity: 'ledger' })
+                        ),
+                      2500
                     );
                   }}
                 />
-              </ConfirmButton>
-              {/* <ConfirmButton
+              </ConfirmButton> */}
+              <ConfirmButton
                 $isAllowed={amount.number !== 0 && labelMain !== ''}
                 onClick={() => {
                   if (amount.number === 0) {
@@ -122,7 +136,36 @@ export const Ledger: React.FC = () => {
                     return;
                   }
                   if (ledgerId === '') {
-                    dispatch(ledgerSubmit());
+                    dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }));
+                    setTimeout(
+                      () =>
+                        dispatch(
+                          CITY_SET_SHIFT({
+                            shiftX:
+                              -cityPaddingX +
+                              window.innerWidth / 2 -
+                              (nextHousePosition.xIndex + 0.5) *
+                                gridLength *
+                                scale,
+                            shiftY:
+                              -cityPaddingY +
+                              window.innerHeight / 2 -
+                              (nextHousePosition.yIndex + 0.5) *
+                                gridLength *
+                                scale,
+                          })
+                        ),
+                      200
+                    );
+                    setTimeout(() => dispatch(ledgerSubmit()), 1200);
+
+                    setTimeout(
+                      () =>
+                        dispatch(
+                          SWITCH_PAGE({ userId, pageActivity: 'ledger' })
+                        ),
+                      3200
+                    );
                   } else {
                     dispatch(ledgerUpdate());
                     dispatch(
@@ -132,7 +175,7 @@ export const Ledger: React.FC = () => {
                 }}
               >
                 <CheckIcon icon={faCheck} />
-              </ConfirmButton> */}
+              </ConfirmButton>
             </ConfirmRow>
 
             <Calculator />

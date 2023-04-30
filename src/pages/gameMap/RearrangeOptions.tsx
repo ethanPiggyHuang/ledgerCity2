@@ -28,6 +28,7 @@ export const RearrangeOptions: React.FC = () => {
   const { dragMode, nextHousePosition, scale, housesPosition } = useAppSelector(
     (state) => state.cityArrangement
   );
+  const { dataList } = useAppSelector((state) => state.ledgerList);
   const { gridLength, cityPaddingX, cityPaddingY } = citySetting;
   const dispatch = useAppDispatch();
   const [isMusicPlay, setIsMusicPlay] = useState(false);
@@ -98,13 +99,16 @@ export const RearrangeOptions: React.FC = () => {
 
   useEffect(() => {
     const { xIndex, yIndex } = nextHousePosition;
-    if (
-      housesPosition[yIndex][xIndex]?.type !== '' ||
-      (xIndex === 0 && yIndex === 0)
-    ) {
-      dispatch(GENERATE_AVAILABLE_POSITION());
+    if (housesPosition.length !== 0) {
+      if (
+        housesPosition[yIndex][xIndex].type !== '' ||
+        (xIndex === 0 && yIndex === 0)
+      ) {
+        dispatch(GENERATE_AVAILABLE_POSITION());
+        dispatch(GENERATE_AVAILABLE_POSITION());
+      }
     }
-  }, [nextHousePosition, housesPosition]);
+  }, [dispatch, nextHousePosition, housesPosition, dataList]);
 
   return (
     <Wrapper>
@@ -133,6 +137,25 @@ export const RearrangeOptions: React.FC = () => {
             <IconBack $isActivate={false} onClick={handleRedirectCityHall}>
               <Icon icon={faLandmarkDome} />
             </IconBack>
+            {/* <button
+              onClick={() => {
+                dispatch(GENERATE_AVAILABLE_POSITION());
+                dispatch(
+                  CITY_SET_SHIFT({
+                    shiftX:
+                      -cityPaddingX +
+                      window.innerWidth / 2 -
+                      (nextHousePosition.xIndex + 0.5) * gridLength * scale,
+                    shiftY:
+                      -cityPaddingY +
+                      window.innerHeight / 2 -
+                      (nextHousePosition.yIndex + 0.5) * gridLength * scale,
+                  })
+                );
+              }}
+            >
+              {`${nextHousePosition.xIndex},${nextHousePosition.yIndex}`}
+            </button> */}
           </IconsWrapper>
         </>
       )}

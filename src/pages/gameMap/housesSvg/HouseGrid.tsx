@@ -35,9 +35,7 @@ const Wrapper = styled.div`
   animation: ${landing} 1s forwards;
 `;
 
-const StyledSvg = styled.svg`
-  /* animation: ${landing} 1s forwards; */
-`;
+const StyledSvg = styled.svg``;
 
 export const HouseGrid: React.FC<{ houseType: string }> = ({ houseType }) => {
   const { gridLength } = citySetting;
