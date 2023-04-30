@@ -96,6 +96,7 @@ export const UserPanel: React.FC = () => {
                   if (index === 0) return;
                   dispatch(CITY_REDIRECTION({ userId, cityId }));
                   dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }));
+                  dispatch(PANEL_CONTROL('none'));
                 }}
               >
                 <MyCityNotice>{index === 0 ? '目前' : '前往'}</MyCityNotice>

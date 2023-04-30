@@ -33,12 +33,9 @@ const AuthRoute: React.FunctionComponent<IAuthRouteProps> = (props) => {
         const { uid, displayName, email, photoURL } = user;
         if (user.metadata.creationTime === user.metadata.lastSignInTime) {
           // 使用者是第一次註冊  TODO: 確認是否註冊過
-          console.log('使用者是第一次註冊');
           dispatch(CREATE_ACCOUNT({ uid, displayName, email, photoURL }));
         } else {
           // 使用者已登入過
-          console.log('使用者已登入過');
-          // dispatch(CREATE_ACCOUNT({ uid, displayName, email, photoURL }));
           dispatch(GET_ACCOUNT_INFO({ uid, displayName, email, photoURL }));
         }
         dispatch(AUTHING_TOGGLE(false));

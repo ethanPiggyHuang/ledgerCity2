@@ -27,6 +27,7 @@ export const City: React.FC = () => {
   const cityBasicInfo = useAppSelector((state) => state.cityBasicInfo);
   const { housesPosition, gridsStatus, dragMode, scale, cityShift } =
     useAppSelector((state) => state.cityArrangement);
+  const { pageActivity } = useAppSelector((state) => state.pageControl);
   const dispatch = useAppDispatch();
   // TODO: 要再改成可以一鍵看到城市全貌?
   const cityWidth = (gridLength + gridGap) * housesPosition[0].length;
@@ -57,49 +58,53 @@ export const City: React.FC = () => {
   }, [cityBasicInfo, dispatch]);
 
   useEffect(() => {
-    const handelScroll = (event: any) => {
+    const handelWheel = (event: WheelEvent) => {
       setCityX((prev) => prev - event.deltaX / 10);
       setCityY((prev) => prev - event.deltaY / 10);
     };
-    window.addEventListener('wheel', handelScroll);
-    return () => window.removeEventListener('wheel', handelScroll);
-  }, []);
+    if (pageActivity === 'city') {
+      window.addEventListener('wheel', handelWheel);
+    } else {
+      window.removeEventListener('wheel', handelWheel);
+    }
+    return () => window.removeEventListener('wheel', handelWheel);
+  }, [pageActivity]);
 
-  useEffect(() => {
-    const handelClick = (event: any) => {
-      setCityX(-300);
-      setCityY(-300);
-    };
-    window.addEventListener('click', handelClick);
-    return () => window.removeEventListener('click', handelClick);
-  }, []);
+  // useEffect(() => {
+  //   const handelClick = (event: any) => {
+  //     setCityX(-300);
+  //     setCityY(-300);
+  //   };
+  //   window.addEventListener('click', handelClick);
+  //   return () => window.removeEventListener('click', handelClick);
+  // }, []);
 
-  useEffect(() => {
-    const handelKeypress = (event: any) => {
-      if (event.code === 'ArrowDown' || event.code === 'KeyS') {
-        setCityY((prev) => prev - 5);
-        setGreenMoveY(0);
-        setGreenMoveX((prev) => (prev + 1) % 3);
-      }
-      if (event.code === 'ArrowUp' || event.code === 'KeyW') {
-        setCityY((prev) => prev + 5);
-        setGreenMoveY(1);
-        setGreenMoveX((prev) => (prev + 1) % 3);
-      }
-      if (event.code === 'ArrowRight' || event.code === 'KeyD') {
-        setCityX((prev) => prev - 5);
-        setGreenMoveY(3);
-        setGreenMoveX((prev) => (prev + 1) % 3);
-      }
-      if (event.code === 'ArrowLeft' || event.code === 'KeyA') {
-        setCityX((prev) => prev + 5);
-        setGreenMoveY(2);
-        setGreenMoveX((prev) => (prev + 1) % 3);
-      }
-    };
-    window.addEventListener('keydown', handelKeypress);
-    return () => window.removeEventListener('keydown', handelKeypress);
-  }, []);
+  // useEffect(() => {
+  //   const handelKeypress = (event: any) => {
+  //     if (event.code === 'ArrowDown' || event.code === 'KeyS') {
+  //       setCityY((prev) => prev - 5);
+  //       setGreenMoveY(0);
+  //       setGreenMoveX((prev) => (prev + 1) % 3);
+  //     }
+  //     if (event.code === 'ArrowUp' || event.code === 'KeyW') {
+  //       setCityY((prev) => prev + 5);
+  //       setGreenMoveY(1);
+  //       setGreenMoveX((prev) => (prev + 1) % 3);
+  //     }
+  //     if (event.code === 'ArrowRight' || event.code === 'KeyD') {
+  //       setCityX((prev) => prev - 5);
+  //       setGreenMoveY(3);
+  //       setGreenMoveX((prev) => (prev + 1) % 3);
+  //     }
+  //     if (event.code === 'ArrowLeft' || event.code === 'KeyA') {
+  //       setCityX((prev) => prev + 5);
+  //       setGreenMoveY(2);
+  //       setGreenMoveX((prev) => (prev + 1) % 3);
+  //     }
+  //   };
+  //   window.addEventListener('keydown', handelKeypress);
+  //   return () => window.removeEventListener('keydown', handelKeypress);
+  // }, []);
 
   return (
     <CityRange
@@ -108,6 +113,7 @@ export const City: React.FC = () => {
       $topAttrs={`${cityY}px`}
       $leftAttrs={`${cityX}px`}
       $padding={cityPaddingY}
+
       // draggable={dragMode === 'city'}
       // onDragStart={(event: React.DragEvent) => {
       //   if (dragMode !== 'city') return;
@@ -132,7 +138,7 @@ export const City: React.FC = () => {
     >
       <WalkingFigure src={mapPin} $scale={scale} $left={figurePosition} />
       <WalkingFigure src={mapPin} $scale={scale} $left={figurePosition * 2} />
-      <CharacterWrap
+      {/* <CharacterWrap
         $widthAttrs={`${scale * 26}px`}
         $heightAttrs={`${scale * 30}px`}
       >
@@ -142,7 +148,7 @@ export const City: React.FC = () => {
           $yIndex={greenMoveY}
           $scale={scale}
         />
-      </CharacterWrap>
+      </CharacterWrap> */}
       {housesPosition.map((row, yIndex) => {
         return (
           <Row
@@ -275,7 +281,7 @@ const Row = styled.div.attrs<RowProps>(({ $paddingTopAttrs, $gapAttrs }) => ({
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px blue solid;
+  /* border: 1px blue solid; */
 `;
 
 const Grid = styled.div.attrs<GridProps>(({ $lengthAttrs }) => ({

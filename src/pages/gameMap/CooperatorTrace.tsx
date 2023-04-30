@@ -15,8 +15,10 @@ import {
   faUsers,
   faFilePen,
   faBed,
+  faPersonRunning,
 } from '@fortawesome/free-solid-svg-icons';
 import mapPin from '../../assets/mapPin.png';
+import { SWITCH_PAGE } from '../../redux/reducers/pageControlSlice';
 
 export const CooperatorTrace: React.FC = () => {
   const { userId } = useAppSelector((state) => state.userInfo.data);
@@ -104,60 +106,78 @@ export const CooperatorTrace: React.FC = () => {
   return (
     <Wrap>
       <Title>協作市長動態</Title>
-      <Background />
-      <IconBlocks>
-        <IconBlock>
-          <MapPathUpLeft />
-        </IconBlock>
-        <IconBlock>
-          <MapPathUpMiddle />
-          <CityIcon src={cityIcon} />
-        </IconBlock>
-        <IconBlock>
-          <MapPathUpRight />
-        </IconBlock>
-        <IconBlock>
-          <OffLineIconBack>
-            <OffLineIcon icon={faBed} />
-          </OffLineIconBack>
-        </IconBlock>
-        <IconBlock>
-          <PagesIconBack>
-            <Icon icon={faChartPie} />
-          </PagesIconBack>
-        </IconBlock>
-        <IconBlock>
-          <MapPath />
-          <PagesIconBack>
-            <Icon icon={faFilePen} />
-          </PagesIconBack>
-        </IconBlock>
-        <IconBlock>
-          <MapPath />
-          <PagesIconBack>
-            <Icon icon={faUsers} />
-          </PagesIconBack>
-        </IconBlock>
-        <IconBlock></IconBlock>
-        {coopFriends.map((coopFriend, index) => (
-          <UserPinWrap
-            key={index}
-            endPoint={`${getPinLocation(cooperatorsAction[index])}`}
+      <Background $hasCoopFriend={coopFriends.length > 0}>
+        {coopFriends.length === 0 && (
+          <Suggestion
+            onClick={() =>
+              dispatch(SWITCH_PAGE({ userId, pageActivity: 'profile' }))
+            }
           >
-            <UserPortraitWrap>
-              {cooperatorsAction[index] && (
-                <UserPortrait
-                  src={cooperatorsPortrait[index] as string}
-                  alt={`portrait of ${coopFriend}`}
-                />
-              )}
-            </UserPortraitWrap>
-            <UserPin src={mapPin} />
-          </UserPinWrap>
-        ))}
-      </IconBlocks>
+            <SuggestionText>本座城市還沒有協作市長</SuggestionText>
+            <SuggestionText>點此前往邀請！</SuggestionText>
+            <ActionIcon icon={faPersonRunning} />
+          </Suggestion>
+        )}
+      </Background>
+      {coopFriends.length > 0 && (
+        <IconBlocks>
+          <IconBlock>
+            <MapPathUpLeft />
+          </IconBlock>
+          <IconBlock>
+            <MapPathUpMiddle />
+            <CityIcon src={cityIcon} />
+          </IconBlock>
+          <IconBlock>
+            <MapPathUpRight />
+          </IconBlock>
+          <IconBlock>
+            <OffLineIconBack>
+              <OffLineIcon icon={faBed} />
+            </OffLineIconBack>
+          </IconBlock>
+          <IconBlock>
+            <PagesIconBack>
+              <Icon icon={faChartPie} />
+            </PagesIconBack>
+          </IconBlock>
+          <IconBlock>
+            <MapPath />
+            <PagesIconBack>
+              <Icon icon={faFilePen} />
+            </PagesIconBack>
+          </IconBlock>
+          <IconBlock>
+            <MapPath />
+            <PagesIconBack>
+              <Icon icon={faUsers} />
+            </PagesIconBack>
+          </IconBlock>
+          <IconBlock></IconBlock>
+          {coopFriends.map((coopFriend, index) => (
+            <UserPinWrap
+              key={index}
+              endPoint={`${getPinLocation(cooperatorsAction[index])}`}
+            >
+              <UserPortraitWrap>
+                {cooperatorsAction[index] && (
+                  <UserPortrait
+                    src={cooperatorsPortrait[index] as string}
+                    alt={`portrait of ${coopFriend}`}
+                  />
+                )}
+              </UserPortraitWrap>
+              <UserPin src={mapPin} />
+            </UserPinWrap>
+          ))}
+        </IconBlocks>
+      )}
     </Wrap>
   );
+};
+
+type BackgroundProps = {
+  $hasCoopFriend: boolean;
 };
 
 const Wrap = styled.div`
@@ -178,9 +198,9 @@ const Title = styled.div`
   text-align: end;
 `;
 
-const Background = styled.div`
+const Background = styled.div<BackgroundProps>`
   width: 18.5vw;
-  height: 25.5vh;
+  height: ${({ $hasCoopFriend }) => ($hasCoopFriend ? '25.5vh' : '96px')};
   background-color: black;
   opacity: 0.5;
   border-radius: 20px;
@@ -312,4 +332,37 @@ const MapPathUpRight = styled(MapPathUp)`
 const MapPathUpMiddle = styled(MapPathUp)`
   transform: translateY(50%);
   height: 50%;
+`;
+
+const Suggestion = styled.div``;
+
+const SuggestionText = styled.p`
+  width: 100%;
+  text-align: center;
+  padding-top: 20px;
+  color: #dabd7a;
+  cursor: pointer;
+`;
+
+const Running = keyframes`
+  0%{
+    transform: translateX(0);
+  }
+  66%{
+    transform: translateX(120%);
+  }
+  100%{
+    transform: translateX(120%);
+  }
+`;
+
+const ActionIcon = styled(FontAwesomeIcon)`
+  position: absolute;
+  bottom: 19px;
+  right: 15%;
+  padding-top: 10px;
+  text-align: end;
+  color: #dabd7a;
+  font-size: 28px;
+  animation: ${Running} 2s infinite ease-in;
 `;
