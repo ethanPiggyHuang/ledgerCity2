@@ -76,8 +76,8 @@ export const City: React.FC = () => {
         () =>
           dispatch(
             CITY_WHEEL_SHIFT({
-              deltaX: event.deltaX / 10,
-              deltaY: event.deltaY / 10,
+              deltaX: event.deltaX / 4,
+              deltaY: event.deltaY / 4,
             })
           ),
         1
