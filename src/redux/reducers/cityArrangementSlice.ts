@@ -82,8 +82,8 @@ export const GENERATE_AVAILABLE_POSITION = createAsyncThunk(
     const housesPosition = allStates.cityArrangement.housesPosition;
 
     let emptyPostions: { xIndex: number; yIndex: number }[] = [];
-    housesPosition.forEach((raw, yIndex) => {
-      raw.forEach((grid, xIndex) => {
+    housesPosition?.forEach((raw, yIndex) => {
+      raw?.forEach((grid, xIndex) => {
         if (grid.type === '') {
           emptyPostions.push({ yIndex, xIndex });
         }

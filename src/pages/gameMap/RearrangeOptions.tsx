@@ -150,7 +150,7 @@ export const RearrangeOptions: React.FC = () => {
     const { xIndex, yIndex } = nextHousePosition;
     if (housesPosition.length !== 0) {
       if (
-        housesPosition[yIndex][xIndex].type !== '' ||
+        housesPosition[yIndex][xIndex]?.type !== '' ||
         (xIndex === 0 && yIndex === 0)
       ) {
         dispatch(GENERATE_AVAILABLE_POSITION());

@@ -155,7 +155,7 @@ export const Social: React.FC = () => {
                           </MyCityNoticeWrap>
                         </CityBannerWrap>
                       </FriendCityWrap>
-                      <FriendCityWrap>
+                      {/* <FriendCityWrap>
                         <FriendCityInfoTitle>好友城市</FriendCityInfoTitle>
                         {friendInfo.personalCityName === '' ? (
                           <FriendCityInfoText>無個人城市</FriendCityInfoText>
@@ -181,13 +181,13 @@ export const Social: React.FC = () => {
                             </FriendsCityNoticeWrap>
                           </CityBannerWrap>
                         )}
-                      </FriendCityWrap>
+                      </FriendCityWrap> */}
                     </FriendInfo>
                   )
               )}
           </FriendInfoWrap>
         </FriendListWrap>
-        <FriendListWrap>
+        {/* <FriendListWrap>
           <FriendListTitle
             onClick={() => dispatch(SOCIAL_SECTION_TOGGLE('friend'))}
           >
@@ -219,8 +219,6 @@ export const Social: React.FC = () => {
                             <MyCityNotice>切換</MyCityNotice>
                           </FriendsCityNoticeWrap>
                         </InviteCityBannerWrap>
-                        {/* TODO: function */}
-                        {/* TODO: cityOptions */}
                       </FriendCityWrap>
                       <FriendCityWrap>
                         <FriendCityInfoTitle>好友城市</FriendCityInfoTitle>
@@ -253,12 +251,12 @@ export const Social: React.FC = () => {
                   )
               )}
           </FriendInfoWrap>
-        </FriendListWrap>
+        </FriendListWrap> */}
         <FriendListWrap>
           <FriendListTitle
             onClick={() => dispatch(SOCIAL_SECTION_TOGGLE('inviting'))}
           >
-            友達未滿
+            尚待確認
           </FriendListTitle>
           <FriendInfoWrap $isClosed={socialSectionClosed.includes('inviting')}>
             {friendInfoCollection.length !== 0 &&
@@ -266,7 +264,8 @@ export const Social: React.FC = () => {
                 (friendInfo, index) =>
                   // TODO 改成 還在確認友情關係
                   // friendInfo.friendStatus === 'friend' &&
-                  friendInfo.coopStatus === 'coorperated' && (
+                  (friendInfo.coopStatus === 'inviting' ||
+                    friendInfo.coopStatus === 'invited') && (
                     <FriendInfo key={friendInfo.userId}>
                       <UserBasics
                         payload={{
@@ -292,7 +291,7 @@ export const Social: React.FC = () => {
           </FriendInfoWrap>
         </FriendListWrap>
 
-        {
+        {/* {
           <button
             onClick={() => {
               const friendId = '';
@@ -304,7 +303,7 @@ export const Social: React.FC = () => {
           >
             同意邀請funciton
           </button>
-        }
+        } */}
         {/* <p>輸入好友 gmail</p>
       <input
         value={emailInput}

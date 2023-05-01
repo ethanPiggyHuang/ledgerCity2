@@ -308,7 +308,7 @@ export const userInfo = createSlice({
       })
       .addCase(CITY_REDIRECTION.fulfilled, (state, action) => {
         state.status = 'idle';
-        alert('request redirect');
+        // alert('request redirect');
         state.data.cityList = action.payload;
       })
       .addCase(CITY_REDIRECTION.rejected, (state) => {
