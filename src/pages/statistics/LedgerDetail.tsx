@@ -281,7 +281,7 @@ const HeaderText = styled.div<HeaderTextProps>`
   cursor: ${({ $sortable }) => ($sortable ? 'pointer' : 'default')};
   transition: filter 0.2s ease;
   &:hover {
-    filter: ${({ $sortable }) => ($sortable ? 'brightness(0.95)' : 'default')};
+    filter: ${({ $sortable }) => ($sortable ? 'brightness(0.90)' : 'default')};
   }
   &:active {
     filter: ${({ $sortable }) => ($sortable ? 'brightness(1.05)' : 'default')};

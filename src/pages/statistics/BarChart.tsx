@@ -320,46 +320,48 @@ export const BarChart: React.FC = () => {
           />
         </BarSvg>
       )}
-      <Buttons>
-        <button onClick={() => setDisplayMonths(12)}>全年</button>
+      <ChartOperations>
+        <Buttons>
+          {/* <button onClick={() => setDisplayMonths(12)}>全年</button>
         {chosenYear === currentYear && (
           <button onClick={() => setDisplayMonths(3)}>近3個月</button>
         )}
-        <span>{`  `}</span>
-        <button onClick={() => setHasCategory(!hasCategory)}>
-          {hasCategory ? '隱藏類別' : '顯示類別'}
-        </button>
-        <button onClick={() => setLabelsDisplay(new Array(8).fill(true))}>
+        <span>{`  `}</span> */}
+          <Button onClick={() => setHasCategory(!hasCategory)}>
+            {hasCategory ? '隱藏類別' : '顯示類別'}
+          </Button>
+          {/* <button onClick={() => setLabelsDisplay(new Array(10).fill(true))}>
           類別全開
-        </button>
-      </Buttons>
+        </button> */}
+        </Buttons>
 
-      {hasCategory && (
-        <LabelWrap>
-          {mainLabels.map((label, index) => (
-            <Label key={index}>
-              <LabelColor
-                $display={labelsDisplay[index]}
-                $backgroundColor={labelColorCodes[index]}
-                onClick={() => {
-                  let newArr = [...labelsDisplay];
-                  newArr[index] = !newArr[index];
-                  setLabelsDisplay(newArr);
-                }}
-              />
-              <LabelText
-                onClick={() => {
-                  let newArr = [...labelsDisplay];
-                  newArr[index] = !newArr[index];
-                  setLabelsDisplay(newArr);
-                }}
-              >
-                {label}
-              </LabelText>
-            </Label>
-          ))}
-        </LabelWrap>
-      )}
+        {hasCategory && (
+          <LabelWrap>
+            {mainLabels.map((label, index) => (
+              <Label key={index}>
+                <LabelColor
+                  $display={labelsDisplay[index]}
+                  $backgroundColor={labelColorCodes[index]}
+                  onClick={() => {
+                    let newArr = [...labelsDisplay];
+                    newArr[index] = !newArr[index];
+                    setLabelsDisplay(newArr);
+                  }}
+                />
+                <LabelText
+                  onClick={() => {
+                    let newArr = [...labelsDisplay];
+                    newArr[index] = !newArr[index];
+                    setLabelsDisplay(newArr);
+                  }}
+                >
+                  {label}
+                </LabelText>
+              </Label>
+            ))}
+          </LabelWrap>
+        )}
+      </ChartOperations>
       <MinimizeWrap onClick={() => dispatch(CHART_SHOWN_SWITCH('monthOnly'))}>
         <MinimizeIcon icon={faAnglesLeft} />
         <MinimizeText>收合</MinimizeText>
@@ -402,9 +404,36 @@ const BarPath = styled.path`
     opacity: 1;
   }
 `;
+
+const ChartOperations = styled.div`
+  display: flex;
+  gap: 20px;
+  justify-content: start;
+  width: 100%;
+  padding-left: 90px;
+  align-items: center;
+`;
 const Buttons = styled.div`
   display: flex;
   padding-bottom: 20px;
+  align-items: center;
+`;
+const Button = styled.button`
+  border-radius: 15px;
+  height: 30px;
+  border: none;
+  cursor: pointer;
+  padding: 0 15px;
+  font-size: 16px;
+  background-color: #ebebeb;
+  color: #dabd7a;
+  transition: filter 0.2s ease;
+  &:hover {
+    filter: brightness(0.9);
+  }
+  &:active {
+    filter: brightness(1.05);
+  }
 `;
 const LabelX = styled.text`
   font-size: 16px;
@@ -430,11 +459,12 @@ const LabelWrap = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  width: 320px;
+  width: 360px;
 `;
 
 const Label = styled.div`
   display: flex;
+  gap: 5px;
 `;
 
 const LabelColor = styled.div<LabelColorProps>`
@@ -449,6 +479,8 @@ const LabelColor = styled.div<LabelColorProps>`
 const LabelText = styled.p`
   font-size: 16px;
   cursor: pointer;
+  padding-right: 5px;
+  width: 40px;
 `;
 
 const MinimizeWrap = styled.div`
