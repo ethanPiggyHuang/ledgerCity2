@@ -22,6 +22,7 @@ import { HouseOfPlants } from './housesSvg/HouseOfPlants';
 import { HouseGrid } from './housesSvg/HouseGrid';
 import mapPin from '../../assets/mapPin.png';
 import character_green from '../../assets/character_green.png';
+import { HouseCityHall } from './housesSvg/HouseCityHall';
 
 export const City: React.FC = () => {
   const { gridGap, gridLength, houseWidth, cityPaddingX, cityPaddingY } =
@@ -248,6 +249,8 @@ export const City: React.FC = () => {
                           <HouseOfClothes />
                         ) : house.type === '飲品' ? (
                           <HouseOfDrinks />
+                        ) : house.type === '市政廳' ? (
+                          <HouseCityHall />
                         ) : (
                           <HouseOfPlants />
                         )}
