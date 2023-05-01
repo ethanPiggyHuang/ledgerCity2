@@ -95,36 +95,36 @@ export const City: React.FC = () => {
   //   return () => window.removeEventListener('click', handelClick);
   // }, []);
 
-  // useEffect(() => {
-  //   const handelKeypress = (event: any) => {
-  //     if (event.code === 'ArrowDown' || event.code === 'KeyS') {
-  //       dispatch(CITY_WHEEL_SHIFT({ deltaX: 0, deltaY: 5 }));
-  //       // setCityY((prev) => prev - 5);
-  //       setGreenMoveY(0);
-  //       setGreenMoveX((prev) => (prev + 1) % 3);
-  //     }
-  //     if (event.code === 'ArrowUp' || event.code === 'KeyW') {
-  //       dispatch(CITY_WHEEL_SHIFT({ deltaX: 0, deltaY: -5 }));
-  //       // setCityY((prev) => prev + 5);
-  //       setGreenMoveY(1);
-  //       setGreenMoveX((prev) => (prev + 1) % 3);
-  //     }
-  //     if (event.code === 'ArrowRight' || event.code === 'KeyD') {
-  //       dispatch(CITY_WHEEL_SHIFT({ deltaX: 5, deltaY: 0 }));
-  //       // setCityX((prev) => prev - 5);
-  //       setGreenMoveY(3);
-  //       setGreenMoveX((prev) => (prev + 1) % 3);
-  //     }
-  //     if (event.code === 'ArrowLeft' || event.code === 'KeyA') {
-  //       dispatch(CITY_WHEEL_SHIFT({ deltaX: -5, deltaY: 0 }));
-  //       // setCityX((prev) => prev + 5);
-  //       setGreenMoveY(2);
-  //       setGreenMoveX((prev) => (prev + 1) % 3);
-  //     }
-  //   };
-  //   window.addEventListener('keydown', handelKeypress);
-  //   return () => window.removeEventListener('keydown', handelKeypress);
-  // }, []);
+  useEffect(() => {
+    const handelKeypress = (event: any) => {
+      if (event.code === 'ArrowDown' || event.code === 'KeyS') {
+        dispatch(CITY_WHEEL_SHIFT({ deltaX: 0, deltaY: 15 }));
+        // setCityY((prev) => prev - 5);
+        setGreenMoveY(0);
+        setGreenMoveX((prev) => (prev + 1) % 3);
+      }
+      if (event.code === 'ArrowUp' || event.code === 'KeyW') {
+        dispatch(CITY_WHEEL_SHIFT({ deltaX: 0, deltaY: -15 }));
+        // setCityY((prev) => prev + 5);
+        setGreenMoveY(1);
+        setGreenMoveX((prev) => (prev + 1) % 3);
+      }
+      if (event.code === 'ArrowRight' || event.code === 'KeyD') {
+        dispatch(CITY_WHEEL_SHIFT({ deltaX: 15, deltaY: 0 }));
+        // setCityX((prev) => prev - 5);
+        setGreenMoveY(3);
+        setGreenMoveX((prev) => (prev + 1) % 3);
+      }
+      if (event.code === 'ArrowLeft' || event.code === 'KeyA') {
+        dispatch(CITY_WHEEL_SHIFT({ deltaX: -15, deltaY: 0 }));
+        // setCityX((prev) => prev + 5);
+        setGreenMoveY(2);
+        setGreenMoveX((prev) => (prev + 1) % 3);
+      }
+    };
+    window.addEventListener('keydown', handelKeypress);
+    return () => window.removeEventListener('keydown', handelKeypress);
+  }, []);
 
   return (
     <CityRange
@@ -157,9 +157,9 @@ export const City: React.FC = () => {
       //   );
       // }}
     >
-      <WalkingFigure src={mapPin} $scale={scale} $left={figurePosition} />
-      <WalkingFigure src={mapPin} $scale={scale} $left={figurePosition * 2} />
-      {/* <CharacterWrap
+      {/* <WalkingFigure src={mapPin} $scale={scale} $left={figurePosition} />
+      <WalkingFigure src={mapPin} $scale={scale} $left={figurePosition * 2} /> */}
+      <CharacterWrap
         $widthAttrs={`${scale * 26}px`}
         $heightAttrs={`${scale * 30}px`}
       >
@@ -169,7 +169,7 @@ export const City: React.FC = () => {
           $yIndex={greenMoveY}
           $scale={scale}
         />
-      </CharacterWrap> */}
+      </CharacterWrap>
       {housesPosition.map((row, yIndex) => {
         return (
           <Row

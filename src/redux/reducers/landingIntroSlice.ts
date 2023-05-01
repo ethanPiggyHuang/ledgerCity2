@@ -7,6 +7,7 @@ export interface PageControlState {
   chosenLabel: '食物' | '飲品' | '交通';
   isTrying: boolean;
   isFocusingLogin: boolean;
+  isPlayingCarousel: boolean;
   introSection: 'ledger' | 'statistics' | 'cooperation';
   status: 'idle' | 'loading' | 'failed';
 }
@@ -16,6 +17,7 @@ const initialState: PageControlState = {
   chosenLabel: '食物',
   isTrying: false,
   isFocusingLogin: false,
+  isPlayingCarousel: true,
   introSection: 'ledger',
   status: 'idle',
 };
@@ -54,6 +56,9 @@ export const landingIntro = createSlice({
     ) => {
       state.introSection = action.payload;
     },
+    CAROUSEL_PLAYING_TOGGLE: (state, action: PayloadAction<boolean>) => {
+      state.isPlayingCarousel = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -76,6 +81,7 @@ export const {
   INTRO_CLEAR_HOUSE,
   LOGIN_SECTION_FOCUS_TOGGLE,
   INTRO_SECTION_SWITCH,
+  CAROUSEL_PLAYING_TOGGLE,
 } = landingIntro.actions;
 
 export default landingIntro.reducer;
