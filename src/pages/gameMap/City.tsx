@@ -166,7 +166,7 @@ export const City: React.FC = () => {
     >
       {/* <WalkingFigure src={mapPin} $scale={scale} $left={figurePosition} />
       <WalkingFigure src={mapPin} $scale={scale} $left={figurePosition * 2} /> */}
-      {/* {isTouring && (
+      {isTouring && (
         <CharacterWrap
           $widthAttrs={`${scale * 26}px`}
           $heightAttrs={`${scale * 30}px`}
@@ -178,7 +178,7 @@ export const City: React.FC = () => {
             $scale={scale}
           />
         </CharacterWrap>
-      )} */}
+      )}
 
       {housesPosition.map((row, yIndex) => {
         return (
@@ -404,7 +404,7 @@ const CharacterWrap = styled.div.attrs<CharacterWrapProps>(
   /* border: black 1px solid; */
   z-index: 3;
   /* transition: scale 3s ease; */
-  animation: ${enterCity} 3s 1;
+  animation: ${enterCity} 4s 1;
 `;
 type CharacterProps = {
   $xIndex: number;

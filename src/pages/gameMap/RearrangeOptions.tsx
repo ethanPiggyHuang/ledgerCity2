@@ -116,7 +116,7 @@ export const RearrangeOptions: React.FC = () => {
     dispatch(SET_SCALE(2));
     setTimeout(() => {
       dispatch(START_CITY_TOUR());
-    }, 600);
+    }, 200);
   };
 
   const handleEndCityTour = () => {
@@ -160,46 +160,48 @@ export const RearrangeOptions: React.FC = () => {
   }, [dispatch, nextHousePosition, housesPosition, dataList]);
 
   return (
-    <Wrapper>
-      {/* TODO */}
-      {/* <IconImage src={iconReconstruct} onClick={() => setShow(!show)} /> */}
-      {show && (
-        <>
-          <Title>城市經營</Title>
-          <IconsWrapper>
-            <IconBack $isActivate={false} onClick={handleRescale}>
-              <ScaleText>{`${scale} x`}</ScaleText>
-            </IconBack>
-            <IconBack $isActivate={false} onClick={handleRedirectCityHall}>
-              <Icon icon={faLandmarkDome} />
-            </IconBack>
-            <IconBackConstruction
-              $isActivate={dragMode === 'houses'}
-              onClick={handleConstruction}
-            >
-              {dragMode === 'houses' ? (
-                <Icon icon={faFloppyDisk} />
-              ) : (
-                <IconImg src={reconstruct} />
-              )}
-            </IconBackConstruction>
+    <>
+      <Wrapper $isFolded={isTouring}>
+        {/* TODO */}
+        {/* <IconImage src={iconReconstruct} onClick={() => setShow(!show)} /> */}
+        {show && (
+          <>
+            <Title>城市經營</Title>
+            <IconsWrapper>
+              <IconBack $isActivate={false} onClick={handleRescale}>
+                <ScaleText>{`${scale} x`}</ScaleText>
+              </IconBack>
+              <IconBack $isActivate={false} onClick={handleRedirectCityHall}>
+                <Icon icon={faLandmarkDome} />
+              </IconBack>
+              <IconBackLongActive
+                $isActivate={dragMode === 'houses'}
+                onClick={handleConstruction}
+              >
+                {dragMode === 'houses' ? (
+                  <Icon icon={faFloppyDisk} />
+                ) : (
+                  <IconImg src={reconstruct} />
+                )}
+              </IconBackLongActive>
 
-            <IconBack
-              $isActivate={isTouring}
-              onClick={() => {
-                if (!isTouring) {
-                  handleStartCityTour();
-                } else {
-                  handleEndCityTour();
-                }
-              }}
-            >
-              <Icon icon={faPersonThroughWindow} />
-            </IconBack>
-            <IconBack $isActivate={isMusicPlay} onClick={handleMusicToggle}>
-              <Icon icon={isMusicPlay ? faVolumeHigh : faVolumeXmark} />
-            </IconBack>
-            {/* <button
+              <IconBackLongActive
+                $isActivate={isTouring}
+                onClick={() => {
+                  if (!isTouring) {
+                    handleStartCityTour();
+                  } else {
+                    handleEndCityTour();
+                  }
+                }}
+              >
+                <Icon icon={faPersonThroughWindow} />
+              </IconBackLongActive>
+
+              <IconBack $isActivate={isMusicPlay} onClick={handleMusicToggle}>
+                <Icon icon={isMusicPlay ? faVolumeHigh : faVolumeXmark} />
+              </IconBack>
+              {/* <button
               onClick={() => {
                 dispatch(GENERATE_AVAILABLE_POSITION());
                 dispatch(
@@ -218,11 +220,21 @@ export const RearrangeOptions: React.FC = () => {
             >
               {`${nextHousePosition.xIndex},${nextHousePosition.yIndex}`}
             </button> */}
-          </IconsWrapper>
-        </>
-      )}
-      <audio src={chocolate_world} preload={'metadata'} loop ref={audioRef} />
-    </Wrapper>
+            </IconsWrapper>
+          </>
+        )}
+        <audio src={chocolate_world} preload={'metadata'} loop ref={audioRef} />
+      </Wrapper>
+      <IconBackTouring
+        $isActivate={isTouring}
+        $isTouring={isTouring}
+        onClick={() => {
+          handleEndCityTour();
+        }}
+      >
+        <Icon icon={faPersonThroughWindow} />
+      </IconBackTouring>
+    </>
   );
 };
 
@@ -230,7 +242,16 @@ type IconBackProps = {
   $isActivate: boolean;
 };
 
-const Wrapper = styled.div`
+type IconBackTouringProps = {
+  $isActivate: boolean;
+  $isTouring: boolean;
+};
+
+type WrapperProps = {
+  $isFolded: boolean;
+};
+
+const Wrapper = styled.div<WrapperProps>`
   position: fixed;
   z-index: 4;
   left: 50px;
@@ -238,6 +259,8 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 17px;
+  transition: transform 1s ease;
+  transform: ${({ $isFolded }) => ($isFolded ? 'translateX(-200%)' : '')};
 `;
 
 const Title = styled.div`
@@ -276,13 +299,41 @@ const IconBack = styled.div<IconBackProps>`
 const active = keyframes`
   from {
     border: 0px #f2f2f2 solid;
+    
   }
   to{
     border: 4px #f2f2f2 solid;
   }
 `;
 
-const IconBackConstruction = styled(IconBack)`
+const IconBackLongActive = styled(IconBack)`
+  animation: ${({ $isActivate }) => ($isActivate ? active : '')} 0.6s infinite
+    alternate;
+`;
+
+const IconBackTouring = styled.div<IconBackTouringProps>`
+  width: 44px;
+  height: 44px;
+  border-radius: 33px;
+  display: flex;
+  /* opacity: ${({ $isTouring }) => ($isTouring ? '0.5' : '0')}; */
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+  box-shadow: 3px black solid;
+  opacity: ${({ $isActivate }) => ($isActivate ? '1' : '0')};
+  position: absolute;
+  top: 54vh;
+  left: 50px;
+  cursor: pointer;
+  transition: 1s ease;
+  transform: ${({ $isTouring }) => ($isTouring ? 'translateY(33vh)' : '')};
+  &:hover {
+    opacity: ${({ $isActivate }) => ($isActivate ? '1' : '0.7')};
+  }
+  &:active {
+    transform: translateY(3px);
+  }
   animation: ${({ $isActivate }) => ($isActivate ? active : '')} 0.6s infinite
     alternate;
 `;

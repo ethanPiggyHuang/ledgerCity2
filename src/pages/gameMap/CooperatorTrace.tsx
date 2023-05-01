@@ -194,7 +194,7 @@ const Wrap = styled.div<WrapProps>`
   flex-direction: column;
   gap: 17px;
   transition: transform 1s ease;
-  transform: ${({ $isFolded }) => ($isFolded ? 'translate(120%)' : '')};
+  transform: ${({ $isFolded }) => ($isFolded ? 'translateX(120%)' : '')};
 `;
 
 const Title = styled.div`
