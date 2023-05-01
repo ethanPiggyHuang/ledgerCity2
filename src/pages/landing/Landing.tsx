@@ -4,8 +4,9 @@ import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import logoBanner from '../../assets/logoBanner.png';
 import { LoginPanel } from './LoginPanel';
 import { Ledger } from '../ledger/Ledger';
-import { LabelDemo } from './LabelDemo';
+import { LedgerDemo } from './LedgerDemo';
 import { LANDING_SCROLL_Y } from '../../redux/reducers/pageControlSlice';
+import { CityDemo } from './CityDemo';
 
 export const Landing: React.FC = () => {
   const { userId } = useAppSelector((state) => state.userInfo.data);
@@ -22,46 +23,16 @@ export const Landing: React.FC = () => {
     return () => window.removeEventListener('wheel', handleWheel);
   }, []);
 
-  // const LedgerDemoAttrs = (
-  //   scrollY: number,
-  //   breakpoint: number
-  // ): { leftAttrs: string; opacityAttrs: string } => {
-  //   const buffer = 300;
-  //   const pace = 0.2;
-  //   const convertedY = scrollY * pace;
-  //   let left: number;
-  //   let opacity: number;
-  //   if (convertedY <= breakpoint / 2) {
-  //     left = convertedY;
-  //     opacity = convertedY / 300;
-  //   } else if (convertedY <= breakpoint) {
-  //     left = convertedY;
-  //     opacity = 1;
-  //   } else if (convertedY <= breakpoint + buffer) {
-  //     left = breakpoint;
-  //     opacity = 1;
-  //   } else {
-  //     left = breakpoint * 2 + buffer - convertedY;
-  //     opacity = 1;
-  //   }
-
-  //   return { leftAttrs: `${left}px`, opacityAttrs: `${opacity}` };
-  // };
-
   return (
     <Wrapper>
       <IntroSection>
         <BannerLogoWrap>
           <BannerLogo src={logoBanner} alt={'logo'} />
         </BannerLogoWrap>
-        <LedgerDemo
-          $isShown={false}
-          // $leftAttrs={`${LedgerDemoAttrs(landingScrollY, 400).leftAttrs}`}
-          // $opacityAttrs={`${LedgerDemoAttrs(landingScrollY, 400).opacityAttrs}`}
-        >
-          <LabelDemo />
-        </LedgerDemo>
-        <DemoTitle>{landingScrollY}</DemoTitle>
+        <LedgerIntro $isShown={true}>
+          <CityDemo />
+          <LedgerDemo />
+        </LedgerIntro>
       </IntroSection>
       <LoginSection>
         <LoginPanel />
@@ -80,7 +51,7 @@ const Wrapper = styled.div`
   position: fixed;
   background: linear-gradient(#c8e2cc, #98d5da);
   overflow: hidden;
-  padding: 70px 100px;
+  padding: 60px 100px 40px;
   display: flex;
   gap: 5%;
 `;
@@ -88,10 +59,11 @@ const Wrapper = styled.div`
 const IntroSection = styled.div`
   border: 6px #f2f2f2 solid;
   background-color: rgba(242, 242, 242, 0.7);
-  height: calc(100vh - 140px);
+  height: calc(100vh - 100px);
   width: 65%;
   border-radius: 80px 20px 20px 20px;
   position: relative;
+  padding: 20px;
 `;
 
 const BannerLogoWrap = styled.div``;
@@ -109,22 +81,30 @@ const LoginSection = styled(IntroSection)`
   border-radius: 20px;
 `;
 
-type LedgerDemoProps = {
+type LedgerIntroProps = {
   $isShown: boolean;
 };
 
-const LedgerDemo = styled.div<LedgerDemoProps>`
+const LedgerIntro = styled.div<LedgerIntroProps>`
   position: absolute;
-  width: 40%;
+  width: calc(100% - 40px);
+  bottom: 20px;
+  padding: 20px;
   background-color: #f2f2f2;
-  border-radius: 10px;
-  border: 3px #808080 solid;
+  box-shadow: 5px 5px 5px #808080;
+  /* border-radius: 20px; */
+  border: 2px #e6e6e6 solid;
   overflow: hidden;
-  height: 50%;
-  /* display: none; */
-  transition: opacity 1s ease;
+  height: 60%;
+  display: flex;
+  align-items: center;
+  transition: opacity 1s ease, transform 1s ease;
+  transform: ${({ $isShown }) =>
+    $isShown ? 'translateX(0%)' : 'translateX(-100%)'};
   opacity: ${({ $isShown }) => ($isShown ? '1' : '0')};
 `;
+
+const IntroSwitches = styled.div``;
 
 const DemoTitle = styled.p`
   position: absolute;

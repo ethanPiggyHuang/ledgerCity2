@@ -27,7 +27,7 @@ const landing = keyframes`
 const Wrapper = styled.div`
   position: absolute;
   z-index: 2;
-  animation: ${landing} 1s forwards;
+  animation: ${landing} 1s;
   &:hover {
     transform: translateY(-10px);
   }

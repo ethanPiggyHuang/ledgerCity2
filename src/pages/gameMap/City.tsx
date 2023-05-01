@@ -11,6 +11,7 @@ import {
   RECORD_DRAG_START,
   UPDATE_CITY_LOCATION,
   CITY_WHEEL_SHIFT,
+  SET_SCALE,
 } from '../../redux/reducers/cityArrangementSlice';
 import { citySetting } from '../../utils/gameSettings';
 import hammer_ice from '../../assets/hammer_ice.wav';
@@ -52,6 +53,10 @@ export const City: React.FC = () => {
       clearInterval(interval);
       clearTimeout(timeout);
     };
+  }, []);
+
+  useEffect(() => {
+    dispatch(SET_SCALE(1));
   }, []);
 
   useEffect(() => {

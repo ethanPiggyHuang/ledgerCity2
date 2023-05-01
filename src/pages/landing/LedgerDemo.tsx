@@ -10,7 +10,7 @@ import { mainLabel } from '../../utils/gameSettings';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClipboard } from '@fortawesome/free-solid-svg-icons';
 
-export const LabelDemo: React.FC = () => {
+export const LedgerDemo: React.FC = () => {
   const { labelMain, labelSubs, item } = useAppSelector(
     (state) => state.ledgerSingle.data
   );
@@ -23,7 +23,7 @@ export const LabelDemo: React.FC = () => {
   )?.subLabels;
 
   return (
-    <>
+    <Wrapper>
       <LabelOptions>
         {demoLabel.map((label, index) => (
           <LabelOption
@@ -44,7 +44,7 @@ export const LabelDemo: React.FC = () => {
               key={subLabel}
               onClick={() => dispatch(itemKeyIn(subLabel))}
             >
-              {`# ${subLabel}`}
+              {`${subLabel}`}
             </SubLabelOption>
           ))}
       </SubLabelOptions>
@@ -56,7 +56,7 @@ export const LabelDemo: React.FC = () => {
           onChange={(e) => dispatch(itemKeyIn(e.target.value))}
         />
       </ItemDisplay>
-    </>
+    </Wrapper>
   );
 };
 
@@ -65,7 +65,16 @@ type LabelOptionProps = {
   $color: string;
 };
 
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
 const LabelOptions = styled.div`
+  width: 100%;
+  margin-left: auto;
   height: 33%;
   padding: 0 5px;
   display: flex;
