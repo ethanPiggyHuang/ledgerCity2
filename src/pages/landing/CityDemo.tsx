@@ -11,29 +11,22 @@ import { HouseOfPlants } from '../gameMap/housesSvg/HouseOfPlants';
 import { SET_SCALE } from '../../redux/reducers/cityArrangementSlice';
 
 export const CityDemo: React.FC = () => {
+  const { demoHouses } = useAppSelector((state) => state.landingIntro);
+
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(SET_SCALE(0.75));
   }, []);
 
-  const housesPosition = [
-    [
-      { type: '食物', id: 'landing0' },
-      { type: '', id: '' },
-      { type: '植物', id: 'landing2' },
-    ],
-  ];
-  const nextPosition = { xIndex: 1, yIndex: 0 };
-
   return (
     <CityRange>
-      {housesPosition.map((row, yIndex) => {
+      {demoHouses.map((row, yIndex) => {
         return (
           <Row key={yIndex}>
             {row.map((house, xIndex) => {
               return (
                 <Grid key={xIndex}>
-                  {house.type !== '' && (
+                  {house.type !== '' ? (
                     <>
                       <HouseGrid houseType={house.type} />
                       <House>
@@ -48,6 +41,8 @@ export const CityDemo: React.FC = () => {
                         )}
                       </House>
                     </>
+                  ) : (
+                    <ReadySpot />
                   )}
                 </Grid>
               );
@@ -75,18 +70,17 @@ const CityRange = styled.div`
   width: 360px;
   height: 120px;
   margin-right: auto;
+  /* padding-bottom: 100px; */
   flex-wrap: wrap;
   height: fit-content;
   position: relative;
   animation: ${display} 2s linear forwards;
-  /* align-self: 30px; */
 `;
 
 const Row = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  /* border: 1px blue solid; */
 `;
 
 const Grid = styled.div`
@@ -104,4 +98,25 @@ const House = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+const flashing = keyframes`
+  0%{
+    opacity:0;
+  }
+  66%{
+    opacity:1;
+  }
+  100%{
+    opacity:1;
+  }
+`;
+
+const ReadySpot = styled.div`
+  width: 116px;
+  height: 186px;
+  transform: translateY(32px);
+
+  border: 3px dashed #ac9c89;
+  animation: ${flashing} 1.2s ease infinite alternate;
 `;

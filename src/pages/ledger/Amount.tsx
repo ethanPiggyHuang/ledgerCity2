@@ -10,10 +10,6 @@ export const Amount: React.FC = () => {
   return <AmountText>{`$ ${number}`}</AmountText>;
 };
 
-type LabelOptionProps = {
-  $isChosen: boolean;
-  $color: string;
-};
 const AmountText = styled.p`
   height: 10%;
   margin: 0 15px;

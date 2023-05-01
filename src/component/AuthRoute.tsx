@@ -69,15 +69,15 @@ const AuthRoute: React.FunctionComponent<IAuthRouteProps> = (props) => {
   //   }
   // }, [ledgerBookId]);
 
-  // if (isAuthing)
-  return (
-    <LoadingMessage>
-      <LoadingText>前往城市中...</LoadingText>
-      <LoadingIconDeparture icon={faPlaneDeparture} />
-      <LoadingIconFlying icon={faPlane} />
-      <LoadingIconLanding icon={faPlaneArrival} />
-    </LoadingMessage>
-  );
+  if (isAuthing)
+    return (
+      <LoadingMessage>
+        <LoadingText>前往城市中...</LoadingText>
+        <LoadingIconDeparture icon={faPlaneDeparture} />
+        <LoadingIconFlying icon={faPlane} />
+        <LoadingIconLanding icon={faPlaneArrival} />
+      </LoadingMessage>
+    );
 
   return <div>{children}</div>;
 };

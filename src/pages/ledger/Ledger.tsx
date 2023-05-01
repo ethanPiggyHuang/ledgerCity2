@@ -88,43 +88,6 @@ export const Ledger: React.FC = () => {
               <Amount />
             </SecondRow>
             <ConfirmRow>
-              {/* <ConfirmButton $isAllowed={true} onClick={() => {}}>
-                <CheckIcon
-                  icon={faCheck}
-                  style={{ color: 'red' }}
-                  onClick={() => {
-                    dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }));
-                    setTimeout(
-                      () =>
-                        dispatch(
-                          CITY_SET_SHIFT({
-                            shiftX:
-                              -cityPaddingX +
-                              window.innerWidth / 2 -
-                              (nextHousePosition.xIndex + 0.5) *
-                                gridLength *
-                                scale,
-                            shiftY:
-                              -cityPaddingY +
-                              window.innerHeight / 2 -
-                              (nextHousePosition.yIndex + 0.5) *
-                                gridLength *
-                                scale,
-                          })
-                        ),
-                      200
-                    );
-
-                    setTimeout(
-                      () =>
-                        dispatch(
-                          SWITCH_PAGE({ userId, pageActivity: 'ledger' })
-                        ),
-                      2500
-                    );
-                  }}
-                />
-              </ConfirmButton> */}
               <ConfirmButton
                 $isAllowed={amount.number !== 0 && labelMain !== ''}
                 onClick={() => {
@@ -177,7 +140,6 @@ export const Ledger: React.FC = () => {
                 <CheckIcon icon={faCheck} />
               </ConfirmButton>
             </ConfirmRow>
-
             <Calculator />
           </>
         )}

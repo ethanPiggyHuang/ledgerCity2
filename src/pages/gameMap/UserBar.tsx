@@ -19,6 +19,7 @@ export const UserBar: React.FC = () => {
 
   return (
     <Wrapper>
+      <Background />
       <TextWrap>
         <Text>{`歡迎回來，`}</Text>
         <Text>{`${userNickName}市長`}</Text>
@@ -53,6 +54,16 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: flex-end;
   gap: 5px;
+`;
+const Background = styled.div`
+  position: absolute;
+  z-index: -1;
+  height: 120px;
+  top: -10px;
+  width: 18.5vw;
+  border-radius: 20px;
+  opacity: 0.8;
+  background: linear-gradient(#c8e2cc, #c0e0cf);
 `;
 const TextWrap = styled.div`
   display: flex;

@@ -121,6 +121,7 @@ export const UserPanel: React.FC = () => {
       </MyCitiesWrap>
       <IconBack
         onClick={() => {
+          dispatch(PANEL_CONTROL('none'));
           signOut(auth);
           dispatch(LOG_OUT());
           navigate('./landing');

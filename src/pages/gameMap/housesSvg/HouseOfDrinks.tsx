@@ -30,6 +30,7 @@ const Wrapper = styled.div`
   animation: ${landing} 1s;
   &:hover {
     transform: translateY(-10px);
+    cursor: grab;
   }
 `;
 

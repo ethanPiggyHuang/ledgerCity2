@@ -33,6 +33,7 @@ const Wrapper = styled.div`
   z-index: 0;
   top: 0;
   animation: ${landing} 1s forwards;
+  cursor: grab;
 `;
 
 const StyledSvg = styled.svg``;
