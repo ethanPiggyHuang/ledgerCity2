@@ -211,10 +211,10 @@ export const LedgerDetail: React.FC = () => {
                 <DeleteIcon
                   icon={faTrashCan}
                   className="material-symbols-outlined"
-                  onClick={
-                    () => alert('確定刪除嗎？')
-                    // dispatch(deleteSingleLedger(ledger.ledgerId))
-                  }
+                  onClick={() => {
+                    alert('確定刪除');
+                    dispatch(deleteSingleLedger(ledger.ledgerId));
+                  }}
                 />
               </LedgerText>
             </LedgerRow>

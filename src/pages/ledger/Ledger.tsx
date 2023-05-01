@@ -3,6 +3,7 @@ import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import {
   CLEAR_LEDGER_ID,
+  amountAllClear,
   ledgerSubmit,
   ledgerUpdate,
 } from '../../redux/reducers/ledgerSingleSlice';
@@ -34,6 +35,9 @@ export const Ledger: React.FC = () => {
   const { userId } = useAppSelector((state) => state.userInfo.data);
   const { number } = useAppSelector((state) => state.ledgerSingle.data.amount);
   const { ledgerId } = useAppSelector((state) => state.ledgerSingle);
+  const numberAfterOperator = useAppSelector(
+    (state) => state.ledgerSingle.calculationHolder.number
+  );
   const { item, labelMain, amount } = useAppSelector(
     (state) => state.ledgerSingle.data
   );
@@ -60,7 +64,10 @@ export const Ledger: React.FC = () => {
             >
               <Icon
                 icon={faArrowLeft}
-                onClick={() => dispatch(CLEAR_LEDGER_ID())}
+                onClick={() => {
+                  dispatch(CLEAR_LEDGER_ID());
+                  dispatch(amountAllClear());
+                }}
               />
             </IconWrap>
           )}
@@ -93,13 +100,20 @@ export const Ledger: React.FC = () => {
             </SecondRow>
             <ConfirmRow>
               <ConfirmButton
-                $isAllowed={amount.number !== 0 && labelMain !== ''}
+                $isAllowed={
+                  amount.number !== 0 &&
+                  labelMain !== '' &&
+                  numberAfterOperator === 0
+                }
                 onClick={() => {
                   if (amount.number === 0) {
-                    alert('請輸入花費金額');
+                    // alert('請輸入花費金額');
                     return;
                   } else if (labelMain === '') {
-                    alert('請選擇類別');
+                    // alert('請選擇類別');
+                    return;
+                  } else if (numberAfterOperator !== 0) {
+                    // alert('請按等號確認數字');
                     return;
                   }
                   if (ledgerId === '') {

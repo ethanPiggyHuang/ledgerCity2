@@ -66,7 +66,7 @@ export const Label: React.FC = () => {
             key={subLabel}
             onClick={() => dispatch(itemKeyIn(subLabel))}
           >
-            {`# ${subLabel}`}
+            {`${subLabel}`}
           </SubLabelOption>
         ))}
       </SubLabelOptions>
