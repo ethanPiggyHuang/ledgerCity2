@@ -15,6 +15,7 @@ const Footer: React.FC = () => {
   const dispatch = useAppDispatch();
   const { pageActivity } = useAppSelector((state) => state.pageControl);
   const { userId } = useAppSelector((state) => state.userInfo.data);
+  const { isTouring } = useAppSelector((state) => state.cityArrangement);
   const labelOrder: {
     page: 'ledger' | 'statistics' | 'profile';
     icon: IconDefinition;
@@ -26,7 +27,7 @@ const Footer: React.FC = () => {
   ];
 
   return (
-    <Wrapper>
+    <Wrapper $isFolded={isTouring}>
       {labelOrder.map((label) => (
         <SectionLabel
           key={label.page}
@@ -50,7 +51,11 @@ type SectionLabelState = {
   $chosen: boolean;
 };
 
-const Wrapper = styled.div`
+type WrapperProps = {
+  $isFolded: boolean;
+};
+
+const Wrapper = styled.div<WrapperProps>`
   width: 100vw;
   position: fixed;
   z-index: 5;
@@ -58,6 +63,8 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: transform 1s ease;
+  transform: ${({ $isFolded }) => ($isFolded ? 'translateY(120%)' : '')};
 `;
 const SectionLabel = styled.div<SectionLabelState>`
   height: 100px;

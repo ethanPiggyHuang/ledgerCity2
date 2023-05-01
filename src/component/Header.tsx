@@ -41,7 +41,9 @@ const Header: React.FC = () => {
   const { ledgerBookId, cityName, accessUsers } = useAppSelector(
     (state) => state.cityBasicInfo
   );
-  const { isRenaming } = useAppSelector((state) => state.cityArrangement);
+  const { isRenaming, isTouring } = useAppSelector(
+    (state) => state.cityArrangement
+  );
   const { userId, cityList } = useAppSelector((state) => state.userInfo.data);
   const navigate = useNavigate();
 
@@ -116,7 +118,7 @@ const Header: React.FC = () => {
   }, [userId]);
 
   return (
-    <Wrapper>
+    <Wrapper $isFolded={isTouring}>
       {userId ? (
         <>
           <Banner />
@@ -161,15 +163,21 @@ type BannerTextProps = {
 type SaveIconProps = {
   $isRenaming: boolean;
 };
+type WrapperProps = {
+  $isFolded: boolean;
+};
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<WrapperProps>`
   position: fixed;
-  transform: translate(50%);
+  transform: translateX(50%);
   z-index: 3;
   top: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: transform 1s ease;
+  transform: ${({ $isFolded }) =>
+    $isFolded ? 'translateY(-180%) translateX(50%)' : 'translateX(50%)'};
 `;
 
 const TextWrapper = styled.div`

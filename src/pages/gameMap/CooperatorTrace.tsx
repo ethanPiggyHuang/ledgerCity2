@@ -26,6 +26,7 @@ export const CooperatorTrace: React.FC = () => {
   const { coopInfo, friendsInfo } = useAppSelector(
     (state) => state.userActivity
   );
+  const { isTouring } = useAppSelector((state) => state.cityArrangement);
   const { friends } = useAppSelector((state) => state.userInfo);
   const friendIds = friends.map((friend) => friend.userId);
 
@@ -104,7 +105,7 @@ export const CooperatorTrace: React.FC = () => {
   }, [accessUsers]);
 
   return (
-    <Wrap>
+    <Wrap $isFolded={isTouring}>
       <Title>協作市長動態</Title>
       <Background $hasCoopFriend={coopFriends.length > 0}>
         {coopFriends.length === 0 && (
@@ -180,7 +181,11 @@ type BackgroundProps = {
   $hasCoopFriend: boolean;
 };
 
-const Wrap = styled.div`
+type WrapProps = {
+  $isFolded: boolean;
+};
+
+const Wrap = styled.div<WrapProps>`
   position: fixed;
   z-index: 3;
   right: 50px;
@@ -188,6 +193,8 @@ const Wrap = styled.div`
   display: flex;
   flex-direction: column;
   gap: 17px;
+  transition: transform 1s ease;
+  transform: ${({ $isFolded }) => ($isFolded ? 'translate(120%)' : '')};
 `;
 
 const Title = styled.div`

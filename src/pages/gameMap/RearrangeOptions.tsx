@@ -6,6 +6,8 @@ import {
   saveCityAsync,
   draggableToggle,
   CITY_SET_SHIFT,
+  START_CITY_TOUR,
+  END_CITY_TOUR,
 } from '../../redux/reducers/cityArrangementSlice';
 import chocolate_world from '../../assets/chocolate_world.mp3';
 import hammer_2 from '../../assets/hammer_2.wav';
@@ -26,9 +28,8 @@ import iconReconstruct from '../../assets/iconReconstruct.png';
 import { citySetting } from '../../utils/gameSettings';
 
 export const RearrangeOptions: React.FC = () => {
-  const { dragMode, nextHousePosition, scale, housesPosition } = useAppSelector(
-    (state) => state.cityArrangement
-  );
+  const { dragMode, nextHousePosition, scale, housesPosition, isTouring } =
+    useAppSelector((state) => state.cityArrangement);
   const { dataList } = useAppSelector((state) => state.ledgerList);
   const { gridLength, cityPaddingX, cityPaddingY } = citySetting;
   const dispatch = useAppDispatch();
@@ -93,6 +94,53 @@ export const RearrangeOptions: React.FC = () => {
     );
   };
 
+  const handleStartCityTour = () => {
+    let hallPosition = { yIndex: 0, xIndex: 0 };
+    housesPosition.forEach((raw, yIndex) =>
+      raw.forEach((house, xIndex) => {
+        if (house.type === '市政廳') {
+          hallPosition = { ...hallPosition, yIndex, xIndex };
+        }
+      })
+    );
+    const newScale = 2;
+    const shiftX =
+      -cityPaddingX +
+      window.innerWidth / 2 -
+      (hallPosition.xIndex + 0.5) * gridLength * newScale;
+    const shiftY =
+      -cityPaddingY +
+      window.innerHeight / 2 -
+      (hallPosition.yIndex + 0.5 + 6 / 16) * gridLength * newScale;
+    dispatch(CITY_SET_SHIFT({ shiftX, shiftY }));
+    dispatch(SET_SCALE(2));
+    setTimeout(() => {
+      dispatch(START_CITY_TOUR());
+    }, 600);
+  };
+
+  const handleEndCityTour = () => {
+    let hallPosition = { yIndex: 0, xIndex: 0 };
+    housesPosition.forEach((raw, yIndex) =>
+      raw.forEach((house, xIndex) => {
+        if (house.type === '市政廳') {
+          hallPosition = { ...hallPosition, yIndex, xIndex };
+        }
+      })
+    );
+    const newScale = 1;
+    const shiftX =
+      -cityPaddingX +
+      window.innerWidth / 2 -
+      (hallPosition.xIndex + 0.5) * gridLength * newScale;
+    const shiftY =
+      -cityPaddingY +
+      window.innerHeight / 2 -
+      (hallPosition.yIndex + 0.5 + 6 / 16) * gridLength * newScale;
+    dispatch(CITY_SET_SHIFT({ shiftX, shiftY }));
+    dispatch(END_CITY_TOUR());
+  };
+
   // TODO: 只在第一次進入遊戲時 redirect
   // useEffect(() => {
   //   handleRedirectCityHall();
@@ -119,6 +167,12 @@ export const RearrangeOptions: React.FC = () => {
         <>
           <Title>城市經營</Title>
           <IconsWrapper>
+            <IconBack $isActivate={false} onClick={handleRescale}>
+              <ScaleText>{`${scale} x`}</ScaleText>
+            </IconBack>
+            <IconBack $isActivate={false} onClick={handleRedirectCityHall}>
+              <Icon icon={faLandmarkDome} />
+            </IconBack>
             <IconBackConstruction
               $isActivate={dragMode === 'houses'}
               onClick={handleConstruction}
@@ -129,13 +183,17 @@ export const RearrangeOptions: React.FC = () => {
                 <IconImg src={reconstruct} />
               )}
             </IconBackConstruction>
-            <IconBack $isActivate={false} onClick={handleRescale}>
-              <ScaleText>{`${scale} x`}</ScaleText>
-            </IconBack>
-            <IconBack $isActivate={false} onClick={handleRedirectCityHall}>
-              <Icon icon={faLandmarkDome} />
-            </IconBack>
-            <IconBack $isActivate={false} onClick={handleRedirectCityHall}>
+
+            <IconBack
+              $isActivate={isTouring}
+              onClick={() => {
+                if (!isTouring) {
+                  handleStartCityTour();
+                } else {
+                  handleEndCityTour();
+                }
+              }}
+            >
               <Icon icon={faPersonThroughWindow} />
             </IconBack>
             <IconBack $isActivate={isMusicPlay} onClick={handleMusicToggle}>
@@ -239,7 +297,7 @@ const IconImg = styled.img`
 `;
 
 const ScaleText = styled.p`
-  font-size: 20px;
+  font-size: 16px;
   color: #f2f2f2;
 `;
 

@@ -24,6 +24,7 @@ export interface CityArrangementState {
   nextHousePosition: { xIndex: number; yIndex: number };
   isRenaming: boolean;
   isTouring: boolean;
+  isAddingNew: boolean;
   scale: number;
   status: 'idle' | 'loading' | 'failed';
 }
@@ -42,6 +43,7 @@ const initialState: CityArrangementState = {
   nextHousePosition: { xIndex: 0, yIndex: 0 },
   isRenaming: false,
   isTouring: false,
+  isAddingNew: false,
   status: 'idle',
   scale: 1,
 };
@@ -291,6 +293,13 @@ export const cityArrangement = createSlice({
     START_CITY_TOUR: (state) => {
       state.isTouring = true;
     },
+    END_CITY_TOUR: (state) => {
+      state.isTouring = false;
+      state.scale = 1;
+    },
+    CITY_SLOWLY_TRANSITION: (state, action: PayloadAction<boolean>) => {
+      state.isAddingNew = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -341,6 +350,9 @@ export const {
   RENAME_CITY,
   CITY_WHEEL_SHIFT,
   CITY_SET_SHIFT,
+  START_CITY_TOUR,
+  END_CITY_TOUR,
+  CITY_SLOWLY_TRANSITION,
 } = cityArrangement.actions;
 
 export default cityArrangement.reducer;

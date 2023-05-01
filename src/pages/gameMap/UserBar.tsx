@@ -14,11 +14,12 @@ export const UserBar: React.FC = () => {
     (state) => state.userInfo.data
   );
   const { panelOpened } = useAppSelector((state) => state.pageControl);
+  const { isTouring } = useAppSelector((state) => state.cityArrangement);
 
   const dispatch = useAppDispatch();
 
   return (
-    <Wrapper>
+    <Wrapper $isFolded={isTouring}>
       <Background />
       <TextWrap>
         <Text>{`歡迎回來，`}</Text>
@@ -44,7 +45,11 @@ export const UserBar: React.FC = () => {
 //   $isActivate: boolean;
 // };
 
-const Wrapper = styled.div`
+type WrapperProps = {
+  $isFolded: boolean;
+};
+
+const Wrapper = styled.div<WrapperProps>`
   position: fixed;
   z-index: 4;
   right: 50px;
@@ -54,6 +59,8 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: flex-end;
   gap: 5px;
+  transition: transform 1s ease;
+  transform: ${({ $isFolded }) => ($isFolded ? 'translateX(340%)' : '')};
 `;
 const Background = styled.div`
   position: absolute;

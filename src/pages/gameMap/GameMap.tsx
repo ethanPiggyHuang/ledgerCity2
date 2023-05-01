@@ -11,7 +11,10 @@ import {
   SWITCH_PAGE,
   PANEL_CONTROL,
 } from '../../redux/reducers/pageControlSlice';
-import { RENAME_CITY } from '../../redux/reducers/cityArrangementSlice';
+import {
+  CITY_SLOWLY_TRANSITION,
+  RENAME_CITY,
+} from '../../redux/reducers/cityArrangementSlice';
 import { CooperatorTrace } from './CooperatorTrace';
 import { RearrangeOptions } from './RearrangeOptions';
 import { ScaleBar } from './ScaleBar';
@@ -123,6 +126,7 @@ export const GameMap: React.FC = () => {
         onClick={() => {
           dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }));
           dispatch(PANEL_CONTROL('none'));
+          dispatch(CITY_SLOWLY_TRANSITION(false));
         }}
       />
       {/* )} */}

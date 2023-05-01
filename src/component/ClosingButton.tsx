@@ -4,6 +4,7 @@ import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import { SWITCH_PAGE } from '../redux/reducers/pageControlSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { CITY_SLOWLY_TRANSITION } from '../redux/reducers/cityArrangementSlice';
 
 interface Props {
   size: number;
@@ -16,7 +17,10 @@ export const ClosingButton: React.FC<Props> = ({ size }) => {
   return (
     <CrossIconWrap
       $size={size}
-      onClick={() => dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }))}
+      onClick={() => {
+        dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }));
+        dispatch(CITY_SLOWLY_TRANSITION(false));
+      }}
     >
       <CrossIcon icon={faXmark} />
     </CrossIconWrap>

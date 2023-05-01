@@ -24,7 +24,10 @@ import {
 import { DailyLedger } from './DailyLedger';
 import { ClosingButton } from '../../component/ClosingButton';
 import { Amount } from './Amount';
-import { CITY_SET_SHIFT } from '../../redux/reducers/cityArrangementSlice';
+import {
+  CITY_SET_SHIFT,
+  CITY_SLOWLY_TRANSITION,
+} from '../../redux/reducers/cityArrangementSlice';
 import { citySetting } from '../../utils/gameSettings';
 
 export const Ledger: React.FC = () => {
@@ -71,6 +74,7 @@ export const Ledger: React.FC = () => {
                 onClick={() => {
                   dispatch(CLEAR_LEDGER_ID());
                   dispatch(CHANGE_LEDGER_POSITION('expand'));
+                  dispatch(CITY_SLOWLY_TRANSITION(true));
                 }}
               >
                 <AddNewIcon icon={faPlus} />

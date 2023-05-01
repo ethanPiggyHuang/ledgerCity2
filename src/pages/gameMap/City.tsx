@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import useSound from 'use-sound';
-import styled from 'styled-components/macro';
+import styled, { keyframes } from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import {
   displayCity,
@@ -27,8 +27,15 @@ export const City: React.FC = () => {
   const { gridGap, gridLength, houseWidth, cityPaddingX, cityPaddingY } =
     citySetting;
   const cityBasicInfo = useAppSelector((state) => state.cityBasicInfo);
-  const { housesPosition, gridsStatus, dragMode, scale, cityWheelShift } =
-    useAppSelector((state) => state.cityArrangement);
+  const {
+    housesPosition,
+    gridsStatus,
+    dragMode,
+    scale,
+    cityWheelShift,
+    isTouring,
+    isAddingNew,
+  } = useAppSelector((state) => state.cityArrangement);
   const { pageActivity } = useAppSelector((state) => state.pageControl);
   const dispatch = useAppDispatch();
   // TODO: 要再改成可以一鍵看到城市全貌?
@@ -133,7 +140,7 @@ export const City: React.FC = () => {
       $topAttrs={`${cityWheelShift.y}px`}
       $leftAttrs={`${cityWheelShift.x}px`}
       $padding={cityPaddingY}
-      $relocatMode={'newHouse'}
+      $relocatMode={isAddingNew ? 'newHouse' : 'others'}
 
       // draggable={dragMode === 'city'}
       // onDragStart={(event: React.DragEvent) => {
@@ -159,17 +166,20 @@ export const City: React.FC = () => {
     >
       {/* <WalkingFigure src={mapPin} $scale={scale} $left={figurePosition} />
       <WalkingFigure src={mapPin} $scale={scale} $left={figurePosition * 2} /> */}
-      {/* <CharacterWrap
-        $widthAttrs={`${scale * 26}px`}
-        $heightAttrs={`${scale * 30}px`}
-      >
-        <Character
-          src={character_green}
-          $xIndex={greenMoveX}
-          $yIndex={greenMoveY}
-          $scale={scale}
-        />
-      </CharacterWrap> */}
+      {/* {isTouring && (
+        <CharacterWrap
+          $widthAttrs={`${scale * 26}px`}
+          $heightAttrs={`${scale * 30}px`}
+        >
+          <Character
+            src={character_green}
+            $xIndex={greenMoveX}
+            $yIndex={greenMoveY}
+            $scale={scale}
+          />
+        </CharacterWrap>
+      )} */}
+
       {housesPosition.map((row, yIndex) => {
         return (
           <Row
@@ -292,6 +302,7 @@ const CityRange = styled.div.attrs<CityRangeProps>(
   height: fit-content;
   padding: ${({ $padding }) => `${$padding}px ${2 * $padding}px`};
   position: relative;
+
   transition: ${({ $relocatMode }) =>
     $relocatMode === 'newHouse'
       ? 'top 1s ease, left 1s ease'
@@ -367,6 +378,15 @@ type CharacterWrapProps = {
   $heightAttrs: string;
 };
 
+const enterCity = keyframes`
+  0%{
+    transform: scale(5) translateY(-50vh);
+  }
+  100%{
+    transform: scale(1) translateY(0);
+  }
+`;
+
 const CharacterWrap = styled.div.attrs<CharacterWrapProps>(
   ({ $heightAttrs, $widthAttrs }) => ({
     style: {
@@ -383,6 +403,8 @@ const CharacterWrap = styled.div.attrs<CharacterWrapProps>(
   overflow: hidden;
   /* border: black 1px solid; */
   z-index: 3;
+  /* transition: scale 3s ease; */
+  animation: ${enterCity} 3s 1;
 `;
 type CharacterProps = {
   $xIndex: number;
