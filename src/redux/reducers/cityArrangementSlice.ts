@@ -309,7 +309,7 @@ export const cityArrangement = createSlice({
       .addCase(saveCityAsync.fulfilled, (state) => {
         state.status = 'idle';
         state.dragMode = 'city';
-        alert('街道重建已紀錄');
+        console.log('街道重建已紀錄');
       })
       .addCase(saveCityAsync.rejected, (state) => {
         state.status = 'failed';
