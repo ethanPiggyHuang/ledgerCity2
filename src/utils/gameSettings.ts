@@ -59,7 +59,7 @@ export const mainLabel: {
   },
   {
     name: '娛樂',
-    colorCode: '#E8BB71',
+    colorCode: '#F8BB71',
     icon: faGamepad,
     subLabels: ['電影', 'KTV', '展覽'],
   },
@@ -113,7 +113,7 @@ export const labelColorCodes: string[] = [
   '#94C0B8',
   '#78C1FA',
   '#E6C352',
-  '#E8BB71',
+  '#F8BB71',
   '#B6C64A',
   '#5F5DB7',
   '#FF6868',

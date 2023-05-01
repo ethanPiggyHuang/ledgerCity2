@@ -253,7 +253,7 @@ const Slogan = styled.img`
 `;
 const SloganStatistics = styled(Slogan)`
   top: -150px;
-  transform: rotate(0deg) scale(0.4) translateX(90%);
+  transform: rotate(0deg) scale(0.4) translateX(130%);
 `;
 const SloganCoop = styled(Slogan)`
   top: -170px;
@@ -262,7 +262,6 @@ const SloganCoop = styled(Slogan)`
 
 const IntroTitles = styled.div`
   margin: 100px 10px 0 auto;
-  /* transform: translateY(-20px); */
   display: flex;
   align-items: end;
 `;

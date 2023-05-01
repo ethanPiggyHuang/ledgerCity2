@@ -159,7 +159,7 @@ export const City: React.FC = () => {
     >
       {/* <WalkingFigure src={mapPin} $scale={scale} $left={figurePosition} />
       <WalkingFigure src={mapPin} $scale={scale} $left={figurePosition * 2} /> */}
-      <CharacterWrap
+      {/* <CharacterWrap
         $widthAttrs={`${scale * 26}px`}
         $heightAttrs={`${scale * 30}px`}
       >
@@ -169,7 +169,7 @@ export const City: React.FC = () => {
           $yIndex={greenMoveY}
           $scale={scale}
         />
-      </CharacterWrap>
+      </CharacterWrap> */}
       {housesPosition.map((row, yIndex) => {
         return (
           <Row

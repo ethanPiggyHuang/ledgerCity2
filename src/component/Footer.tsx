@@ -79,11 +79,11 @@ const SectionLabel = styled.div<SectionLabelState>`
 
 const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
   color: #808080;
-  height: 50px;
+  height: 36px;
 `;
 
 const Text = styled.p`
-  line-height: 50px;
+  line-height: 36px;
   padding-left: 10px;
   color: #808080;
   font-size: 24px;

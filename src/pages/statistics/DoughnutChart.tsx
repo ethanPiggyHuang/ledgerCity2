@@ -315,8 +315,8 @@ const LabelName = styled.text`
   text-anchor: middle;
 
   fill: #5b4105;
-  stroke: #f2f2f2;
-  stroke-width: 0.2px;
+  /* stroke: #f2f2f2; */
+  /* stroke-width: 0.2px; */
 
   &:hover {
     cursor: pointer;

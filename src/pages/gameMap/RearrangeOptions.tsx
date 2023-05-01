@@ -15,6 +15,7 @@ import {
   faVolumeXmark,
   faFloppyDisk,
   faLandmarkDome,
+  faPersonThroughWindow,
 } from '@fortawesome/free-solid-svg-icons';
 import reconstruct from '../../assets/reconstruct.png';
 import {
@@ -131,11 +132,14 @@ export const RearrangeOptions: React.FC = () => {
             <IconBack $isActivate={false} onClick={handleRescale}>
               <ScaleText>{`${scale} x`}</ScaleText>
             </IconBack>
-            <IconBack $isActivate={isMusicPlay} onClick={handleMusicToggle}>
-              <Icon icon={isMusicPlay ? faVolumeHigh : faVolumeXmark} />
-            </IconBack>
             <IconBack $isActivate={false} onClick={handleRedirectCityHall}>
               <Icon icon={faLandmarkDome} />
+            </IconBack>
+            <IconBack $isActivate={false} onClick={handleRedirectCityHall}>
+              <Icon icon={faPersonThroughWindow} />
+            </IconBack>
+            <IconBack $isActivate={isMusicPlay} onClick={handleMusicToggle}>
+              <Icon icon={isMusicPlay ? faVolumeHigh : faVolumeXmark} />
             </IconBack>
             {/* <button
               onClick={() => {
@@ -187,12 +191,14 @@ const Title = styled.div`
 
 const IconsWrapper = styled.div`
   display: flex;
-  gap: 17px;
+  flex-wrap: wrap;
+  width: 50px;
+  gap: 10px;
 `;
 
 const IconBack = styled.div<IconBackProps>`
-  width: 50px;
-  height: 50px;
+  width: 44px;
+  height: 44px;
   border-radius: 33px;
   display: flex;
   justify-content: center;
@@ -225,11 +231,11 @@ const IconBackConstruction = styled(IconBack)`
 
 const Icon = styled(FontAwesomeIcon)`
   color: #f2f2f2;
-  font-size: 28px;
+  font-size: 22px;
 `;
 
 const IconImg = styled.img`
-  height: 40px;
+  height: 34px;
 `;
 
 const ScaleText = styled.p`

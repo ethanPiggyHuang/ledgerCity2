@@ -39,7 +39,7 @@ export const Statistics: React.FC = () => {
         {/* </SectionLabel> */}
         <ClosingButton size={60} />
       </Header>
-      <ChartTypes>
+      {/* <ChartTypes>
         <ChartType onClick={() => dispatch(CHANGE_CHART_TYPE('oneMonth'))}>
           當月分析
         </ChartType>
@@ -49,25 +49,9 @@ export const Statistics: React.FC = () => {
         <ChartType onClick={() => dispatch(CHANGE_CHART_TYPE('split'))}>
           分帳結算
         </ChartType>
-      </ChartTypes>
+      </ChartTypes> */}
       <Main>
         {chartType === 'oneMonth' && <GeneralAnalysis />}
-        {chartType === 'monthly' && (
-          <>
-            <Select
-              value={chosenYear}
-              onChange={(e) => {
-                dispatch(chooseYear(Number(e.target.value)));
-                // 可以考量更換年份之後，要不要重設月份？(default 0)
-                dispatch(chooseMonth(0));
-              }}
-            >
-              <Option value={2023}>2023</Option>
-              <Option value={2022}>2022</Option>
-            </Select>
-            <BarChart></BarChart>
-          </>
-        )}
         {/* <Select
           value={chosenYear}
           onChange={(e) => {
