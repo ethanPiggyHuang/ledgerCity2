@@ -28,6 +28,7 @@ import iconReconstruct from '../../assets/iconReconstruct.png';
 import { citySetting } from '../../utils/gameSettings';
 
 export const RearrangeOptions: React.FC = () => {
+  const { cityList } = useAppSelector((state) => state.userInfo.data);
   const { dragMode, nextHousePosition, scale, housesPosition, isTouring } =
     useAppSelector((state) => state.cityArrangement);
   const { dataList } = useAppSelector((state) => state.ledgerList);
@@ -35,6 +36,8 @@ export const RearrangeOptions: React.FC = () => {
   const dispatch = useAppDispatch();
   const [isMusicPlay, setIsMusicPlay] = useState(false);
   const [playHammer, { stop }] = useSound(hammer_2, { volume: 0.8 });
+
+  const cityId = cityList[0];
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -148,12 +151,19 @@ export const RearrangeOptions: React.FC = () => {
 
   useEffect(() => {
     const { xIndex, yIndex } = nextHousePosition;
-    if (housesPosition.length !== 0) {
-      if (
-        housesPosition[yIndex][xIndex]?.type !== '' ||
-        (xIndex === 0 && yIndex === 0)
-      ) {
-        dispatch(GENERATE_AVAILABLE_POSITION());
+    if (housesPosition.flat(2).length !== 1) {
+      if (housesPosition[yIndex]) {
+        if (housesPosition[yIndex][xIndex]) {
+          if (
+            housesPosition[yIndex][xIndex].type !== '' ||
+            (xIndex === 0 && yIndex === 0)
+          ) {
+            dispatch(GENERATE_AVAILABLE_POSITION());
+          }
+        } else {
+          dispatch(GENERATE_AVAILABLE_POSITION());
+        }
+      } else {
         dispatch(GENERATE_AVAILABLE_POSITION());
       }
     }
