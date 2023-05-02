@@ -1,137 +1,189 @@
-import React, { useEffect } from 'react';
-import { Link, redirect } from 'react-router-dom';
-import styled, { keyframes, css } from 'styled-components/macro';
-import { doc, onSnapshot } from 'firebase/firestore';
-import { db } from '../../config/firebase';
+import React from 'react';
+import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import {
+  CLEAR_LEDGER_ID,
+  amountAllClear,
   ledgerSubmit,
   ledgerUpdate,
 } from '../../redux/reducers/ledgerSingleSlice';
-import { getCityInfo } from '../../redux/reducers/cityBasicInfoSlice';
 import { TimeBar } from './TimeBar';
 import { Label } from './Label';
 import { Payment } from './Payment';
 import { Calculator } from './Calculator';
-import { updateLocation } from '../../redux/api/userAPI';
 import { ReactComponent as Receipt } from '../../assets/receipt.svg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
-import { CHANGE_LEDGER_POSITION } from '../../redux/reducers/pageControlSlice';
+import {
+  faArrowLeft,
+  faCheck,
+  faPlus,
+} from '@fortawesome/free-solid-svg-icons';
+import {
+  CHANGE_LEDGER_POSITION,
+  SWITCH_PAGE,
+} from '../../redux/reducers/pageControlSlice';
 import { DailyLedger } from './DailyLedger';
+import { ClosingButton } from '../../component/ClosingButton';
+import { Amount } from './Amount';
+import {
+  CITY_SET_SHIFT,
+  CITY_SLOWLY_TRANSITION,
+} from '../../redux/reducers/cityArrangementSlice';
+import { citySetting } from '../../utils/gameSettings';
 
 export const Ledger: React.FC = () => {
   const { userId } = useAppSelector((state) => state.userInfo.data);
   const { number } = useAppSelector((state) => state.ledgerSingle.data.amount);
   const { ledgerId } = useAppSelector((state) => state.ledgerSingle);
+  const numberAfterOperator = useAppSelector(
+    (state) => state.ledgerSingle.calculationHolder.number
+  );
   const { item, labelMain, amount } = useAppSelector(
     (state) => state.ledgerSingle.data
   );
-  const { ledgerPosition } = useAppSelector((state) => state.pageControl);
+  const { ledgerPosition, pageActivity } = useAppSelector(
+    (state) => state.pageControl
+  );
+
+  const { nextHousePosition, scale } = useAppSelector(
+    (state) => state.cityArrangement
+  );
+  const { gridLength, cityPaddingX, cityPaddingY } = citySetting;
 
   const dispatch = useAppDispatch();
 
-  // 監聽使用者進入頁面 -> 送到 db
-  useEffect(() => {
-    if (userId) {
-      updateLocation(userId, 'ledger');
-      // console.log(userId, 'update');
-    }
-  }, [userId]);
-
   return (
-    <Wrap $state={ledgerPosition}>
+    <Wrap $state={ledgerPosition} $isShown={pageActivity === 'ledger'}>
       <Background />
       <MainBoard>
         <Header>
-          <CrossIconWrap>
-            <CrossIcon
-              icon={faXmark}
-              onClick={() => dispatch(CHANGE_LEDGER_POSITION('minimize'))}
-            />
-          </CrossIconWrap>
+          {ledgerPosition === 'normal' && <ClosingButton size={60} />}
+          {ledgerPosition === 'expand' && (
+            <IconWrap
+              onClick={() => dispatch(CHANGE_LEDGER_POSITION('normal'))}
+            >
+              <Icon
+                icon={faArrowLeft}
+                onClick={() => {
+                  dispatch(CLEAR_LEDGER_ID());
+                  dispatch(amountAllClear());
+                }}
+              />
+            </IconWrap>
+          )}
           <TimeBar />
         </Header>
-        {ledgerPosition === 'minimize' && <DailyLedger />}
-        <SecondRow>
-          <Payment />
-          <Amount>{`$ ${number}`}</Amount>
-        </SecondRow>
-        <Label />
-        <Calculator />
-        <ConfirmButton
-          onClick={() => {
-            if (labelMain === '') {
-              alert('請選擇標籤');
-              return;
-            } else if (amount.number === 0) {
-              alert('請輸入花費金額');
-              return;
-            }
-            if (ledgerId === '') {
-              dispatch(ledgerSubmit());
-            } else {
-              dispatch(ledgerUpdate());
-            }
-          }}
-        >
-          <CheckIcon icon={faCheck} />
-        </ConfirmButton>
+        {ledgerPosition === 'normal' && (
+          <>
+            <DailyLedger />
+            <AddNewWrap>
+              <AddNewButton
+                onClick={() => {
+                  dispatch(CLEAR_LEDGER_ID());
+                  dispatch(CHANGE_LEDGER_POSITION('expand'));
+                  dispatch(CITY_SLOWLY_TRANSITION(true));
+                }}
+              >
+                <AddNewIcon icon={faPlus} />
+                新紀錄
+              </AddNewButton>
+            </AddNewWrap>
+          </>
+        )}
+
+        {ledgerPosition === 'expand' && (
+          <>
+            <Label />
+            <SecondRow>
+              <Payment />
+              <Amount />
+            </SecondRow>
+            <ConfirmRow>
+              <ConfirmButton
+                $isAllowed={
+                  amount.number !== 0 &&
+                  labelMain !== '' &&
+                  numberAfterOperator === 0
+                }
+                onClick={() => {
+                  if (amount.number === 0) {
+                    // alert('請輸入花費金額');
+                    return;
+                  } else if (labelMain === '') {
+                    // alert('請選擇類別');
+                    return;
+                  } else if (numberAfterOperator !== 0) {
+                    // alert('請按等號確認數字');
+                    return;
+                  }
+                  if (ledgerId === '') {
+                    dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }));
+                    setTimeout(
+                      () =>
+                        dispatch(
+                          CITY_SET_SHIFT({
+                            shiftX:
+                              -cityPaddingX +
+                              window.innerWidth / 2 -
+                              (nextHousePosition.xIndex + 0.5) *
+                                gridLength *
+                                scale,
+                            shiftY:
+                              -cityPaddingY +
+                              window.innerHeight / 2 -
+                              (nextHousePosition.yIndex + 0.5) *
+                                gridLength *
+                                scale,
+                          })
+                        ),
+                      200
+                    );
+                    setTimeout(() => dispatch(ledgerSubmit()), 1200);
+
+                    setTimeout(
+                      () =>
+                        dispatch(
+                          SWITCH_PAGE({ userId, pageActivity: 'ledger' })
+                        ),
+                      3200
+                    );
+                  } else {
+                    dispatch(ledgerUpdate());
+                    dispatch(
+                      SWITCH_PAGE({ userId, pageActivity: 'statistics' })
+                    );
+                  }
+                }}
+              >
+                <CheckIcon icon={faCheck} />
+              </ConfirmButton>
+            </ConfirmRow>
+            <Calculator />
+          </>
+        )}
       </MainBoard>
-      {ledgerPosition !== 'expand' && (
-        <AddNewWrap onClick={() => dispatch(CHANGE_LEDGER_POSITION('expand'))}>
-          <AddNewButton>+ 新紀錄</AddNewButton>
-        </AddNewWrap>
-      )}
     </Wrap>
   );
 };
 
-type WrapProps = { $state: 'minimize' | 'normal' | 'expand' };
+type WrapProps = {
+  $state: 'minimize' | 'normal' | 'expand';
+  $isShown: boolean;
+};
 
-const fadeOut = keyframes`
-from {
-  transform: translateY(0) translateX(75%);
-}
-to {
-  transform: translateY(900px) translateX(75%);
-}
-`;
-
-const showUp = keyframes`
-from {
-  transform: translateY(900px)  translateX(75%);
-}
-to {
-  transform: translateY(0px)  translateX(75%);
-}
-`;
+type ConfirmButtonProps = {
+  $isAllowed: boolean;
+};
 
 const Wrap = styled.div<WrapProps>`
-  width 40%;
+  width: 40%;
   position: absolute;
-  z-index: 4;
-  bottom: 0;
+  margin: 0 30%;
+  z-index: 6;
   height: 80vh;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
   overflow: hidden;
-  ${({ $state }) =>
-    $state === 'minimize'
-      ? css`
-          // animation: ${showUp} 1s linear 1;
-          transform: translateY(665px) translateX(75%);
-        `
-      : $state === 'normal'
-      ? css`
-          // animation: ${showUp} 1s linear 1;
-          transform: translateY(440px) translateX(75%);
-        `
-      : css`
-          // animation: ${fadeOut} 1s linear 1;
-          transform: translateY(0px) translateX(75%);
-        `}
+  bottom: ${({ $isShown }) => ($isShown ? '0' : '-80%')};
+  transition: bottom 1s ease;
 `;
 
 const Background = styled(Receipt)`
@@ -148,7 +200,7 @@ const MainBoard = styled.div`
 `;
 
 const Header = styled.div`
-  height: 60px;
+  height: 10%;
   width: 100%;
   border-bottom: 3px solid #e6e6e6;
   display: flex;
@@ -157,15 +209,15 @@ const Header = styled.div`
 `;
 
 const SecondRow = styled.div`
-  height: 93px;
-  width: 100%;
+  height: 12%;
+  margin: 0 15px;
+  /* width: 100%; */
   border-bottom: 3px solid #e6e6e6;
   display: flex;
-  // justify-content: center;
   align-items: center;
 `;
 
-const CrossIconWrap = styled.div`
+const IconWrap = styled.div`
   position: absolute;
   left: 21px;
   height: 60px;
@@ -173,37 +225,47 @@ const CrossIconWrap = styled.div`
   align-items: center;
   cursor: pointer;
 `;
-const CrossIcon = styled(FontAwesomeIcon)`
+const Icon = styled(FontAwesomeIcon)`
   height: 27px;
   color: #808080;
 `;
-const Amount = styled.p`
-  padding-right: 25px;
-  color: #808080;
-  font-size: 36px;
-  margin-left: auto;
+
+const ConfirmRow = styled.div`
+  height: 10%;
+  /* opacity: 0.5; */
+  &:hover {
+    filter: brightness(1.1);
+  }
 `;
-const ConfirmButton = styled.div`
-  position: absolute;
-  bottom: 0;
-  right: 30px;
-  padding: 20px 80px;
+const ConfirmButton = styled.div<ConfirmButtonProps>`
+  width: 20%;
+  height: 100%;
+  /* position: absolute; */
+  bottom: 2%;
+  margin-left: auto;
+  margin-right: 15px;
+  border-radius: 5px;
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
+
+  background-color: #f2f2f2;
+  cursor: ${({ $isAllowed }) => ($isAllowed ? 'pointer' : 'not-allowed')};
+  &:hover {
+    background-color: #ffffff;
+  }
 `;
 
 const CheckIcon = styled(FontAwesomeIcon)`
   color: #dabd7a;
-  font-size: 36px;
+  font-size: 28px;
 `;
 
 const AddNewWrap = styled.div`
   position: absolute;
   z-index: 5;
-  top: 198px;
-  height: 100px;
+  bottom: 0;
+  height: 80px;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -221,4 +283,17 @@ const AddNewButton = styled.div`
   border-radius: 22px;
   background-color: #ebebeb;
   color: #808080;
+  cursor: pointer;
+  &:hover {
+    filter: brightness(0.95);
+  }
+  &:active {
+    filter: brightness(1.1);
+  }
+`;
+
+const AddNewIcon = styled(FontAwesomeIcon)`
+  font-size: 20px;
+  color: #808080;
+  padding-right: 5px;
 `;

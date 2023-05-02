@@ -35,7 +35,7 @@ const initialState: LedgerSingleState = {
     item: '',
     labelMain: '食物',
     labelSubs: [],
-    payWho: 'Ethan', //TODO
+    payWho: '', //TODO
     payHow: 'cash',
     amount: { currency: '', number: 0, numberNT: 0 },
     recordTime: 0,
@@ -61,17 +61,10 @@ export const ledgerSubmit = createAsyncThunk(
       ...data,
       recordWho: userId,
     };
-    const availableGrids: { yIndex: number; xIndex: number }[] = [];
-    // const houses = allStates.cityBasicInfo.houses;
-    const housesPosition = allStates.cityArrangement.housesPosition;
-    housesPosition.forEach((raw, yIndex) => {
-      raw.forEach((grid, xIndex) => {
-        if (grid.type === '') availableGrids.push({ yIndex, xIndex });
-      });
-    });
-    console.log('available', availableGrids);
+    const { nextHousePosition } = allStates.cityArrangement;
+
     // if (availableGrids.length === 0) alert('not enough grids'); //TODO: auto expand grid
-    await postLedger(cityId, ledgerBookId, ledgerData, availableGrids);
+    await postLedger(cityId, ledgerBookId, ledgerData, nextHousePosition);
   }
 );
 
@@ -95,6 +88,11 @@ export const ledgerSingle = createSlice({
   name: 'ledgerSingle',
   initialState,
   reducers: {
+    CLEAR_LEDGER_ID: (state) => {
+      state.ledgerId = '';
+      state.data.item = '';
+      state.data.amount.number = 0;
+    },
     ledgerEdit: (
       state,
       action: PayloadAction<{
@@ -199,13 +197,18 @@ export const ledgerSingle = createSlice({
       state.calculationHolder.operator = '';
       state.calculationHolder.number = 0;
     },
-    paySelectPerson: (state, action: PayloadAction<string>) => {
-      if (state.data.payWho === 'Ethan') {
-        state.data.payWho = 'Hazel';
+    payPeopleSwitch: (
+      state,
+      action: PayloadAction<{ name: string; list: string[]; init?: boolean }>
+    ) => {
+      const { name, list, init } = action.payload;
+      if (init) {
+        state.data.payWho = name;
       }
-      state.data.payWho = 'Ethan'; //TODO
+      const index = list.findIndex((personName) => personName === name);
+      state.data.payWho = list[(index + 1) % list.length];
     },
-    paySelectMethod: (
+    payMethodSwitch: (
       state,
       action: PayloadAction<'cash' | 'creditCard' | 'mobile'>
     ) => {
@@ -215,7 +218,7 @@ export const ledgerSingle = createSlice({
         'mobile',
       ];
       const index = options.findIndex((option) => option === action.payload);
-      state.data.payHow = options[(index + 1) % 3];
+      state.data.payHow = options[(index + 1) % options.length];
     },
     timeEdit: (
       state,
@@ -261,7 +264,6 @@ export const ledgerSingle = createSlice({
       })
       .addCase(ledgerSubmit.fulfilled, (state) => {
         state.status = 'idle';
-        alert('已登錄');
         state.data.item = '';
         state.data.labelMain = '食物';
         state.data.labelSubs = [];
@@ -280,9 +282,9 @@ export const ledgerSingle = createSlice({
       })
       .addCase(ledgerUpdate.fulfilled, (state) => {
         state.status = 'idle';
-        alert('已登錄');
+        // alert('已登錄');
         state.data.item = '';
-        state.data.labelMain = '';
+        state.data.labelMain = '食物';
         state.data.labelSubs = [];
         state.data.amount = { currency: '', number: 0, numberNT: 0 };
         state.calculationHolder = {
@@ -299,6 +301,7 @@ export const ledgerSingle = createSlice({
 });
 
 export const {
+  CLEAR_LEDGER_ID,
   ledgerEdit,
   itemKeyIn,
   labelChooseMain,
@@ -308,8 +311,8 @@ export const {
   amountHoldOperator,
   amountCalculate,
   amountAllClear,
-  paySelectPerson,
-  paySelectMethod,
+  payPeopleSwitch,
+  payMethodSwitch,
   timeEdit,
   timeInitialize,
 } = ledgerSingle.actions;

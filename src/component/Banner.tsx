@@ -1,28 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import styled, { keyframes } from 'styled-components/macro';
+import React from 'react';
+import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
 
-const Wrapper = styled.div`
-  // position: absolute;
-  z-index: 2;
-  &:hover {
-    transform: translateY(-10px);
-  }
-`;
-
-const translate = keyframes`
-from {
-  transform: rotate(0deg) translateX(0) translateY(0);
-}
-to {
-  transform: rotate(10deg) translateX(10px) translateY(-20px);
-}
-`;
-
-const InteractiveGroup = styled.g`
-  &:hover {
-    animation: ${translate} 0.7s linear infinite alternate;
-  }
+const StyledSvg = styled.svg`
+  width: calc(50vw);
+  /* max-height: 50px; */
+  position: relative;
+  box-shadow: 0px 6px 4px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
 `;
 
 export const Banner: React.FC = () => {
@@ -30,17 +15,10 @@ export const Banner: React.FC = () => {
   // const dispatch = useAppDispatch();
 
   return (
-    <svg
-      width="calc( 1053/1920 * 100vw )"
-      // height="calc( 122 * 1053px / 100vw)"
+    <StyledSvg
       viewBox="0 0 1053 122"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      style={{
-        position: 'relative',
-        boxShadow: '0px 6px 4px rgba(0, 0, 0, 0.2)',
-        borderRadius: '10px',
-      }}
     >
       <rect width="1053" height="122" fill="#E7E7E7" />
       <g id="Frame" filter="url(#filter0_d_0_1)">
@@ -369,7 +347,7 @@ export const Banner: React.FC = () => {
           width="1088"
           height="144"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
           <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
@@ -405,8 +383,8 @@ export const Banner: React.FC = () => {
           y2="159.985"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_0_1"
@@ -416,8 +394,8 @@ export const Banner: React.FC = () => {
           y2="180.284"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint2_linear_0_1"
@@ -427,8 +405,8 @@ export const Banner: React.FC = () => {
           y2="121.505"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint3_linear_0_1"
@@ -438,8 +416,8 @@ export const Banner: React.FC = () => {
           y2="122.745"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint4_linear_0_1"
@@ -449,8 +427,8 @@ export const Banner: React.FC = () => {
           y2="207.386"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint5_linear_0_1"
@@ -460,8 +438,8 @@ export const Banner: React.FC = () => {
           y2="137.812"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint6_linear_0_1"
@@ -471,8 +449,8 @@ export const Banner: React.FC = () => {
           y2="169.307"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint7_linear_0_1"
@@ -482,8 +460,8 @@ export const Banner: React.FC = () => {
           y2="125.839"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint8_linear_0_1"
@@ -493,8 +471,8 @@ export const Banner: React.FC = () => {
           y2="108.352"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint9_linear_0_1"
@@ -504,8 +482,8 @@ export const Banner: React.FC = () => {
           y2="106.979"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint10_linear_0_1"
@@ -515,8 +493,8 @@ export const Banner: React.FC = () => {
           y2="106.104"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint11_linear_0_1"
@@ -526,8 +504,8 @@ export const Banner: React.FC = () => {
           y2="209.278"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint12_linear_0_1"
@@ -537,8 +515,8 @@ export const Banner: React.FC = () => {
           y2="164.16"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint13_linear_0_1"
@@ -548,8 +526,8 @@ export const Banner: React.FC = () => {
           y2="154.406"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint14_linear_0_1"
@@ -559,8 +537,8 @@ export const Banner: React.FC = () => {
           y2="156.235"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#D7BC8D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#D7BC8D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint15_linear_0_1"
@@ -570,8 +548,8 @@ export const Banner: React.FC = () => {
           y2="112.146"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint16_linear_0_1"
@@ -581,8 +559,8 @@ export const Banner: React.FC = () => {
           y2="128.478"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint17_linear_0_1"
@@ -592,8 +570,8 @@ export const Banner: React.FC = () => {
           y2="121.184"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint18_linear_0_1"
@@ -603,8 +581,8 @@ export const Banner: React.FC = () => {
           y2="120.036"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint19_linear_0_1"
@@ -614,8 +592,8 @@ export const Banner: React.FC = () => {
           y2="119.268"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint20_linear_0_1"
@@ -625,8 +603,8 @@ export const Banner: React.FC = () => {
           y2="115.365"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint21_linear_0_1"
@@ -636,8 +614,8 @@ export const Banner: React.FC = () => {
           y2="121.34"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint22_linear_0_1"
@@ -647,8 +625,8 @@ export const Banner: React.FC = () => {
           y2="132.678"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint23_linear_0_1"
@@ -658,8 +636,8 @@ export const Banner: React.FC = () => {
           y2="155.875"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint24_linear_0_1"
@@ -669,8 +647,8 @@ export const Banner: React.FC = () => {
           y2="156.16"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint25_linear_0_1"
@@ -680,8 +658,8 @@ export const Banner: React.FC = () => {
           y2="120.012"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint26_linear_0_1"
@@ -691,8 +669,8 @@ export const Banner: React.FC = () => {
           y2="123.26"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint27_linear_0_1"
@@ -702,8 +680,8 @@ export const Banner: React.FC = () => {
           y2="160.617"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint28_linear_0_1"
@@ -713,8 +691,8 @@ export const Banner: React.FC = () => {
           y2="180.916"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint29_linear_0_1"
@@ -724,8 +702,8 @@ export const Banner: React.FC = () => {
           y2="122.116"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint30_linear_0_1"
@@ -735,8 +713,8 @@ export const Banner: React.FC = () => {
           y2="123.352"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint31_linear_0_1"
@@ -746,8 +724,8 @@ export const Banner: React.FC = () => {
           y2="208.018"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint32_linear_0_1"
@@ -757,8 +735,8 @@ export const Banner: React.FC = () => {
           y2="138.465"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint33_linear_0_1"
@@ -768,8 +746,8 @@ export const Banner: React.FC = () => {
           y2="169.918"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint34_linear_0_1"
@@ -779,8 +757,8 @@ export const Banner: React.FC = () => {
           y2="126.471"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint35_linear_0_1"
@@ -790,8 +768,8 @@ export const Banner: React.FC = () => {
           y2="108.984"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint36_linear_0_1"
@@ -801,8 +779,8 @@ export const Banner: React.FC = () => {
           y2="107.611"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint37_linear_0_1"
@@ -812,8 +790,8 @@ export const Banner: React.FC = () => {
           y2="106.714"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint38_linear_0_1"
@@ -823,8 +801,8 @@ export const Banner: React.FC = () => {
           y2="209.932"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint39_linear_0_1"
@@ -834,8 +812,8 @@ export const Banner: React.FC = () => {
           y2="164.792"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint40_linear_0_1"
@@ -845,8 +823,8 @@ export const Banner: React.FC = () => {
           y2="155.038"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint41_linear_0_1"
@@ -856,8 +834,8 @@ export const Banner: React.FC = () => {
           y2="156.867"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#D7BC8D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#D7BC8D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint42_linear_0_1"
@@ -867,8 +845,8 @@ export const Banner: React.FC = () => {
           y2="112.778"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint43_linear_0_1"
@@ -878,8 +856,8 @@ export const Banner: React.FC = () => {
           y2="129.088"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint44_linear_0_1"
@@ -889,8 +867,8 @@ export const Banner: React.FC = () => {
           y2="121.816"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint45_linear_0_1"
@@ -900,8 +878,8 @@ export const Banner: React.FC = () => {
           y2="120.668"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint46_linear_0_1"
@@ -911,8 +889,8 @@ export const Banner: React.FC = () => {
           y2="119.9"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint47_linear_0_1"
@@ -922,8 +900,8 @@ export const Banner: React.FC = () => {
           y2="115.997"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint48_linear_0_1"
@@ -933,8 +911,8 @@ export const Banner: React.FC = () => {
           y2="121.972"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint49_linear_0_1"
@@ -944,8 +922,8 @@ export const Banner: React.FC = () => {
           y2="133.31"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint50_linear_0_1"
@@ -955,8 +933,8 @@ export const Banner: React.FC = () => {
           y2="156.507"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint51_linear_0_1"
@@ -966,8 +944,8 @@ export const Banner: React.FC = () => {
           y2="156.77"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint52_linear_0_1"
@@ -977,8 +955,8 @@ export const Banner: React.FC = () => {
           y2="120.644"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
         <linearGradient
           id="paint53_linear_0_1"
@@ -988,10 +966,10 @@ export const Banner: React.FC = () => {
           y2="123.892"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F7CB7D" />
-          <stop offset="1" stop-color="#F68C69" />
+          <stop stopColor="#F7CB7D" />
+          <stop offset="1" stopColor="#F68C69" />
         </linearGradient>
       </defs>
-    </svg>
+    </StyledSvg>
   );
 };

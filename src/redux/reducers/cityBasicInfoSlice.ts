@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { fetchCityInfo } from '../api/cityAPI';
+import { fetchCityInfo, updateCityName } from '../api/cityAPI';
 
 export interface HouseState {
   type: string;
@@ -26,12 +26,24 @@ const initialState: CityBasicInfoState = {
   status: 'idle',
 };
 
-export const getCityInfo = createAsyncThunk(
-  'cityBasicInfo/getCityInfo',
+export const VISIT_CITY = createAsyncThunk(
+  'cityBasicInfo/VISIT_CITY',
   async (cityId: string) => {
     try {
       const response = await fetchCityInfo(cityId);
       return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+export const UPDATE_CITY_NAME = createAsyncThunk(
+  'cityBasicInfo/UPDATE_CITY_NAME',
+  async (payload: { cityId: string; cityName: string }) => {
+    try {
+      const { cityId, cityName } = payload;
+      await updateCityName(cityId, cityName);
     } catch (error) {
       console.log(error);
     }
@@ -50,14 +62,16 @@ export const cityBasicInfo = createSlice({
       state.ledgerBookId = action.payload.ledgerBookId;
       state.status = 'idle';
     },
+    CHANGE_CITY_NAME: (state, action: PayloadAction<string>) => {
+      state.cityName = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getCityInfo.pending, (state) => {
+      .addCase(VISIT_CITY.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(getCityInfo.fulfilled, (state, action) => {
-        console.log('gg', action.payload);
+      .addCase(VISIT_CITY.fulfilled, (state, action) => {
         if (action.payload) {
           state.cityName = action.payload.cityName;
           state.accessUsers = action.payload.accessUsers;
@@ -67,13 +81,24 @@ export const cityBasicInfo = createSlice({
         }
         state.status = 'idle';
       })
-      .addCase(getCityInfo.rejected, (state) => {
+      .addCase(VISIT_CITY.rejected, (state) => {
+        state.status = 'failed';
+        alert('getCityInfo rejected');
+      })
+      .addCase(UPDATE_CITY_NAME.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(UPDATE_CITY_NAME.fulfilled, (state) => {
+        alert('city name updated');
+        state.status = 'idle';
+      })
+      .addCase(UPDATE_CITY_NAME.rejected, (state) => {
         state.status = 'failed';
         alert('getCityInfo rejected');
       });
   },
 });
 
-export const { UPDATE_CITY_INFO } = cityBasicInfo.actions;
+export const { UPDATE_CITY_INFO, CHANGE_CITY_NAME } = cityBasicInfo.actions;
 
 export default cityBasicInfo.reducer;

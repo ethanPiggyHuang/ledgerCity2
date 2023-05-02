@@ -7,15 +7,17 @@ import {
   FIND_ACCOUNT_MATCH,
   NEW_FRIEND_REQUEST,
   updateCityList,
+  getCityName,
+  createNewCity,
 } from '../api/userAPI';
 import { RootState } from '../store';
 
 export interface UserDataState {
   userId: string;
-  userName: string | null;
-  userNickName: string | null;
-  userEmail: string | null;
-  userPortraitUrl: string | null;
+  userName: string;
+  userNickName: string;
+  userEmail: string;
+  userPortraitUrl: string;
   cityList: string[];
   subLabels: { [key: string]: string[] };
   trophy: { list: number[]; citizens: number[] };
@@ -49,6 +51,9 @@ export interface UserInfoState {
     queryResult: UserDataState[];
   };
   data: UserDataState;
+  additionalData: {
+    cityNames: { [key: string]: string };
+  };
 }
 
 const initialState: UserInfoState = {
@@ -67,15 +72,16 @@ const initialState: UserInfoState = {
   friends: [],
   data: {
     userId: '',
-    userName: null,
+    userName: '',
     userNickName: '',
-    userEmail: null,
-    userPortraitUrl: null,
+    userEmail: '',
+    userPortraitUrl: '',
     cityList: [],
     subLabels: { food: [''] },
     trophy: { list: [], citizens: [] },
     gameSetting: { hasMusic: false, hasHints: false, isRecordContinue: false },
   },
+  additionalData: { cityNames: {} },
 };
 
 export const CREATE_ACCOUNT = createAsyncThunk(
@@ -94,6 +100,15 @@ export const CREATE_ACCOUNT = createAsyncThunk(
     const response = await createAccount(user);
 
     return { user, data: response.data };
+  }
+);
+
+export const CREATE_NEW_CITY = createAsyncThunk(
+  'userInfo/CREATE_NEW_CITY',
+  async (userId: string) => {
+    const response = await createNewCity(userId);
+
+    return response.cityId;
   }
 );
 
@@ -119,8 +134,6 @@ export const SAVE_NICKNAME = createAsyncThunk(
   'userInfo/SAVE_NICKNAME',
   async (userNickName: string, { getState }) => {
     const allStates = getState() as RootState;
-    const userFriendList = allStates.userInfo.friends;
-    // const friends = allStates.userInfo.data.friends;
     const { userId } = allStates.userInfo.data;
     await POST_NICKNAME(userId, userNickName);
     return userNickName;
@@ -154,9 +167,18 @@ export const CITY_REDIRECTION = createAsyncThunk(
     const { userId, cityId } = payload;
     const allStates = getState() as RootState;
     const cityList = allStates.userInfo.data.cityList;
+    //TODO!!!!  要避免亂入別人城市
     const newCityList = [cityId, ...cityList.filter((city) => city !== cityId)];
     await updateCityList(userId, newCityList);
     return newCityList;
+  }
+);
+
+export const GET_CITY_NAME = createAsyncThunk(
+  'userInfo/GET_CITY_NAME',
+  async (cityId: string) => {
+    const response = await getCityName(cityId);
+    return { cityId, cityName: response?.cityName };
   }
 );
 
@@ -178,9 +200,9 @@ export const userInfo = createSlice({
     ) => {
       const { uid, displayName, email, photoURL } = action.payload;
       state.data.userId = uid;
-      state.data.userName = displayName;
-      state.data.userPortraitUrl = photoURL;
-      state.data.userEmail = email;
+      state.data.userName = displayName || '';
+      state.data.userPortraitUrl = photoURL || '';
+      state.data.userEmail = email || '';
       state.loginStatus.isLogin = true;
     },
     LOG_OUT: (state) => {
@@ -188,15 +210,20 @@ export const userInfo = createSlice({
       state.data = initialState.data;
       state.loginStatus = initialState.loginStatus;
     },
-    EDIT_NICKNAME_ACTIVATE: (state, action: PayloadAction<string>) => {
-      state.editStatus.isNickNameEdit = true;
-      state.editStatus.inputText = action.payload;
+    EDIT_NICKNAME_SWITCH: (state, action: PayloadAction<boolean>) => {
+      state.editStatus.isNickNameEdit = action.payload;
     },
     TYPING_NICKNAME: (state, action: PayloadAction<string>) => {
       state.editStatus.inputText = action.payload;
     },
     TYPING_FRIEND_EMAIL: (state, action: PayloadAction<string>) => {
       state.editStatus.emailInput = action.payload;
+    },
+    UPDATE_INSTANT_FRIENDS_STATUS: (
+      state,
+      action: PayloadAction<FriendStatusState[]>
+    ) => {
+      state.friends = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -208,12 +235,15 @@ export const userInfo = createSlice({
       .addCase(CREATE_ACCOUNT.fulfilled, (state, action) => {
         state.status = 'idle';
         state.loginStatus.isLogin = true;
-        const { cityId, ledgerBookId } = action.payload.data;
-        state.data.userId = action.payload.user.userId;
-        state.data.userName = action.payload.user.userName;
-        state.data.userPortraitUrl = action.payload.user.userPortraitUrl;
-        state.data.userEmail = action.payload.user.userEmail;
-        console.log('check', cityId, ledgerBookId);
+        const { cityId, userNickName } = action.payload.data;
+        const { userId, userName, userPortraitUrl, userEmail } =
+          action.payload.user;
+        state.data.userId = userId;
+        state.data.userName = userName;
+        state.data.userNickName = userNickName === '' ? userName : userNickName;
+        state.data.userPortraitUrl = userPortraitUrl;
+        state.data.userEmail = userEmail;
+        // console.log('check', cityId, ledgerBookId);
         state.data.cityList = [cityId];
       })
       .addCase(CREATE_ACCOUNT.rejected, (state) => {
@@ -230,7 +260,6 @@ export const userInfo = createSlice({
           // const cityId = action.payload.cityList[0];
           // state.data.cityList = [cityId];
           state.data = action.payload.data;
-          state.friends = action.payload.friendResponse;
           // // state.friends = action.payload.friendResponse;
         }
       })
@@ -279,12 +308,38 @@ export const userInfo = createSlice({
       })
       .addCase(CITY_REDIRECTION.fulfilled, (state, action) => {
         state.status = 'idle';
-        alert('request redirect');
+        // alert('request redirect');
         state.data.cityList = action.payload;
       })
       .addCase(CITY_REDIRECTION.rejected, (state) => {
         state.status = 'failed';
         alert('friend request rejected');
+      })
+      .addCase(GET_CITY_NAME.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(GET_CITY_NAME.fulfilled, (state, action) => {
+        state.status = 'idle';
+        const { cityId, cityName } = action.payload;
+        if (cityId && cityName) {
+          state.additionalData.cityNames[cityId] = cityName;
+        }
+      })
+      .addCase(GET_CITY_NAME.rejected, (state) => {
+        state.status = 'failed';
+        alert('get city name rejected');
+      })
+      .addCase(CREATE_NEW_CITY.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(CREATE_NEW_CITY.fulfilled, (state, action) => {
+        state.status = 'idle';
+        alert('new city');
+        state.data.cityList = [action.payload, ...state.data.cityList];
+      })
+      .addCase(CREATE_NEW_CITY.rejected, (state) => {
+        state.status = 'failed';
+        alert('add new city rejected');
       });
   },
 });
@@ -293,9 +348,10 @@ export const {
   AUTHING_TOGGLE,
   LOGGED_IN,
   LOG_OUT,
-  EDIT_NICKNAME_ACTIVATE,
+  EDIT_NICKNAME_SWITCH,
   TYPING_NICKNAME,
   TYPING_FRIEND_EMAIL,
+  UPDATE_INSTANT_FRIENDS_STATUS,
 } = userInfo.actions;
 
 export default userInfo.reducer;

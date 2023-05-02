@@ -3,6 +3,9 @@ import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { chooseLabel, chooseMonth } from '../../redux/reducers/ledgerListSlice';
 import { mainLabels, labelColorCodes } from '../../utils/gameSettings';
+import { CHART_SHOWN_SWITCH } from '../../redux/reducers/pageControlSlice';
+import { faAnglesLeft } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface BarChartSetting {
   svgHeight: number;
@@ -10,6 +13,7 @@ interface BarChartSetting {
   barWidth: number;
   yShrinkRatio: number;
   labelDY: number;
+  xStart: number;
 }
 
 export const BarChart: React.FC = () => {
@@ -17,7 +21,7 @@ export const BarChart: React.FC = () => {
   const ledgerList = useAppSelector((state) => state.ledgerList.dataList);
   const { chosenYear } = useAppSelector((state) => state.ledgerList.choices);
   const [hasCategory, setHasCategory] = useState(false);
-  const [labelsDisplay, setLabelsDisplay] = useState(new Array(8).fill(true));
+  const [labelsDisplay, setLabelsDisplay] = useState(new Array(10).fill(true));
   const [displayMonths, setDisplayMonths] = useState(12);
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
@@ -26,10 +30,11 @@ export const BarChart: React.FC = () => {
 
   const barChartSetting = {
     svgHeight: 300,
-    svgWidth: 500,
-    barWidth: 40,
+    svgWidth: 550,
+    barWidth: 35,
     yShrinkRatio: 0.9,
     labelDY: 20,
+    xStart: 60,
   };
 
   const rawDatas = ledgerList.map((ledger) => {
@@ -43,18 +48,18 @@ export const BarChart: React.FC = () => {
   });
 
   const totalMonths = [
-    { xLabel: '一月', monthValue: 1 },
-    { xLabel: '二月', monthValue: 2 },
-    { xLabel: '三月', monthValue: 3 },
-    { xLabel: '四月', monthValue: 4 },
-    { xLabel: '五月', monthValue: 5 },
-    { xLabel: '六月', monthValue: 6 },
-    { xLabel: '七月', monthValue: 7 },
-    { xLabel: '八月', monthValue: 8 },
-    { xLabel: '九月', monthValue: 9 },
-    { xLabel: '十月', monthValue: 10 },
-    { xLabel: '十一月', monthValue: 11 },
-    { xLabel: '十二月', monthValue: 12 },
+    { xLabel: '1月', monthValue: 1 },
+    { xLabel: '2月', monthValue: 2 },
+    { xLabel: '3月', monthValue: 3 },
+    { xLabel: '4月', monthValue: 4 },
+    { xLabel: '5月', monthValue: 5 },
+    { xLabel: '6月', monthValue: 6 },
+    { xLabel: '7月', monthValue: 7 },
+    { xLabel: '8月', monthValue: 8 },
+    { xLabel: '9月', monthValue: 9 },
+    { xLabel: '10月', monthValue: 10 },
+    { xLabel: '11月', monthValue: 11 },
+    { xLabel: '12月', monthValue: 12 },
   ];
 
   let months: { xLabel: string; monthValue: number }[];
@@ -94,18 +99,17 @@ export const BarChart: React.FC = () => {
     return { label, isIncluded: true, data: dataByCategory };
   });
 
-  // console.log(datasCategory);
-
   const drawBar = (
     value: number,
     monthValue: number,
-    { svgHeight, svgWidth, barWidth, yShrinkRatio }: BarChartSetting,
+    { svgHeight, svgWidth, barWidth, yShrinkRatio, xStart }: BarChartSetting,
     labelColorCodes: string[],
     xMax: number,
     yMax: number,
     index: number
   ): ReactNode => {
-    const startPointX = (svgWidth / xMax) * (index + 0.5) - barWidth / 2;
+    const startPointX =
+      (svgWidth / xMax) * (index + 0.5) - barWidth / 2 + xStart;
     const barHeight = (value / yMax) * svgHeight * yShrinkRatio;
     const barTopY = svgHeight - barHeight;
 
@@ -129,7 +133,7 @@ export const BarChart: React.FC = () => {
   const drawCategoryBar = (
     value: number,
     monthValue: number,
-    { svgHeight, svgWidth, barWidth, yShrinkRatio }: BarChartSetting,
+    { svgHeight, svgWidth, barWidth, yShrinkRatio, xStart }: BarChartSetting,
     labelColorCodes: string[],
     xMax: number,
     yMax: number,
@@ -145,7 +149,8 @@ export const BarChart: React.FC = () => {
           yShrinkRatio;
       }
     }
-    const startPointX = (svgWidth / xMax) * (index + 0.5) - barWidth / 2;
+    const startPointX =
+      (svgWidth / xMax) * (index + 0.5) - barWidth / 2 + xStart;
     const barHeight = labelsDisplay[labelIndex]
       ? (value / yMax) * svgHeight * yShrinkRatio
       : 0;
@@ -170,7 +175,7 @@ export const BarChart: React.FC = () => {
 
   const setXLabel = (
     text: string,
-    { svgHeight, svgWidth, labelDY }: BarChartSetting,
+    { svgHeight, svgWidth, labelDY, xStart }: BarChartSetting,
     xMax: number,
     index: number
   ): ReactNode => {
@@ -178,11 +183,21 @@ export const BarChart: React.FC = () => {
     const labelY = svgHeight + labelDY;
 
     return (
-      <LabelX key={index} x={labelX} y={labelY}>
+      <LabelX key={index} x={labelX + xStart} y={labelY}>
         {text}
       </LabelX>
     );
   };
+
+  const yRatios = [0, 0.25, 0.5, 0.75, 1];
+
+  const yScaleMaxDigits = (Math.log(yMax) * Math.LOG10E + 1) | 0;
+  const yScaleMax =
+    Math.ceil(yMax / Math.pow(10, yScaleMaxDigits - 1)) *
+    Math.pow(10, yScaleMaxDigits - 1);
+
+  const yValues = yRatios.map((ratio) => ratio * yScaleMax);
+  const yAdjRatios = yValues.map((value) => value / yMax);
 
   return (
     <Wrap>
@@ -204,8 +219,44 @@ export const BarChart: React.FC = () => {
           {datas.map(({ xLabel }, index) =>
             setXLabel(xLabel, barChartSetting, xMax, index)
           )}
-          <path d={`M 0 300 L 500 300 Z`} stroke="black" />
-          <path d={`M 0 300 L 0 0 Z`} stroke="black" />
+          {/* TODO: Y axis label */}
+          {yAdjRatios.map((yAdjRatio, index) => (
+            <g key={`${index}${yAdjRatio}`}>
+              <path
+                d={`M ${barChartSetting.xStart} ${
+                  barChartSetting.svgHeight -
+                  barChartSetting.svgHeight *
+                    yAdjRatio *
+                    barChartSetting.yShrinkRatio
+                } H ${barChartSetting.xStart + 10}  Z`}
+                stroke={'#808080'}
+              />
+              <LabelY
+                x={barChartSetting.xStart - 5}
+                y={
+                  barChartSetting.svgHeight -
+                  barChartSetting.svgHeight *
+                    yAdjRatio *
+                    barChartSetting.yShrinkRatio +
+                  5
+                }
+              >
+                {`${Math.round(yValues[index])}${index === 0 ? '' : '元'}`}
+              </LabelY>
+            </g>
+          ))}
+          {/* x axis */}
+          <path
+            d={`M ${barChartSetting.xStart} ${barChartSetting.svgHeight} L ${
+              barChartSetting.xStart + barChartSetting.svgWidth
+            } ${barChartSetting.svgHeight} Z`}
+            stroke="#808080"
+          />
+          {/* y axis */}
+          <path
+            d={`M ${barChartSetting.xStart} ${barChartSetting.svgHeight} L ${barChartSetting.xStart} 0 Z`}
+            stroke="#808080"
+          />
         </BarSvg>
       )}
       {loadingStatus === 'idle' && hasCategory && (
@@ -229,50 +280,92 @@ export const BarChart: React.FC = () => {
           {datas.map(({ xLabel }, index) =>
             setXLabel(xLabel, barChartSetting, xMax, index)
           )}
-          <path d={`M 0 300 L 500 300 Z`} stroke="black" />
-          <path d={`M 0 300 L 0 0 Z`} stroke="black" />
+          {/* TODO: Y axis label */}
+          {yAdjRatios.map((yAdjRatio, index) => (
+            <g key={`${index}${yAdjRatio}`}>
+              <path
+                d={`M ${barChartSetting.xStart} ${
+                  barChartSetting.svgHeight -
+                  barChartSetting.svgHeight *
+                    yAdjRatio *
+                    barChartSetting.yShrinkRatio
+                } H ${barChartSetting.xStart + 10}  Z`}
+                stroke={'#808080'}
+              />
+              <LabelY
+                x={barChartSetting.xStart - 5}
+                y={
+                  barChartSetting.svgHeight -
+                  barChartSetting.svgHeight *
+                    yAdjRatio *
+                    barChartSetting.yShrinkRatio +
+                  5
+                }
+              >
+                {`${Math.round(yValues[index])}${index === 0 ? '' : '元'}`}
+              </LabelY>
+            </g>
+          ))}
+          {/* x axis */}
+          <path
+            d={`M ${barChartSetting.xStart} ${barChartSetting.svgHeight} L ${
+              barChartSetting.xStart + barChartSetting.svgWidth
+            } ${barChartSetting.svgHeight} Z`}
+            stroke="#808080"
+          />
+          {/* y axis */}
+          <path
+            d={`M ${barChartSetting.xStart} ${barChartSetting.svgHeight} L ${barChartSetting.xStart} 0 Z`}
+            stroke="#808080"
+          />
         </BarSvg>
       )}
-      <Buttons>
-        <button onClick={() => setDisplayMonths(12)}>全年</button>
+      <ChartOperations>
+        <Buttons>
+          {/* <button onClick={() => setDisplayMonths(12)}>全年</button>
         {chosenYear === currentYear && (
           <button onClick={() => setDisplayMonths(3)}>近3個月</button>
         )}
-        <span>{`  `}</span>
-        <button onClick={() => setHasCategory(!hasCategory)}>
-          {hasCategory ? '隱藏類別' : '顯示類別'}
-        </button>
-        <button onClick={() => setLabelsDisplay(new Array(8).fill(true))}>
+        <span>{`  `}</span> */}
+          <Button onClick={() => setHasCategory(!hasCategory)}>
+            {hasCategory ? '隱藏類別' : '顯示類別'}
+          </Button>
+          {/* <button onClick={() => setLabelsDisplay(new Array(10).fill(true))}>
           類別全開
-        </button>
-      </Buttons>
+        </button> */}
+        </Buttons>
 
-      {hasCategory && (
-        <LabelWrap>
-          {mainLabels.map((label, index) => (
-            <>
-              <LabelColor
-                $display={labelsDisplay[index]}
-                $backgroundColor={labelColorCodes[index]}
-                onClick={() => {
-                  let newArr = [...labelsDisplay];
-                  newArr[index] = !newArr[index];
-                  setLabelsDisplay(newArr);
-                }}
-              />
-              <LabelText
-                onClick={() => {
-                  let newArr = [...labelsDisplay];
-                  newArr[index] = !newArr[index];
-                  setLabelsDisplay(newArr);
-                }}
-              >
-                {label}
-              </LabelText>
-            </>
-          ))}
-        </LabelWrap>
-      )}
+        {hasCategory && (
+          <LabelWrap>
+            {mainLabels.map((label, index) => (
+              <Label key={index}>
+                <LabelColor
+                  $display={labelsDisplay[index]}
+                  $backgroundColor={labelColorCodes[index]}
+                  onClick={() => {
+                    let newArr = [...labelsDisplay];
+                    newArr[index] = !newArr[index];
+                    setLabelsDisplay(newArr);
+                  }}
+                />
+                <LabelText
+                  onClick={() => {
+                    let newArr = [...labelsDisplay];
+                    newArr[index] = !newArr[index];
+                    setLabelsDisplay(newArr);
+                  }}
+                >
+                  {label}
+                </LabelText>
+              </Label>
+            ))}
+          </LabelWrap>
+        )}
+      </ChartOperations>
+      <MinimizeWrap onClick={() => dispatch(CHART_SHOWN_SWITCH('monthOnly'))}>
+        <MinimizeIcon icon={faAnglesLeft} />
+        <MinimizeText>收合</MinimizeText>
+      </MinimizeWrap>
     </Wrap>
   );
 };
@@ -283,7 +376,6 @@ type LabelColorProps = {
 };
 
 const Wrap = styled.div`
-  padding: 10px;
   width: 100%;
   position: relative;
   overflow: scroll;
@@ -293,36 +385,86 @@ const Wrap = styled.div`
 `;
 const ChartTitle = styled.p`
   text-align: center;
+  line-height: 50px;
   font-size: 28px;
   color: #808080;
   width: 100%;
+  margin-bottom: 50px;
 `;
 const BarSvg = styled.svg`
-  height: 350px;
-  width: 500px;
+  height: 360px;
+  width: 610px;
   // border: 1px solid lightblue;
 `;
 const BarPath = styled.path`
   opacity: 0.7;
   cursor: pointer;
 
-  &: hover {
+  &:hover {
     opacity: 1;
   }
+`;
+
+const ChartOperations = styled.div`
+  display: flex;
+  gap: 20px;
+  justify-content: start;
+  width: 100%;
+  padding-left: 90px;
+  align-items: center;
 `;
 const Buttons = styled.div`
   display: flex;
   padding-bottom: 20px;
+  align-items: center;
+`;
+const Button = styled.button`
+  border-radius: 15px;
+  height: 30px;
+  border: none;
+  cursor: pointer;
+  padding: 0 15px;
+  font-size: 16px;
+  background-color: #ebebeb;
+  color: #dabd7a;
+  transition: filter 0.2s ease;
+  &:hover {
+    filter: brightness(0.9);
+  }
+  &:active {
+    filter: brightness(1.05);
+  }
 `;
 const LabelX = styled.text`
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: bold;
   text-anchor: middle;
+
+  fill: #5b4105;
+  stroke: #f2f2f2;
+  stroke-width: 0.2px;
+`;
+
+const LabelY = styled.text`
+  font-size: 14px;
+  font-weight: bold;
+  text-anchor: end;
+
+  fill: #5b4105;
+  stroke: #f2f2f2;
+  stroke-width: 0.2px;
 `;
 
 const LabelWrap = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  width: 360px;
+`;
+
+const Label = styled.div`
+  display: flex;
+  gap: 5px;
 `;
 
 const LabelColor = styled.div<LabelColorProps>`
@@ -335,6 +477,36 @@ const LabelColor = styled.div<LabelColorProps>`
   cursor: pointer;
 `;
 const LabelText = styled.p`
-  height: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  padding-right: 5px;
+  width: 40px;
+`;
+
+const MinimizeWrap = styled.div`
+  position: absolute;
+  padding: 20px;
+  height: 100%;
+  left: 0px;
+  top: 0px;
+  text-align: center;
+
+  opacity: 0;
+  transition: opacity 1s ease;
+  &:hover {
+    opacity: 0.5;
+  }
+`;
+
+const MinimizeIcon = styled(FontAwesomeIcon)`
+  font-size: 20px;
+  color: #808080;
+  cursor: pointer;
+`;
+
+const MinimizeText = styled.p`
+  padding-top: 5px;
+  font-size: 16px;
+  color: #808080;
   cursor: pointer;
 `;

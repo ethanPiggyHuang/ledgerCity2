@@ -7,29 +7,42 @@ import {
 import { DocumentData } from '@firebase/firestore-types';
 import { RootState } from '../store';
 
+export type CurrentActionState =
+  | 'city'
+  | 'rearrange'
+  | 'ledger'
+  | 'statistics'
+  | 'profile'
+  | 'leave';
+
 interface SoloUserActivityState {
-  currentPage: 'city' | 'ledger' | 'statistics' | 'profile' | 'leave';
-  fadeOutTime: number;
-  isEditingCity: boolean;
-  latestActiveTime: number;
+  lastActivity: CurrentActionState;
+  currentActivity: CurrentActionState;
+  fadeOutTimeSecond: number;
+  latestActiveTimeSecond: number;
 }
 
 export interface UsersActivityState {
   status: 'idle' | 'loading' | 'failed';
   friendsInfo: {
-    userId: string;
-    userName: string | null;
-    userNickName: string | null;
-    userEmail: string | null;
-    userPortraitUrl: string | null;
-  }[];
-  data: { [userId: string]: SoloUserActivityState } | {};
+    [key: string]: {
+      userId: string;
+      userName: string;
+      userNickName: string;
+      userEmail: string;
+      userPortraitUrl: string;
+      cityList: string[];
+    };
+  };
+  friendsCityName: { [key: string]: string };
+  coopInfo: { [key: string]: SoloUserActivityState };
 }
 
 const initialState: UsersActivityState = {
   status: 'idle',
-  friendsInfo: [],
-  data: {},
+  friendsInfo: {},
+  friendsCityName: {}, //TODO: fetchFriend's city name
+  coopInfo: {},
 };
 
 export const GET_FRIENDS_INFO = createAsyncThunk(
@@ -63,16 +76,26 @@ export const usersActivity = createSlice({
     GET_COOP_FRIEND_ACTIVITY: (
       state,
       action: PayloadAction<{
-        userId: string;
-        currentPage: 'city' | 'ledger' | 'statistics' | 'profile' | 'leave';
-        isEditingCity: boolean;
-        fadeOutTimeSecond: number;
-        latestActiveTimeSecond: number;
+        friendId: string;
+        data: {
+          currentActivity: CurrentActionState;
+          fadeOutTimeSecond: number;
+          latestActiveTimeSecond: number;
+        };
       }>
     ) => {
       if (action.payload) {
-        // const { userId } = action.payload;
-        // state.data[userId] = action.payload;
+        const { friendId } = action.payload;
+        const { currentActivity, fadeOutTimeSecond, latestActiveTimeSecond } =
+          action.payload.data;
+        const lastActivity =
+          state.coopInfo[friendId]?.currentActivity || 'city';
+        state.coopInfo[friendId] = {
+          currentActivity,
+          fadeOutTimeSecond,
+          latestActiveTimeSecond,
+          lastActivity,
+        };
       }
     },
   },
@@ -85,7 +108,8 @@ export const usersActivity = createSlice({
       .addCase(GET_FRIENDS_INFO.fulfilled, (state, action) => {
         state.status = 'idle';
         if (action.payload) {
-          state.friendsInfo = [...state.friendsInfo, action.payload];
+          const { userId } = action.payload;
+          state.friendsInfo[userId] = action.payload;
         }
       })
       .addCase(GET_FRIENDS_INFO.rejected, (state) => {

@@ -10,6 +10,8 @@ interface LedgerListState {
     chosenYear: number;
     chosenMonth: number;
     chosenLabel: string;
+    sortBy: 'date' | 'label' | 'value';
+    sortDirection: 'ascending' | 'descending';
   };
   status: 'idle' | 'loading' | 'failed';
 }
@@ -18,9 +20,11 @@ const initialState: LedgerListState = {
   dataList: [],
   choices: {
     chosenLedgerId: '',
-    chosenYear: 2023,
-    chosenMonth: 4,
+    chosenYear: 0,
+    chosenMonth: 0,
     chosenLabel: '',
+    sortBy: 'date',
+    sortDirection: 'ascending',
   },
   status: 'idle',
 };
@@ -54,8 +58,8 @@ export const deleteSingleLedger = createAsyncThunk(
     const ledgerBookId = allStates.cityBasicInfo.ledgerBookId;
     const houses = allStates.cityBasicInfo.houses;
     const newHouses = houses.filter((house) => house.ledgerId !== ledgerId);
+    //TODO: 刪除帳目要刪除房子嗎？
     houses.forEach((house) => console.log(house.ledgerId !== ledgerId));
-    // console.log(newHouses);
     await deleteLedger(cityId, newHouses, ledgerBookId, ledgerId);
     return ledgerId;
   }
@@ -65,11 +69,26 @@ export const ledgerList = createSlice({
   name: 'ledgerList',
   initialState,
   reducers: {
+    SET_CURRENT_MONTH: (
+      state,
+      action: PayloadAction<{ currentMonth: number; currentYear: number }>
+    ) => {
+      state.choices.chosenMonth = action.payload.currentMonth;
+      state.choices.chosenYear = action.payload.currentYear;
+    },
     chooseYear: (state, action: PayloadAction<number>) => {
       state.choices.chosenYear = action.payload;
     },
     chooseMonth: (state, action: PayloadAction<number>) => {
-      state.choices.chosenMonth = action.payload;
+      if (action.payload < 1) {
+        state.choices.chosenMonth = 12;
+        state.choices.chosenYear = state.choices.chosenYear - 1;
+      } else if (action.payload > 12) {
+        state.choices.chosenMonth = 1;
+        state.choices.chosenYear = state.choices.chosenYear + 1;
+      } else {
+        state.choices.chosenMonth = action.payload;
+      }
     },
     chooseLabel: (state, action: PayloadAction<string>) => {
       state.choices.chosenLabel = action.payload;
@@ -79,6 +98,17 @@ export const ledgerList = createSlice({
       action: PayloadAction<{ ledgerId: string; data: LedgerDataState }[]>
     ) => {
       state.dataList = action.payload;
+    },
+    SORT_LIST: (state, action: PayloadAction<'date' | 'label' | 'value'>) => {
+      if (action.payload === state.choices.sortBy) {
+        state.choices.sortDirection =
+          state.choices.sortDirection === 'ascending'
+            ? 'descending'
+            : 'ascending';
+      } else {
+        state.choices.sortBy = action.payload;
+        state.choices.sortDirection = 'ascending';
+      }
     },
   },
   extraReducers: (builder) => {
@@ -111,7 +141,13 @@ export const ledgerList = createSlice({
   },
 });
 
-export const { chooseYear, chooseMonth, chooseLabel, UPDATE_LEDGER_LIST } =
-  ledgerList.actions;
+export const {
+  chooseYear,
+  chooseMonth,
+  chooseLabel,
+  UPDATE_LEDGER_LIST,
+  SORT_LIST,
+  SET_CURRENT_MONTH,
+} = ledgerList.actions;
 
 export default ledgerList.reducer;

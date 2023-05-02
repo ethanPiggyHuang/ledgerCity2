@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import {
@@ -14,24 +14,14 @@ export const Calculator: React.FC = () => {
   const { amount } = useAppSelector((state) => state.ledgerSingle.data);
   const dispatch = useAppDispatch();
 
-  const buttons: string[] = [
-    '7',
-    '8',
-    '9',
-    '⇤',
-    '4',
-    '5',
-    '6',
-    '+',
-    '1',
-    '2',
-    '3',
-    '-',
-    '0',
-    'AC',
-    '=',
-    '',
+  const buttons: string[][] = [
+    ['7', '8', '9', '⇤'],
+    ['4', '5', '6', '+'],
+    ['1', '2', '3', '-'],
+    ['', '0', 'AC', '='],
   ];
+
+  //TODO: .的處理
 
   const thousandsSeparator: (number: number) => string = function (number) {
     const parts = number.toString().split('.');
@@ -74,27 +64,31 @@ export const Calculator: React.FC = () => {
         <CurrencyExchange>NT$ 199</CurrencyExchange>
       </AmountDisplay> */}
       <CalculatorButtons>
-        {buttons.map((button, index) => (
-          <CalculatorButton
-            key={index}
-            onClick={() => {
-              if (button === 'AC') {
-                dispatch(amountAllClear());
-              } else if (button === '⇤') {
-                dispatch(amountDelete());
-              } else if (button === '=') {
-                dispatch(amountCalculate());
-              } else if (['+', '-', 'x', '÷'].includes(button)) {
-                dispatch(
-                  amountHoldOperator(button as '' | '+' | '-' | 'x' | '÷')
-                );
-              } else {
-                dispatch(amountKeyNumber(button));
-              }
-            }}
-          >
-            {button}
-          </CalculatorButton>
+        {buttons.map((row, rowIndex) => (
+          <ButtonRow key={rowIndex}>
+            {row.map((button, index) => (
+              <CalculatorButton
+                key={`${rowIndex + index}`}
+                onClick={() => {
+                  if (button === 'AC') {
+                    dispatch(amountAllClear());
+                  } else if (button === '⇤') {
+                    dispatch(amountDelete());
+                  } else if (button === '=') {
+                    dispatch(amountCalculate());
+                  } else if (['+', '-', 'x', '÷'].includes(button)) {
+                    dispatch(
+                      amountHoldOperator(button as '' | '+' | '-' | 'x' | '÷')
+                    );
+                  } else {
+                    dispatch(amountKeyNumber(button));
+                  }
+                }}
+              >
+                {button}
+              </CalculatorButton>
+            ))}
+          </ButtonRow>
         ))}
       </CalculatorButtons>
     </Wrapper>
@@ -111,8 +105,40 @@ const Wrapper = styled.div`
   bottom: 0;
   background-color: #292929;
   width: 100%;
+  padding: 0 80px;
+  height: 35%;
+`;
+
+const CalculatorButtons = styled.div`
+  height: 100%;
+  /* display: flex; */
+  /* flex-wrap: wrap; */
+  /* align-items: end; */
+  /* justify-content: space-between; */
+`;
+const ButtonRow = styled.div`
+  height: 25%;
+  display: flex;
+  /* align-items: end; */
+  justify-content: space-between;
+`;
+
+const CalculatorButton = styled.div`
+  height: 100%;
+
+  margin: 5px 2%;
+  width: 20%;
   color: #f2f2f2;
-  font-size: 36px;
+  font-size: 24px;
+  /* line-height: 150%; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  cursor: pointer;
+  &:hover {
+    background-color: #808080;
+  }
 `;
 
 const AmountDisplay = styled.div`
@@ -156,25 +182,4 @@ const CurrencyExchange = styled.div`
   align-items: center;
   display: none;
   //TODO currency exchange
-`;
-
-const CalculatorButtons = styled.div`
-  margin: 10px auto 0;
-  width: 90%;
-  height: calc(70% + 10px);
-  justify-content: center;
-  align-items: center;
-  padding: 8px 20px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 10px;
-`;
-const CalculatorButton = styled.div`
-  height: 60px;
-  width: 22%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
 `;

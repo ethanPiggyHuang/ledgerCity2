@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { updateHousePosition } from '../api/cityAPI';
-import { CityBasicInfoState, HouseState } from './cityBasicInfoSlice';
+import { updateHousePosition, pickRandomPosition } from '../api/cityAPI';
+import { CityBasicInfoState } from './cityBasicInfoSlice';
 import { RootState } from '../store';
 
 export interface CityArrangementState {
@@ -12,13 +12,21 @@ export interface CityArrangementState {
     dragStart: { x: number; y: number };
     current: { x: number; y: number };
   };
+  cityWheelShift: {
+    x: number;
+    y: number;
+  };
   dragInfo: {
     id: string;
     target: string;
     pastIndex: { xIndex: number; yIndex: number };
   };
-  status: 'idle' | 'loading' | 'failed';
+  nextHousePosition: { xIndex: number; yIndex: number };
+  isRenaming: boolean;
+  isTouring: boolean;
+  isAddingNew: boolean;
   scale: number;
+  status: 'idle' | 'loading' | 'failed';
 }
 
 const initialState: CityArrangementState = {
@@ -30,7 +38,12 @@ const initialState: CityArrangementState = {
     dragStart: { x: 0, y: 0 },
     current: { x: 0, y: 0 },
   },
+  cityWheelShift: { x: 0, y: 0 },
   dragInfo: { id: '', target: '', pastIndex: { xIndex: 0, yIndex: 0 } },
+  nextHousePosition: { xIndex: 0, yIndex: 0 },
+  isRenaming: false,
+  isTouring: false,
+  isAddingNew: false,
   status: 'idle',
   scale: 1,
 };
@@ -54,11 +67,35 @@ export const saveCityAsync = createAsyncThunk(
     const newHouses = houses.map((house) => {
       return { ...house, position: newPostions[house.ledgerId] };
     });
-    console.log(cityId, newHouses);
     try {
       await updateHousePosition(cityId, newHouses);
     } catch (error) {
       console.log(error);
+    }
+  }
+);
+
+export const GENERATE_AVAILABLE_POSITION = createAsyncThunk(
+  'cityArrangement/generateAvailablePosition',
+  async (arg, { getState }) => {
+    const allStates = getState() as RootState;
+    const housesPosition = allStates.cityArrangement.housesPosition;
+
+    let emptyPostions: { xIndex: number; yIndex: number }[] = [];
+    housesPosition?.forEach((raw, yIndex) => {
+      raw?.forEach((grid, xIndex) => {
+        if (grid.type === '') {
+          emptyPostions.push({ yIndex, xIndex });
+        }
+      });
+    });
+
+    try {
+      const response = await pickRandomPosition(emptyPostions);
+      if (response) return response.data;
+    } catch (error) {
+      console.log(error);
+      return { xIndex: 0, yIndex: 0 };
     }
   }
 );
@@ -234,6 +271,35 @@ export const cityArrangement = createSlice({
     SET_SCALE: (state, action: PayloadAction<number>) => {
       state.scale = action.payload;
     },
+    RENAME_CITY: (state, action: PayloadAction<boolean>) => {
+      state.isRenaming = action.payload;
+    },
+    CITY_WHEEL_SHIFT: (
+      state,
+      action: PayloadAction<{ deltaX: number; deltaY: number }>
+    ) => {
+      const { deltaX, deltaY } = action.payload;
+      state.cityWheelShift.x = state.cityWheelShift.x - deltaX;
+      state.cityWheelShift.y = state.cityWheelShift.y - deltaY;
+    },
+    CITY_SET_SHIFT: (
+      state,
+      action: PayloadAction<{ shiftX: number; shiftY: number }>
+    ) => {
+      const { shiftX, shiftY } = action.payload;
+      state.cityWheelShift.x = shiftX;
+      state.cityWheelShift.y = shiftY;
+    },
+    START_CITY_TOUR: (state) => {
+      state.isTouring = true;
+    },
+    END_CITY_TOUR: (state) => {
+      state.isTouring = false;
+      state.scale = 1;
+    },
+    CITY_SLOWLY_TRANSITION: (state, action: PayloadAction<boolean>) => {
+      state.isAddingNew = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -243,11 +309,27 @@ export const cityArrangement = createSlice({
       .addCase(saveCityAsync.fulfilled, (state) => {
         state.status = 'idle';
         state.dragMode = 'city';
-        alert('街道重建已紀錄');
+        console.log('街道重建已紀錄');
       })
       .addCase(saveCityAsync.rejected, (state) => {
         state.status = 'failed';
         alert('街道重建儲存失敗');
+      })
+      .addCase(GENERATE_AVAILABLE_POSITION.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(GENERATE_AVAILABLE_POSITION.fulfilled, (state, action) => {
+        state.status = 'idle';
+        const yIndex = action.payload?.yIndex;
+        const xIndex = action.payload?.xIndex;
+        if (yIndex && xIndex) {
+          state.nextHousePosition = { yIndex, xIndex };
+        }
+        console.log(`下次位置 y:${yIndex},x:${xIndex}`);
+      })
+      .addCase(GENERATE_AVAILABLE_POSITION.rejected, (state) => {
+        state.status = 'failed';
+        alert('尋找新空位失敗');
       });
   },
 });
@@ -265,6 +347,12 @@ export const {
   draggableToggle,
   ADJUST_SCALE,
   SET_SCALE,
+  RENAME_CITY,
+  CITY_WHEEL_SHIFT,
+  CITY_SET_SHIFT,
+  START_CITY_TOUR,
+  END_CITY_TOUR,
+  CITY_SLOWLY_TRANSITION,
 } = cityArrangement.actions;
 
 export default cityArrangement.reducer;

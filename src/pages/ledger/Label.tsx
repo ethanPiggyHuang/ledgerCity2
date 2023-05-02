@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import {
@@ -45,12 +45,6 @@ export const Label: React.FC = () => {
     faTags,
   ];
 
-  useEffect(() => {
-    //TODO: onSnapshot
-    // dispatch(getCityInfo());
-  }, []);
-  // const time: DateConstructor = new Date();
-
   return (
     <>
       <LabelOptions>
@@ -66,24 +60,24 @@ export const Label: React.FC = () => {
           </LabelOption>
         ))}
       </LabelOptions>
-      <ItemDisplay>
-        <ItemIcon icon={faClipboard} />
-        <ItemInput
-          value={item}
-          placeholder="(備註)"
-          onChange={(e) => dispatch(itemKeyIn(e.target.value))}
-        />
-      </ItemDisplay>
       <SubLabelOptions>
         {subLabels[labelMain].map((subLabel) => (
           <SubLabelOption
             key={subLabel}
             onClick={() => dispatch(itemKeyIn(subLabel))}
           >
-            {subLabel}
+            {`${subLabel}`}
           </SubLabelOption>
         ))}
       </SubLabelOptions>
+      <ItemDisplay>
+        <ItemIcon icon={faClipboard} />
+        <ItemInput
+          value={item}
+          placeholder="（可增加註記）"
+          onChange={(e) => dispatch(itemKeyIn(e.target.value))}
+        />
+      </ItemDisplay>
     </>
   );
 };
@@ -94,16 +88,16 @@ type LabelOptionProps = {
 };
 
 const LabelOptions = styled.div`
-  height: 145px;
+  height: 12%;
+  padding: 0 5px;
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
   background-color: #ebebeb;
-  gap: 18px;
 `;
 const LabelOption = styled.div<LabelOptionProps>`
-  width: 57px;
-  height: 117px;
+  width: 9%;
+  height: 66px;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -111,31 +105,57 @@ const LabelOption = styled.div<LabelOptionProps>`
   align-items: center;
   color: ${({ $color }) => `${$color}`};
   background-color: ${({ $isChosen }) => ($isChosen ? '#FAFAFA' : '#ebebeb')};
+  cursor: pointer;
+  &:hover {
+    background-color: #fafafa;
+  }
+  &:active {
+    filter: brightness(1.1);
+  }
 `;
 const LabelIcons = styled(FontAwesomeIcon)`
-  height: 46px;
+  font-size: 24px;
 `;
 const LabelText = styled.div`
-  margin-top: 16px;
-  height: 32px;
-  font-size: 20px;
-  font-weight: bold;
+  height: 24px;
   display: flex;
   justify-content: center;
   align-items: center;
 `;
+const SubLabelOptions = styled.div`
+  height: 10%;
+  display: flex;
+  align-items: center;
+`;
+const SubLabelOption = styled.div`
+  height: 50%;
+  margin-left: 15px;
+  padding: 0 15px;
+  border-radius: 19px;
+  color: #808080;
+  background-color: #e6e6e6;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  &:hover {
+    filter: brightness(0.95);
+  }
+  &:active {
+    filter: brightness(1.1);
+  }
+`;
+
 const ItemDisplay = styled.div`
-  margin: 0 10px;
-  height: 75px;
+  height: 10%;
   display: flex;
   justify-content: center;
   align-items: center;
   color: #808080;
-  padding-left: 20px;
+  margin: 0 15px;
   border-bottom: 3px solid #e6e6e6;
 `;
 const ItemIcon = styled(FontAwesomeIcon)`
-  height: 40px;
+  height: 24px;
 `;
 const ItemInput = styled.input`
   height: 80%;
@@ -143,26 +163,9 @@ const ItemInput = styled.input`
   padding-left: 15px;
   font-size: 24px;
   margin-right: auto;
-  margin-left: 30px;
-  text-align: left;
-  border: none;
   color: #808080;
   background-color: #f2f2f2;
-`;
-const SubLabelOptions = styled.div`
-  height: 75px;
-  display: flex;
-  align-items: center;
-`;
-const SubLabelOption = styled.div`
-  height: 38px;
-  margin-left: 15px;
-  padding: 0 38px;
-  font-size: 20px;
-  border-radius: 19px;
-  color: #808080;
-  background-color: #e6e6e6;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
+  ::placeholder {
+    color: #c8c8c8;
+  }
 `;

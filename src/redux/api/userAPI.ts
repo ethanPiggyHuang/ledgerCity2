@@ -22,12 +22,12 @@ export async function createAccount(userInfo: {
   userEmail: string;
   userPortraitUrl: string;
 }) {
-  const { userId } = userInfo;
+  const { userId, userName } = userInfo;
   const initialUserProfile = {
-    userNickName: '',
+    userNickName: userName,
     cityList: [],
     friends: [],
-    subLabels: { food: ['早餐', '午餐', '晚餐'] },
+    subLabels: {},
     trophy: { list: [], citizens: [] },
     gameSetting: { hasMusic: false, hasHints: false, isRecordContinue: false },
   };
@@ -44,16 +44,62 @@ export async function createAccount(userInfo: {
       },
     ],
   };
-  await setDoc(doc(db, 'users', userId), {
-    ...userInfo,
-    ...initialUserProfile,
-  });
-  await setDoc(doc(db, 'allUserStatus', userId), {
-    currentPage: 'city',
-    isEditingCity: false,
-    fadeOutTime: serverTimestamp(),
-    latestActiveTime: serverTimestamp(),
-  });
+
+  const userDocRef = doc(db, 'users', userId);
+
+  const docSnap = await getDoc(userDocRef);
+  let cityId: string;
+  let ledgerBookId: string;
+  let userNickName = '';
+  if (docSnap.exists()) {
+    userNickName = docSnap.data().userNickName;
+    cityId = docSnap.data().cityList[0];
+    const cityDocSnap = await getDoc(doc(db, 'cities', cityId));
+    ledgerBookId = cityDocSnap.data()?.ledgerBookId;
+  } else {
+    await setDoc(userDocRef, {
+      ...userInfo,
+      ...initialUserProfile,
+    });
+    await setDoc(doc(db, 'allUserStatus', userId), {
+      currentActivity: 'city',
+      fadeOutTime: serverTimestamp(),
+      latestActiveTime: serverTimestamp(),
+    });
+    const cityRef = await addDoc(collection(db, 'cities'), initailCityData);
+    cityId = cityRef.id;
+    const ledgerBookRef = await addDoc(collection(db, 'ledgerBooks'), {
+      cityId,
+    });
+    ledgerBookId = ledgerBookRef.id;
+    await updateDoc(doc(db, 'cities', cityRef.id), {
+      ledgerBookId,
+    });
+    await updateDoc(doc(db, 'users', userId), {
+      cityList: arrayUnion(cityRef.id),
+    });
+  }
+
+  return new Promise<{
+    data: { cityId: string; ledgerBookId: string; userNickName: string };
+  }>((resolve) => resolve({ data: { cityId, ledgerBookId, userNickName } }));
+}
+
+export async function createNewCity(userId: string) {
+  const initailCityData = {
+    accessUsers: [userId],
+    citizen: [],
+    cityName: '記帳城市',
+    houses: [
+      {
+        height: 1,
+        ledgerId: '0',
+        position: { xIndex: 1, yIndex: 1 },
+        type: '市政廳',
+      },
+    ],
+  };
+
   const cityRef = await addDoc(collection(db, 'cities'), initailCityData);
   const ledgerBookRef = await addDoc(collection(db, 'ledgerBooks'), {
     cityId: cityRef.id,
@@ -65,10 +111,9 @@ export async function createAccount(userInfo: {
     cityList: arrayUnion(cityRef.id),
   });
 
-  return new Promise<{ data: { cityId: string; ledgerBookId: string } }>(
-    (resolve) =>
-      resolve({ data: { cityId: cityRef.id, ledgerBookId: ledgerBookRef.id } })
-  );
+  return new Promise<{
+    cityId: string;
+  }>((resolve) => resolve({ cityId: cityRef.id }));
 }
 
 export async function getAccountInfo(userInfo: {
@@ -85,19 +130,12 @@ export async function getAccountInfo(userInfo: {
     userPortraitUrl,
   });
   const docSnap = await getDoc(doc(db, 'users', userId));
-  const q = query(collection(db, 'users', userId, 'friends'));
-  const friendStatus = await getDocs(q);
-  let friendResponse: FriendStatusState[] = [];
-  friendStatus.forEach((doc) => {
-    // console.log(doc.id, ' => ', doc.data());
-    friendResponse.push(doc.data() as FriendStatusState);
-  });
+
   if (docSnap.exists()) {
     const data = docSnap.data() as UserDataState; //TODO typescript
     return new Promise<{
       data: UserDataState;
-      friendResponse: FriendStatusState[];
-    }>((resolve) => resolve({ data, friendResponse }));
+    }>((resolve) => resolve({ data }));
   }
 }
 
@@ -125,17 +163,15 @@ export async function FETCH_COORPERATE_LOCATION(userId: string) {
   }
 }
 
-export async function updateLocation(userId: string, location: string) {
-  // console.log('userId', userId);
+export async function updateActivity(userId: string, pageActivity: string) {
   await updateDoc(doc(db, 'allUserStatus', userId), {
-    currentPage: location,
+    currentActivity: pageActivity,
     latestActiveTime: serverTimestamp(),
   });
 }
 
 export async function POST_NICKNAME(userId: string, userNickName: string) {
   await updateDoc(doc(db, 'users', userId), { userNickName: userNickName });
-  console.log(userId, userNickName);
 }
 
 export async function FIND_ACCOUNT_MATCH(email: string) {
@@ -143,11 +179,8 @@ export async function FIND_ACCOUNT_MATCH(email: string) {
   const querySnapshot = await getDocs(q);
   let result: UserDataState[] = [];
   querySnapshot.forEach((doc) => {
-    // doc.data() is never undefined for query doc snapshots
-    console.log(doc.id, ' => ', doc.data());
     result.push(doc.data() as UserDataState);
   });
-  console.log(result);
   return new Promise<{ result: UserDataState[] }>((resolve) =>
     resolve({ result })
   );
@@ -211,4 +244,14 @@ export async function updateCityList(userId: string, newCityList: string[]) {
   await updateDoc(doc(db, 'users', userId), {
     cityList: newCityList,
   });
+}
+
+export async function getCityName(cityId: string) {
+  const citySnap = await getDoc(doc(db, 'cities', cityId));
+  if (citySnap.exists()) {
+    const cityName = citySnap.data().cityName as string; //TODO typescript
+    return new Promise<{ cityName: string }>((resolve) =>
+      resolve({ cityName })
+    );
+  }
 }

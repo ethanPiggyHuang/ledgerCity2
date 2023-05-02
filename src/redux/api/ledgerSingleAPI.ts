@@ -13,7 +13,7 @@ export async function postLedger(
   cityId: string,
   ledgerBookId: string,
   ledgerData: LedgerDataState,
-  availableGrids: { yIndex: number; xIndex: number }[]
+  nextHousePosition: { yIndex: number; xIndex: number }
 ) {
   const ledgerRef = await addDoc(
     collection(db, 'ledgerBooks', ledgerBookId, 'ledgers'),
@@ -21,13 +21,11 @@ export async function postLedger(
   );
 
   const housesRef = doc(db, 'cities', cityId);
-  const newPosition =
-    availableGrids[Math.floor(Math.random() * availableGrids.length)]; //TODO: 可以調整選位子邏輯
   await updateDoc(housesRef, {
     houses: arrayUnion({
       ledgerId: ledgerRef.id,
       height: 1,
-      position: newPosition,
+      position: nextHousePosition,
       type: ledgerData.labelMain,
     }),
   });

@@ -1,32 +1,37 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
 import { City } from './City';
-import { RearrangeOptions } from './RearrangeOptions';
-import { NavBar } from './NavBar';
-import { ScaleBar } from './ScaleBar';
 import { DialogBoard } from '../../component/DialogBoard';
-import { CityShiftControl } from './CityShiftControl';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import {
-  postFadeOutTime,
-  postFadeOutTimeRT,
-  updateLocation,
-} from '../../redux/api/userAPI';
-import { getCityInfo } from '../../redux/reducers/cityBasicInfoSlice';
-import { getLedgerList } from '../../redux/reducers/ledgerListSlice';
-import { Button } from '../../component/Button';
+import { postFadeOutTime, postFadeOutTimeRT } from '../../redux/api/userAPI';
 import { Ledger } from '../ledger/Ledger';
 import Footer from '../../component/Footer';
 import { Statistics } from '../statistics/Statistics';
-import { Profile } from '../profile/Profile';
+import {
+  SWITCH_PAGE,
+  PANEL_CONTROL,
+} from '../../redux/reducers/pageControlSlice';
+import {
+  CITY_SLOWLY_TRANSITION,
+  RENAME_CITY,
+} from '../../redux/reducers/cityArrangementSlice';
+import { CooperatorTrace } from './CooperatorTrace';
+import { RearrangeOptions } from './RearrangeOptions';
+import { ScaleBar } from './ScaleBar';
+import { UserBar } from './UserBar';
+import { Social } from '../profile/Social';
+import { useNavigate } from 'react-router-dom';
 
 export const GameMap: React.FC = () => {
   const { isLogin, isAuthing } = useAppSelector(
     (state) => state.userInfo.loginStatus
   );
-  const { ledgerBookId } = useAppSelector((state) => state.cityBasicInfo);
   const { userId } = useAppSelector((state) => state.userInfo.data);
-  const { pageChosen } = useAppSelector((state) => state.pageControl);
+  const { pageActivity } = useAppSelector((state) => state.pageControl);
+  const { isRenaming } = useAppSelector((state) => state.cityArrangement);
+  const { panelOpened } = useAppSelector((state) => state.pageControl);
+
+  const navigate = useNavigate();
 
   const dispatch = useAppDispatch();
 
@@ -80,29 +85,64 @@ export const GameMap: React.FC = () => {
 
   // 監聽使用者進入頁面 -> 送到 db
   useEffect(() => {
-    if (userId) updateLocation(userId, 'city');
+    if (userId) {
+      dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }));
+      // console.log('useEffect', userId);
+    }
   }, [userId]);
+
+  if (!isLogin && !isAuthing) {
+    navigate('/landing');
+  }
 
   return (
     <Wrapper>
       {/* && status === 'loading' */}
-      {!isLogin && !isAuthing && <DialogBoard />}
-      <City />
-      {/* <RearrangeOptions /> */}
+      {/* {!isLogin && !isAuthing && <DialogBoard />} */}
+      <UserBar />
+      <CityWrapper
+        onClick={() => {
+          if (panelOpened !== 'none') {
+            dispatch(PANEL_CONTROL('none'));
+          }
+        }}
+      >
+        <City />
+      </CityWrapper>
+      <RearrangeOptions />
       {/* <NavBar /> */}
       {/* <ScaleBar /> */}
-      {(pageChosen === 'statistics' || pageChosen === 'profile') && (
-        <BlackCurtain />
-      )}
-      {pageChosen === 'ledger' && <Ledger />}
-      {pageChosen === 'statistics' && <Statistics />}
-      {pageChosen === 'profile' && <Profile />}
+      <CooperatorTrace />
+      {/* {(pageActivity === 'statistics' || pageActivity === 'profile') && ( */}
+      <BlackCurtain
+        $isShown={pageActivity === 'statistics' || pageActivity === 'profile'}
+        onClick={() => {
+          dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }));
+          dispatch(PANEL_CONTROL('none'));
+        }}
+      />
+      <InvisibleCurtain
+        $isShown={pageActivity === 'ledger'}
+        onClick={() => {
+          dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }));
+          dispatch(PANEL_CONTROL('none'));
+          dispatch(CITY_SLOWLY_TRANSITION(false));
+        }}
+      />
+      {/* )} */}
+      {/* {pageActivity === 'ledger' && <Ledger />} */}
+      <Ledger />
+      <Statistics />
+      <Social />
 
       <Footer />
       {/* <CityShiftControl type={'down'} /> */}
-      {/* <Button type={'edit'}></Button> */}
     </Wrapper>
   );
+};
+
+type BlackCurtainProps = {
+  $isShown: boolean;
 };
 
 const Wrapper = styled.div`
@@ -111,13 +151,26 @@ const Wrapper = styled.div`
   background: linear-gradient(#c8e2cc, #98d5da);
   overflow: hidden;
 `;
-const BlackCurtain = styled.div`
-  height: calc(100vh - 100px);
+const BlackCurtain = styled.div<BlackCurtainProps>`
+  height: 100vh;
   width: 100vw;
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 3;
+  z-index: ${({ $isShown }) => ($isShown ? '4' : '-2')};
   background-color: black;
-  opacity: 0.3;
+  opacity: ${({ $isShown }) => ($isShown ? '0.5' : '0')};
+  transition: opacity 1s ease;
+`;
+const InvisibleCurtain = styled(BlackCurtain)`
+  opacity: 0;
+`;
+const CityWrapper = styled.div`
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
