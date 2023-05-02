@@ -194,17 +194,17 @@ export async function NEW_FRIEND_REQUEST(
   const friendData = {
     coopCityId: cityId,
     coopStatus: 'beenInvited',
-    friendStatus: 'beenInvited',
+    // friendStatus: 'beenInvited',
     userId: userId,
   };
-  const slefData = {
+  const selfData = {
     coopCityId: cityId,
     coopStatus: 'inviting',
-    friendStatus: 'inviting',
+    // friendStatus: 'inviting',
     userId: friendId,
   };
 
-  await setDoc(doc(db, 'users', userId, 'friends', friendId), slefData);
+  await setDoc(doc(db, 'users', userId, 'friends', friendId), selfData);
 
   await setDoc(doc(db, 'users', friendId, 'friends', userId), friendData);
 }

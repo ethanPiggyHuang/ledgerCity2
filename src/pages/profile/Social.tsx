@@ -32,7 +32,7 @@ export const Social: React.FC = () => {
   const { cityNames } = useAppSelector(
     (state) => state.userInfo.additionalData
   );
-  const { friendsInfo, coopInfo } = useAppSelector(
+  const { friendsInfo, coopInfo, chosenCoopCityId } = useAppSelector(
     (state) => state.userActivity
   );
   const { pageActivity, socialSectionClosed } = useAppSelector(
@@ -77,6 +77,10 @@ export const Social: React.FC = () => {
     (state) => state.userInfo.editStatus
   );
 
+  // useEffect(() => {if(queryResult.length!==0){
+  //   SET_COOP_CITY(cityList[0])
+  // }}, []);
+
   const friendsArray = Object.values(friendsInfo);
 
   const friendInfoCollection = friendsArray.map((friendInfo) => {
@@ -89,7 +93,7 @@ export const Social: React.FC = () => {
       friendCityList.find((data) => data !== coopCityId) || '';
     return {
       ...friendInfo,
-      friendStatus: friends.find(findFriendCondition)?.friendStatus || '',
+      // friendStatus: friends.find(findFriendCondition)?.friendStatus || '',
       coopStatus: friends.find(findFriendCondition)?.coopStatus || '',
       lastActiveTime: coopInfo[friendId]?.latestActiveTimeSecond || 0,
       coopCityId,
@@ -259,7 +263,7 @@ export const Social: React.FC = () => {
           <FriendListTitle
             onClick={() => dispatch(SOCIAL_SECTION_TOGGLE('inviting'))}
           >
-            尚待確認
+            邀請中
           </FriendListTitle>
           <FriendInfoWrap $isClosed={socialSectionClosed.includes('inviting')}>
             {friendInfoCollection.length !== 0 &&
@@ -267,8 +271,44 @@ export const Social: React.FC = () => {
                 (friendInfo, index) =>
                   // TODO 改成 還在確認友情關係
                   // friendInfo.friendStatus === 'friend' &&
-                  (friendInfo.coopStatus === 'inviting' ||
-                    friendInfo.coopStatus === 'invited') && (
+                  friendInfo.coopStatus === 'inviting' && (
+                    <FriendInfo key={friendInfo.userId}>
+                      <UserBasics
+                        payload={{
+                          userPortraitUrl: friendInfo.userPortraitUrl,
+                          userNickName: friendInfo.userNickName,
+                          userEmail: friendInfo.userEmail,
+                          lastActiveTime: friendInfo.lastActiveTime,
+                        }}
+                      />
+                      <FriendCityWrap>
+                        <FriendCityInfoTitle>好友邀請</FriendCityInfoTitle>
+                        <ButtonWrap>
+                          <AgreeButton>同意</AgreeButton>
+                          <DisAgreeButton>不同意</DisAgreeButton>
+                        </ButtonWrap>
+                      </FriendCityWrap>
+                      <FriendCityWrap>
+                        <WaitingButton>好友邀請中</WaitingButton>
+                      </FriendCityWrap>
+                    </FriendInfo>
+                  )
+              )}
+          </FriendInfoWrap>
+        </FriendListWrap>
+        <FriendListWrap>
+          <FriendListTitle
+            onClick={() => dispatch(SOCIAL_SECTION_TOGGLE('inviting'))}
+          >
+            受邀請
+          </FriendListTitle>
+          <FriendInfoWrap $isClosed={socialSectionClosed.includes('inviting')}>
+            {friendInfoCollection.length !== 0 &&
+              friendInfoCollection.map(
+                (friendInfo, index) =>
+                  // TODO 改成 還在確認友情關係
+                  // friendInfo.friendStatus === 'friend' &&
+                  friendInfo.coopStatus === 'beenInvited' && (
                     <FriendInfo key={friendInfo.userId}>
                       <UserBasics
                         payload={{
@@ -316,6 +356,7 @@ export const Social: React.FC = () => {
             dispatch(TYPING_FRIEND_EMAIL(event.target.value));
           }}
         />
+        <span>@gmail.com</span>
 
         <button
           onClick={() => {
@@ -335,17 +376,31 @@ export const Social: React.FC = () => {
               />
             )}
             <br />
+            <p>{`要與他共同管理城市嗎？`}</p>
+            <p>{`預計共同管理城市：`}</p>
+            <p
+              onClick={() => {
+                if (cityList.length !== 1) {
+                }
+              }}
+              style={{
+                cursor: 'pointer',
+                padding: '5px 10px',
+                color: '#aa9d7a',
+                border: '1px brown solid',
+                width: '200px',
+              }}
+              // TODO: choose city
+            >{`${cityNames[chosenCoopCityId]}`}</p>
             <button
               onClick={() => {
-                // TODO: choose city
                 const friendId = queryResult[0].userId;
                 const cityId = cityList[0];
                 dispatch(FRIEND_REQUEST({ friendId, cityId }));
               }}
             >
-              加好友並共管城市
+              成為協作好友，共同管理城市
             </button>
-            <p>{`共管城市：${cityName}`}</p>
           </>
         )}
       </FriendListsWrap>

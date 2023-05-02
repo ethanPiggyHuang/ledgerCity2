@@ -31,7 +31,7 @@ export interface UserDataState {
 export interface FriendStatusState {
   userId: string;
   name: string;
-  friendStatus: 'inviting' | 'beenInvited' | 'friend';
+  // friendStatus: 'inviting' | 'beenInvited' | 'friend';
   coopStatus: 'none' | 'inviting' | 'beenInvited' | 'coorperated';
   coopCityId: string | null;
 }
@@ -157,7 +157,11 @@ export const FRIEND_REQUEST = createAsyncThunk(
     const { cityId, friendId } = payload;
     const allStates = getState() as RootState;
     const { userId } = allStates.userInfo.data;
-    const response = await NEW_FRIEND_REQUEST(userId, friendId, cityId);
+    try {
+      await NEW_FRIEND_REQUEST(userId, friendId, cityId);
+    } catch (error) {
+      console.log(error);
+    }
   }
 );
 

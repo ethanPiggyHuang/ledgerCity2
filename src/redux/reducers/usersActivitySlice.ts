@@ -36,6 +36,7 @@ export interface UsersActivityState {
   };
   friendsCityName: { [key: string]: string };
   coopInfo: { [key: string]: SoloUserActivityState };
+  chosenCoopCityId: string;
 }
 
 const initialState: UsersActivityState = {
@@ -43,6 +44,7 @@ const initialState: UsersActivityState = {
   friendsInfo: {},
   friendsCityName: {}, //TODO: fetchFriend's city name
   coopInfo: {},
+  chosenCoopCityId: '',
 };
 
 export const GET_FRIENDS_INFO = createAsyncThunk(
