@@ -19,7 +19,7 @@ const App: React.FunctionComponent<IApplicationProps> = (props) => {
         <Routes>
           <Route path="/city" element={<GameMap />} />
           <Route path="/landing" element={<Landing />} />
-          <Route path="*" element={<Navigate to="/city" replace />} />
+          <Route path="*" element={<Navigate to="/landing" replace />} />
         </Routes>
       </AuthRoute>
     </BrowserRouter>

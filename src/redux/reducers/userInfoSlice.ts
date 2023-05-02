@@ -213,6 +213,9 @@ export const userInfo = createSlice({
       console.log('log out');
       state.data = initialState.data;
       state.loginStatus = initialState.loginStatus;
+      state.friends = initialState.friends;
+      state.additionalData = initialState.additionalData;
+      state.editStatus = initialState.editStatus;
     },
     EDIT_NICKNAME_SWITCH: (state, action: PayloadAction<boolean>) => {
       state.editStatus.isNickNameEdit = action.payload;

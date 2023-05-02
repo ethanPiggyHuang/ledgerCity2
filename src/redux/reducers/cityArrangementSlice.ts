@@ -309,7 +309,7 @@ export const cityArrangement = createSlice({
       .addCase(saveCityAsync.fulfilled, (state) => {
         state.status = 'idle';
         state.dragMode = 'city';
-        console.log('街道重建已紀錄');
+        // console.log('街道重建已紀錄');
       })
       .addCase(saveCityAsync.rejected, (state) => {
         state.status = 'failed';
@@ -325,7 +325,7 @@ export const cityArrangement = createSlice({
         if (yIndex && xIndex) {
           state.nextHousePosition = { yIndex, xIndex };
         }
-        console.log(`下次位置 y:${yIndex},x:${xIndex}`);
+        // console.log(`下次位置 y:${yIndex},x:${xIndex}`);
       })
       .addCase(GENERATE_AVAILABLE_POSITION.rejected, (state) => {
         state.status = 'failed';
