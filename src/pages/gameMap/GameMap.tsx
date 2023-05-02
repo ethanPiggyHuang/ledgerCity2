@@ -91,9 +91,9 @@ export const GameMap: React.FC = () => {
     }
   }, [userId]);
 
-  if (!isLogin && !isAuthing) {
-    navigate('/landing');
-  }
+  // if (!isLogin && !isAuthing) {
+  //   navigate('/landing');
+  // }
 
   return (
     <Wrapper>
