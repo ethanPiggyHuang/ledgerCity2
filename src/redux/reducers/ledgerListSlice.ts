@@ -20,8 +20,8 @@ const initialState: LedgerListState = {
   dataList: [],
   choices: {
     chosenLedgerId: '',
-    chosenYear: 2023,
-    chosenMonth: 4,
+    chosenYear: 0,
+    chosenMonth: 0,
     chosenLabel: '',
     sortBy: 'date',
     sortDirection: 'ascending',
@@ -69,6 +69,13 @@ export const ledgerList = createSlice({
   name: 'ledgerList',
   initialState,
   reducers: {
+    SET_CURRENT_MONTH: (
+      state,
+      action: PayloadAction<{ currentMonth: number; currentYear: number }>
+    ) => {
+      state.choices.chosenMonth = action.payload.currentMonth;
+      state.choices.chosenYear = action.payload.currentYear;
+    },
     chooseYear: (state, action: PayloadAction<number>) => {
       state.choices.chosenYear = action.payload;
     },
@@ -140,6 +147,7 @@ export const {
   chooseLabel,
   UPDATE_LEDGER_LIST,
   SORT_LIST,
+  SET_CURRENT_MONTH,
 } = ledgerList.actions;
 
 export default ledgerList.reducer;

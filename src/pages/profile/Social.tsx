@@ -3,8 +3,11 @@ import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import {
   CITY_REDIRECTION,
+  FRIEND_REQUEST,
   FriendStatusState,
   GET_CITY_NAME,
+  QUEST_FRIEND,
+  TYPING_FRIEND_EMAIL,
 } from '../../redux/reducers/userInfoSlice';
 import {
   GET_FRIENDS_INFO,
@@ -304,45 +307,47 @@ export const Social: React.FC = () => {
             同意邀請funciton
           </button>
         } */}
-        {/* <p>輸入好友 gmail</p>
-      <input
-        value={emailInput}
-        onChange={(event) => {
-          dispatch(TYPING_FRIEND_EMAIL(event.target.value));
-        }}
-      />
 
-      <button
-        onClick={() => {
-          dispatch(QUEST_FRIEND(emailInput));
-        }}
-      >
-        查詢
-      </button> 
-      {queryResult.length !== 0 && (
-        <>
-          <p>{`名字：${queryResult[0].userName}`}</p>
-          <p>{`暱稱：${queryResult[0].userNickName}`}</p>
-          {queryResult[0]?.userPortraitUrl && (
-            <img
-              src={queryResult[0].userPortraitUrl}
-              alt={`portait of ${queryResult[0].userName}`}
-            />
-          )}
-          <br />
-          <button
-            onClick={() => {
-              // TODO: choose city
-              const friendId = queryResult[0].userId;
-              const cityId = cityList[0];
-              dispatch(FRIEND_REQUEST({ friendId, cityId }));
-            }}
-          >
-            加好友並共管城市
-          </button>
-          <p>{`共管城市：${cityName}`}</p>
-        </>
-      )} */}
+        <p>下面的css 還沒刻...</p>
+        <p>輸入好友 gmail</p>
+        <input
+          value={emailInput}
+          onChange={(event) => {
+            dispatch(TYPING_FRIEND_EMAIL(event.target.value));
+          }}
+        />
+
+        <button
+          onClick={() => {
+            dispatch(QUEST_FRIEND(emailInput));
+          }}
+        >
+          查詢
+        </button>
+        {queryResult.length !== 0 && (
+          <>
+            <p>{`名字：${queryResult[0].userName}`}</p>
+            <p>{`暱稱：${queryResult[0].userNickName}`}</p>
+            {queryResult[0]?.userPortraitUrl && (
+              <img
+                src={queryResult[0].userPortraitUrl}
+                alt={`portait of ${queryResult[0].userName}`}
+              />
+            )}
+            <br />
+            <button
+              onClick={() => {
+                // TODO: choose city
+                const friendId = queryResult[0].userId;
+                const cityId = cityList[0];
+                dispatch(FRIEND_REQUEST({ friendId, cityId }));
+              }}
+            >
+              加好友並共管城市
+            </button>
+            <p>{`共管城市：${cityName}`}</p>
+          </>
+        )}
       </FriendListsWrap>
     </Wrap>
   );

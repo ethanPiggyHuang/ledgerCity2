@@ -1,7 +1,10 @@
 import React, { ReactNode, useEffect } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { chooseLabel } from '../../redux/reducers/ledgerListSlice';
+import {
+  chooseLabel,
+  SET_CURRENT_MONTH,
+} from '../../redux/reducers/ledgerListSlice';
 import { mainLabel } from '../../utils/gameSettings';
 import { DoughnutChart } from './DoughnutChart';
 import { LedgerDetail } from './LedgerDetail';
@@ -15,6 +18,15 @@ export const GeneralAnalysis: React.FC = () => {
   );
   const { chartShown } = useAppSelector((state) => state.pageControl);
   const dispatch = useAppDispatch();
+  useEffect(() => {
+    if (chosenYear === 0 || chosenMonth === 0) {
+      const today = new Date();
+      const currentMonth = today.getMonth() + 1;
+      const currentYear = today.getFullYear();
+
+      dispatch(SET_CURRENT_MONTH({ currentMonth, currentYear }));
+    }
+  }, [chosenYear, chosenMonth, dispatch]);
 
   const rawData = ledgerList.map((ledger) => {
     return {
