@@ -109,8 +109,8 @@ export const BarChart: React.FC = () => {
     index: number
   ): ReactNode => {
     const startPointX =
-      (svgWidth / xMax) * (index + 0.5) - barWidth / 2 + xStart;
-    const barHeight = (value / yMax) * svgHeight * yShrinkRatio;
+      (svgWidth / xMax) * (index + 0.5) - barWidth / 2 + xStart || 0;
+    const barHeight = (value / yMax) * svgHeight * yShrinkRatio || 0;
     const barTopY = svgHeight - barHeight;
 
     const dScript = `M ${startPointX} ${svgHeight} V ${barTopY} H ${
@@ -197,7 +197,7 @@ export const BarChart: React.FC = () => {
     Math.pow(10, yScaleMaxDigits - 1);
 
   const yValues = yRatios.map((ratio) => ratio * yScaleMax);
-  const yAdjRatios = yValues.map((value) => value / yMax);
+  const yAdjRatios = yValues.map((value) => value / yMax || 0);
 
   return (
     <Wrap>

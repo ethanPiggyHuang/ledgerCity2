@@ -104,13 +104,15 @@ const Header: React.FC = () => {
       const unsub = onSnapshot(
         collection(db, 'users', userId, 'friends'),
         (querySnapshot) => {
-          const friends: FriendStatusState[] = [];
+          let friends: FriendStatusState[] = [];
           querySnapshot.forEach((doc) =>
             friends.push(doc.data() as FriendStatusState)
           );
           if (friends.length !== 0) {
             dispatch(UPDATE_INSTANT_FRIENDS_STATUS(friends));
           }
+
+          console.log('snap', querySnapshot);
         }
       );
       return () => unsub();
