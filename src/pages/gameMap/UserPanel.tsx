@@ -124,7 +124,6 @@ export const UserPanel: React.FC = () => {
           dispatch(PANEL_CONTROL('none'));
           signOut(auth);
           dispatch(LOG_OUT());
-          navigate('./landing');
         }}
       >
         <LeaveIcon icon={faRightFromBracket} />
