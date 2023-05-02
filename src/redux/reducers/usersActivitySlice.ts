@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   FETCH_COORPERATE_LOCATION,
   fetchFrinedInfo,
-  AGREE_TO_COOPERATION,
+  agreeCooperation,
 } from '../api/userAPI';
 import { DocumentData } from '@firebase/firestore-types';
 import { RootState } from '../store';
@@ -36,7 +36,6 @@ export interface UsersActivityState {
   };
   friendsCityName: { [key: string]: string };
   coopInfo: { [key: string]: SoloUserActivityState };
-  chosenCoopCityId: string;
 }
 
 const initialState: UsersActivityState = {
@@ -44,7 +43,6 @@ const initialState: UsersActivityState = {
   friendsInfo: {},
   friendsCityName: {}, //TODO: fetchFriend's city name
   coopInfo: {},
-  chosenCoopCityId: '',
 };
 
 export const GET_FRIENDS_INFO = createAsyncThunk(
@@ -56,8 +54,8 @@ export const GET_FRIENDS_INFO = createAsyncThunk(
   }
 );
 
-export const AGREE_COOPERATIONS = createAsyncThunk(
-  'userInfo/AGREE_COOPERATIONS',
+export const AGREE_COOPERATION = createAsyncThunk(
+  'userInfo/AGREE_COOPERATION',
   async (
     payload: { userId: string; friendId: string; cityId: string },
     { getState }
@@ -66,8 +64,8 @@ export const AGREE_COOPERATIONS = createAsyncThunk(
     const cityList = allStates.userInfo.data.cityList;
     const { userId, friendId, cityId } = payload;
     const newCityList = [cityId, ...cityList];
-    console.log(friendId);
-    await AGREE_TO_COOPERATION(userId, friendId, cityId, newCityList);
+    console.log('userId, friendId, cityId', userId, friendId, cityId);
+    await agreeCooperation(userId, friendId, cityId, newCityList);
   }
 );
 
@@ -118,14 +116,14 @@ export const usersActivity = createSlice({
         state.status = 'failed';
         alert('get friend info failed');
       })
-      .addCase(AGREE_COOPERATIONS.pending, (state) => {
+      .addCase(AGREE_COOPERATION.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(AGREE_COOPERATIONS.fulfilled, (state) => {
+      .addCase(AGREE_COOPERATION.fulfilled, (state) => {
         state.status = 'idle';
         alert('agreement succeed');
       })
-      .addCase(AGREE_COOPERATIONS.rejected, (state) => {
+      .addCase(AGREE_COOPERATION.rejected, (state) => {
         state.status = 'failed';
         alert('agree cooperaton failed');
       });

@@ -217,7 +217,7 @@ export async function fetchFrinedInfo(friendId: string) {
   }
 }
 
-export async function AGREE_TO_COOPERATION(
+export async function agreeCooperation(
   userId: string,
   friendId: string,
   cityId: string,

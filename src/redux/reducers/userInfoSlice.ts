@@ -32,7 +32,12 @@ export interface FriendStatusState {
   userId: string;
   name: string;
   // friendStatus: 'inviting' | 'beenInvited' | 'friend';
-  coopStatus: 'none' | 'inviting' | 'beenInvited' | 'coorperated';
+  coopStatus:
+    | 'inviting'
+    | 'beenInvited'
+    | 'disagree'
+    | 'beenRejected'
+    | 'coorperated';
   coopCityId: string | null;
 }
 
@@ -53,6 +58,7 @@ export interface UserInfoState {
   data: UserDataState;
   additionalData: {
     cityNames: { [key: string]: string };
+    chosenCoopCityIndex: number;
   };
 }
 
@@ -81,7 +87,7 @@ const initialState: UserInfoState = {
     trophy: { list: [], citizens: [] },
     gameSetting: { hasMusic: false, hasHints: false, isRecordContinue: false },
   },
-  additionalData: { cityNames: {} },
+  additionalData: { cityNames: {}, chosenCoopCityIndex: 0 },
 };
 
 export const CREATE_ACCOUNT = createAsyncThunk(
@@ -232,6 +238,12 @@ export const userInfo = createSlice({
     ) => {
       state.friends = action.payload;
     },
+    SWITCH_COOP_CITY_OPTION: (state) => {
+      const cityOptionAmount = state.data.cityList.length;
+      const pastOption = state.additionalData.chosenCoopCityIndex;
+      state.additionalData.chosenCoopCityIndex =
+        (pastOption + 1) % cityOptionAmount;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -359,6 +371,7 @@ export const {
   TYPING_NICKNAME,
   TYPING_FRIEND_EMAIL,
   UPDATE_INSTANT_FRIENDS_STATUS,
+  SWITCH_COOP_CITY_OPTION,
 } = userInfo.actions;
 
 export default userInfo.reducer;

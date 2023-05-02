@@ -7,11 +7,12 @@ import {
   FriendStatusState,
   GET_CITY_NAME,
   QUEST_FRIEND,
+  SWITCH_COOP_CITY_OPTION,
   TYPING_FRIEND_EMAIL,
 } from '../../redux/reducers/userInfoSlice';
 import {
   GET_FRIENDS_INFO,
-  AGREE_COOPERATIONS,
+  AGREE_COOPERATION,
 } from '../../redux/reducers/usersActivitySlice';
 import { ClosingButton } from '../../component/ClosingButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -29,10 +30,10 @@ export const Social: React.FC = () => {
   const { userId, cityList } = useAppSelector((state) => state.userInfo.data);
   const { friends } = useAppSelector((state) => state.userInfo);
   const { cityName } = useAppSelector((state) => state.cityBasicInfo);
-  const { cityNames } = useAppSelector(
+  const { cityNames, chosenCoopCityIndex } = useAppSelector(
     (state) => state.userInfo.additionalData
   );
-  const { friendsInfo, coopInfo, chosenCoopCityId } = useAppSelector(
+  const { friendsInfo, coopInfo } = useAppSelector(
     (state) => state.userActivity
   );
   const { pageActivity, socialSectionClosed } = useAppSelector(
@@ -70,6 +71,12 @@ export const Social: React.FC = () => {
       allFriendsCityId.forEach((cityId) => dispatch(GET_CITY_NAME(cityId)));
     }
   }, [friendsInfo]);
+
+  useEffect(() => {
+    if (cityList.length !== 0) {
+      cityList.forEach((cityId) => dispatch(GET_CITY_NAME(cityId)));
+    }
+  }, [cityList]);
 
   const dispatch = useAppDispatch();
 
@@ -282,14 +289,11 @@ export const Social: React.FC = () => {
                         }}
                       />
                       <FriendCityWrap>
-                        <FriendCityInfoTitle>好友邀請</FriendCityInfoTitle>
-                        <ButtonWrap>
-                          <AgreeButton>同意</AgreeButton>
-                          <DisAgreeButton>不同意</DisAgreeButton>
-                        </ButtonWrap>
-                      </FriendCityWrap>
-                      <FriendCityWrap>
-                        <WaitingButton>好友邀請中</WaitingButton>
+                        <WaitingButton>協作邀請中</WaitingButton>
+                        <p style={{ fontSize: '12px' }}>邀請城市：</p>
+                        <p style={{ fontSize: '12px' }}>
+                          {cityNames[friendInfo.coopCityId]}
+                        </p>
                       </FriendCityWrap>
                     </FriendInfo>
                   )
@@ -319,14 +323,25 @@ export const Social: React.FC = () => {
                         }}
                       />
                       <FriendCityWrap>
-                        <FriendCityInfoTitle>好友邀請</FriendCityInfoTitle>
+                        <FriendCityInfoTitle>協作邀請</FriendCityInfoTitle>
+                        <p style={{ fontSize: '12px' }}>受邀城市：</p>
+                        <p style={{ fontSize: '12px' }}>
+                          {cityNames[friendInfo.coopCityId]}
+                        </p>
                         <ButtonWrap>
-                          <AgreeButton>同意</AgreeButton>
+                          <AgreeButton
+                            onClick={() => {
+                              const friendId = friendInfo.userId;
+                              const cityId = friendInfo.coopCityId;
+                              dispatch(
+                                AGREE_COOPERATION({ userId, friendId, cityId })
+                              );
+                            }}
+                          >
+                            同意
+                          </AgreeButton>
                           <DisAgreeButton>不同意</DisAgreeButton>
                         </ButtonWrap>
-                      </FriendCityWrap>
-                      <FriendCityWrap>
-                        <WaitingButton>好友邀請中</WaitingButton>
                       </FriendCityWrap>
                     </FriendInfo>
                   )
@@ -379,10 +394,7 @@ export const Social: React.FC = () => {
             <p>{`要與他共同管理城市嗎？`}</p>
             <p>{`預計共同管理城市：`}</p>
             <p
-              onClick={() => {
-                if (cityList.length !== 1) {
-                }
-              }}
+              onClick={() => dispatch(SWITCH_COOP_CITY_OPTION())}
               style={{
                 cursor: 'pointer',
                 padding: '5px 10px',
@@ -391,11 +403,11 @@ export const Social: React.FC = () => {
                 width: '200px',
               }}
               // TODO: choose city
-            >{`${cityNames[chosenCoopCityId]}`}</p>
+            >{`${cityNames[cityList[chosenCoopCityIndex]]}`}</p>
             <button
               onClick={() => {
                 const friendId = queryResult[0].userId;
-                const cityId = cityList[0];
+                const cityId = cityList[chosenCoopCityIndex];
                 dispatch(FRIEND_REQUEST({ friendId, cityId }));
               }}
             >

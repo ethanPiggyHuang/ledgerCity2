@@ -46,12 +46,6 @@ export const UserPanel: React.FC = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (cityList.length !== 0) {
-      cityList.forEach((cityId) => dispatch(GET_CITY_NAME(cityId)));
-    }
-  }, [cityList]);
-
-  useEffect(() => {
     dispatch(TYPING_NICKNAME(userNickName));
   }, []);
 
