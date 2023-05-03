@@ -50,22 +50,6 @@ export const GET_FRIENDS_INFO = createAsyncThunk(
   }
 );
 
-// export const AGREE_COOPERATION = createAsyncThunk(
-//   'userInfo/AGREE_COOPERATION',
-//   async (
-//     payload: { userId: string; friendId: string; cityId: string },
-//     { getState }
-//   ) => {
-//     const allStates = getState() as RootState;
-//     const cityList = allStates.userInfo.data.cityList;
-//     const { userId, friendId, cityId } = payload;
-//     const newCityList = [cityId, ...cityList];
-//     console.log('userId, friendId, cityId', userId, friendId, cityId);
-//     await agreeCooperation(userId, friendId, cityId, newCityList);
-//     return newCityList;
-//   }
-// );
-
 export const usersActivity = createSlice({
   name: 'usersActivity',
   initialState,

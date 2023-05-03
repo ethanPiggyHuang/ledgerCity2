@@ -10,6 +10,7 @@ import {
   SWITCH_COOP_CITY_OPTION,
   TYPING_FRIEND_EMAIL,
   AGREE_COOPERATION,
+  DISAGREE_COOPERATION,
 } from '../../redux/reducers/userInfoSlice';
 import { GET_FRIENDS_INFO } from '../../redux/reducers/usersActivitySlice';
 import { ClosingButton } from '../../component/ClosingButton';
@@ -28,7 +29,7 @@ export const Social: React.FC = () => {
   const { userId, cityList } = useAppSelector((state) => state.userInfo.data);
   const { friends } = useAppSelector((state) => state.userInfo);
   const { cityName } = useAppSelector((state) => state.cityBasicInfo);
-  const { cityNames, chosenCoopCityIndex } = useAppSelector(
+  const { cityNames, cityAccessUsers, chosenCoopCityIndex } = useAppSelector(
     (state) => state.userInfo.additionalData
   );
   const { friendsInfo, coopInfo } = useAppSelector(
@@ -247,7 +248,12 @@ export const Social: React.FC = () => {
                             同意
                           </AgreeButton>
                           <DisAgreeButton
-                            onClick={() => alert('目前尚未實裝不同意的功能～')}
+                            onClick={() => {
+                              const friendId = friendInfo.userId;
+                              dispatch(
+                                DISAGREE_COOPERATION({ userId, friendId })
+                              );
+                            }}
                           >
                             不同意
                           </DisAgreeButton>
@@ -276,7 +282,10 @@ export const Social: React.FC = () => {
         >
           查詢
         </button>
-        {queryResult.length !== 0 && (
+        {queryResult.length !== 0 && queryResult[0].userId === userId && (
+          <p>這是你自己的帳號喔</p>
+        )}
+        {queryResult.length !== 0 && queryResult[0].userId !== userId && (
           <>
             <p>{`名字：${queryResult[0].userName}`}</p>
             <p>{`暱稱：${queryResult[0].userNickName}`}</p>
@@ -299,11 +308,36 @@ export const Social: React.FC = () => {
                 width: '200px',
               }}
             >{`${cityNames[cityList[chosenCoopCityIndex]]}`}</p>
+            <p
+              style={{
+                fontSize: '12px',
+              }}
+            >{`目前協作人數：${
+              cityAccessUsers[cityList[chosenCoopCityIndex]].length
+            }人`}</p>
+            {cityAccessUsers[cityList[chosenCoopCityIndex]].length === 2 ? (
+              <p
+                style={{
+                  fontSize: '12px',
+                  color: 'darkred',
+                }}
+              >
+                協作人數已達上限
+              </p>
+            ) : (
+              ''
+            )}
             <button
               onClick={() => {
-                const friendId = queryResult[0].userId;
                 const cityId = cityList[chosenCoopCityIndex];
-                dispatch(FRIEND_REQUEST({ friendId, cityId }));
+                if (cityAccessUsers[cityId].length > 1) {
+                  alert(
+                    `每座城市最多兩人共同協作，${cityNames[cityId]}協作人數已達上限，請選擇其他城市。`
+                  );
+                } else {
+                  const friendId = queryResult[0].userId;
+                  dispatch(FRIEND_REQUEST({ friendId, cityId }));
+                }
               }}
             >
               成為協作好友，共同管理城市
@@ -375,8 +409,8 @@ const FriendListWrap = styled.div`
 `;
 
 const FriendListTitle = styled.p`
-  margin-top: 30px;
-  padding: 10px 20px;
+  margin-top: 10px;
+  padding: 5px 20px;
   border-radius: 20px;
   font-size: 20px;
   color: #dabd7a;

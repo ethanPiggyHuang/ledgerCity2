@@ -7,9 +7,10 @@ import {
   FIND_ACCOUNT_MATCH,
   NEW_FRIEND_REQUEST,
   updateCityList,
-  getCityName,
+  getOtherCityInfo,
   createNewCity,
   agreeCooperation,
+  disagreeCooperation,
 } from '../api/userAPI';
 import { RootState } from '../store';
 
@@ -59,6 +60,7 @@ export interface UserInfoState {
   data: UserDataState;
   additionalData: {
     cityNames: { [key: string]: string };
+    cityAccessUsers: { [key: string]: string[] };
     chosenCoopCityIndex: number;
   };
 }
@@ -88,7 +90,11 @@ const initialState: UserInfoState = {
     trophy: { list: [], citizens: [] },
     gameSetting: { hasMusic: false, hasHints: false, isRecordContinue: false },
   },
-  additionalData: { cityNames: {}, chosenCoopCityIndex: 0 },
+  additionalData: {
+    cityNames: {},
+    cityAccessUsers: {},
+    chosenCoopCityIndex: 0,
+  },
 };
 
 export const CREATE_ACCOUNT = createAsyncThunk(
@@ -188,8 +194,14 @@ export const CITY_REDIRECTION = createAsyncThunk(
 export const GET_CITY_NAME = createAsyncThunk(
   'userInfo/GET_CITY_NAME',
   async (cityId: string) => {
-    const response = await getCityName(cityId);
-    return { cityId, cityName: response?.cityName };
+    const response = await getOtherCityInfo(cityId);
+    if (response) {
+      return {
+        cityId,
+        cityName: response.cityName,
+        accessUsers: response.accessUsers,
+      };
+    }
   }
 );
 
@@ -203,9 +215,16 @@ export const AGREE_COOPERATION = createAsyncThunk(
     const cityList = allStates.userInfo.data.cityList;
     const { userId, friendId, cityId } = payload;
     const newCityList = [cityId, ...cityList];
-    console.log('userId, friendId, cityId', userId, friendId, cityId);
     await agreeCooperation(userId, friendId, cityId, newCityList);
     return newCityList;
+  }
+);
+
+export const DISAGREE_COOPERATION = createAsyncThunk(
+  'userInfo/DISAGREE_COOPERATION',
+  async (payload: { userId: string; friendId: string }) => {
+    const { userId, friendId } = payload;
+    await disagreeCooperation(userId, friendId);
   }
 );
 
@@ -356,9 +375,12 @@ export const userInfo = createSlice({
       })
       .addCase(GET_CITY_NAME.fulfilled, (state, action) => {
         state.status = 'idle';
-        const { cityId, cityName } = action.payload;
-        if (cityId && cityName) {
-          state.additionalData.cityNames[cityId] = cityName;
+        if (action.payload) {
+          const { cityId, cityName, accessUsers } = action.payload;
+          if (cityId && cityName) {
+            state.additionalData.cityNames[cityId] = cityName;
+            state.additionalData.cityAccessUsers[cityId] = accessUsers;
+          }
         }
       })
       .addCase(GET_CITY_NAME.rejected, (state) => {

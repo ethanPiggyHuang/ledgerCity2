@@ -11,6 +11,7 @@ import {
   query,
   where,
   getDocs,
+  deleteDoc,
 } from 'firebase/firestore';
 import { rtdb } from '../../config/firebase';
 import { ref, set } from 'firebase/database';
@@ -240,18 +241,22 @@ export async function agreeCooperation(
   });
 }
 
-export async function updateCityList(userId: string, newCityList: string[]) {
-  await updateDoc(doc(db, 'users', userId), {
-    cityList: newCityList,
-  });
+export async function disagreeCooperation(userId: string, friendId: string) {
+  await deleteDoc(doc(db, 'users', userId, 'friends', friendId));
+  await deleteDoc(doc(db, 'users', friendId, 'friends', userId));
 }
 
-export async function getCityName(cityId: string) {
+export async function updateCityList(userId: string, newCityList: string[]) {
+  await updateDoc(doc(db, 'users', userId), {});
+}
+
+export async function getOtherCityInfo(cityId: string) {
   const citySnap = await getDoc(doc(db, 'cities', cityId));
   if (citySnap.exists()) {
     const cityName = citySnap.data().cityName as string; //TODO typescript
-    return new Promise<{ cityName: string }>((resolve) =>
-      resolve({ cityName })
+    const accessUsers = citySnap.data().accessUsers as string[];
+    return new Promise<{ cityName: string; accessUsers: string[] }>((resolve) =>
+      resolve({ cityName, accessUsers })
     );
   }
 }
