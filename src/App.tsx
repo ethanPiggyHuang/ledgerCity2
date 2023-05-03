@@ -39,8 +39,7 @@ const GlobalStyle = createGlobalStyle`
     
   }
   body {
-    // font-family: 'Poppins';
-    // font-weight: 400;
+    font-family: 'Noto Sans', sans-serif;
     background: linear-gradient(#c8e2cc, #98d5da);
   }
 
