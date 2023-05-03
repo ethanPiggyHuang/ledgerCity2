@@ -167,103 +167,11 @@ export const Social: React.FC = () => {
                           </MyCityNoticeWrap>
                         </CityBannerWrap>
                       </FriendCityWrap>
-                      {/* <FriendCityWrap>
-                        <FriendCityInfoTitle>好友城市</FriendCityInfoTitle>
-                        {friendInfo.personalCityName === '' ? (
-                          <FriendCityInfoText>無個人城市</FriendCityInfoText>
-                        ) : (
-                          <CityBannerWrap>
-                            <MyCityText>
-                              {friendInfo.personalCityName}
-                            </MyCityText>
-                            <FriendsCityNoticeWrap
-                              onClick={() => {
-                                dispatch(
-                                  CITY_REDIRECTION({
-                                    userId,
-                                    cityId: friendInfo.personalCityId,
-                                  })
-                                );
-                                dispatch(
-                                  SWITCH_PAGE({ userId, pageActivity: 'city' })
-                                );
-                              }}
-                            >
-                              <MyCityNotice>造訪</MyCityNotice>
-                            </FriendsCityNoticeWrap>
-                          </CityBannerWrap>
-                        )}
-                      </FriendCityWrap> */}
                     </FriendInfo>
                   )
               )}
           </FriendInfoWrap>
         </FriendListWrap>
-        {/* <FriendListWrap>
-          <FriendListTitle
-            onClick={() => dispatch(SOCIAL_SECTION_TOGGLE('friend'))}
-          >
-            一般好友
-          </FriendListTitle>
-          <FriendInfoWrap $isClosed={socialSectionClosed.includes('friend')}>
-            {friendInfoCollection.length !== 0 &&
-              friendInfoCollection.map(
-                (friendInfo, index) =>
-                  // TODO 改成 是好友，但不是協作好友
-                  // friendInfo.friendStatus === 'friend' &&
-                  friendInfo.coopStatus === 'coorperated' && (
-                    <FriendInfo key={friendInfo.userId}>
-                      <UserBasics
-                        payload={{
-                          userPortraitUrl: friendInfo.userPortraitUrl,
-                          userNickName: friendInfo.userNickName,
-                          userEmail: friendInfo.userEmail,
-                          lastActiveTime: friendInfo.lastActiveTime,
-                        }}
-                      />
-                      <FriendCityWrap>
-                        <InvitationButton>邀請協作</InvitationButton>
-                        <InviteCityBannerWrap>
-                          <InviteCityText>
-                            {friendInfo.coopCityName}
-                          </InviteCityText>
-                          <FriendsCityNoticeWrap onClick={() => {}}>
-                            <MyCityNotice>切換</MyCityNotice>
-                          </FriendsCityNoticeWrap>
-                        </InviteCityBannerWrap>
-                      </FriendCityWrap>
-                      <FriendCityWrap>
-                        <FriendCityInfoTitle>好友城市</FriendCityInfoTitle>
-                        {friendInfo.personalCityName === '' ? (
-                          <FriendCityInfoText>無個人城市</FriendCityInfoText>
-                        ) : (
-                          <CityBannerWrap>
-                            <MyCityText>
-                              {friendInfo.personalCityName}
-                            </MyCityText>
-                            <FriendsCityNoticeWrap
-                              onClick={() => {
-                                dispatch(
-                                  CITY_REDIRECTION({
-                                    userId,
-                                    cityId: friendInfo.personalCityId,
-                                  })
-                                );
-                                dispatch(
-                                  SWITCH_PAGE({ userId, pageActivity: 'city' })
-                                );
-                              }}
-                            >
-                              <MyCityNotice>造訪</MyCityNotice>
-                            </FriendsCityNoticeWrap>
-                          </CityBannerWrap>
-                        )}
-                      </FriendCityWrap>
-                    </FriendInfo>
-                  )
-              )}
-          </FriendInfoWrap>
-        </FriendListWrap> */}
         <FriendListWrap>
           <FriendListTitle
             onClick={() => dispatch(SOCIAL_SECTION_TOGGLE('inviting'))}
@@ -338,7 +246,11 @@ export const Social: React.FC = () => {
                           >
                             同意
                           </AgreeButton>
-                          <DisAgreeButton>不同意</DisAgreeButton>
+                          <DisAgreeButton
+                            onClick={() => alert('目前尚未實裝不同意的功能～')}
+                          >
+                            不同意
+                          </DisAgreeButton>
                         </ButtonWrap>
                       </FriendCityWrap>
                     </FriendInfo>
@@ -346,20 +258,6 @@ export const Social: React.FC = () => {
               )}
           </FriendInfoWrap>
         </FriendListWrap>
-
-        {/* {
-          <button
-            onClick={() => {
-              const friendId = '';
-              const cityId = '';
-              if (cityId) {
-                dispatch(AGREE_COOPERATIONS({ userId, friendId, cityId }));
-              }
-            }}
-          >
-            同意邀請funciton
-          </button>
-        } */}
 
         <p>下面的css 還沒刻...</p>
         <p>輸入好友 gmail</p>
@@ -400,7 +298,6 @@ export const Social: React.FC = () => {
                 border: '1px brown solid',
                 width: '200px',
               }}
-              // TODO: choose city
             >{`${cityNames[cityList[chosenCoopCityIndex]]}`}</p>
             <button
               onClick={() => {
