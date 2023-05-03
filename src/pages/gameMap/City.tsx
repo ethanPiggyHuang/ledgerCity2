@@ -73,18 +73,12 @@ export const City: React.FC = () => {
 
   useEffect(() => {
     const handelWheel = (event: WheelEvent) => {
-      setTimeout(
-        () =>
-          dispatch(
-            CITY_WHEEL_SHIFT({
-              deltaX: event.deltaX / 4,
-              deltaY: event.deltaY / 4,
-            })
-          ),
-        1
+      dispatch(
+        CITY_WHEEL_SHIFT({
+          deltaX: event.deltaX / 3,
+          deltaY: event.deltaY / 3,
+        })
       );
-      // setCityX((prev) => prev - event.deltaX / 10);
-      // setCityY((prev) => prev - event.deltaY / 10);
     };
     if (pageActivity === 'city') {
       window.addEventListener('wheel', handelWheel);

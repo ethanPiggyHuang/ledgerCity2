@@ -21,6 +21,7 @@ import { ScaleBar } from './ScaleBar';
 import { UserBar } from './UserBar';
 import { Social } from '../profile/Social';
 import { useNavigate } from 'react-router-dom';
+import { CityShiftControl } from './CityShiftControl';
 
 export const GameMap: React.FC = () => {
   const { isLogin, isAuthing } = useAppSelector(
@@ -134,9 +135,7 @@ export const GameMap: React.FC = () => {
       <Ledger />
       <Statistics />
       <Social />
-
       <Footer />
-      {/* <CityShiftControl type={'down'} /> */}
     </Wrapper>
   );
 };

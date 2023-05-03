@@ -53,7 +53,7 @@ export async function createAccount(userInfo: {
   let ledgerBookId: string;
   let userNickName = '';
   if (docSnap.exists()) {
-    userNickName = docSnap.data().userNickName;
+    userNickName = docSnap.data()?.userNickName || '';
     cityId = docSnap.data().cityList[0];
     const cityDocSnap = await getDoc(doc(db, 'cities', cityId));
     ledgerBookId = cityDocSnap.data()?.ledgerBookId;

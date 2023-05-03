@@ -1,31 +1,25 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { CITY_RELOCATE } from '../../redux/reducers/cityArrangementSlice';
+import {
+  CITY_RELOCATE,
+  CITY_WHEEL_SHIFT,
+} from '../../redux/reducers/cityArrangementSlice';
 
 export const CityShiftControl = (props: { type: string }) => {
   const { dragMode } = useAppSelector((state) => state.cityArrangement);
   const dispatch = useAppDispatch();
   const interval: any = useRef();
-  // const hasLeftAttrs:boolean = props==='left' || props false
 
-  // useEffect(() => {
-  //   const handleHover = () => {
-  //     dispatch(
-  //       CITY_RELOCATE({
-  //         shiftX: 0,
-  //         shiftY: 1,
-  //       })
-  //     );
-  //   };
-  //   window.addEventListener('mouseenter');
-  // }, []);
+  const type = {
+    left: { deltaX: -2, deltaY: 0 },
+  };
 
   const down = () => {
     dispatch(
-      CITY_RELOCATE({
-        shiftX: 0,
-        shiftY: 1,
+      CITY_WHEEL_SHIFT({
+        deltaX: -2,
+        deltaY: 0,
       })
     );
   };
@@ -41,7 +35,7 @@ export const CityShiftControl = (props: { type: string }) => {
         clearInterval(interval.current);
       }}
     >
-      down
+      {props.type}
     </Control>
   );
 };
@@ -54,11 +48,13 @@ export const CityShiftControl = (props: { type: string }) => {
 // };
 
 const Control = styled.div`
-  width: 100vw;
+  width: 50px;
+  height: 100vh;
   position: absolute;
   background-color: grey;
   opacity: 0.5;
   top: 0;
+  /* left: 5px; */
   cursor: pointer;
   z-index: 2;
 `;

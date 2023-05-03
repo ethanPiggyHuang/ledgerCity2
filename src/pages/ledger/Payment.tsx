@@ -23,7 +23,7 @@ export const Payment: React.FC = () => {
   const friendNames =
     friendIds.length === 0
       ? []
-      : friendIds.map((friendId) => friendsInfo[friendId].userNickName);
+      : friendIds.map((friendId) => friendsInfo[friendId]?.userNickName || '');
 
   const people = [userNickName, ...friendNames];
   const methods: { en: 'cash' | 'creditCard' | 'mobile'; ch: string }[] = [
