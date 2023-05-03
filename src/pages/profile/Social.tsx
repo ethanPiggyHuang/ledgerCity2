@@ -265,7 +265,7 @@ export const Social: React.FC = () => {
           </FriendInfoWrap>
         </FriendListWrap>
 
-        <p>下面的css 還沒刻...</p>
+        <p>下面的css 還沒刻...但是功能OK</p>
         <p>輸入好友 gmail</p>
         <input
           value={emailInput}
