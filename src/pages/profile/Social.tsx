@@ -9,11 +9,9 @@ import {
   QUEST_FRIEND,
   SWITCH_COOP_CITY_OPTION,
   TYPING_FRIEND_EMAIL,
-} from '../../redux/reducers/userInfoSlice';
-import {
-  GET_FRIENDS_INFO,
   AGREE_COOPERATION,
-} from '../../redux/reducers/usersActivitySlice';
+} from '../../redux/reducers/userInfoSlice';
+import { GET_FRIENDS_INFO } from '../../redux/reducers/usersActivitySlice';
 import { ClosingButton } from '../../component/ClosingButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUsers } from '@fortawesome/free-solid-svg-icons';

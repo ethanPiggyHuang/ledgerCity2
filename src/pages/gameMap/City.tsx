@@ -105,27 +105,24 @@ export const City: React.FC = () => {
 
   useEffect(() => {
     const handelKeypress = (event: any) => {
-      if (event.code === 'ArrowDown' || event.code === 'KeyS') {
+      // if (event.code === 'ArrowDown' || event.code === 'KeyS') {
+      if (event.code === 'ArrowDown') {
         dispatch(CITY_WHEEL_SHIFT({ deltaX: 0, deltaY: 15 }));
-        // setCityY((prev) => prev - 5);
         setGreenMoveY(0);
         setGreenMoveX((prev) => (prev + 1) % 3);
       }
-      if (event.code === 'ArrowUp' || event.code === 'KeyW') {
+      if (event.code === 'ArrowUp') {
         dispatch(CITY_WHEEL_SHIFT({ deltaX: 0, deltaY: -15 }));
-        // setCityY((prev) => prev + 5);
         setGreenMoveY(1);
         setGreenMoveX((prev) => (prev + 1) % 3);
       }
-      if (event.code === 'ArrowRight' || event.code === 'KeyD') {
+      if (event.code === 'ArrowRight') {
         dispatch(CITY_WHEEL_SHIFT({ deltaX: 15, deltaY: 0 }));
-        // setCityX((prev) => prev - 5);
         setGreenMoveY(3);
         setGreenMoveX((prev) => (prev + 1) % 3);
       }
-      if (event.code === 'ArrowLeft' || event.code === 'KeyA') {
+      if (event.code === 'ArrowLeft') {
         dispatch(CITY_WHEEL_SHIFT({ deltaX: -15, deltaY: 0 }));
-        // setCityX((prev) => prev + 5);
         setGreenMoveY(2);
         setGreenMoveX((prev) => (prev + 1) % 3);
       }

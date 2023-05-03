@@ -9,6 +9,7 @@ import {
   updateCityList,
   getCityName,
   createNewCity,
+  agreeCooperation,
 } from '../api/userAPI';
 import { RootState } from '../store';
 
@@ -192,6 +193,22 @@ export const GET_CITY_NAME = createAsyncThunk(
   }
 );
 
+export const AGREE_COOPERATION = createAsyncThunk(
+  'userInfo/AGREE_COOPERATION',
+  async (
+    payload: { userId: string; friendId: string; cityId: string },
+    { getState }
+  ) => {
+    const allStates = getState() as RootState;
+    const cityList = allStates.userInfo.data.cityList;
+    const { userId, friendId, cityId } = payload;
+    const newCityList = [cityId, ...cityList];
+    console.log('userId, friendId, cityId', userId, friendId, cityId);
+    await agreeCooperation(userId, friendId, cityId, newCityList);
+    return newCityList;
+  }
+);
+
 export const userInfo = createSlice({
   name: 'userInfo',
   initialState,
@@ -359,6 +376,18 @@ export const userInfo = createSlice({
       .addCase(CREATE_NEW_CITY.rejected, (state) => {
         state.status = 'failed';
         alert('add new city rejected');
+      })
+      .addCase(AGREE_COOPERATION.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(AGREE_COOPERATION.fulfilled, (state, action) => {
+        state.status = 'idle';
+        alert('agreement succeed, redirect');
+        state.data.cityList = action.payload;
+      })
+      .addCase(AGREE_COOPERATION.rejected, (state) => {
+        state.status = 'failed';
+        alert('agree cooperaton failed');
       });
   },
 });
