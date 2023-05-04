@@ -98,14 +98,10 @@ export const City: React.FC = () => {
   //   return () => window.removeEventListener('click', handelClick);
   // }, []);
 
-  const [pressed, setPressed] = useState(false);
-
   useEffect(() => {
     const handelKeypress = (event: KeyboardEvent) => {
       // if (event.code === 'ArrowDown' || event.code === 'KeyS') {
-      if (event.repeat) {
-        return;
-      }
+
       if (event.code === 'ArrowDown') {
         event.preventDefault();
         dispatch(CITY_KEY_SHIFT({ deltaX: 0, deltaY: 15 }));
@@ -120,8 +116,9 @@ export const City: React.FC = () => {
       }
       if (event.code === 'ArrowRight') {
         event.preventDefault();
-        setPressed(true);
-        requestAnimationFrame(update);
+        dispatch(CITY_KEY_SHIFT({ deltaX: 15, deltaY: 0 }));
+        setGreenMoveY(3);
+        setGreenMoveX((prev) => (prev + 1) % 3);
       }
       if (event.code === 'ArrowLeft') {
         event.preventDefault();
@@ -131,34 +128,15 @@ export const City: React.FC = () => {
       }
     };
 
-    const handleKeyUp = (event: KeyboardEvent) => {
-      if (event.key === 'ArrowRight') {
-        setPressed(false);
-      }
-    };
-
-    const update = () => {
-      console.log(pressed);
-      // if (pressed) {
-      dispatch(CITY_KEY_SHIFT({ deltaX: 15, deltaY: 0 }));
-      setGreenMoveY(3);
-      setGreenMoveX((prev) => (prev + 1) % 3);
-      requestAnimationFrame(update);
-      console.log('right');
-      // }
-    };
-
-    // if (isTouring) {
-    window.addEventListener('keydown', handelKeypress);
-    window.addEventListener('keyup', handleKeyUp);
-    // } else {
-    // window.removeEventListener('keydown', handelKeypress);
-    // }
+    if (isTouring) {
+      window.addEventListener('keydown', handelKeypress);
+    } else {
+      window.removeEventListener('keydown', handelKeypress);
+    }
     return () => {
       window.removeEventListener('keydown', handelKeypress);
-      window.removeEventListener('keyup', handleKeyUp);
     };
-  }, [isTouring, pressed]);
+  }, [isTouring]);
 
   return (
     <CityRange
