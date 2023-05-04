@@ -65,6 +65,7 @@ export const LedgerDemo: React.FC = () => {
       <ItemDisplay>
         <ItemIcon icon={faClipboard} />
         <ItemInput
+          type="text"
           value={item}
           placeholder="(消費品項)"
           onChange={(e) => dispatch(itemKeyIn(e.target.value))}

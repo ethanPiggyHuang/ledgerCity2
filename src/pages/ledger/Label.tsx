@@ -73,6 +73,7 @@ export const Label: React.FC = () => {
       <ItemDisplay>
         <ItemIcon icon={faClipboard} />
         <ItemInput
+          type="text"
           value={item}
           placeholder="（可增加註記）"
           onChange={(e) => dispatch(itemKeyIn(e.target.value))}

@@ -268,6 +268,7 @@ export const Social: React.FC = () => {
         <p>下面的css 還沒刻...但是功能OK</p>
         <p>輸入好友 gmail</p>
         <input
+          type="text"
           value={emailInput}
           onChange={(event) => {
             dispatch(TYPING_FRIEND_EMAIL(event.target.value));

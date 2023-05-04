@@ -7,6 +7,7 @@ import {
   amountAllClear,
   amountCalculate,
   amountDelete,
+  amountHoldOperator,
   amountKeyNumber,
 } from '../../redux/reducers/ledgerSingleSlice';
 
@@ -32,11 +33,18 @@ export const Amount: React.FC = () => {
     );
   };
 
+  const amountInput = `${thousandsSeparator(number)} ${operator} ${
+    numberAfterOperator !== 0 ? thousandsSeparator(numberAfterOperator) : ''
+  }`;
+  if (amountInput.length > 13) {
+    console.log('too long');
+  }
+
   return (
     <AmountDisplay>
       <Currency>NT$</Currency>
       <AmountInput
-        readOnly //check better choice
+        type="text"
         value={`${thousandsSeparator(number)} ${operator} ${
           numberAfterOperator !== 0
             ? thousandsSeparator(numberAfterOperator)
@@ -48,30 +56,24 @@ export const Amount: React.FC = () => {
             dispatch(amountAllClear());
           } else if (event.key === 'Backspace') {
             dispatch(amountDelete());
-          } else if (event.key === 'Enter') {
+          } else if (event.key === 'Enter' || event.key === '=') {
             dispatch(amountCalculate());
           } else if (numberRegex.test(event.key)) {
             dispatch(amountKeyNumber(event.key));
-          } //TODO: allow operators
+          } else if (['+', '-'].includes(event.key)) {
+            dispatch(amountHoldOperator(event.key as '' | '+' | '-'));
+          } else if (event.key) {
+            alert('請輸入數字或運算符號');
+          }
         }}
       />
     </AmountDisplay>
   );
 };
 
-const AmountText = styled.p`
-  height: 10%;
-  margin: 0 15px;
-  font-size: 28px;
-  display: flex;
-  align-items: center;
-  color: #dabd7a;
-  background-color: #f2f2f2;
-`;
-
 const AmountDisplay = styled.div`
   margin: 0 15px;
-  width: 200px;
+  width: 230px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -92,7 +94,24 @@ const AmountInput = styled.input`
   border: none;
   font-size: 28px;
   font-weight: bold;
-  color: #dabd7a;
+  color: #dabd7a00;
+
+  -webkit-text-fill-color: #dabd7a;
+  &::-webkit-input-placeholder {
+    text-shadow: none;
+    -webkit-text-fill-color: initial;
+  }
+
   text-align: right;
   background-color: rgba(0, 0, 0, 0);
+  border-bottom: #dabd7a00 2px solid;
+  &:hover {
+    border-bottom: #dabd7a 2px solid;
+  }
+  &:focus {
+    border-bottom: #dabd7a 2px solid;
+  }
+  &:hover:focus {
+    border-bottom: #dabd7a 2px solid;
+  }
 `;

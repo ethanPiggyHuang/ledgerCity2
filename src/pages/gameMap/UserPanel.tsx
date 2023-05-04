@@ -63,6 +63,7 @@ export const UserPanel: React.FC = () => {
         <AccountTextWrap>
           <NickNameWrap>
             <NickNameInput
+              type="text"
               value={inputText}
               onChange={(event) => {
                 dispatch(TYPING_NICKNAME(event.target.value));
