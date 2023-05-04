@@ -12,8 +12,11 @@ import {
   PANEL_CONTROL,
 } from '../../redux/reducers/pageControlSlice';
 import {
+  CITY_SET_SHIFT,
   CITY_SLOWLY_TRANSITION,
   RENAME_CITY,
+  SET_CITY_LOCATION,
+  CITY_SHIFT_END,
 } from '../../redux/reducers/cityArrangementSlice';
 import { CooperatorTrace } from './CooperatorTrace';
 import { RearrangeOptions } from './RearrangeOptions';
@@ -29,7 +32,9 @@ export const GameMap: React.FC = () => {
   );
   const { userId } = useAppSelector((state) => state.userInfo.data);
   const { pageActivity } = useAppSelector((state) => state.pageControl);
-  const { isRenaming } = useAppSelector((state) => state.cityArrangement);
+  const { isRenaming, cityWheelShift, isRelocateActivate } = useAppSelector(
+    (state) => state.cityArrangement
+  );
   const { panelOpened } = useAppSelector((state) => state.pageControl);
 
   const navigate = useNavigate();
@@ -98,19 +103,18 @@ export const GameMap: React.FC = () => {
 
   const cityRef = useRef<HTMLDivElement>(null);
 
-  // useEffect(() => {
-  //   console.log(cityRef.current);
-  // }, []);
-
-  const executeScroll = () => {
-    const random = Math.random() * 200;
-    cityRef.current?.scrollTo({
-      top: random,
-      left: 2 * random,
-      behavior: 'smooth',
-    });
-  };
-  // run this function from an event handler or an effect to execute scroll
+  useEffect(() => {
+    if (isRelocateActivate) {
+      cityRef.current?.scrollTo({
+        top: cityWheelShift.y,
+        left: cityWheelShift.x,
+        behavior: 'smooth',
+      });
+      console.log('scroll');
+      // dispatch(CITY_SET_SHIFT({ shiftX: 0, shiftY: 0 }));
+      dispatch(CITY_SHIFT_END());
+    }
+  }, [isRelocateActivate]);
 
   return (
     <Wrapper>

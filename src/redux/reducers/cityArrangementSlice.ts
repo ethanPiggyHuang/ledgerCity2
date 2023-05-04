@@ -16,6 +16,7 @@ export interface CityArrangementState {
     x: number;
     y: number;
   };
+  isRelocateActivate: boolean;
   dragInfo: {
     id: string;
     target: string;
@@ -39,6 +40,7 @@ const initialState: CityArrangementState = {
     current: { x: 0, y: 0 },
   },
   cityWheelShift: { x: 0, y: 0 },
+  isRelocateActivate: false,
   dragInfo: { id: '', target: '', pastIndex: { xIndex: 0, yIndex: 0 } },
   nextHousePosition: { xIndex: 0, yIndex: 0 },
   isRenaming: false,
@@ -289,6 +291,10 @@ export const cityArrangement = createSlice({
       const { shiftX, shiftY } = action.payload;
       state.cityWheelShift.x = shiftX;
       state.cityWheelShift.y = shiftY;
+      state.isRelocateActivate = true;
+    },
+    CITY_SHIFT_END: (state) => {
+      state.isRelocateActivate = false;
     },
     START_CITY_TOUR: (state) => {
       state.isTouring = true;
@@ -350,6 +356,7 @@ export const {
   RENAME_CITY,
   CITY_WHEEL_SHIFT,
   CITY_SET_SHIFT,
+  CITY_SHIFT_END,
   START_CITY_TOUR,
   END_CITY_TOUR,
   CITY_SLOWLY_TRANSITION,

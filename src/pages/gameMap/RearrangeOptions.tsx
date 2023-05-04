@@ -48,7 +48,7 @@ export const RearrangeOptions: React.FC<Props> = ({ props }) => {
   const [show, setShow] = useState(true);
 
   // useEffect(() => {
-  if (props) console.log('props', props);
+  // if (props) console.log('props', props);
   // }, []);
 
   const handleConstruction = () => {
@@ -81,7 +81,7 @@ export const RearrangeOptions: React.FC<Props> = ({ props }) => {
     dispatch(SET_SCALE(scaleOptions[nextScaleIndex]));
   };
 
-  const handleRedirectCityHall = () => {
+  const handleFocusCityHall = () => {
     let hallPosition = { yIndex: 0, xIndex: 0 };
     housesPosition.forEach((raw, yIndex) =>
       raw.forEach((house, xIndex) => {
@@ -90,38 +90,10 @@ export const RearrangeOptions: React.FC<Props> = ({ props }) => {
         }
       })
     );
+    const hallShiftX = (hallPosition.xIndex + 0.5) * gridLength * scale;
+    const hallShiftY = (hallPosition.yIndex + 0.5) * gridLength * scale;
 
-    // const hallShiftX =
-    //   -cityPaddingX +
-    //   window.innerWidth / 2 -
-    //   (hallPosition.xIndex + 0.5) * gridLength * scale;
-
-    // const hallShiftY =
-    //   -cityPaddingY +
-    //   window.innerHeight / 2 -
-    //   (hallPosition.yIndex + 0.5) * gridLength * scale;
-
-    const hallShiftX = window.innerWidth / 2;
-    const hallShiftY = window.innerHeight / 2;
-
-    props?.scrollTo({
-      left: hallShiftX,
-      top: hallShiftY,
-      behavior: 'smooth',
-    });
-
-    // dispatch(
-    //   CITY_SET_SHIFT({
-    //     shiftX:
-    //       -cityPaddingX +
-    //       window.innerWidth / 2 -
-    //       (hallPosition.xIndex + 0.5) * gridLength * scale,
-    //     shiftY:
-    //       -cityPaddingY +
-    //       window.innerHeight / 2 -
-    //       (hallPosition.yIndex + 0.5) * gridLength * scale,
-    //   })
-    // );
+    dispatch(CITY_SET_SHIFT({ shiftX: hallShiftX, shiftY: hallShiftY }));
   };
 
   const handleStartCityTour = () => {
@@ -208,7 +180,7 @@ export const RearrangeOptions: React.FC<Props> = ({ props }) => {
               <IconBack $isActivate={false} onClick={handleRescale}>
                 <ScaleText>{`${scale} x`}</ScaleText>
               </IconBack>
-              <IconBack $isActivate={false} onClick={handleRedirectCityHall}>
+              <IconBack $isActivate={false} onClick={handleFocusCityHall}>
                 <Icon icon={faLandmarkDome} />
               </IconBack>
               <IconBackLongActive

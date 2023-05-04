@@ -265,8 +265,8 @@ const CityRange = styled.div.attrs<CityRangeProps>(
     style: {
       width: $widthAttrs,
       height: $heightAttrs,
-      top: $topAttrs,
-      left: $leftAttrs,
+      top: 0,
+      left: 0,
     },
   })
 )<CityRangeProps>`
