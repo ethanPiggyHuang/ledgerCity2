@@ -71,22 +71,22 @@ export const City: React.FC = () => {
     dispatch(displayCity(cityBasicInfo));
   }, [cityBasicInfo, dispatch]);
 
-  useEffect(() => {
-    const handelWheel = (event: WheelEvent) => {
-      dispatch(
-        CITY_WHEEL_SHIFT({
-          deltaX: event.deltaX / 3,
-          deltaY: event.deltaY / 3,
-        })
-      );
-    };
-    if (pageActivity === 'city') {
-      window.addEventListener('wheel', handelWheel);
-    } else {
-      window.removeEventListener('wheel', handelWheel);
-    }
-    return () => window.removeEventListener('wheel', handelWheel);
-  }, [pageActivity]);
+  // useEffect(() => {
+  //   const handelWheel = (event: WheelEvent) => {
+  //     dispatch(
+  //       CITY_WHEEL_SHIFT({
+  //         deltaX: event.deltaX / 3,
+  //         deltaY: event.deltaY / 3,
+  //       })
+  //     );
+  //   };
+  //   if (pageActivity === 'city') {
+  //     window.addEventListener('wheel', handelWheel);
+  //   } else {
+  //     window.removeEventListener('wheel', handelWheel);
+  //   }
+  //   return () => window.removeEventListener('wheel', handelWheel);
+  // }, [pageActivity]);
 
   // useEffect(() => {
   //   const handelClick = (event: any) => {
@@ -131,30 +131,9 @@ export const City: React.FC = () => {
       $heightAttrs={`${cityHeight * scale + 2 * cityPaddingY}px`}
       $topAttrs={`${cityWheelShift.y}px`}
       $leftAttrs={`${cityWheelShift.x}px`}
-      $padding={cityPaddingY}
+      $paddingX={cityPaddingX}
+      $paddingY={cityPaddingY}
       $relocatMode={isAddingNew ? 'newHouse' : 'others'}
-
-      // draggable={dragMode === 'city'}
-      // onDragStart={(event: React.DragEvent) => {
-      //   if (dragMode !== 'city') return;
-      //   const target = event.target as HTMLDivElement;
-      //   event.dataTransfer.setData('text/plain', '');
-      //   dispatch(
-      //     RECORD_DRAG_START({ mouseX: event.clientX, mouseY: event.clientY })
-      //   );
-      //   target.style.opacity = '0.01';
-      // }}
-      // onDragEnd={(event: React.DragEvent) => {
-      //   if (dragMode !== 'city') return;
-      //   const target = event.target as HTMLDivElement;
-      //   target.style.opacity = '1';
-      //   dispatch(
-      //     UPDATE_CITY_LOCATION({
-      //       mouseX: event.clientX,
-      //       mouseY: event.clientY,
-      //     })
-      //   );
-      // }}
     >
       {/* <WalkingFigure src={mapPin} $scale={scale} $left={figurePosition} />
       <WalkingFigure src={mapPin} $scale={scale} $left={figurePosition * 2} /> */}
@@ -186,7 +165,6 @@ export const City: React.FC = () => {
                   $status={gridsStatus[yIndex][xIndex]}
                   $type={house.type}
                   key={xIndex}
-                  // ref={testRef}
                   // onDragEnter={(e) => {
                   // }}
                   onDragLeave={(e) => {
@@ -263,7 +241,8 @@ type CityRangeProps = {
   $heightAttrs: string;
   $topAttrs: string;
   $leftAttrs: string;
-  $padding: number;
+  $paddingX: number;
+  $paddingY: number;
   $relocatMode: string;
 };
 type RowProps = {
@@ -294,7 +273,7 @@ const CityRange = styled.div.attrs<CityRangeProps>(
   margin: auto;
   flex-wrap: wrap;
   height: fit-content;
-  padding: ${({ $padding }) => `${$padding}px ${2 * $padding}px`};
+  padding: ${({ $paddingX, $paddingY }) => `${$paddingY}px ${$paddingX}px`};
   position: relative;
 
   transition: ${({ $relocatMode }) =>

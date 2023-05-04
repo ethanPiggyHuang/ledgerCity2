@@ -288,7 +288,9 @@ export const Social: React.FC = () => {
         {queryResult.length !== 0 && queryResult[0].userId !== userId && (
           <>
             <p>{`名字：${queryResult[0].userName}`}</p>
-            <p>{`暱稱：${queryResult[0].userNickName}`}</p>
+            <p>{`暱稱：${
+              queryResult[0]?.userNickName || queryResult[0].userName
+            }`}</p>
             {queryResult[0]?.userPortraitUrl && (
               <img
                 src={queryResult[0].userPortraitUrl}

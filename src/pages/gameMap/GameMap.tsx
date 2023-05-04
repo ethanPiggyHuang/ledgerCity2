@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components/macro';
 import { City } from './City';
 import { DialogBoard } from '../../component/DialogBoard';
@@ -96,10 +96,27 @@ export const GameMap: React.FC = () => {
   //   navigate('/landing');
   // }
 
+  const cityRef = useRef<HTMLDivElement>(null);
+
+  // useEffect(() => {
+  //   console.log(cityRef.current);
+  // }, []);
+
+  const executeScroll = () => {
+    const random = Math.random() * 200;
+    cityRef.current?.scrollTo({
+      top: random,
+      left: 2 * random,
+      behavior: 'smooth',
+    });
+  };
+  // run this function from an event handler or an effect to execute scroll
+
   return (
     <Wrapper>
       {/* && status === 'loading' */}
       {/* {!isLogin && !isAuthing && <DialogBoard />} */}
+      {/* <button onClick={executeScroll}>scroll to</button> */}
       <UserBar />
       <CityWrapper
         onClick={() => {
@@ -107,10 +124,12 @@ export const GameMap: React.FC = () => {
             dispatch(PANEL_CONTROL('none'));
           }
         }}
+        ref={cityRef}
       >
         <City />
+        {/* <City /> */}
       </CityWrapper>
-      <RearrangeOptions />
+      <RearrangeOptions props={cityRef.current} />
       {/* <NavBar /> */}
       {/* <ScaleBar /> */}
       <CooperatorTrace />
@@ -136,6 +155,7 @@ export const GameMap: React.FC = () => {
       <Statistics />
       <Social />
       <Footer />
+      <button></button>
     </Wrapper>
   );
 };
@@ -167,7 +187,7 @@ const InvisibleCurtain = styled(BlackCurtain)`
 const CityWrapper = styled.div`
   width: 100vw;
   height: 100vh;
-  overflow: hidden;
+  overflow: scroll;
 
   &::-webkit-scrollbar {
     display: none;

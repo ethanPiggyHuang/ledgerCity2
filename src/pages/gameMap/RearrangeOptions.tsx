@@ -27,7 +27,11 @@ import {
 import iconReconstruct from '../../assets/iconReconstruct.png';
 import { citySetting } from '../../utils/gameSettings';
 
-export const RearrangeOptions: React.FC = () => {
+interface Props {
+  props: HTMLDivElement | null;
+}
+
+export const RearrangeOptions: React.FC<Props> = ({ props }) => {
   const { cityList } = useAppSelector((state) => state.userInfo.data);
   const { dragMode, nextHousePosition, scale, housesPosition, isTouring } =
     useAppSelector((state) => state.cityArrangement);
@@ -42,6 +46,10 @@ export const RearrangeOptions: React.FC = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const [show, setShow] = useState(true);
+
+  // useEffect(() => {
+  if (props) console.log('props', props);
+  // }, []);
 
   const handleConstruction = () => {
     if (dragMode === 'houses') {
@@ -83,18 +91,37 @@ export const RearrangeOptions: React.FC = () => {
       })
     );
 
-    dispatch(
-      CITY_SET_SHIFT({
-        shiftX:
-          -cityPaddingX +
-          window.innerWidth / 2 -
-          (hallPosition.xIndex + 0.5) * gridLength * scale,
-        shiftY:
-          -cityPaddingY +
-          window.innerHeight / 2 -
-          (hallPosition.yIndex + 0.5) * gridLength * scale,
-      })
-    );
+    // const hallShiftX =
+    //   -cityPaddingX +
+    //   window.innerWidth / 2 -
+    //   (hallPosition.xIndex + 0.5) * gridLength * scale;
+
+    // const hallShiftY =
+    //   -cityPaddingY +
+    //   window.innerHeight / 2 -
+    //   (hallPosition.yIndex + 0.5) * gridLength * scale;
+
+    const hallShiftX = window.innerWidth / 2;
+    const hallShiftY = window.innerHeight / 2;
+
+    props?.scrollTo({
+      left: hallShiftX,
+      top: hallShiftY,
+      behavior: 'smooth',
+    });
+
+    // dispatch(
+    //   CITY_SET_SHIFT({
+    //     shiftX:
+    //       -cityPaddingX +
+    //       window.innerWidth / 2 -
+    //       (hallPosition.xIndex + 0.5) * gridLength * scale,
+    //     shiftY:
+    //       -cityPaddingY +
+    //       window.innerHeight / 2 -
+    //       (hallPosition.yIndex + 0.5) * gridLength * scale,
+    //   })
+    // );
   };
 
   const handleStartCityTour = () => {
