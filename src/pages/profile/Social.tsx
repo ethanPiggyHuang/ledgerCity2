@@ -61,15 +61,15 @@ export const Social: React.FC = () => {
     }
   }, [friends]);
 
-  useEffect(() => {
-    const friendIds = Object.keys(friendsInfo);
-    if (friendIds.length !== 0) {
-      const allFriendsCityId = friendIds
-        .map((friendId) => friendsInfo[friendId].cityList)
-        .flat();
-      allFriendsCityId.forEach((cityId) => dispatch(GET_CITY_NAME(cityId)));
-    }
-  }, [friendsInfo]);
+  // useEffect(() => {
+  //   const friendIds = Object.keys(friendsInfo);
+  //   if (friendIds.length !== 0) {
+  //     const allFriendsCityId = friendIds
+  //       .map((friendId) => friendsInfo[friendId].cityList)
+  //       .flat();
+  //     allFriendsCityId.forEach((cityId) => dispatch(GET_CITY_NAME(cityId)));
+  //   }
+  // }, [friendsInfo]);
 
   useEffect(() => {
     if (cityList.length !== 0) {
@@ -91,12 +91,12 @@ export const Social: React.FC = () => {
 
   const friendInfoCollection = friendsArray.map((friendInfo) => {
     const friendId = friendInfo.userId;
-    const friendCityList = friendInfo.cityList;
+    // const friendCityList = friendInfo.cityList;
     const findFriendCondition = (user: FriendStatusState) =>
       user.userId === friendId;
     const coopCityId = friends.find(findFriendCondition)?.coopCityId || '';
-    const personalCityId =
-      friendCityList.find((data) => data !== coopCityId) || '';
+    // const personalCityId =
+    //   friendCityList.find((data) => data !== coopCityId) || '';
     return {
       ...friendInfo,
       // friendStatus: friends.find(findFriendCondition)?.friendStatus || '',
@@ -104,8 +104,8 @@ export const Social: React.FC = () => {
       lastActiveTime: coopInfo[friendId]?.latestActiveTimeSecond || 0,
       coopCityId,
       coopCityName: cityNames[coopCityId] || '',
-      personalCityId,
-      personalCityName: cityNames[personalCityId] || '',
+      // personalCityId,
+      // personalCityName: cityNames[personalCityId] || '',
     };
   });
 

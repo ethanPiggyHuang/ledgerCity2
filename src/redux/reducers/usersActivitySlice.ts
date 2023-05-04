@@ -18,17 +18,19 @@ interface SoloUserActivityState {
   latestActiveTimeSecond: number;
 }
 
+export interface FriendInfoState {
+  userId: string;
+  userName: string;
+  userNickName: string;
+  userEmail: string;
+  userPortraitUrl: string;
+  // cityList: string[];
+}
+
 export interface UsersActivityState {
   status: 'idle' | 'loading' | 'failed';
   friendsInfo: {
-    [key: string]: {
-      userId: string;
-      userName: string;
-      userNickName: string;
-      userEmail: string;
-      userPortraitUrl: string;
-      cityList: string[];
-    };
+    [key: string]: FriendInfoState;
   };
   friendsCityName: { [key: string]: string };
   coopInfo: { [key: string]: SoloUserActivityState };
@@ -46,7 +48,7 @@ export const GET_FRIENDS_INFO = createAsyncThunk(
   async (friendId: string) => {
     const response = await fetchFrinedInfo(friendId);
 
-    return response?.data;
+    return response?.friendInfo;
   }
 );
 

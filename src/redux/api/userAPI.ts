@@ -16,6 +16,7 @@ import {
 import { rtdb } from '../../config/firebase';
 import { ref, set } from 'firebase/database';
 import { UserDataState, FriendStatusState } from '../reducers/userInfoSlice';
+import { FriendInfoState } from '../reducers/usersActivitySlice';
 
 export async function createAccount(userInfo: {
   userId: string;
@@ -178,11 +179,18 @@ export async function POST_NICKNAME(userId: string, userNickName: string) {
 export async function FIND_ACCOUNT_MATCH(email: string) {
   const q = query(collection(db, 'users'), where('userEmail', '==', email));
   const querySnapshot = await getDocs(q);
-  let result: UserDataState[] = [];
+  let result: FriendInfoState[] = [];
   querySnapshot.forEach((doc) => {
-    result.push(doc.data() as UserDataState);
+    const data = doc.data() as UserDataState;
+    result.push({
+      userId: data.userId,
+      userName: data.userName,
+      userNickName: data.userNickName,
+      userEmail: data.userEmail,
+      userPortraitUrl: data.userPortraitUrl,
+    });
   });
-  return new Promise<{ result: UserDataState[] }>((resolve) =>
+  return new Promise<{ result: FriendInfoState[] }>((resolve) =>
     resolve({ result })
   );
 }
@@ -212,9 +220,20 @@ export async function NEW_FRIEND_REQUEST(
 
 export async function fetchFrinedInfo(friendId: string) {
   const docSnap = await getDoc(doc(db, 'users', friendId));
+
   if (docSnap.exists()) {
     const data = docSnap.data() as UserDataState; //TODO typescript
-    return new Promise<{ data: UserDataState }>((resolve) => resolve({ data }));
+    const friendInfo = {
+      userId: data.userId,
+      userName: data.userName,
+      userNickName: data.userNickName,
+      userEmail: data.userEmail,
+      userPortraitUrl: data.userPortraitUrl,
+    };
+
+    return new Promise<{ friendInfo: FriendInfoState }>((resolve) =>
+      resolve({ friendInfo: friendInfo })
+    );
   }
 }
 

@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { fetchLedgerList } from '../api/ledgerListAPI';
+import { FriendInfoState } from '../reducers/usersActivitySlice';
 import {
   createAccount,
   getAccountInfo,
@@ -55,7 +56,7 @@ export interface UserInfoState {
     isNickNameEdit: boolean;
     inputText: string;
     emailInput: string;
-    queryResult: UserDataState[];
+    queryResult: FriendInfoState[];
   };
   data: UserDataState;
   additionalData: {
