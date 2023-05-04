@@ -40,6 +40,11 @@ export const UserPanel: React.FC = () => {
   const { cityNames } = useAppSelector(
     (state) => state.userInfo.additionalData
   );
+  const { cityAccessUsers } = useAppSelector(
+    (state) => state.userInfo.additionalData
+  );
+  const { friendsInfo } = useAppSelector((state) => state.userActivity);
+
   const auth = getAuth();
   const navigate = useNavigate();
 
@@ -84,6 +89,9 @@ export const UserPanel: React.FC = () => {
         <MyCitiesText>{`我的城市：`}</MyCitiesText>
         {cityList.map((cityId, index) => (
           <MyCityWrap key={cityId}>
+            <MyCityTypeText>
+              {cityAccessUsers[cityId]?.length > 1 ? '協作' : '個人'}
+            </MyCityTypeText>
             <CityBannerWrap>
               <MyCityText>{cityNames[cityId]}</MyCityText>
               <MyCityNoticeWrap
@@ -97,6 +105,15 @@ export const UserPanel: React.FC = () => {
                 <MyCityNotice>{index === 0 ? '目前' : '前往'}</MyCityNotice>
               </MyCityNoticeWrap>
             </CityBannerWrap>
+            {cityAccessUsers[cityId].map((mayor) =>
+              mayor === userId ? (
+                <CityMayors backgroundImg={userPortraitUrl} />
+              ) : (
+                <CityMayors
+                  backgroundImg={friendsInfo[mayor].userPortraitUrl}
+                />
+              )
+            )}
           </MyCityWrap>
         ))}
         {cityList.length < 2 && (
@@ -227,12 +244,28 @@ const MyCityWrap = styled.div`
   font-size: 18px;
   color: #ae7a00;
   display: flex;
+  align-items: center;
   padding-left: 10px;
-  gap: 17px;
+  gap: 17px 5px;
+`;
+
+const MyCityTypeText = styled.div`
+  font-size: 12px;
+  height: 100%;
+  width: 20px;
+  color: #f2f2f2;
+  /* border: 1px solid #ae7a00; */
+  background-color: #ae7a00;
+  opacity: 0.6;
+  border-radius: 5px;
+  padding: 0 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const CityBannerWrap = styled.div`
-  padding: 0 40px;
+  padding: 0 30px;
   height: 36px;
   /* overflow: hidden; */
   display: flex;
@@ -267,6 +300,18 @@ const MyCityText = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+type CityMayorsState = {
+  backgroundImg: string;
+};
+const CityMayors = styled.div<CityMayorsState>`
+  height: 30px;
+  width: 30px;
+  border-radius: 15px;
+  border: 1px rgba(128, 128, 128, 0.6) solid;
+  background-image: ${({ backgroundImg }) => `url(${backgroundImg})`};
+  background-size: cover;
 `;
 
 const MyCityNoticeWrap = styled.div`
