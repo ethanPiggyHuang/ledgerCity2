@@ -251,7 +251,7 @@ export const ledgerSingle = createSlice({
       state.data.timeMonth = time.getMonth() + 1;
       state.data.timeYear = time.getFullYear();
     },
-    timeInitialize: (state, action: PayloadAction<number>) => {
+    TIME_INITIALIZE: (state, action: PayloadAction<number>) => {
       state.data.timeLedger = action.payload;
       state.data.timeMonth = new Date(action.payload).getMonth() + 1;
       state.data.timeYear = new Date(action.payload).getFullYear();
@@ -314,7 +314,7 @@ export const {
   payPeopleSwitch,
   payMethodSwitch,
   timeEdit,
-  timeInitialize,
+  TIME_INITIALIZE,
 } = ledgerSingle.actions;
 
 export default ledgerSingle.reducer;

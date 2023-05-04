@@ -57,8 +57,6 @@ export const Amount: React.FC = () => {
       />
     </AmountDisplay>
   );
-
-  return <AmountText>{`$ ${number}`}</AmountText>;
 };
 
 const AmountText = styled.p`

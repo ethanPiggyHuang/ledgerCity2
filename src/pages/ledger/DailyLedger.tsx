@@ -5,12 +5,15 @@ import { ledgerEdit } from '../../redux/reducers/ledgerSingleSlice';
 import { mainLabels, mainLabel, labelIndex } from '../../utils/gameSettings';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import { faPen } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { CHANGE_LEDGER_POSITION } from '../../redux/reducers/pageControlSlice';
+import { deleteSingleLedger } from '../../redux/reducers/ledgerListSlice';
 
 export const DailyLedger: React.FC = () => {
   const { timeLedger } = useAppSelector((state) => state.ledgerSingle.data);
   const { dataList } = useAppSelector((state) => state.ledgerList);
+  const { userId } = useAppSelector((state) => state.userInfo.data);
+  const { friendsInfo } = useAppSelector((state) => state.userActivity);
   const dispatch = useAppDispatch();
   const labelSetting = mainLabel;
   const ledgerTime = new Date(timeLedger);
@@ -33,18 +36,26 @@ export const DailyLedger: React.FC = () => {
       <DailyLedgers>
         {dailyLedger.map((ledger) => (
           <LedgerSingle key={ledger.ledgerId}>
-            <LedgerOperation
-              onClick={() => {
-                const chosenLedger = dataList.find(
-                  (data) => data.ledgerId === ledger.ledgerId
-                );
-                if (chosenLedger) {
-                  dispatch(ledgerEdit(chosenLedger));
-                  dispatch(CHANGE_LEDGER_POSITION('expand'));
-                }
-              }}
-            >
-              <EditIcon icon={faPen}></EditIcon>
+            <LedgerOperation>
+              <EditIcon
+                icon={faPen}
+                onClick={() => {
+                  const chosenLedger = dataList.find(
+                    (data) => data.ledgerId === ledger.ledgerId
+                  );
+                  if (chosenLedger) {
+                    dispatch(ledgerEdit(chosenLedger));
+                    dispatch(CHANGE_LEDGER_POSITION('expand'));
+                  }
+                }}
+              ></EditIcon>
+              <DeleteIcon
+                icon={faTrashCan}
+                onClick={() => {
+                  alert('確定刪除');
+                  dispatch(deleteSingleLedger(ledger.ledgerId));
+                }}
+              />
             </LedgerOperation>
             <LabelIconWrap
               $backGround={
@@ -56,6 +67,15 @@ export const DailyLedger: React.FC = () => {
               ></LabelIcon>
             </LabelIconWrap>
             <LedgerItem>{ledger.data.item}</LedgerItem>
+            <Recorder $isInvisible={ledger.data.recordWho === userId}>
+              <RecorderPortrait
+                backgroundImg={
+                  friendsInfo[ledger.data.recordWho]?.userPortraitUrl
+                }
+              />
+              <RecorderText>記錄</RecorderText>
+            </Recorder>
+
             <LedgerAmount>{`$ ${ledger.data.amount.number}`}</LedgerAmount>
           </LedgerSingle>
         ))}
@@ -76,13 +96,15 @@ const Wrapper = styled.div`
 const DailyAmount = styled.div`
   position: absolute;
   right: 0px;
-  top: 34px;
-  height: 34px;
+  top: 11px;
+  height: 10%;
   font-size: 24px;
   font-weight: bold;
   margin-left: auto;
   margin-right: 30px;
   color: #dabd7a;
+  display: flex;
+  align-items: center;
 `;
 
 const DailyLedgers = styled.div`
@@ -102,13 +124,24 @@ const LedgerOperation = styled.div`
   width: 68px;
   height: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
-  cursor: pointer;
+  /* gap: 5px; */
+  padding: 0 3px;
 `;
 const EditIcon = styled(FontAwesomeIcon)`
-  font-size: 22px;
-  color: #c8c2ad;
+  font-size: 16px;
+  color: #949083;
+  cursor: pointer;
+  opacity: 0.4;
+  &:hover {
+    opacity: 1;
+  }
+`;
+const DeleteIcon = styled(EditIcon)`
+  &:hover {
+    color: #ad1818;
+  }
 `;
 const LabelIconWrap = styled.div<LabelIconWrapProps>`
   width: 32px;
@@ -123,19 +156,48 @@ const LabelIcon = styled(FontAwesomeIcon)`
   font-size: 20px;
   color: #f2f2f2;
 `;
+
 const LedgerItem = styled.div`
   height: 100%;
   font-size: 18px;
   display: flex;
   align-items: center;
   color: #6b6b6b;
+  width: 40%;
+`;
+
+type RecorderState = {
+  $isInvisible: boolean;
+};
+type RecorderPortraitState = {
+  backgroundImg: string;
+};
+const Recorder = styled.div<RecorderState>`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  opacity: ${({ $isInvisible }) => ($isInvisible ? '0' : '0.5')};
+  margin-left: auto;
+`;
+const RecorderPortrait = styled.div<RecorderPortraitState>`
+  height: 30px;
+  width: 30px;
+  border-radius: 15px;
+  border: 1px rgba(128, 128, 128, 0.6) solid;
+  background-image: ${({ backgroundImg }) => `url(${backgroundImg})`};
+  background-size: cover;
+`;
+const RecorderText = styled(LedgerItem)`
+  font-size: 14px;
 `;
 const LedgerAmount = styled.div`
   height: 100%;
+  width: 15%;
   display: flex;
   align-items: center;
+  justify-content: end;
   font-size: 18px;
-  margin-left: auto;
+  /* margin-left: auto; */
   margin-right: 30px;
   color: #6b6b6b;
 `;

@@ -127,6 +127,7 @@ const Header: React.FC = () => {
           <Banner />
           <TextWrapper>
             <BannerText
+              type="text"
               $isRenaming={isRenaming}
               value={`${cityName}`}
               onClick={() => dispatch(RENAME_CITY(true))}
