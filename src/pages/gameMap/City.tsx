@@ -10,7 +10,7 @@ import {
   dragLightOff,
   RECORD_DRAG_START,
   UPDATE_CITY_LOCATION,
-  CITY_WHEEL_SHIFT,
+  CITY_KEY_SHIFT,
   SET_SCALE,
 } from '../../redux/reducers/cityArrangementSlice';
 import { citySetting } from '../../utils/gameSettings';
@@ -33,7 +33,8 @@ export const City: React.FC = () => {
     gridsStatus,
     dragMode,
     scale,
-    cityWheelShift,
+    cityScrollShift,
+    cityKeyShift,
     isTouring,
     isAddingNew,
   } = useAppSelector((state) => state.cityArrangement);
@@ -97,40 +98,74 @@ export const City: React.FC = () => {
   //   return () => window.removeEventListener('click', handelClick);
   // }, []);
 
+  const [pressed, setPressed] = useState(false);
+
   useEffect(() => {
-    const handelKeypress = (event: any) => {
+    const handelKeypress = (event: KeyboardEvent) => {
       // if (event.code === 'ArrowDown' || event.code === 'KeyS') {
+      if (event.repeat) {
+        return;
+      }
       if (event.code === 'ArrowDown') {
-        dispatch(CITY_WHEEL_SHIFT({ deltaX: 0, deltaY: 15 }));
+        event.preventDefault();
+        dispatch(CITY_KEY_SHIFT({ deltaX: 0, deltaY: 15 }));
         setGreenMoveY(0);
         setGreenMoveX((prev) => (prev + 1) % 3);
       }
       if (event.code === 'ArrowUp') {
-        dispatch(CITY_WHEEL_SHIFT({ deltaX: 0, deltaY: -15 }));
+        event.preventDefault();
+        dispatch(CITY_KEY_SHIFT({ deltaX: 0, deltaY: -15 }));
         setGreenMoveY(1);
         setGreenMoveX((prev) => (prev + 1) % 3);
       }
       if (event.code === 'ArrowRight') {
-        dispatch(CITY_WHEEL_SHIFT({ deltaX: 15, deltaY: 0 }));
-        setGreenMoveY(3);
-        setGreenMoveX((prev) => (prev + 1) % 3);
+        event.preventDefault();
+        setPressed(true);
+        requestAnimationFrame(update);
       }
       if (event.code === 'ArrowLeft') {
-        dispatch(CITY_WHEEL_SHIFT({ deltaX: -15, deltaY: 0 }));
+        event.preventDefault();
+        dispatch(CITY_KEY_SHIFT({ deltaX: -15, deltaY: 0 }));
         setGreenMoveY(2);
         setGreenMoveX((prev) => (prev + 1) % 3);
       }
     };
+
+    const handleKeyUp = (event: KeyboardEvent) => {
+      if (event.key === 'ArrowRight') {
+        setPressed(false);
+      }
+    };
+
+    const update = () => {
+      console.log(pressed);
+      // if (pressed) {
+      dispatch(CITY_KEY_SHIFT({ deltaX: 15, deltaY: 0 }));
+      setGreenMoveY(3);
+      setGreenMoveX((prev) => (prev + 1) % 3);
+      requestAnimationFrame(update);
+      console.log('right');
+      // }
+    };
+
+    // if (isTouring) {
     window.addEventListener('keydown', handelKeypress);
-    return () => window.removeEventListener('keydown', handelKeypress);
-  }, []);
+    window.addEventListener('keyup', handleKeyUp);
+    // } else {
+    // window.removeEventListener('keydown', handelKeypress);
+    // }
+    return () => {
+      window.removeEventListener('keydown', handelKeypress);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [isTouring, pressed]);
 
   return (
     <CityRange
       $widthAttrs={`${cityWidth * scale + 2 * cityPaddingX}px`}
       $heightAttrs={`${cityHeight * scale + 2 * cityPaddingY}px`}
-      $topAttrs={`${cityWheelShift.y}px`}
-      $leftAttrs={`${cityWheelShift.x}px`}
+      $topAttrs={`${cityKeyShift.y}px`}
+      $leftAttrs={`${cityKeyShift.x}px`}
       $paddingX={cityPaddingX}
       $paddingY={cityPaddingY}
       $relocatMode={isAddingNew ? 'newHouse' : 'others'}
@@ -265,8 +300,8 @@ const CityRange = styled.div.attrs<CityRangeProps>(
     style: {
       width: $widthAttrs,
       height: $heightAttrs,
-      top: 0,
-      left: 0,
+      top: $topAttrs,
+      left: $leftAttrs,
     },
   })
 )<CityRangeProps>`

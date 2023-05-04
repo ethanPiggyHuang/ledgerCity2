@@ -247,7 +247,9 @@ export async function disagreeCooperation(userId: string, friendId: string) {
 }
 
 export async function updateCityList(userId: string, newCityList: string[]) {
-  await updateDoc(doc(db, 'users', userId), {});
+  await updateDoc(doc(db, 'users', userId), {
+    cityList: newCityList,
+  });
 }
 
 export async function getOtherCityInfo(cityId: string) {

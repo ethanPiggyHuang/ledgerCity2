@@ -81,13 +81,12 @@ export const RearrangeOptions: React.FC<Props> = ({ props }) => {
     dispatch(SET_SCALE(scaleOptions[nextScaleIndex]));
   };
 
-  const handleFocusCityHall = () => {
+  const handleFocusCityHall = (scale: number) => {
     let hallPosition = { yIndex: 0, xIndex: 0 };
     housesPosition.forEach((raw, yIndex) =>
       raw.forEach((house, xIndex) => {
-        if (house.type === '市政廳') {
+        if (house.type === '市政廳')
           hallPosition = { ...hallPosition, yIndex, xIndex };
-        }
       })
     );
     const hallShiftX = (hallPosition.xIndex + 0.5) * gridLength * scale;
@@ -106,19 +105,14 @@ export const RearrangeOptions: React.FC<Props> = ({ props }) => {
       })
     );
     const newScale = 2;
-    const shiftX =
-      -cityPaddingX +
-      window.innerWidth / 2 -
-      (hallPosition.xIndex + 0.5) * gridLength * newScale;
-    const shiftY =
-      -cityPaddingY +
-      window.innerHeight / 2 -
-      (hallPosition.yIndex + 0.5 + 6 / 16) * gridLength * newScale;
-    dispatch(CITY_SET_SHIFT({ shiftX, shiftY }));
+    const hallShiftX = (hallPosition.xIndex + 0.5) * gridLength * newScale;
+    const hallShiftY =
+      (hallPosition.yIndex + 0.5 + 3 / 8) * gridLength * newScale;
+    dispatch(CITY_SET_SHIFT({ shiftX: hallShiftX, shiftY: hallShiftY }));
     dispatch(SET_SCALE(2));
     setTimeout(() => {
       dispatch(START_CITY_TOUR());
-    }, 200);
+    }, 800);
   };
 
   const handleEndCityTour = () => {
@@ -180,7 +174,12 @@ export const RearrangeOptions: React.FC<Props> = ({ props }) => {
               <IconBack $isActivate={false} onClick={handleRescale}>
                 <ScaleText>{`${scale} x`}</ScaleText>
               </IconBack>
-              <IconBack $isActivate={false} onClick={handleFocusCityHall}>
+              <IconBack
+                $isActivate={false}
+                onClick={() => {
+                  handleFocusCityHall(scale);
+                }}
+              >
                 <Icon icon={faLandmarkDome} />
               </IconBack>
               <IconBackLongActive
@@ -239,6 +238,8 @@ export const RearrangeOptions: React.FC<Props> = ({ props }) => {
         $isTouring={isTouring}
         onClick={() => {
           handleEndCityTour();
+          handleFocusCityHall(1);
+          dispatch(SET_SCALE(1));
         }}
       >
         <Icon icon={faPersonThroughWindow} />

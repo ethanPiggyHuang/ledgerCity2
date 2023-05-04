@@ -123,29 +123,25 @@ export const Ledger: React.FC = () => {
                         dispatch(
                           CITY_SET_SHIFT({
                             shiftX:
-                              -cityPaddingX +
-                              window.innerWidth / 2 -
                               (nextHousePosition.xIndex + 0.5) *
-                                gridLength *
-                                scale,
+                              gridLength *
+                              scale,
                             shiftY:
-                              -cityPaddingY +
-                              window.innerHeight / 2 -
                               (nextHousePosition.yIndex + 0.5) *
-                                gridLength *
-                                scale,
+                              gridLength *
+                              scale,
                           })
                         ),
                       200
                     );
-                    setTimeout(() => dispatch(ledgerSubmit()), 1200);
+                    setTimeout(() => dispatch(ledgerSubmit()), 1000);
 
                     setTimeout(
                       () =>
                         dispatch(
                           SWITCH_PAGE({ userId, pageActivity: 'ledger' })
                         ),
-                      3200
+                      3000
                     );
                   } else {
                     dispatch(ledgerUpdate());

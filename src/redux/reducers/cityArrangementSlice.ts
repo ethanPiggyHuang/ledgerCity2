@@ -12,7 +12,11 @@ export interface CityArrangementState {
     dragStart: { x: number; y: number };
     current: { x: number; y: number };
   };
-  cityWheelShift: {
+  cityScrollShift: {
+    x: number;
+    y: number;
+  };
+  cityKeyShift: {
     x: number;
     y: number;
   };
@@ -39,7 +43,8 @@ const initialState: CityArrangementState = {
     dragStart: { x: 0, y: 0 },
     current: { x: 0, y: 0 },
   },
-  cityWheelShift: { x: 0, y: 0 },
+  cityScrollShift: { x: 0, y: 0 },
+  cityKeyShift: { x: 0, y: 0 },
   isRelocateActivate: false,
   dragInfo: { id: '', target: '', pastIndex: { xIndex: 0, yIndex: 0 } },
   nextHousePosition: { xIndex: 0, yIndex: 0 },
@@ -276,23 +281,24 @@ export const cityArrangement = createSlice({
     RENAME_CITY: (state, action: PayloadAction<boolean>) => {
       state.isRenaming = action.payload;
     },
-    CITY_WHEEL_SHIFT: (
-      state,
-      action: PayloadAction<{ deltaX: number; deltaY: number }>
-    ) => {
-      const { deltaX, deltaY } = action.payload;
-      state.cityWheelShift.x = state.cityWheelShift.x - deltaX;
-      state.cityWheelShift.y = state.cityWheelShift.y - deltaY;
-    },
     CITY_SET_SHIFT: (
       state,
       action: PayloadAction<{ shiftX: number; shiftY: number }>
     ) => {
       const { shiftX, shiftY } = action.payload;
-      state.cityWheelShift.x = shiftX;
-      state.cityWheelShift.y = shiftY;
+      state.cityScrollShift.x = shiftX;
+      state.cityScrollShift.y = shiftY;
       state.isRelocateActivate = true;
     },
+    CITY_KEY_SHIFT: (
+      state,
+      action: PayloadAction<{ deltaX: number; deltaY: number }>
+    ) => {
+      const { deltaX, deltaY } = action.payload;
+      state.cityKeyShift.x = state.cityKeyShift.x - deltaX;
+      state.cityKeyShift.y = state.cityKeyShift.y - deltaY;
+    },
+
     CITY_SHIFT_END: (state) => {
       state.isRelocateActivate = false;
     },
@@ -301,7 +307,8 @@ export const cityArrangement = createSlice({
     },
     END_CITY_TOUR: (state) => {
       state.isTouring = false;
-      state.scale = 1;
+      state.cityKeyShift.x = 0;
+      state.cityKeyShift.y = 0;
     },
     CITY_SLOWLY_TRANSITION: (state, action: PayloadAction<boolean>) => {
       state.isAddingNew = action.payload;
@@ -354,7 +361,7 @@ export const {
   ADJUST_SCALE,
   SET_SCALE,
   RENAME_CITY,
-  CITY_WHEEL_SHIFT,
+  CITY_KEY_SHIFT,
   CITY_SET_SHIFT,
   CITY_SHIFT_END,
   START_CITY_TOUR,

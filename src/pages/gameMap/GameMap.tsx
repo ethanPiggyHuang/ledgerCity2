@@ -12,7 +12,6 @@ import {
   PANEL_CONTROL,
 } from '../../redux/reducers/pageControlSlice';
 import {
-  CITY_SET_SHIFT,
   CITY_SLOWLY_TRANSITION,
   RENAME_CITY,
   SET_CITY_LOCATION,
@@ -31,11 +30,11 @@ export const GameMap: React.FC = () => {
     (state) => state.userInfo.loginStatus
   );
   const { userId } = useAppSelector((state) => state.userInfo.data);
-  const { pageActivity } = useAppSelector((state) => state.pageControl);
-  const { isRenaming, cityWheelShift, isRelocateActivate } = useAppSelector(
-    (state) => state.cityArrangement
+  const { pageActivity, panelOpened } = useAppSelector(
+    (state) => state.pageControl
   );
-  const { panelOpened } = useAppSelector((state) => state.pageControl);
+  const { isRenaming, cityScrollShift, isRelocateActivate, isTouring } =
+    useAppSelector((state) => state.cityArrangement);
 
   const navigate = useNavigate();
 
@@ -106,12 +105,10 @@ export const GameMap: React.FC = () => {
   useEffect(() => {
     if (isRelocateActivate) {
       cityRef.current?.scrollTo({
-        top: cityWheelShift.y,
-        left: cityWheelShift.x,
+        top: cityScrollShift.y,
+        left: cityScrollShift.x,
         behavior: 'smooth',
       });
-      console.log('scroll');
-      // dispatch(CITY_SET_SHIFT({ shiftX: 0, shiftY: 0 }));
       dispatch(CITY_SHIFT_END());
     }
   }, [isRelocateActivate]);
@@ -123,6 +120,7 @@ export const GameMap: React.FC = () => {
       {/* <button onClick={executeScroll}>scroll to</button> */}
       <UserBar />
       <CityWrapper
+        $isTouring={isTouring}
         onClick={() => {
           if (panelOpened !== 'none') {
             dispatch(PANEL_CONTROL('none'));
@@ -188,10 +186,18 @@ const BlackCurtain = styled.div<BlackCurtainProps>`
 const InvisibleCurtain = styled(BlackCurtain)`
   opacity: 0;
 `;
-const CityWrapper = styled.div`
+
+type CityWrapperProps = {
+  $isTouring: boolean;
+};
+
+const CityWrapper = styled.div<CityWrapperProps>`
   width: 100vw;
   height: 100vh;
-  overflow: scroll;
+  overflow: ${({ $isTouring }) => ($isTouring ? 'hidden' : 'scroll')};
+  overflow-x: ${({ $isTouring }) => ($isTouring ? 'hidden' : 'scroll')};
+  overflow-y: ${({ $isTouring }) => ($isTouring ? 'hidden' : 'scroll')};
+  /* overflow: scroll; */
 
   &::-webkit-scrollbar {
     display: none;

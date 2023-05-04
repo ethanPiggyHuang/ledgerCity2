@@ -3,7 +3,7 @@ import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import {
   CITY_RELOCATE,
-  CITY_WHEEL_SHIFT,
+  CITY_KEY_SHIFT,
 } from '../../redux/reducers/cityArrangementSlice';
 
 export const CityShiftControl = (props: { type: string }) => {
@@ -17,7 +17,7 @@ export const CityShiftControl = (props: { type: string }) => {
 
   const down = () => {
     dispatch(
-      CITY_WHEEL_SHIFT({
+      CITY_KEY_SHIFT({
         deltaX: -2,
         deltaY: 0,
       })
