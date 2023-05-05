@@ -12,7 +12,9 @@ import { deleteSingleLedger } from '../../redux/reducers/ledgerListSlice';
 export const DailyLedger: React.FC = () => {
   const { timeLedger } = useAppSelector((state) => state.ledgerSingle.data);
   const { dataList } = useAppSelector((state) => state.ledgerList);
-  const { userId } = useAppSelector((state) => state.userInfo.data);
+  const { userId, userPortraitUrl } = useAppSelector(
+    (state) => state.userInfo.data
+  );
   const { friendsInfo } = useAppSelector((state) => state.userActivity);
   const dispatch = useAppDispatch();
   const labelSetting = mainLabel;
@@ -34,6 +36,13 @@ export const DailyLedger: React.FC = () => {
     <Wrapper>
       <DailyAmount>{`$ ${dailyAmount}`}</DailyAmount>
       <DailyLedgers>
+        <LedgerSingleHeader>
+          <LedgerOperation>操作</LedgerOperation>
+          <LabelIconWrap $backGround="#00000000">類別</LabelIconWrap>
+          <LedgerItemHeader>品項</LedgerItemHeader>
+          <RecorderHeader>記錄者</RecorderHeader>
+          <LedgerAmountHeader>花費</LedgerAmountHeader>
+        </LedgerSingleHeader>
         {dailyLedger.map((ledger) => (
           <LedgerSingle key={ledger.ledgerId}>
             <LedgerOperation>
@@ -67,15 +76,16 @@ export const DailyLedger: React.FC = () => {
               ></LabelIcon>
             </LabelIconWrap>
             <LedgerItem>{ledger.data.item}</LedgerItem>
-            <Recorder $isInvisible={ledger.data.recordWho === userId}>
+            <Recorder>
               <RecorderPortrait
                 backgroundImg={
-                  friendsInfo[ledger.data.recordWho]?.userPortraitUrl
+                  ledger.data.recordWho === userId
+                    ? userPortraitUrl
+                    : friendsInfo[ledger.data.recordWho]?.userPortraitUrl
                 }
               />
-              <RecorderText>記錄</RecorderText>
+              {/* <RecorderText>記錄</RecorderText> */}
             </Recorder>
-
             <LedgerAmount>{`$ ${ledger.data.amount.number}`}</LedgerAmount>
           </LedgerSingle>
         ))}
@@ -116,6 +126,15 @@ const LedgerSingle = styled.div`
   display: flex;
   align-items: center;
   background-color: #ebebeb;
+  gap: 18px;
+  /* border: 1px solid black; */
+`;
+const LedgerSingleHeader = styled(LedgerSingle)`
+  height: 40px;
+  display: flex;
+  align-items: center;
+  background-color: #ebebeb;
+  color: #dabd7a;
   gap: 18px;
   /* border: 1px solid black; */
 `;
@@ -163,21 +182,31 @@ const LedgerItem = styled.div`
   display: flex;
   align-items: center;
   color: #6b6b6b;
+  padding-left: 10px;
   width: 40%;
 `;
+const LedgerItemHeader = styled(LedgerItem)`
+  font-size: 16px;
+  justify-content: center;
+  padding-left: 0px;
+  color: #dabd7a;
+`;
 
-type RecorderState = {
-  $isInvisible: boolean;
-};
 type RecorderPortraitState = {
   backgroundImg: string;
 };
-const Recorder = styled.div<RecorderState>`
+const Recorder = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 5px;
-  opacity: ${({ $isInvisible }) => ($isInvisible ? '0' : '0.5')};
+  opacity: 0.7;
   margin-left: auto;
+  width: 50px;
+`;
+const RecorderHeader = styled(Recorder)`
+  opacity: 1;
+  justify-content: center;
 `;
 const RecorderPortrait = styled.div<RecorderPortraitState>`
   height: 30px;
@@ -187,9 +216,7 @@ const RecorderPortrait = styled.div<RecorderPortraitState>`
   background-image: ${({ backgroundImg }) => `url(${backgroundImg})`};
   background-size: cover;
 `;
-const RecorderText = styled(LedgerItem)`
-  font-size: 14px;
-`;
+
 const LedgerAmount = styled.div`
   height: 100%;
   width: 15%;
@@ -200,4 +227,8 @@ const LedgerAmount = styled.div`
   /* margin-left: auto; */
   margin-right: 30px;
   color: #6b6b6b;
+`;
+const LedgerAmountHeader = styled(LedgerAmount)`
+  font-size: 16px;
+  color: #dabd7a;
 `;

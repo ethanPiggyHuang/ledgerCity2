@@ -10,11 +10,12 @@ import {
   amountHoldOperator,
   amountKeyNumber,
   AMOUNT_LONG_LENGTH,
+  AMOUNT_ERROR_CONFIRM,
 } from '../../redux/reducers/ledgerSingleSlice';
 
 export const Amount: React.FC = () => {
   const { number } = useAppSelector((state) => state.ledgerSingle.data.amount);
-  const { operator, isLong } = useAppSelector(
+  const { operator, isLong, errorType } = useAppSelector(
     (state) => state.ledgerSingle.calculationHolder
   );
   const numberAfterOperator = useAppSelector(
@@ -34,22 +35,32 @@ export const Amount: React.FC = () => {
     );
   };
 
-  const amountInput = `${thousandsSeparator(number)} ${operator} ${
-    numberAfterOperator !== 0 ? thousandsSeparator(numberAfterOperator) : ''
-  }`;
-  if (amountInput.length > 13) {
-    console.log('too long');
-  }
-
   useEffect(() => {
-    dispatch(AMOUNT_LONG_LENGTH(true));
-  }, []);
+    const amountInput = `${thousandsSeparator(number)} ${operator} ${
+      numberAfterOperator !== 0 ? thousandsSeparator(numberAfterOperator) : ''
+    }`;
+    if (amountInput.length > 13 && !isLong) {
+      dispatch(AMOUNT_LONG_LENGTH(true));
+    } else if (amountInput.length <= 13 && isLong) {
+      dispatch(AMOUNT_LONG_LENGTH(false));
+    }
+
+    if (errorType === 'maximum') {
+      alert('meet maximum');
+      dispatch(AMOUNT_ERROR_CONFIRM());
+    }
+    if (errorType === 'negative') {
+      alert('negative number');
+      dispatch(AMOUNT_ERROR_CONFIRM());
+    }
+  }, [number, operator, numberAfterOperator, errorType]);
 
   return (
     <AmountDisplay>
       <Currency>NT$</Currency>
       <AmountInput
         type="text"
+        $isLong={isLong}
         value={`${thousandsSeparator(number)} ${operator} ${
           numberAfterOperator !== 0
             ? thousandsSeparator(numberAfterOperator)
@@ -93,11 +104,15 @@ const Currency = styled.div`
   font-size: 20px;
   line-height: 28px;
 `;
-const AmountInput = styled.input`
+
+type AmountInputProps = {
+  $isLong: boolean;
+};
+const AmountInput = styled.input<AmountInputProps>`
   height: 100%;
   width: 80%;
   border: none;
-  font-size: 28px;
+  font-size: ${({ $isLong }) => ($isLong ? '16px' : '28px')};
   font-weight: bold;
   color: #dabd7a00;
 

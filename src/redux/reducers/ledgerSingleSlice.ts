@@ -23,6 +23,7 @@ export interface LedgerSingleState {
     operator: '' | '+' | '-' | 'x' | '÷';
     number: number;
     isLong: boolean;
+    errorType: '' | 'maximum' | 'negative';
   };
   status: 'idle' | 'loading' | 'failed';
 }
@@ -36,7 +37,7 @@ const initialState: LedgerSingleState = {
     item: '',
     labelMain: '食物',
     labelSubs: [],
-    payWho: '', //TODO
+    payWho: '',
     payHow: 'cash',
     amount: { currency: '', number: 0, numberNT: 0 },
     recordTime: 0,
@@ -46,6 +47,7 @@ const initialState: LedgerSingleState = {
     operator: '',
     number: 0,
     isLong: false,
+    errorType: '',
   },
   status: 'idle',
 };
@@ -126,17 +128,23 @@ export const ledgerSingle = createSlice({
     amountKeyNumber: (state, action: PayloadAction<string>) => {
       const pastNumberString = state.data.amount.number.toString();
       const pastHolderNumberString = state.calculationHolder.number.toString();
-      // TODO: 需要限制數字的位數
-      // if (pastNumberString.length > 12) {
-      //   alert('動用「一兆元」以上資金！？恭喜您已財富自由！');
-      //   return state;
-      // }
+      const maximum = 99999999;
       if (state.calculationHolder.operator === '') {
-        state.data.amount.number = Number(pastNumberString + action.payload);
+        if ((pastNumberString + action.payload).length > 8) {
+          state.data.amount.number = maximum;
+          state.calculationHolder.errorType = 'maximum';
+        } else {
+          state.data.amount.number = Number(pastNumberString + action.payload);
+        }
       } else {
-        state.calculationHolder.number = Number(
-          pastHolderNumberString + action.payload
-        );
+        if ((pastHolderNumberString + action.payload).length > 8) {
+          state.calculationHolder.number = maximum;
+          state.calculationHolder.errorType = 'maximum';
+        } else {
+          state.calculationHolder.number = Number(
+            pastHolderNumberString + action.payload
+          );
+        }
       }
     },
     amountDelete: (state) => {
@@ -190,7 +198,16 @@ export const ledgerSingle = createSlice({
           result = numberBeforeOperator;
         }
       }
-      state.data.amount.number = result;
+      const maximum = 99999999;
+      if (result > maximum) {
+        state.data.amount.number = maximum;
+        state.calculationHolder.errorType = 'maximum';
+      } else if (result < 0) {
+        state.data.amount.number = 0;
+        state.calculationHolder.errorType = 'negative';
+      } else {
+        state.data.amount.number = result;
+      }
       state.calculationHolder.operator = '';
       state.calculationHolder.number = 0;
     },
@@ -201,6 +218,9 @@ export const ledgerSingle = createSlice({
     },
     AMOUNT_LONG_LENGTH: (state, action: PayloadAction<boolean>) => {
       state.calculationHolder.isLong = action.payload;
+    },
+    AMOUNT_ERROR_CONFIRM: (state) => {
+      state.calculationHolder.errorType = '';
     },
     payPeopleSwitch: (
       state,
@@ -277,6 +297,7 @@ export const ledgerSingle = createSlice({
           operator: '',
           number: 0,
           isLong: false,
+          errorType: '',
         };
       })
       .addCase(ledgerSubmit.rejected, (state) => {
@@ -297,6 +318,7 @@ export const ledgerSingle = createSlice({
           operator: '',
           number: 0,
           isLong: false,
+          errorType: '',
         };
         state.ledgerId = '';
       })
@@ -323,6 +345,7 @@ export const {
   payMethodSwitch,
   timeEdit,
   TIME_INITIALIZE,
+  AMOUNT_ERROR_CONFIRM,
 } = ledgerSingle.actions;
 
 export default ledgerSingle.reducer;
