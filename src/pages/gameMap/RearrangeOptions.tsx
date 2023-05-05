@@ -41,6 +41,7 @@ export const RearrangeOptions: React.FC<Props> = ({ props }) => {
   const { dragMode, nextHousePosition, scale, housesPosition, isTouring } =
     useAppSelector((state) => state.cityArrangement);
   const { dataList } = useAppSelector((state) => state.ledgerList);
+  const { isShown } = useAppSelector((state) => state.pageControl.alert);
   const { gridLength, cityPaddingX, cityPaddingY } = citySetting;
   const dispatch = useAppDispatch();
   const [isMusicPlay, setIsMusicPlay] = useState(false);
@@ -167,6 +168,10 @@ export const RearrangeOptions: React.FC<Props> = ({ props }) => {
     }
   }, [dispatch, nextHousePosition, housesPosition, dataList]);
 
+  const handleAlert = () => {
+    alert('hey');
+  };
+
   return (
     <>
       <Wrapper $isFolded={isTouring}>
@@ -239,11 +244,12 @@ export const RearrangeOptions: React.FC<Props> = ({ props }) => {
         <button
           onClick={() => {
             dispatch(ALERT_TOGGLE());
-            dispatch(ALERT_DIALOUGE_TOGGLE());
+            setTimeout(() => dispatch(ALERT_DIALOUGE_TOGGLE()), 200);
           }}
         >
           alert
         </button>
+        {isShown && <Alert title="hi" text="hi" handleAlert={handleAlert} />}
         <audio src={chocolate_world} preload={'metadata'} loop ref={audioRef} />
       </Wrapper>
       <IconBackTouring

@@ -158,7 +158,6 @@ export const GameMap: React.FC = () => {
       <Statistics />
       <Social />
       <Footer />
-      <Alert title="hi" text="hi" />
     </Wrapper>
   );
 };

@@ -12,9 +12,10 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons';
 interface Props {
   title: string;
   text: string;
+  handleAlert: any;
 }
 
-export const Alert: React.FC<Props> = ({ title, text }) => {
+export const Alert: React.FC<Props> = ({ title, text, handleAlert }) => {
   const { isShown, dialogueOpen } = useAppSelector(
     (state) => state.pageControl.alert
   );
@@ -24,14 +25,16 @@ export const Alert: React.FC<Props> = ({ title, text }) => {
     <Wrap $isShown={isShown}>
       <BlackCurtain></BlackCurtain>
       <Dialogue $isShown={dialogueOpen}>
+        <p>{title}</p>
         <button
           onClick={() => {
             dispatch(ALERT_DIALOUGE_TOGGLE());
-            setTimeout(() => dispatch(ALERT_TOGGLE()), 400);
+            setTimeout(() => dispatch(ALERT_TOGGLE()), 200);
           }}
         >
           close
         </button>
+        <button onClick={() => handleAlert()}>function</button>
       </Dialogue>
     </Wrap>
   );
@@ -63,12 +66,6 @@ const Wrap = styled.div<WrapProps>`
   left: 0;
   top: 0;
   animation-name: ${showUp} 1s linear 1;
-  /* animation-duration: 1s;
-  animation-timing-function: linear;
-  animation-iteration-count: 1;
-  animation-direction: ${({ $isShown }) =>
-    $isShown ? 'reverse' : 'reverse'}; */
-  /* transition: 1s ease; */
 `;
 
 const BlackCurtain = styled.div`
@@ -79,6 +76,7 @@ const BlackCurtain = styled.div`
   width: 100vw;
   height: 100vh;
   background-color: #00000066;
+  /* background-color: #00000000; */
 `;
 const Dialogue = styled.div<DialogueProps>`
   position: absolute;
@@ -89,5 +87,5 @@ const Dialogue = styled.div<DialogueProps>`
   height: ${({ $isShown }) => ($isShown ? '300px' : '0')};
   opacity: ${({ $isShown }) => ($isShown ? '1' : '0')};
   background-color: #f2f2f2;
-  transition: 0.5s ease;
+  transition: 0.5s ease, opacity 0.2s ease;
 `;
