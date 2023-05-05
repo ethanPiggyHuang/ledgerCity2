@@ -24,6 +24,7 @@ import { UserBar } from './UserBar';
 import { Social } from '../profile/Social';
 import { useNavigate } from 'react-router-dom';
 import { CityShiftControl } from './CityShiftControl';
+import { Alert } from '../../component/Alert';
 
 export const GameMap: React.FC = () => {
   const { isLogin, isAuthing } = useAppSelector(
@@ -157,7 +158,7 @@ export const GameMap: React.FC = () => {
       <Statistics />
       <Social />
       <Footer />
-      <button></button>
+      <Alert title="hi" text="hi" />
     </Wrapper>
   );
 };

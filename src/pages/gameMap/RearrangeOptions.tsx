@@ -26,6 +26,11 @@ import {
 } from '../../redux/reducers/cityArrangementSlice';
 import iconReconstruct from '../../assets/iconReconstruct.png';
 import { citySetting } from '../../utils/gameSettings';
+import { Alert } from '../../component/Alert';
+import {
+  ALERT_DIALOUGE_TOGGLE,
+  ALERT_TOGGLE,
+} from '../../redux/reducers/pageControlSlice';
 
 interface Props {
   props: HTMLDivElement | null;
@@ -231,6 +236,14 @@ export const RearrangeOptions: React.FC<Props> = ({ props }) => {
             </IconsWrapper>
           </>
         )}
+        <button
+          onClick={() => {
+            dispatch(ALERT_TOGGLE());
+            dispatch(ALERT_DIALOUGE_TOGGLE());
+          }}
+        >
+          alert
+        </button>
         <audio src={chocolate_world} preload={'metadata'} loop ref={audioRef} />
       </Wrapper>
       <IconBackTouring

@@ -20,6 +20,10 @@ export interface PageControlState {
   panelOpened: 'none' | 'user';
   socialSectionClosed: SocialSections[];
   landingScrollY: number;
+  alert: {
+    isShown: boolean;
+    dialogueOpen: boolean;
+  };
   status: 'idle' | 'loading' | 'failed';
 }
 
@@ -31,6 +35,10 @@ const initialState: PageControlState = {
   panelOpened: 'none',
   socialSectionClosed: [],
   landingScrollY: 0,
+  alert: {
+    isShown: false,
+    dialogueOpen: false,
+  },
   status: 'idle',
 };
 
@@ -85,6 +93,12 @@ export const pageControl = createSlice({
     ) => {
       state.chartShown = action.payload;
     },
+    ALERT_TOGGLE: (state) => {
+      state.alert.isShown = !state.alert.isShown;
+    },
+    ALERT_DIALOUGE_TOGGLE: (state) => {
+      state.alert.dialogueOpen = !state.alert.dialogueOpen;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -109,6 +123,8 @@ export const {
   SOCIAL_SECTION_TOGGLE,
   LANDING_SCROLL_Y,
   CHART_SHOWN_SWITCH,
+  ALERT_TOGGLE,
+  ALERT_DIALOUGE_TOGGLE,
 } = pageControl.actions;
 
 export default pageControl.reducer;
