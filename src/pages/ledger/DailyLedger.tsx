@@ -1,13 +1,16 @@
 import React from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { ledgerEdit } from '../../redux/reducers/ledgerSingleSlice';
-import { mainLabels, mainLabel, labelIndex } from '../../utils/gameSettings';
+import {
+  CLEAR_LEDGER_ID,
+  ledgerEdit,
+} from '../../redux/reducers/ledgerSingleSlice';
+import { mainLabel, labelIndex } from '../../utils/gameSettings';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faPen, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { CHANGE_LEDGER_POSITION } from '../../redux/reducers/pageControlSlice';
 import { deleteSingleLedger } from '../../redux/reducers/ledgerListSlice';
+import { CITY_SLOWLY_TRANSITION } from '../../redux/reducers/cityArrangementSlice';
 
 export const DailyLedger: React.FC = () => {
   const { timeLedger } = useAppSelector((state) => state.ledgerSingle.data);
@@ -36,59 +39,74 @@ export const DailyLedger: React.FC = () => {
     <Wrapper>
       <DailyAmount>{`$ ${dailyAmount}`}</DailyAmount>
       <DailyLedgers>
-        <LedgerSingleHeader>
-          <LedgerOperation>操作</LedgerOperation>
-          <LabelIconWrap $backGround="#00000000">類別</LabelIconWrap>
-          <LedgerItemHeader>品項</LedgerItemHeader>
-          <RecorderHeader>記錄者</RecorderHeader>
-          <LedgerAmountHeader>花費</LedgerAmountHeader>
-        </LedgerSingleHeader>
-        {dailyLedger.map((ledger) => (
-          <LedgerSingle key={ledger.ledgerId}>
-            <LedgerOperation>
-              <EditIcon
-                icon={faPen}
-                onClick={() => {
-                  const chosenLedger = dataList.find(
-                    (data) => data.ledgerId === ledger.ledgerId
-                  );
-                  if (chosenLedger) {
-                    dispatch(ledgerEdit(chosenLedger));
-                    dispatch(CHANGE_LEDGER_POSITION('expand'));
+        {dailyLedger.length === 0 ? (
+          <EmptyLedger
+            onClick={() => {
+              dispatch(CLEAR_LEDGER_ID());
+              dispatch(CHANGE_LEDGER_POSITION('expand'));
+              dispatch(CITY_SLOWLY_TRANSITION(true));
+            }}
+          >
+            <EmptyLedgerText>本日還沒有帳目紀錄</EmptyLedgerText>
+            <EmptyLedgerText>立即前往記帳</EmptyLedgerText>
+          </EmptyLedger>
+        ) : (
+          <>
+            <LedgerSingleHeader>
+              <LedgerOperation>操作</LedgerOperation>
+              <LabelIconWrap $backGround="#00000000">類別</LabelIconWrap>
+              <LedgerItemHeader>品項</LedgerItemHeader>
+              <RecorderHeader>記錄者</RecorderHeader>
+              <LedgerAmountHeader>花費</LedgerAmountHeader>
+            </LedgerSingleHeader>
+            {dailyLedger.map((ledger) => (
+              <LedgerSingle key={ledger.ledgerId}>
+                <LedgerOperation>
+                  <EditIcon
+                    icon={faPen}
+                    onClick={() => {
+                      const chosenLedger = dataList.find(
+                        (data) => data.ledgerId === ledger.ledgerId
+                      );
+                      if (chosenLedger) {
+                        dispatch(ledgerEdit(chosenLedger));
+                        dispatch(CHANGE_LEDGER_POSITION('expand'));
+                      }
+                    }}
+                  ></EditIcon>
+                  <DeleteIcon
+                    icon={faTrashCan}
+                    onClick={() => {
+                      alert('確定刪除');
+                      dispatch(deleteSingleLedger(ledger.ledgerId));
+                    }}
+                  />
+                </LedgerOperation>
+                <LabelIconWrap
+                  $backGround={
+                    labelSetting[labelIndex[ledger.data.labelMain]].colorCode
                   }
-                }}
-              ></EditIcon>
-              <DeleteIcon
-                icon={faTrashCan}
-                onClick={() => {
-                  alert('確定刪除');
-                  dispatch(deleteSingleLedger(ledger.ledgerId));
-                }}
-              />
-            </LedgerOperation>
-            <LabelIconWrap
-              $backGround={
-                labelSetting[labelIndex[ledger.data.labelMain]].colorCode
-              }
-            >
-              <LabelIcon
-                icon={labelSetting[labelIndex[ledger.data.labelMain]].icon}
-              ></LabelIcon>
-            </LabelIconWrap>
-            <LedgerItem>{ledger.data.item}</LedgerItem>
-            <Recorder>
-              <RecorderPortrait
-                backgroundImg={
-                  ledger.data.recordWho === userId
-                    ? userPortraitUrl
-                    : friendsInfo[ledger.data.recordWho]?.userPortraitUrl
-                }
-              />
-              {/* <RecorderText>記錄</RecorderText> */}
-            </Recorder>
-            <LedgerAmount>{`$ ${ledger.data.amount.number}`}</LedgerAmount>
-          </LedgerSingle>
-        ))}
+                >
+                  <LabelIcon
+                    icon={labelSetting[labelIndex[ledger.data.labelMain]].icon}
+                  ></LabelIcon>
+                </LabelIconWrap>
+                <LedgerItem>{ledger.data.item}</LedgerItem>
+                <Recorder>
+                  <RecorderPortrait
+                    backgroundImg={
+                      ledger.data.recordWho === userId
+                        ? userPortraitUrl
+                        : friendsInfo[ledger.data.recordWho]?.userPortraitUrl
+                    }
+                  />
+                  {/* <RecorderText>記錄</RecorderText> */}
+                </Recorder>
+                <LedgerAmount>{`$ ${ledger.data.amount.number}`}</LedgerAmount>
+              </LedgerSingle>
+            ))}
+          </>
+        )}
       </DailyLedgers>
     </Wrapper>
   );
@@ -185,6 +203,24 @@ const LedgerItem = styled.div`
   padding-left: 10px;
   width: 40%;
 `;
+const EmptyLedger = styled.div`
+  width: calc(100% - 40px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 20%;
+  font-size: 20px;
+  color: #dabd7a;
+  gap: 20px;
+  margin: 20px;
+  border-radius: 20px;
+  &:hover {
+    background-color: #ffffff;
+    cursor: pointer;
+  }
+`;
+const EmptyLedgerText = styled.p``;
 const LedgerItemHeader = styled(LedgerItem)`
   font-size: 16px;
   justify-content: center;

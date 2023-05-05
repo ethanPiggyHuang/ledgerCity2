@@ -20,6 +20,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import {
   CHANGE_LEDGER_POSITION,
+  PANEL_CONTROL,
   SWITCH_PAGE,
 } from '../../redux/reducers/pageControlSlice';
 import { DailyLedger } from './DailyLedger';
@@ -30,6 +31,7 @@ import {
   CITY_SLOWLY_TRANSITION,
 } from '../../redux/reducers/cityArrangementSlice';
 import { citySetting } from '../../utils/gameSettings';
+import { CurrentActionState } from '../../redux/reducers/pageControlSlice';
 
 export const Ledger: React.FC = () => {
   const { userId } = useAppSelector((state) => state.userInfo.data);
@@ -53,10 +55,22 @@ export const Ledger: React.FC = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <Wrap $state={ledgerPosition} $isShown={pageActivity === 'ledger'}>
+    <Wrap
+      $state={ledgerPosition}
+      $isShown={pageActivity === 'ledger'}
+      $pageActivity={pageActivity}
+    >
       <Background />
       <MainBoard>
-        <Header>
+        <Header
+          onClick={() => {
+            if (pageActivity !== 'ledger') {
+              dispatch(SWITCH_PAGE({ userId, pageActivity: 'ledger' }));
+              dispatch(PANEL_CONTROL('none'));
+            }
+          }}
+          $pageActivity={pageActivity}
+        >
           {ledgerPosition === 'normal' && <ClosingButton size={60} />}
           {ledgerPosition === 'expand' && (
             <IconWrap
@@ -165,6 +179,7 @@ export const Ledger: React.FC = () => {
 type WrapProps = {
   $state: 'minimize' | 'normal' | 'expand';
   $isShown: boolean;
+  $pageActivity: CurrentActionState;
 };
 
 type ConfirmButtonProps = {
@@ -174,12 +189,24 @@ type ConfirmButtonProps = {
 const Wrap = styled.div<WrapProps>`
   width: 40%;
   position: absolute;
-  margin: 0 30%;
+  margin: ${({ $pageActivity }) =>
+    $pageActivity === 'ledger'
+      ? '0 30%'
+      : $pageActivity === 'profile'
+      ? '0 40% 0 30%'
+      : '0 35%'};
   z-index: 6;
   height: 80vh;
   overflow: hidden;
-  bottom: ${({ $isShown }) => ($isShown ? '0' : '-80%')};
-  transition: bottom 1s ease;
+  bottom: ${({ $isShown }) => ($isShown ? '0' : 'calc( -80% + 80px)')};
+  width: ${({ $isShown }) => ($isShown ? '40%' : '30%')};
+  transition: 1s ease;
+  &:hover {
+    transform: ${({ $isShown }) =>
+      $isShown ? 'translateY(0px)' : 'translateY(-20px)'};
+    /* width: 40%; */
+    /* margin: 0 30%; */
+  }
 `;
 
 const Background = styled(Receipt)`
@@ -195,13 +222,19 @@ const MainBoard = styled.div`
   padding-top: 15px;
 `;
 
-const Header = styled.div`
+type HeaderProps = {
+  $pageActivity: CurrentActionState;
+};
+
+const Header = styled.div<HeaderProps>`
   height: 10%;
   width: 100%;
   border-bottom: 3px solid #e6e6e6;
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: ${({ $pageActivity }) =>
+    $pageActivity === 'ledger' ? '' : 'pointer'};
 `;
 
 const SecondRow = styled.div`
@@ -228,19 +261,15 @@ const Icon = styled(FontAwesomeIcon)`
 
 const ConfirmRow = styled.div`
   height: 10%;
-  /* opacity: 0.5; */
-  &:hover {
-    filter: brightness(1.1);
-  }
+  display: flex;
+  align-items: center;
 `;
 const ConfirmButton = styled.div<ConfirmButtonProps>`
-  width: 20%;
-  height: 100%;
-  /* position: absolute; */
+  width: 40%;
+  height: 80%;
   bottom: 2%;
-  margin-left: auto;
-  margin-right: 15px;
-  border-radius: 5px;
+  margin: 0 auto;
+  border-radius: 10px;
   display: flex;
   justify-content: center;
   align-items: center;

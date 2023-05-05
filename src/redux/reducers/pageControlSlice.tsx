@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { updateActivity } from '../api/userAPI';
 import { RootState } from '../store';
 
-type CurrentActionState =
+export type CurrentActionState =
   | 'city'
   | 'rearrange'
   | 'ledger'

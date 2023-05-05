@@ -128,17 +128,17 @@ export const ledgerSingle = createSlice({
     amountKeyNumber: (state, action: PayloadAction<string>) => {
       const pastNumberString = state.data.amount.number.toString();
       const pastHolderNumberString = state.calculationHolder.number.toString();
-      const maximum = 99999999;
+      const maximumLength = 8;
       if (state.calculationHolder.operator === '') {
-        if ((pastNumberString + action.payload).length > 8) {
-          state.data.amount.number = maximum;
+        if ((pastNumberString + action.payload).length > maximumLength) {
+          state.data.amount.number = Number(pastNumberString);
           state.calculationHolder.errorType = 'maximum';
         } else {
           state.data.amount.number = Number(pastNumberString + action.payload);
         }
       } else {
-        if ((pastHolderNumberString + action.payload).length > 8) {
-          state.calculationHolder.number = maximum;
+        if ((pastHolderNumberString + action.payload).length > maximumLength) {
+          state.calculationHolder.number = Number(pastHolderNumberString);
           state.calculationHolder.errorType = 'maximum';
         } else {
           state.calculationHolder.number = Number(
@@ -200,10 +200,10 @@ export const ledgerSingle = createSlice({
       }
       const maximum = 99999999;
       if (result > maximum) {
-        state.data.amount.number = maximum;
+        state.data.amount.number = numberBeforeOperator;
         state.calculationHolder.errorType = 'maximum';
       } else if (result < 0) {
-        state.data.amount.number = 0;
+        state.data.amount.number = numberBeforeOperator;
         state.calculationHolder.errorType = 'negative';
       } else {
         state.data.amount.number = result;
