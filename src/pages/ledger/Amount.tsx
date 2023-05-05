@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,11 +9,12 @@ import {
   amountDelete,
   amountHoldOperator,
   amountKeyNumber,
+  AMOUNT_LONG_LENGTH,
 } from '../../redux/reducers/ledgerSingleSlice';
 
 export const Amount: React.FC = () => {
   const { number } = useAppSelector((state) => state.ledgerSingle.data.amount);
-  const { operator } = useAppSelector(
+  const { operator, isLong } = useAppSelector(
     (state) => state.ledgerSingle.calculationHolder
   );
   const numberAfterOperator = useAppSelector(
@@ -39,6 +40,10 @@ export const Amount: React.FC = () => {
   if (amountInput.length > 13) {
     console.log('too long');
   }
+
+  useEffect(() => {
+    dispatch(AMOUNT_LONG_LENGTH(true));
+  }, []);
 
   return (
     <AmountDisplay>

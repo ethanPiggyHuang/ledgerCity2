@@ -55,6 +55,7 @@ const GlobalStyle = createGlobalStyle`
       box-shadow: none;
       border: none;
     }
+    -webkit-user-select:text !important;
   }
   
   #root {

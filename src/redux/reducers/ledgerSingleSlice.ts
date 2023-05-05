@@ -22,6 +22,7 @@ export interface LedgerSingleState {
   calculationHolder: {
     operator: '' | '+' | '-' | 'x' | '÷';
     number: number;
+    isLong: boolean;
   };
   status: 'idle' | 'loading' | 'failed';
 }
@@ -44,6 +45,7 @@ const initialState: LedgerSingleState = {
   calculationHolder: {
     operator: '',
     number: 0,
+    isLong: false,
   },
   status: 'idle',
 };
@@ -197,6 +199,9 @@ export const ledgerSingle = createSlice({
       state.calculationHolder.operator = '';
       state.calculationHolder.number = 0;
     },
+    AMOUNT_LONG_LENGTH: (state, action: PayloadAction<boolean>) => {
+      state.calculationHolder.isLong = action.payload;
+    },
     payPeopleSwitch: (
       state,
       action: PayloadAction<{ name: string; list: string[]; init?: boolean }>
@@ -271,6 +276,7 @@ export const ledgerSingle = createSlice({
         state.calculationHolder = {
           operator: '',
           number: 0,
+          isLong: false,
         };
       })
       .addCase(ledgerSubmit.rejected, (state) => {
@@ -290,6 +296,7 @@ export const ledgerSingle = createSlice({
         state.calculationHolder = {
           operator: '',
           number: 0,
+          isLong: false,
         };
         state.ledgerId = '';
       })
@@ -311,6 +318,7 @@ export const {
   amountHoldOperator,
   amountCalculate,
   amountAllClear,
+  AMOUNT_LONG_LENGTH,
   payPeopleSwitch,
   payMethodSwitch,
   timeEdit,
