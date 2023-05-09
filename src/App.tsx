@@ -2,7 +2,7 @@ import { Reset } from 'styled-reset';
 import { createGlobalStyle } from 'styled-components';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import React from 'react';
-import { GameMap } from './pages/gameMap/GameMap';
+import { Main } from './pages/main/Main';
 import AuthRoute from './component/AuthRoute';
 import Header from './component/Header';
 import { Landing } from './pages/landing/Landing';
@@ -17,9 +17,9 @@ const App: React.FunctionComponent<IApplicationProps> = (props) => {
       <AuthRoute>
         <Header />
         <Routes>
-          <Route path="/city" element={<GameMap />} />
+          <Route path="/city" element={<Main />} />
           <Route path="/landing" element={<Landing />} />
-          <Route path="*" element={<Navigate to="/city" replace />} />
+          <Route path="*" element={<Navigate to="/landing" replace />} />
         </Routes>
       </AuthRoute>
     </BrowserRouter>
@@ -39,8 +39,7 @@ const GlobalStyle = createGlobalStyle`
     
   }
   body {
-    // font-family: 'Poppins';
-    // font-weight: 400;
+    font-family: 'Noto Sans', sans-serif;
     background: linear-gradient(#c8e2cc, #98d5da);
   }
 
@@ -56,6 +55,7 @@ const GlobalStyle = createGlobalStyle`
       box-shadow: none;
       border: none;
     }
+    -webkit-user-select:text !important;
   }
   
   #root {

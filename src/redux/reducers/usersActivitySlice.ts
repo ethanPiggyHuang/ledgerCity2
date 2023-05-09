@@ -1,11 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import {
-  FETCH_COORPERATE_LOCATION,
-  fetchFrinedInfo,
-  AGREE_TO_COOPERATION,
-} from '../api/userAPI';
-import { DocumentData } from '@firebase/firestore-types';
-import { RootState } from '../store';
+import { fetchFrinedInfo } from '../api/userAPI';
 
 export type CurrentActionState =
   | 'city'
@@ -22,17 +16,18 @@ interface SoloUserActivityState {
   latestActiveTimeSecond: number;
 }
 
+export interface FriendInfoState {
+  userId: string;
+  userName: string;
+  userNickName: string;
+  userEmail: string;
+  userPortraitUrl: string;
+}
+
 export interface UsersActivityState {
   status: 'idle' | 'loading' | 'failed';
   friendsInfo: {
-    [key: string]: {
-      userId: string;
-      userName: string;
-      userNickName: string;
-      userEmail: string;
-      userPortraitUrl: string;
-      cityList: string[];
-    };
+    [key: string]: FriendInfoState;
   };
   friendsCityName: { [key: string]: string };
   coopInfo: { [key: string]: SoloUserActivityState };
@@ -41,7 +36,7 @@ export interface UsersActivityState {
 const initialState: UsersActivityState = {
   status: 'idle',
   friendsInfo: {},
-  friendsCityName: {}, //TODO: fetchFriend's city name
+  friendsCityName: {},
   coopInfo: {},
 };
 
@@ -50,22 +45,7 @@ export const GET_FRIENDS_INFO = createAsyncThunk(
   async (friendId: string) => {
     const response = await fetchFrinedInfo(friendId);
 
-    return response?.data;
-  }
-);
-
-export const AGREE_COOPERATIONS = createAsyncThunk(
-  'userInfo/AGREE_COOPERATIONS',
-  async (
-    payload: { userId: string; friendId: string; cityId: string },
-    { getState }
-  ) => {
-    const allStates = getState() as RootState;
-    const cityList = allStates.userInfo.data.cityList;
-    const { userId, friendId, cityId } = payload;
-    const newCityList = [cityId, ...cityList];
-    console.log(friendId);
-    await AGREE_TO_COOPERATION(userId, friendId, cityId, newCityList);
+    return response?.friendInfo;
   }
 );
 
@@ -103,7 +83,6 @@ export const usersActivity = createSlice({
     builder
       .addCase(GET_FRIENDS_INFO.pending, (state) => {
         state.status = 'loading';
-        //要跳出提示「帳號創建中」
       })
       .addCase(GET_FRIENDS_INFO.fulfilled, (state, action) => {
         state.status = 'idle';
@@ -115,17 +94,6 @@ export const usersActivity = createSlice({
       .addCase(GET_FRIENDS_INFO.rejected, (state) => {
         state.status = 'failed';
         alert('get friend info failed');
-      })
-      .addCase(AGREE_COOPERATIONS.pending, (state) => {
-        state.status = 'loading';
-      })
-      .addCase(AGREE_COOPERATIONS.fulfilled, (state) => {
-        state.status = 'idle';
-        alert('agreement succeed');
-      })
-      .addCase(AGREE_COOPERATIONS.rejected, (state) => {
-        state.status = 'failed';
-        alert('agree cooperaton failed');
       });
   },
 });

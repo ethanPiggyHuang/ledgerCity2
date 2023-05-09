@@ -23,7 +23,6 @@ export const BarChart: React.FC = () => {
   const [hasCategory, setHasCategory] = useState(false);
   const [labelsDisplay, setLabelsDisplay] = useState(new Array(10).fill(true));
   const [displayMonths, setDisplayMonths] = useState(12);
-  const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
 
   const dispatch = useAppDispatch();
@@ -109,8 +108,8 @@ export const BarChart: React.FC = () => {
     index: number
   ): ReactNode => {
     const startPointX =
-      (svgWidth / xMax) * (index + 0.5) - barWidth / 2 + xStart;
-    const barHeight = (value / yMax) * svgHeight * yShrinkRatio;
+      (svgWidth / xMax) * (index + 0.5) - barWidth / 2 + xStart || 0;
+    const barHeight = (value / yMax) * svgHeight * yShrinkRatio || 0;
     const barTopY = svgHeight - barHeight;
 
     const dScript = `M ${startPointX} ${svgHeight} V ${barTopY} H ${
@@ -197,12 +196,11 @@ export const BarChart: React.FC = () => {
     Math.pow(10, yScaleMaxDigits - 1);
 
   const yValues = yRatios.map((ratio) => ratio * yScaleMax);
-  const yAdjRatios = yValues.map((value) => value / yMax);
+  const yAdjRatios = yValues.map((value) => value / yMax || 0);
 
   return (
     <Wrap>
       <ChartTitle>{`${chosenYear}年各月份花費`}</ChartTitle>
-      {/* TODO: NaN 奇怪錯誤，應該與 initial state 無法 render 相關 */}
       {loadingStatus === 'idle' && !hasCategory && (
         <BarSvg>
           {datas.map(({ value, monthValue }, index) =>
@@ -219,7 +217,6 @@ export const BarChart: React.FC = () => {
           {datas.map(({ xLabel }, index) =>
             setXLabel(xLabel, barChartSetting, xMax, index)
           )}
-          {/* TODO: Y axis label */}
           {yAdjRatios.map((yAdjRatio, index) => (
             <g key={`${index}${yAdjRatio}`}>
               <path
@@ -245,14 +242,12 @@ export const BarChart: React.FC = () => {
               </LabelY>
             </g>
           ))}
-          {/* x axis */}
           <path
             d={`M ${barChartSetting.xStart} ${barChartSetting.svgHeight} L ${
               barChartSetting.xStart + barChartSetting.svgWidth
             } ${barChartSetting.svgHeight} Z`}
             stroke="#808080"
           />
-          {/* y axis */}
           <path
             d={`M ${barChartSetting.xStart} ${barChartSetting.svgHeight} L ${barChartSetting.xStart} 0 Z`}
             stroke="#808080"
@@ -280,7 +275,6 @@ export const BarChart: React.FC = () => {
           {datas.map(({ xLabel }, index) =>
             setXLabel(xLabel, barChartSetting, xMax, index)
           )}
-          {/* TODO: Y axis label */}
           {yAdjRatios.map((yAdjRatio, index) => (
             <g key={`${index}${yAdjRatio}`}>
               <path
@@ -306,14 +300,12 @@ export const BarChart: React.FC = () => {
               </LabelY>
             </g>
           ))}
-          {/* x axis */}
           <path
             d={`M ${barChartSetting.xStart} ${barChartSetting.svgHeight} L ${
               barChartSetting.xStart + barChartSetting.svgWidth
             } ${barChartSetting.svgHeight} Z`}
             stroke="#808080"
           />
-          {/* y axis */}
           <path
             d={`M ${barChartSetting.xStart} ${barChartSetting.svgHeight} L ${barChartSetting.xStart} 0 Z`}
             stroke="#808080"
@@ -322,17 +314,9 @@ export const BarChart: React.FC = () => {
       )}
       <ChartOperations>
         <Buttons>
-          {/* <button onClick={() => setDisplayMonths(12)}>全年</button>
-        {chosenYear === currentYear && (
-          <button onClick={() => setDisplayMonths(3)}>近3個月</button>
-        )}
-        <span>{`  `}</span> */}
           <Button onClick={() => setHasCategory(!hasCategory)}>
             {hasCategory ? '隱藏類別' : '顯示類別'}
           </Button>
-          {/* <button onClick={() => setLabelsDisplay(new Array(10).fill(true))}>
-          類別全開
-        </button> */}
         </Buttons>
 
         {hasCategory && (
@@ -394,7 +378,6 @@ const ChartTitle = styled.p`
 const BarSvg = styled.svg`
   height: 360px;
   width: 610px;
-  // border: 1px solid lightblue;
 `;
 const BarPath = styled.path`
   opacity: 0.7;

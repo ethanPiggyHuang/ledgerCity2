@@ -1,4 +1,4 @@
-import { db } from '../../config/firebase';
+import { db } from '../../utils/firebase';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { CityBasicInfoState, HouseState } from '../reducers/cityBasicInfoSlice';
 

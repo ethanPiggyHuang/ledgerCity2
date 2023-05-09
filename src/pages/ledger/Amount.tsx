@@ -1,18 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalculator } from '@fortawesome/free-solid-svg-icons';
 import {
   amountAllClear,
   amountCalculate,
   amountDelete,
+  amountHoldOperator,
   amountKeyNumber,
+  AMOUNT_LONG_LENGTH,
+  AMOUNT_ERROR_CONFIRM,
 } from '../../redux/reducers/ledgerSingleSlice';
 
 export const Amount: React.FC = () => {
   const { number } = useAppSelector((state) => state.ledgerSingle.data.amount);
-  const { operator } = useAppSelector(
+  const { operator, isLong, errorType } = useAppSelector(
     (state) => state.ledgerSingle.calculationHolder
   );
   const numberAfterOperator = useAppSelector(
@@ -32,11 +33,32 @@ export const Amount: React.FC = () => {
     );
   };
 
+  useEffect(() => {
+    const amountInput = `${thousandsSeparator(number)} ${operator} ${
+      numberAfterOperator !== 0 ? thousandsSeparator(numberAfterOperator) : ''
+    }`;
+    if (amountInput.length > 13 && !isLong) {
+      dispatch(AMOUNT_LONG_LENGTH(true));
+    } else if (amountInput.length <= 13 && isLong) {
+      dispatch(AMOUNT_LONG_LENGTH(false));
+    }
+
+    if (errorType === 'maximum') {
+      alert('meet maximum');
+      dispatch(AMOUNT_ERROR_CONFIRM());
+    }
+    if (errorType === 'negative') {
+      alert('negative number');
+      dispatch(AMOUNT_ERROR_CONFIRM());
+    }
+  }, [number, operator, numberAfterOperator, errorType]);
+
   return (
     <AmountDisplay>
       <Currency>NT$</Currency>
       <AmountInput
-        readOnly //check better choice
+        type="text"
+        $isLong={isLong}
         value={`${thousandsSeparator(number)} ${operator} ${
           numberAfterOperator !== 0
             ? thousandsSeparator(numberAfterOperator)
@@ -48,32 +70,24 @@ export const Amount: React.FC = () => {
             dispatch(amountAllClear());
           } else if (event.key === 'Backspace') {
             dispatch(amountDelete());
-          } else if (event.key === 'Enter') {
+          } else if (event.key === 'Enter' || event.key === '=') {
             dispatch(amountCalculate());
           } else if (numberRegex.test(event.key)) {
             dispatch(amountKeyNumber(event.key));
-          } //TODO: allow operators
+          } else if (['+', '-'].includes(event.key)) {
+            dispatch(amountHoldOperator(event.key as '' | '+' | '-'));
+          } else if (event.key) {
+            alert('請輸入數字或運算符號');
+          }
         }}
       />
     </AmountDisplay>
   );
-
-  return <AmountText>{`$ ${number}`}</AmountText>;
 };
-
-const AmountText = styled.p`
-  height: 10%;
-  margin: 0 15px;
-  font-size: 28px;
-  display: flex;
-  align-items: center;
-  color: #dabd7a;
-  background-color: #f2f2f2;
-`;
 
 const AmountDisplay = styled.div`
   margin: 0 15px;
-  width: 200px;
+  width: 230px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -88,13 +102,34 @@ const Currency = styled.div`
   font-size: 20px;
   line-height: 28px;
 `;
-const AmountInput = styled.input`
+
+type AmountInputProps = {
+  $isLong: boolean;
+};
+const AmountInput = styled.input<AmountInputProps>`
   height: 100%;
   width: 80%;
   border: none;
-  font-size: 28px;
+  font-size: ${({ $isLong }) => ($isLong ? '16px' : '28px')};
   font-weight: bold;
-  color: #dabd7a;
+  color: #dabd7a00;
+
+  -webkit-text-fill-color: #dabd7a;
+  &::-webkit-input-placeholder {
+    text-shadow: none;
+    -webkit-text-fill-color: initial;
+  }
+
   text-align: right;
   background-color: rgba(0, 0, 0, 0);
+  border-bottom: #dabd7a00 2px solid;
+  &:hover {
+    border-bottom: #dabd7a 2px solid;
+  }
+  &:focus {
+    border-bottom: #dabd7a 2px solid;
+  }
+  &:hover:focus {
+    border-bottom: #dabd7a 2px solid;
+  }
 `;

@@ -3,10 +3,14 @@ import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import {
   timeEdit,
-  timeInitialize,
+  TIME_INITIALIZE,
 } from '../../redux/reducers/ledgerSingleSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCalendarDay,
+  faCaretLeft,
+  faCaretRight,
+} from '@fortawesome/free-solid-svg-icons';
 
 const semantizeDate = (displayTime: number) => {
   const today = new Date();
@@ -36,19 +40,12 @@ export const TimeBar: React.FC = () => {
   useEffect(() => {
     if (ledgerTime === 0) {
       const nowInSeconds = new Date().getTime();
-      dispatch(timeInitialize(nowInSeconds));
+      dispatch(TIME_INITIALIZE(nowInSeconds));
     }
   }, []);
 
   const time = new Date(ledgerTime);
   const timeInSeconds = time.getTime();
-
-  // const scopes = [
-  // { scope: 'year', text: `${new Date(ledgerTime).getFullYear()}年` },
-  // { scope: 'month', text: `${new Date(ledgerTime).getMonth() + 1}月` },
-  // { scope: 'date',  text: `${new Date(ledgerTime).getDate()} 日` },
-  // { scope: 'day', text: `星期${weekdays[new Date(ledgerTime).getDay()]}` },
-  // ];
 
   return (
     <Wrapper>
@@ -78,21 +75,24 @@ export const TimeBar: React.FC = () => {
         icon={faCaretRight}
       />
 
-      {/* <DateOption>
-        <DateText> {`${time.getMinutes()}分${time.getSeconds()}秒`}</DateText>
-      </DateOption> */}
+      {semantizeDate(ledgerTime) !== '今天' && (
+        <TodayWrap
+          onClick={() => {
+            const nowInSeconds = new Date().getTime();
+            dispatch(TIME_INITIALIZE(nowInSeconds));
+          }}
+        >
+          <TodayIcon icon={faCalendarDay} />
+          <TodayText>今天</TodayText>
+        </TodayWrap>
+      )}
     </Wrapper>
   );
 };
 
-// type HouseProps = {
-//   $zoomRatio: number;
-//   $type: number;
-// };
-
 const Wrapper = styled.div`
   height: 40px;
-  width: 45%;
+  width: 260px;
   border-radius: 20px;
   color: #dabd7a;
 
@@ -100,6 +100,7 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 `;
 
 const DateText = styled.div`
@@ -112,6 +113,26 @@ const DateText = styled.div`
 `;
 
 const DateSwitch = styled(FontAwesomeIcon)`
-  height: 20px;
+  font-size: 20px;
   cursor: pointer;
+`;
+
+const TodayWrap = styled.div`
+  cursor: pointer;
+  height: 100%;
+  position: absolute;
+  right: -30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+`;
+
+const TodayText = styled.p`
+  font-size: 12px;
+  transform: scale(0.9);
+`;
+
+const TodayIcon = styled(FontAwesomeIcon)`
+  font-size: 16px;
 `;

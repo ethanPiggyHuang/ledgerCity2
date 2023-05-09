@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { fetchLedgerList } from '../api/ledgerListAPI';
+import { FriendInfoState } from '../reducers/usersActivitySlice';
 import {
   createAccount,
   getAccountInfo,
@@ -7,8 +7,10 @@ import {
   FIND_ACCOUNT_MATCH,
   NEW_FRIEND_REQUEST,
   updateCityList,
-  getCityName,
+  getOtherCityInfo,
   createNewCity,
+  agreeCooperation,
+  disagreeCooperation,
 } from '../api/userAPI';
 import { RootState } from '../store';
 
@@ -31,8 +33,12 @@ export interface UserDataState {
 export interface FriendStatusState {
   userId: string;
   name: string;
-  friendStatus: 'inviting' | 'beenInvited' | 'friend';
-  coopStatus: 'none' | 'inviting' | 'beenInvited' | 'coorperated';
+  coopStatus:
+    | 'inviting'
+    | 'beenInvited'
+    | 'disagree'
+    | 'beenRejected'
+    | 'coorperated';
   coopCityId: string | null;
 }
 
@@ -48,11 +54,13 @@ export interface UserInfoState {
     isNickNameEdit: boolean;
     inputText: string;
     emailInput: string;
-    queryResult: UserDataState[];
+    queryResult: FriendInfoState[];
   };
   data: UserDataState;
   additionalData: {
     cityNames: { [key: string]: string };
+    cityAccessUsers: { [key: string]: string[] };
+    chosenCoopCityIndex: number;
   };
 }
 
@@ -81,7 +89,11 @@ const initialState: UserInfoState = {
     trophy: { list: [], citizens: [] },
     gameSetting: { hasMusic: false, hasHints: false, isRecordContinue: false },
   },
-  additionalData: { cityNames: {} },
+  additionalData: {
+    cityNames: {},
+    cityAccessUsers: {},
+    chosenCoopCityIndex: 0,
+  },
 };
 
 export const CREATE_ACCOUNT = createAsyncThunk(
@@ -143,8 +155,6 @@ export const SAVE_NICKNAME = createAsyncThunk(
 export const QUEST_FRIEND = createAsyncThunk(
   'userInfo/QUEST_FRIEND',
   async (friendEmail: string, { getState }) => {
-    // const allStates = getState() as RootState;
-    // const { userId } = allStates.userInfo.data;
     const fullEmail = `${friendEmail}@gmail.com`;
     const response = await FIND_ACCOUNT_MATCH(fullEmail);
     return response.result;
@@ -157,7 +167,11 @@ export const FRIEND_REQUEST = createAsyncThunk(
     const { cityId, friendId } = payload;
     const allStates = getState() as RootState;
     const { userId } = allStates.userInfo.data;
-    const response = await NEW_FRIEND_REQUEST(userId, friendId, cityId);
+    try {
+      await NEW_FRIEND_REQUEST(userId, friendId, cityId);
+    } catch (error) {
+      console.log(error);
+    }
   }
 );
 
@@ -177,8 +191,37 @@ export const CITY_REDIRECTION = createAsyncThunk(
 export const GET_CITY_NAME = createAsyncThunk(
   'userInfo/GET_CITY_NAME',
   async (cityId: string) => {
-    const response = await getCityName(cityId);
-    return { cityId, cityName: response?.cityName };
+    const response = await getOtherCityInfo(cityId);
+    if (response) {
+      return {
+        cityId,
+        cityName: response.cityName,
+        accessUsers: response.accessUsers,
+      };
+    }
+  }
+);
+
+export const AGREE_COOPERATION = createAsyncThunk(
+  'userInfo/AGREE_COOPERATION',
+  async (
+    payload: { userId: string; friendId: string; cityId: string },
+    { getState }
+  ) => {
+    const allStates = getState() as RootState;
+    const cityList = allStates.userInfo.data.cityList;
+    const { userId, friendId, cityId } = payload;
+    const newCityList = [cityId, ...cityList];
+    await agreeCooperation(userId, friendId, cityId, newCityList);
+    return newCityList;
+  }
+);
+
+export const DISAGREE_COOPERATION = createAsyncThunk(
+  'userInfo/DISAGREE_COOPERATION',
+  async (payload: { userId: string; friendId: string }) => {
+    const { userId, friendId } = payload;
+    await disagreeCooperation(userId, friendId);
   }
 );
 
@@ -209,6 +252,9 @@ export const userInfo = createSlice({
       console.log('log out');
       state.data = initialState.data;
       state.loginStatus = initialState.loginStatus;
+      state.friends = initialState.friends;
+      state.additionalData = initialState.additionalData;
+      state.editStatus = initialState.editStatus;
     },
     EDIT_NICKNAME_SWITCH: (state, action: PayloadAction<boolean>) => {
       state.editStatus.isNickNameEdit = action.payload;
@@ -225,12 +271,17 @@ export const userInfo = createSlice({
     ) => {
       state.friends = action.payload;
     },
+    SWITCH_COOP_CITY_OPTION: (state) => {
+      const cityOptionAmount = state.data.cityList.length;
+      const pastOption = state.additionalData.chosenCoopCityIndex;
+      state.additionalData.chosenCoopCityIndex =
+        (pastOption + 1) % cityOptionAmount;
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(CREATE_ACCOUNT.pending, (state) => {
         state.status = 'loading';
-        //要跳出提示「帳號創建中」
       })
       .addCase(CREATE_ACCOUNT.fulfilled, (state, action) => {
         state.status = 'idle';
@@ -243,7 +294,6 @@ export const userInfo = createSlice({
         state.data.userNickName = userNickName === '' ? userName : userNickName;
         state.data.userPortraitUrl = userPortraitUrl;
         state.data.userEmail = userEmail;
-        // console.log('check', cityId, ledgerBookId);
         state.data.cityList = [cityId];
       })
       .addCase(CREATE_ACCOUNT.rejected, (state) => {
@@ -257,10 +307,7 @@ export const userInfo = createSlice({
         state.status = 'idle';
         state.loginStatus.isLogin = true;
         if (action.payload) {
-          // const cityId = action.payload.cityList[0];
-          // state.data.cityList = [cityId];
           state.data = action.payload.data;
-          // // state.friends = action.payload.friendResponse;
         }
       })
       .addCase(GET_ACCOUNT_INFO.rejected, (state) => {
@@ -308,7 +355,6 @@ export const userInfo = createSlice({
       })
       .addCase(CITY_REDIRECTION.fulfilled, (state, action) => {
         state.status = 'idle';
-        // alert('request redirect');
         state.data.cityList = action.payload;
       })
       .addCase(CITY_REDIRECTION.rejected, (state) => {
@@ -320,9 +366,12 @@ export const userInfo = createSlice({
       })
       .addCase(GET_CITY_NAME.fulfilled, (state, action) => {
         state.status = 'idle';
-        const { cityId, cityName } = action.payload;
-        if (cityId && cityName) {
-          state.additionalData.cityNames[cityId] = cityName;
+        if (action.payload) {
+          const { cityId, cityName, accessUsers } = action.payload;
+          if (cityId && cityName) {
+            state.additionalData.cityNames[cityId] = cityName;
+            state.additionalData.cityAccessUsers[cityId] = accessUsers;
+          }
         }
       })
       .addCase(GET_CITY_NAME.rejected, (state) => {
@@ -340,6 +389,18 @@ export const userInfo = createSlice({
       .addCase(CREATE_NEW_CITY.rejected, (state) => {
         state.status = 'failed';
         alert('add new city rejected');
+      })
+      .addCase(AGREE_COOPERATION.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(AGREE_COOPERATION.fulfilled, (state, action) => {
+        state.status = 'idle';
+        alert('agreement succeed, redirect');
+        state.data.cityList = action.payload;
+      })
+      .addCase(AGREE_COOPERATION.rejected, (state) => {
+        state.status = 'failed';
+        alert('agree cooperaton failed');
       });
   },
 });
@@ -352,6 +413,7 @@ export const {
   TYPING_NICKNAME,
   TYPING_FRIEND_EMAIL,
   UPDATE_INSTANT_FRIENDS_STATUS,
+  SWITCH_COOP_CITY_OPTION,
 } = userInfo.actions;
 
 export default userInfo.reducer;

@@ -10,7 +10,7 @@ import {
 import { RENAME_CITY } from '../redux/reducers/cityArrangementSlice';
 import { UPDATE_LEDGER_LIST } from '../redux/reducers/ledgerListSlice';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
-import { db } from '../config/firebase';
+import { db } from '../utils/firebase';
 import { doc } from 'firebase/firestore';
 import { LedgerDataState } from '../redux/reducers/ledgerSingleSlice';
 import { useNavigate } from 'react-router-dom';
@@ -63,7 +63,6 @@ const Header: React.FC = () => {
     if (ledgerBookId.length !== 0) {
       if (accessUsers.findIndex((id) => id === userId) === -1) {
         return;
-        //TODO: 非accessUsers
       } else {
         const q = query(
           collection(db, 'ledgerBooks', ledgerBookId, 'ledgers'),
@@ -104,13 +103,16 @@ const Header: React.FC = () => {
       const unsub = onSnapshot(
         collection(db, 'users', userId, 'friends'),
         (querySnapshot) => {
-          const friends: FriendStatusState[] = [];
-          querySnapshot.forEach((doc) =>
-            friends.push(doc.data() as FriendStatusState)
-          );
+          let friends: FriendStatusState[] = [];
+          querySnapshot.forEach((doc) => {
+            friends.push(doc.data() as FriendStatusState);
+          });
           if (friends.length !== 0) {
             dispatch(UPDATE_INSTANT_FRIENDS_STATUS(friends));
           }
+        },
+        (error) => {
+          console.log('error', error);
         }
       );
       return () => unsub();
@@ -124,6 +126,7 @@ const Header: React.FC = () => {
           <Banner />
           <TextWrapper>
             <BannerText
+              type="text"
               $isRenaming={isRenaming}
               value={`${cityName}`}
               onClick={() => dispatch(RENAME_CITY(true))}
@@ -143,7 +146,6 @@ const Header: React.FC = () => {
               icon={faFloppyDisk}
               onClick={() => {
                 dispatch(UPDATE_CITY_NAME({ cityId: cityList[0], cityName }));
-                // dispatch(RENAME_CITY(false));
               }}
             />
           </TextWrapper>
@@ -181,7 +183,6 @@ const Wrapper = styled.div<WrapperProps>`
 `;
 
 const TextWrapper = styled.div`
-  /* border: 1px solid black; */
   position: absolute;
   height: 65%;
   width: 70%;
@@ -190,11 +191,8 @@ const TextWrapper = styled.div`
 `;
 
 const BannerText = styled.input<BannerTextProps>`
-  /* position: absolute; */
   color: #ae7a00;
   font-size: 42px;
-  /* height: 65%; */
-  /* padding: 20px; */
   text-align: center;
   letter-spacing: 0.4em;
   font-weight: bold;
@@ -226,8 +224,4 @@ const SaveIcon = styled(FontAwesomeIcon)<SaveIconProps>`
   right: -5px;
   color: #df9469;
   cursor: pointer;
-`;
-
-const LandingBannerWrapper = styled.div`
-  transform: translateX(-50%) scale(0.6);
 `;

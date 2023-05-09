@@ -1,19 +1,14 @@
 import React from 'react';
 import styled from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../redux/hooks';
 
 const StyledSvg = styled.svg`
   width: calc(50vw);
-  /* max-height: 50px; */
   position: relative;
   box-shadow: 0px 6px 4px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
 `;
 
 export const Banner: React.FC = () => {
-  const { scale } = useAppSelector((state) => state.cityArrangement);
-  // const dispatch = useAppDispatch();
-
   return (
     <StyledSvg
       viewBox="0 0 1053 122"

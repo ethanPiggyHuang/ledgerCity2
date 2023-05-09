@@ -1,4 +1,4 @@
-import { db } from '../../config/firebase';
+import { db } from '../../utils/firebase';
 import {
   setDoc,
   getDoc,
@@ -11,10 +11,12 @@ import {
   query,
   where,
   getDocs,
+  deleteDoc,
 } from 'firebase/firestore';
-import { rtdb } from '../../config/firebase';
+import { rtdb } from '../../utils/firebase';
 import { ref, set } from 'firebase/database';
-import { UserDataState, FriendStatusState } from '../reducers/userInfoSlice';
+import { UserDataState } from '../reducers/userInfoSlice';
+import { FriendInfoState } from '../reducers/usersActivitySlice';
 
 export async function createAccount(userInfo: {
   userId: string;
@@ -52,7 +54,7 @@ export async function createAccount(userInfo: {
   let ledgerBookId: string;
   let userNickName = '';
   if (docSnap.exists()) {
-    userNickName = docSnap.data().userNickName;
+    userNickName = docSnap.data()?.userNickName || '';
     cityId = docSnap.data().cityList[0];
     const cityDocSnap = await getDoc(doc(db, 'cities', cityId));
     ledgerBookId = cityDocSnap.data()?.ledgerBookId;
@@ -140,19 +142,17 @@ export async function getAccountInfo(userInfo: {
 }
 
 export async function postFadeOutTime(userId: string) {
-  // await setDoc(doc(db, 'allUserStatus', userId), {
-  //   fadeOutTime: serverTimestamp(),
-  // });
-  console.log('最後要打開此function: postFadeOutTime()');
+  await setDoc(doc(db, 'allUserStatus', userId), {
+    fadeOutTime: serverTimestamp(),
+  });
 }
 
 export async function postFadeOutTimeRT(userId: string, enableType: string) {
-  // const logoutTime = new Date();
-  // set(ref(rtdb, `users/${userId}/logout`), {
-  //   logoutTime: logoutTime,
-  //   enableType: enableType,
-  // });
-  console.log('最後要打開此function: postFadeOutTimeRT()');
+  const logoutTime = new Date();
+  set(ref(rtdb, `users/${userId}/logout`), {
+    logoutTime: logoutTime,
+    enableType: enableType,
+  });
 }
 
 export async function FETCH_COORPERATE_LOCATION(userId: string) {
@@ -177,11 +177,18 @@ export async function POST_NICKNAME(userId: string, userNickName: string) {
 export async function FIND_ACCOUNT_MATCH(email: string) {
   const q = query(collection(db, 'users'), where('userEmail', '==', email));
   const querySnapshot = await getDocs(q);
-  let result: UserDataState[] = [];
+  let result: FriendInfoState[] = [];
   querySnapshot.forEach((doc) => {
-    result.push(doc.data() as UserDataState);
+    const data = doc.data() as UserDataState;
+    result.push({
+      userId: data.userId,
+      userName: data.userName,
+      userNickName: data.userNickName,
+      userEmail: data.userEmail,
+      userPortraitUrl: data.userPortraitUrl,
+    });
   });
-  return new Promise<{ result: UserDataState[] }>((resolve) =>
+  return new Promise<{ result: FriendInfoState[] }>((resolve) =>
     resolve({ result })
   );
 }
@@ -194,30 +201,39 @@ export async function NEW_FRIEND_REQUEST(
   const friendData = {
     coopCityId: cityId,
     coopStatus: 'beenInvited',
-    friendStatus: 'beenInvited',
     userId: userId,
   };
-  const slefData = {
+  const selfData = {
     coopCityId: cityId,
     coopStatus: 'inviting',
-    friendStatus: 'inviting',
     userId: friendId,
   };
 
-  await setDoc(doc(db, 'users', userId, 'friends', friendId), slefData);
+  await setDoc(doc(db, 'users', userId, 'friends', friendId), selfData);
 
   await setDoc(doc(db, 'users', friendId, 'friends', userId), friendData);
 }
 
 export async function fetchFrinedInfo(friendId: string) {
   const docSnap = await getDoc(doc(db, 'users', friendId));
+
   if (docSnap.exists()) {
-    const data = docSnap.data() as UserDataState; //TODO typescript
-    return new Promise<{ data: UserDataState }>((resolve) => resolve({ data }));
+    const data = docSnap.data() as UserDataState;
+    const friendInfo = {
+      userId: data.userId,
+      userName: data.userName,
+      userNickName: data.userNickName,
+      userEmail: data.userEmail,
+      userPortraitUrl: data.userPortraitUrl,
+    };
+
+    return new Promise<{ friendInfo: FriendInfoState }>((resolve) =>
+      resolve({ friendInfo: friendInfo })
+    );
   }
 }
 
-export async function AGREE_TO_COOPERATION(
+export async function agreeCooperation(
   userId: string,
   friendId: string,
   cityId: string,
@@ -240,18 +256,24 @@ export async function AGREE_TO_COOPERATION(
   });
 }
 
+export async function disagreeCooperation(userId: string, friendId: string) {
+  await deleteDoc(doc(db, 'users', userId, 'friends', friendId));
+  await deleteDoc(doc(db, 'users', friendId, 'friends', userId));
+}
+
 export async function updateCityList(userId: string, newCityList: string[]) {
   await updateDoc(doc(db, 'users', userId), {
     cityList: newCityList,
   });
 }
 
-export async function getCityName(cityId: string) {
+export async function getOtherCityInfo(cityId: string) {
   const citySnap = await getDoc(doc(db, 'cities', cityId));
   if (citySnap.exists()) {
-    const cityName = citySnap.data().cityName as string; //TODO typescript
-    return new Promise<{ cityName: string }>((resolve) =>
-      resolve({ cityName })
+    const cityName = citySnap.data().cityName as string;
+    const accessUsers = citySnap.data().accessUsers as string[];
+    return new Promise<{ cityName: string; accessUsers: string[] }>((resolve) =>
+      resolve({ cityName, accessUsers })
     );
   }
 }

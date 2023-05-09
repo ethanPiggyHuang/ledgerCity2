@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components/macro';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -36,6 +35,7 @@ const Footer: React.FC = () => {
             dispatch(PANEL_CONTROL('none'));
           }}
           $chosen={label.page === pageActivity}
+          $pageActivity={pageActivity}
         >
           <StyledFontAwesomeIcon icon={label.icon} />
           <Text>{label.textCh}</Text>
@@ -49,6 +49,13 @@ export default Footer;
 
 type SectionLabelState = {
   $chosen: boolean;
+  $pageActivity:
+    | 'city'
+    | 'rearrange'
+    | 'ledger'
+    | 'statistics'
+    | 'profile'
+    | 'leave';
 };
 
 type WrapperProps = {
@@ -70,12 +77,13 @@ const SectionLabel = styled.div<SectionLabelState>`
   height: 100px;
   width: ${({ $chosen }) => ($chosen ? '40%' : '30%')};
   background-color: ${({ $chosen }) => ($chosen ? '#f7f7f7' : '#ebebeb')};
-  border-radius: 20px 20px 0 0;
+  border-radius: ${({ $pageActivity }) =>
+    $pageActivity === 'statistics' ? '0' : '20px 20px 0 0'};
   border: 2px solid white;
   padding-top: 18px;
   display: flex;
   justify-content: center;
-  transition: transform 0.5s ease, width 0.5s ease;
+  transition: transform 0.5s ease, width 0.5s ease, border-radius 0.5s ease;
   cursor: pointer;
 
   &:hover {

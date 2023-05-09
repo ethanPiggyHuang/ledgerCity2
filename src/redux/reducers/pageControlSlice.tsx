@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { updateActivity } from '../api/userAPI';
-import { RootState } from '../store';
 
-type CurrentActionState =
+export type CurrentActionState =
   | 'city'
   | 'rearrange'
   | 'ledger'
@@ -10,7 +9,7 @@ type CurrentActionState =
   | 'profile'
   | 'leave';
 
-type SocialSections = 'cooperated' | 'friend' | 'inviting';
+type SocialSections = 'cooperated' | 'friend' | 'inviting' | 'search';
 
 export interface PageControlState {
   pageActivity: CurrentActionState;
@@ -20,6 +19,10 @@ export interface PageControlState {
   panelOpened: 'none' | 'user';
   socialSectionClosed: SocialSections[];
   landingScrollY: number;
+  alert: {
+    isShown: boolean;
+    dialogueOpen: boolean;
+  };
   status: 'idle' | 'loading' | 'failed';
 }
 
@@ -29,8 +32,12 @@ const initialState: PageControlState = {
   chartType: 'oneMonth',
   chartShown: 'monthOnly',
   panelOpened: 'none',
-  socialSectionClosed: [],
+  socialSectionClosed: ['search'],
   landingScrollY: 0,
+  alert: {
+    isShown: false,
+    dialogueOpen: false,
+  },
   status: 'idle',
 };
 
@@ -85,6 +92,12 @@ export const pageControl = createSlice({
     ) => {
       state.chartShown = action.payload;
     },
+    ALERT_TOGGLE: (state) => {
+      state.alert.isShown = !state.alert.isShown;
+    },
+    ALERT_DIALOUGE_TOGGLE: (state) => {
+      state.alert.dialogueOpen = !state.alert.dialogueOpen;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -109,6 +122,8 @@ export const {
   SOCIAL_SECTION_TOGGLE,
   LANDING_SCROLL_Y,
   CHART_SHOWN_SWITCH,
+  ALERT_TOGGLE,
+  ALERT_DIALOUGE_TOGGLE,
 } = pageControl.actions;
 
 export default pageControl.reducer;

@@ -58,7 +58,6 @@ export const deleteSingleLedger = createAsyncThunk(
     const ledgerBookId = allStates.cityBasicInfo.ledgerBookId;
     const houses = allStates.cityBasicInfo.houses;
     const newHouses = houses.filter((house) => house.ledgerId !== ledgerId);
-    //TODO: 刪除帳目要刪除房子嗎？
     houses.forEach((house) => console.log(house.ledgerId !== ledgerId));
     await deleteLedger(cityId, newHouses, ledgerBookId, ledgerId);
     return ledgerId;

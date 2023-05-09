@@ -1,12 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../redux/hooks';
-import { displayCity } from '../redux/reducers/cityArrangementSlice';
 
 export const DialogBoard: React.FC = () => {
-  const cityBasicInfo = useAppSelector((state) => state.cityBasicInfo);
-  const dispatch = useAppDispatch();
-
   return (
     <Curtain $isLogin={false}>
       <BlackCurtain></BlackCurtain>

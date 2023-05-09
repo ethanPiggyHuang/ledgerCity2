@@ -1,11 +1,7 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import {
-  itemKeyIn,
-  labelChooseMain,
-  labelRetrieve,
-} from '../../redux/reducers/ledgerSingleSlice';
+import { itemKeyIn } from '../../redux/reducers/ledgerSingleSlice';
 import { mainLabel } from '../../utils/gameSettings';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -65,6 +61,7 @@ export const LedgerDemo: React.FC = () => {
       <ItemDisplay>
         <ItemIcon icon={faClipboard} />
         <ItemInput
+          type="text"
           value={item}
           placeholder="(消費品項)"
           onChange={(e) => dispatch(itemKeyIn(e.target.value))}

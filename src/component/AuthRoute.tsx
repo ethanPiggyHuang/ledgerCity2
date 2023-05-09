@@ -16,20 +16,15 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 export interface IAuthRouteProps {
-  children?: React.ReactNode; //TODO ??
+  children?: React.ReactNode;
 }
 
 const AuthRoute: React.FunctionComponent<IAuthRouteProps> = (props) => {
   const { children } = props;
+  const { isAuthing } = useAppSelector((state) => state.userInfo.loginStatus);
   const dispatch = useAppDispatch();
-  const { isAuthing, isLogin } = useAppSelector(
-    (state) => state.userInfo.loginStatus
-  );
-  const { ledgerBookId } = useAppSelector((state) => state.cityBasicInfo);
-  const { cityList } = useAppSelector((state) => state.userInfo.data);
 
   const navigate = useNavigate();
-
   const auth = getAuth();
 
   useEffect(() => {
@@ -38,10 +33,8 @@ const AuthRoute: React.FunctionComponent<IAuthRouteProps> = (props) => {
       if (user) {
         const { uid, displayName, email, photoURL } = user;
         if (user.metadata.creationTime === user.metadata.lastSignInTime) {
-          // 使用者是第一次註冊  TODO: 確認是否註冊過
           dispatch(CREATE_ACCOUNT({ uid, displayName, email, photoURL }));
         } else {
-          // 使用者已登入過
           dispatch(GET_ACCOUNT_INFO({ uid, displayName, email, photoURL }));
         }
         dispatch(AUTHING_TOGGLE(false));
@@ -51,23 +44,9 @@ const AuthRoute: React.FunctionComponent<IAuthRouteProps> = (props) => {
         navigate('/landing');
       }
     });
-    // AuthCheck();
 
     return () => AuthCheck();
   }, [auth]);
-
-  // useEffect(() => {
-  //   if (cityList.length !== 0) {
-  //     dispatch(VISIT_CITY(cityList[0]));
-  //     console.log('go fetch');
-  //   }
-  // }, [cityList]);
-
-  // useEffect(() => {
-  //   if (ledgerBookId.length !== 0) {
-  //     dispatch(getLedgerList(ledgerBookId));
-  //   }
-  // }, [ledgerBookId]);
 
   if (isAuthing)
     return (

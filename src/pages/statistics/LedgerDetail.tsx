@@ -6,7 +6,6 @@ import {
   SORT_LIST,
   deleteSingleLedger,
 } from '../../redux/reducers/ledgerListSlice';
-import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faArrowDown19,
@@ -210,7 +209,6 @@ export const LedgerDetail: React.FC = () => {
                 />
                 <DeleteIcon
                   icon={faTrashCan}
-                  className="material-symbols-outlined"
                   onClick={() => {
                     alert('確定刪除');
                     dispatch(deleteSingleLedger(ledger.ledgerId));

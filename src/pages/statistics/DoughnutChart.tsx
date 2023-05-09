@@ -315,14 +315,10 @@ const LabelName = styled.text`
   text-anchor: middle;
 
   fill: #5b4105;
-  /* stroke: #f2f2f2; */
-  /* stroke-width: 0.2px; */
 
   &:hover {
     cursor: pointer;
   }
-
-  /* text-shadow: 1px 1px 1px #f2f2f2; */
 `;
 
 const LabelRatio = styled.text`

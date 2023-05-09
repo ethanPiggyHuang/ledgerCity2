@@ -12,10 +12,15 @@ export interface CityArrangementState {
     dragStart: { x: number; y: number };
     current: { x: number; y: number };
   };
-  cityWheelShift: {
+  cityScrollShift: {
     x: number;
     y: number;
   };
+  cityKeyShift: {
+    x: number;
+    y: number;
+  };
+  isRelocateActivate: boolean;
   dragInfo: {
     id: string;
     target: string;
@@ -38,7 +43,9 @@ const initialState: CityArrangementState = {
     dragStart: { x: 0, y: 0 },
     current: { x: 0, y: 0 },
   },
-  cityWheelShift: { x: 0, y: 0 },
+  cityScrollShift: { x: 0, y: 0 },
+  cityKeyShift: { x: 0, y: 0 },
+  isRelocateActivate: false,
   dragInfo: { id: '', target: '', pastIndex: { xIndex: 0, yIndex: 0 } },
   nextHousePosition: { xIndex: 0, yIndex: 0 },
   isRenaming: false,
@@ -135,11 +142,6 @@ export const cityArrangement = createSlice({
         mouseY: number;
       }>
     ) => {
-      // 舊的奇怪的算法
-      // state.cityShift.dragStart.x =
-      //   action.payload.mouseX - state.cityShift.current.x;
-      // state.cityShift.dragStart.y =
-      //   action.payload.mouseY - state.cityShift.current.y;
       state.cityShift.mouseStart.x = action.payload.mouseX;
       state.cityShift.mouseStart.y = action.payload.mouseY;
     },
@@ -150,13 +152,6 @@ export const cityArrangement = createSlice({
         mouseY: number;
       }>
     ) => {
-      // 舊的奇怪的算法
-      // const { mouseX, mouseY, cityHeight } = action.payload;
-      // const dragStart = state.cityShift.dragStart;
-      // const current = state.cityShift.current;
-      // current.x = mouseX - 2 * dragStart.x;
-      // current.y = mouseY + cityHeight * state.scale - 2 * dragStart.y;
-
       const { x, y } = state.cityShift.mouseStart;
       const { mouseX, mouseY } = action.payload;
       const { current } = state.cityShift;
@@ -274,28 +269,34 @@ export const cityArrangement = createSlice({
     RENAME_CITY: (state, action: PayloadAction<boolean>) => {
       state.isRenaming = action.payload;
     },
-    CITY_WHEEL_SHIFT: (
-      state,
-      action: PayloadAction<{ deltaX: number; deltaY: number }>
-    ) => {
-      const { deltaX, deltaY } = action.payload;
-      state.cityWheelShift.x = state.cityWheelShift.x - deltaX;
-      state.cityWheelShift.y = state.cityWheelShift.y - deltaY;
-    },
     CITY_SET_SHIFT: (
       state,
       action: PayloadAction<{ shiftX: number; shiftY: number }>
     ) => {
       const { shiftX, shiftY } = action.payload;
-      state.cityWheelShift.x = shiftX;
-      state.cityWheelShift.y = shiftY;
+      state.cityScrollShift.x = shiftX;
+      state.cityScrollShift.y = shiftY;
+      state.isRelocateActivate = true;
+    },
+    CITY_KEY_SHIFT: (
+      state,
+      action: PayloadAction<{ deltaX: number; deltaY: number }>
+    ) => {
+      const { deltaX, deltaY } = action.payload;
+      state.cityKeyShift.x = state.cityKeyShift.x - deltaX;
+      state.cityKeyShift.y = state.cityKeyShift.y - deltaY;
+    },
+
+    CITY_SHIFT_END: (state) => {
+      state.isRelocateActivate = false;
     },
     START_CITY_TOUR: (state) => {
       state.isTouring = true;
     },
     END_CITY_TOUR: (state) => {
       state.isTouring = false;
-      state.scale = 1;
+      state.cityKeyShift.x = 0;
+      state.cityKeyShift.y = 0;
     },
     CITY_SLOWLY_TRANSITION: (state, action: PayloadAction<boolean>) => {
       state.isAddingNew = action.payload;
@@ -309,7 +310,7 @@ export const cityArrangement = createSlice({
       .addCase(saveCityAsync.fulfilled, (state) => {
         state.status = 'idle';
         state.dragMode = 'city';
-        console.log('街道重建已紀錄');
+        // console.log('街道重建已紀錄');
       })
       .addCase(saveCityAsync.rejected, (state) => {
         state.status = 'failed';
@@ -325,7 +326,7 @@ export const cityArrangement = createSlice({
         if (yIndex && xIndex) {
           state.nextHousePosition = { yIndex, xIndex };
         }
-        console.log(`下次位置 y:${yIndex},x:${xIndex}`);
+        // console.log(`下次位置 y:${yIndex},x:${xIndex}`);
       })
       .addCase(GENERATE_AVAILABLE_POSITION.rejected, (state) => {
         state.status = 'failed';
@@ -348,8 +349,9 @@ export const {
   ADJUST_SCALE,
   SET_SCALE,
   RENAME_CITY,
-  CITY_WHEEL_SHIFT,
+  CITY_KEY_SHIFT,
   CITY_SET_SHIFT,
+  CITY_SHIFT_END,
   START_CITY_TOUR,
   END_CITY_TOUR,
   CITY_SLOWLY_TRANSITION,
