@@ -265,88 +265,96 @@ export const Social: React.FC = () => {
           </FriendInfoWrap>
         </FriendListWrap>
 
-        <p>下面的css 還沒刻...但是功能OK</p>
-        <p>輸入好友 gmail</p>
-        <input
-          type="text"
-          value={emailInput}
-          onChange={(event) => {
-            dispatch(TYPING_FRIEND_EMAIL(event.target.value));
-          }}
-        />
-        <span>@gmail.com</span>
+        <FriendListWrap>
+          <FriendListTitle
+            onClick={() => dispatch(SOCIAL_SECTION_TOGGLE('search'))}
+          >
+            查詢好友
+          </FriendListTitle>
+          <FriendInfoWrap $isClosed={socialSectionClosed.includes('search')}>
+            <p>輸入好友 gmail</p>
+            <input
+              type="text"
+              value={emailInput}
+              onChange={(event) => {
+                dispatch(TYPING_FRIEND_EMAIL(event.target.value));
+              }}
+            />
+            <span>@gmail.com</span>
 
-        <button
-          onClick={() => {
-            dispatch(QUEST_FRIEND(emailInput));
-          }}
-        >
-          查詢
-        </button>
-        {queryResult.length !== 0 && queryResult[0].userId === userId && (
-          <p>這是你自己的帳號喔</p>
-        )}
-        {queryResult.length !== 0 && queryResult[0].userId !== userId && (
-          <>
-            <p>{`名字：${queryResult[0].userName}`}</p>
-            <p>{`暱稱：${
-              queryResult[0]?.userNickName || queryResult[0].userName
-            }`}</p>
-            {queryResult[0]?.userPortraitUrl && (
-              <img
-                src={queryResult[0].userPortraitUrl}
-                alt={`portait of ${queryResult[0].userName}`}
-              />
-            )}
-            <br />
-            <p>{`要與他共同管理城市嗎？`}</p>
-            <p>{`預計共同管理城市：`}</p>
-            <p
-              onClick={() => dispatch(SWITCH_COOP_CITY_OPTION())}
-              style={{
-                cursor: 'pointer',
-                padding: '5px 10px',
-                color: '#aa9d7a',
-                border: '1px brown solid',
-                width: '200px',
-              }}
-            >{`${cityNames[cityList[chosenCoopCityIndex]]}`}</p>
-            <p
-              style={{
-                fontSize: '12px',
-              }}
-            >{`目前協作人數：${
-              cityAccessUsers[cityList[chosenCoopCityIndex]].length
-            }人`}</p>
-            {cityAccessUsers[cityList[chosenCoopCityIndex]].length === 2 ? (
-              <p
-                style={{
-                  fontSize: '12px',
-                  color: 'darkred',
-                }}
-              >
-                協作人數已達上限
-              </p>
-            ) : (
-              ''
-            )}
             <button
               onClick={() => {
-                const cityId = cityList[chosenCoopCityIndex];
-                if (cityAccessUsers[cityId].length > 1) {
-                  alert(
-                    `每座城市最多兩人共同協作，${cityNames[cityId]}協作人數已達上限，請選擇其他城市。`
-                  );
-                } else {
-                  const friendId = queryResult[0].userId;
-                  dispatch(FRIEND_REQUEST({ friendId, cityId }));
-                }
+                dispatch(QUEST_FRIEND(emailInput));
               }}
             >
-              成為協作好友，共同管理城市
+              查詢
             </button>
-          </>
-        )}
+            {queryResult.length !== 0 && queryResult[0].userId === userId && (
+              <p>這是你自己的帳號喔</p>
+            )}
+            {queryResult.length !== 0 && queryResult[0].userId !== userId && (
+              <>
+                <p>{`名字：${queryResult[0].userName}`}</p>
+                <p>{`暱稱：${
+                  queryResult[0]?.userNickName || queryResult[0].userName
+                }`}</p>
+                {queryResult[0]?.userPortraitUrl && (
+                  <img
+                    src={queryResult[0].userPortraitUrl}
+                    alt={`portait of ${queryResult[0].userName}`}
+                  />
+                )}
+                <br />
+                <p>{`要與他共同管理城市嗎？`}</p>
+                <p>{`預計共同管理城市：`}</p>
+                <p
+                  onClick={() => dispatch(SWITCH_COOP_CITY_OPTION())}
+                  style={{
+                    cursor: 'pointer',
+                    padding: '5px 10px',
+                    color: '#aa9d7a',
+                    border: '1px brown solid',
+                    width: '200px',
+                  }}
+                >{`${cityNames[cityList[chosenCoopCityIndex]]}`}</p>
+                <p
+                  style={{
+                    fontSize: '12px',
+                  }}
+                >{`目前協作人數：${
+                  cityAccessUsers[cityList[chosenCoopCityIndex]].length
+                }人`}</p>
+                {cityAccessUsers[cityList[chosenCoopCityIndex]].length === 2 ? (
+                  <p
+                    style={{
+                      fontSize: '12px',
+                      color: 'darkred',
+                    }}
+                  >
+                    協作人數已達上限
+                  </p>
+                ) : (
+                  ''
+                )}
+                <button
+                  onClick={() => {
+                    const cityId = cityList[chosenCoopCityIndex];
+                    if (cityAccessUsers[cityId].length > 1) {
+                      alert(
+                        `每座城市最多兩人共同協作，${cityNames[cityId]}協作人數已達上限，請選擇其他城市。`
+                      );
+                    } else {
+                      const friendId = queryResult[0].userId;
+                      dispatch(FRIEND_REQUEST({ friendId, cityId }));
+                    }
+                  }}
+                >
+                  成為協作好友，共同管理城市
+                </button>
+              </>
+            )}
+          </FriendInfoWrap>
+        </FriendListWrap>
       </FriendListsWrap>
     </Wrap>
   );
@@ -422,6 +430,9 @@ const FriendListTitle = styled.p`
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  &:hover {
+    filter: brightness(0.95);
+  }
 `;
 
 const FriendInfoWrap = styled.div<FriendInfoWrapProps>`

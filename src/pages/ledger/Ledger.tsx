@@ -198,7 +198,7 @@ const Wrap = styled.div<WrapProps>`
   z-index: 6;
   height: 80vh;
   overflow: hidden;
-  bottom: ${({ $isShown }) => ($isShown ? '0' : 'calc( -80% + 80px)')};
+  bottom: ${({ $isShown }) => ($isShown ? '0' : 'calc( -80% )')};
   width: ${({ $isShown }) => ($isShown ? '40%' : '30%')};
   transition: 1s ease;
   &:hover {

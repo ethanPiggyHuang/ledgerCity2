@@ -309,7 +309,6 @@ export const ledgerSingle = createSlice({
       })
       .addCase(ledgerUpdate.fulfilled, (state) => {
         state.status = 'idle';
-        // alert('已登錄');
         state.data.item = '';
         state.data.labelMain = '食物';
         state.data.labelSubs = [];

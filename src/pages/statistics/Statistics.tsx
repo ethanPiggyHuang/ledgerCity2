@@ -85,7 +85,7 @@ type WrapProps = {
 const Wrap = styled.div<WrapProps>`
   border: #ffffff 3px solid;
   background-color: #f2f2f2;
-  border-radius: 20px;
+  border-radius: ${({ $isShown }) => ($isShown ? '0px' : '20px')};
   color: #808080;
 
   width: ${({ $isShown }) => ($isShown ? '100%' : '40%')};
@@ -95,7 +95,7 @@ const Wrap = styled.div<WrapProps>`
   z-index: 6;
   overflow: hidden;
   bottom: ${({ $isShown }) => ($isShown ? '80px' : '-100%')};
-  transition: bottom 1s ease, width 1.5s ease;
+  transition: bottom 1s ease, width 1.5s ease, border-radius 1.5s ease;
 `;
 const Header = styled.div`
   height: 60px;

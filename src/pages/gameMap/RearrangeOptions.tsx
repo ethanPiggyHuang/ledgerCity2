@@ -70,6 +70,7 @@ export const RearrangeOptions: React.FC<Props> = ({ props }) => {
     if (!audioRef.current) return;
     if (!isMusicPlay) {
       audioRef.current.play();
+      audioRef.current.volume = 1;
       setIsMusicPlay(true);
     } else {
       audioRef.current.pause();
@@ -241,14 +242,14 @@ export const RearrangeOptions: React.FC<Props> = ({ props }) => {
             </IconsWrapper>
           </>
         )}
-        <button
+        {/* <button
           onClick={() => {
             dispatch(ALERT_TOGGLE());
             setTimeout(() => dispatch(ALERT_DIALOUGE_TOGGLE()), 200);
           }}
         >
           alert
-        </button>
+        </button> */}
         {isShown && <Alert title="hi" text="hi" handleAlert={handleAlert} />}
         <audio src={chocolate_world} preload={'metadata'} loop ref={audioRef} />
       </Wrapper>

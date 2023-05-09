@@ -22,7 +22,7 @@ export const UserBar: React.FC = () => {
     <Wrapper $isFolded={isTouring}>
       <Background />
       <TextWrap>
-        <Text>{`歡迎回來，`}</Text>
+        {/* <Text>{`歡迎回來，`}</Text> */}
         <Text>{`${userNickName}市長`}</Text>
       </TextWrap>
       <PorTraitWrap

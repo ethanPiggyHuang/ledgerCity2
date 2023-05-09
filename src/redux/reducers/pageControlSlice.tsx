@@ -10,7 +10,7 @@ export type CurrentActionState =
   | 'profile'
   | 'leave';
 
-type SocialSections = 'cooperated' | 'friend' | 'inviting';
+type SocialSections = 'cooperated' | 'friend' | 'inviting' | 'search';
 
 export interface PageControlState {
   pageActivity: CurrentActionState;
@@ -33,7 +33,7 @@ const initialState: PageControlState = {
   chartType: 'oneMonth',
   chartShown: 'monthOnly',
   panelOpened: 'none',
-  socialSectionClosed: [],
+  socialSectionClosed: ['search'],
   landingScrollY: 0,
   alert: {
     isShown: false,
