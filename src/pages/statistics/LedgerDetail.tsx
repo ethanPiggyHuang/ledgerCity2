@@ -6,7 +6,6 @@ import {
   SORT_LIST,
   deleteSingleLedger,
 } from '../../redux/reducers/ledgerListSlice';
-import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faArrowDown19,

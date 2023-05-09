@@ -63,7 +63,6 @@ const Header: React.FC = () => {
     if (ledgerBookId.length !== 0) {
       if (accessUsers.findIndex((id) => id === userId) === -1) {
         return;
-        //TODO: 非accessUsers
       } else {
         const q = query(
           collection(db, 'ledgerBooks', ledgerBookId, 'ledgers'),
@@ -147,7 +146,6 @@ const Header: React.FC = () => {
               icon={faFloppyDisk}
               onClick={() => {
                 dispatch(UPDATE_CITY_NAME({ cityId: cityList[0], cityName }));
-                // dispatch(RENAME_CITY(false));
               }}
             />
           </TextWrapper>
@@ -185,7 +183,6 @@ const Wrapper = styled.div<WrapperProps>`
 `;
 
 const TextWrapper = styled.div`
-  /* border: 1px solid black; */
   position: absolute;
   height: 65%;
   width: 70%;
@@ -194,11 +191,8 @@ const TextWrapper = styled.div`
 `;
 
 const BannerText = styled.input<BannerTextProps>`
-  /* position: absolute; */
   color: #ae7a00;
   font-size: 42px;
-  /* height: 65%; */
-  /* padding: 20px; */
   text-align: center;
   letter-spacing: 0.4em;
   font-weight: bold;
@@ -230,8 +224,4 @@ const SaveIcon = styled(FontAwesomeIcon)<SaveIconProps>`
   right: -5px;
   color: #df9469;
   cursor: pointer;
-`;
-
-const LandingBannerWrapper = styled.div`
-  transform: translateX(-50%) scale(0.6);
 `;

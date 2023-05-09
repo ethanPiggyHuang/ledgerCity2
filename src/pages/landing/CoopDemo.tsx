@@ -1,13 +1,8 @@
 import React from 'react';
-import styled, { keyframes } from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../redux/hooks';
+import styled from 'styled-components/macro';
 import introCoopStatus from '../../assets/intro_coop_status.png';
 
 export const CoopDemo: React.FC = () => {
-  const { demoHouses } = useAppSelector((state) => state.landingIntro);
-
-  const dispatch = useAppDispatch();
-
   return (
     <Wrap>
       <DemoImage src={introCoopStatus} />
@@ -18,7 +13,6 @@ export const CoopDemo: React.FC = () => {
 const Wrap = styled.div`
   width: 100%;
   margin-right: auto;
-  /* padding-bottom: 100px; */
   flex-wrap: flex;
   justify-content: end;
   text-align: end;

@@ -40,7 +40,6 @@ const CrossIconWrap = styled.div<CrossIconWrapProps>`
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  /* border: 1px black solid; */
 `;
 const CrossIcon = styled(FontAwesomeIcon)`
   height: 27px;

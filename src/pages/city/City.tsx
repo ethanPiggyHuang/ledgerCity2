@@ -8,8 +8,6 @@ import {
   dragHouseStart,
   dragLightOn,
   dragLightOff,
-  RECORD_DRAG_START,
-  UPDATE_CITY_LOCATION,
   CITY_KEY_SHIFT,
   SET_SCALE,
 } from '../../redux/reducers/cityArrangementSlice';
@@ -20,7 +18,6 @@ import { HouseOfClothes } from './housesSvg/HouseOfClothes';
 import { HouseOfDrinks } from './housesSvg/HouseOfDrinks';
 import { HouseOfPlants } from './housesSvg/HouseOfPlants';
 import { HouseGrid } from './housesSvg/HouseGrid';
-import mapPin from '../../assets/mapPin.png';
 import character_green from '../../assets/character_green.png';
 import { HouseCityHall } from './housesSvg/HouseCityHall';
 
@@ -33,19 +30,14 @@ export const City: React.FC = () => {
     gridsStatus,
     dragMode,
     scale,
-    cityScrollShift,
     cityKeyShift,
     isTouring,
     isAddingNew,
   } = useAppSelector((state) => state.cityArrangement);
-  const { pageActivity } = useAppSelector((state) => state.pageControl);
   const dispatch = useAppDispatch();
-  // TODO: 要再改成可以一鍵看到城市全貌?
   const cityWidth = (gridLength + gridGap) * housesPosition[0].length;
   const cityHeight = (gridLength + gridGap) * housesPosition.length;
   const [figurePosition, setFigurePosition] = useState(0);
-  const [cityX, setCityX] = useState(0);
-  const [cityY, setCityY] = useState(0);
   const [greenMoveX, setGreenMoveX] = useState(0);
   const [greenMoveY, setGreenMoveY] = useState(0);
 
@@ -72,36 +64,8 @@ export const City: React.FC = () => {
     dispatch(displayCity(cityBasicInfo));
   }, [cityBasicInfo, dispatch]);
 
-  // useEffect(() => {
-  //   const handelWheel = (event: WheelEvent) => {
-  //     dispatch(
-  //       CITY_WHEEL_SHIFT({
-  //         deltaX: event.deltaX / 3,
-  //         deltaY: event.deltaY / 3,
-  //       })
-  //     );
-  //   };
-  //   if (pageActivity === 'city') {
-  //     window.addEventListener('wheel', handelWheel);
-  //   } else {
-  //     window.removeEventListener('wheel', handelWheel);
-  //   }
-  //   return () => window.removeEventListener('wheel', handelWheel);
-  // }, [pageActivity]);
-
-  // useEffect(() => {
-  //   const handelClick = (event: any) => {
-  //     setCityX(-300);
-  //     setCityY(-300);
-  //   };
-  //   window.addEventListener('click', handelClick);
-  //   return () => window.removeEventListener('click', handelClick);
-  // }, []);
-
   useEffect(() => {
     const handelKeypress = (event: KeyboardEvent) => {
-      // if (event.code === 'ArrowDown' || event.code === 'KeyS') {
-
       if (event.code === 'ArrowDown') {
         event.preventDefault();
         dispatch(CITY_KEY_SHIFT({ deltaX: 0, deltaY: 15 }));
@@ -148,8 +112,6 @@ export const City: React.FC = () => {
       $paddingY={cityPaddingY}
       $relocatMode={isAddingNew ? 'newHouse' : 'others'}
     >
-      {/* <WalkingFigure src={mapPin} $scale={scale} $left={figurePosition} />
-      <WalkingFigure src={mapPin} $scale={scale} $left={figurePosition * 2} /> */}
       {isTouring && (
         <CharacterWrap
           $widthAttrs={`${scale * 26}px`}
@@ -178,8 +140,6 @@ export const City: React.FC = () => {
                   $status={gridsStatus[yIndex][xIndex]}
                   $type={house.type}
                   key={xIndex}
-                  // onDragEnter={(e) => {
-                  // }}
                   onDragLeave={(e) => {
                     if (dragMode !== 'houses') return;
                     dispatch(dragLightOff());
@@ -304,7 +264,6 @@ const Row = styled.div.attrs<RowProps>(({ $paddingTopAttrs, $gapAttrs }) => ({
   display: flex;
   align-items: center;
   justify-content: center;
-  /* border: 1px blue solid; */
 `;
 
 const Grid = styled.div.attrs<GridProps>(({ $lengthAttrs }) => ({
@@ -313,7 +272,6 @@ const Grid = styled.div.attrs<GridProps>(({ $lengthAttrs }) => ({
     height: $lengthAttrs,
   },
 }))<GridProps>`
-  /* border: 1px solid lightblue; */
   position: relative;
   background-color: ${({ $status, $type }) =>
     $status === 1
@@ -346,19 +304,6 @@ const House = styled.div.attrs<HouseProps>(
   }
 `;
 
-type WalkingFigureProps = {
-  $scale: number;
-  $left: number;
-};
-
-const WalkingFigure = styled.img<WalkingFigureProps>`
-  height: ${({ $scale }) => `${$scale * 20}px`};
-  position: absolute;
-  left: ${({ $scale, $left }) => `${$left * $scale + 400}px`};
-  transition: left 0.5s linear;
-  z-index: 3;
-`;
-
 type CharacterWrapProps = {
   $widthAttrs: string;
   $heightAttrs: string;
@@ -384,12 +329,8 @@ const CharacterWrap = styled.div.attrs<CharacterWrapProps>(
   position: fixed;
   top: calc(50vh - 25px);
   left: calc(50vw - 25px);
-  /* width: 52px; */
-  /* height: 60px; */
   overflow: hidden;
-  /* border: black 1px solid; */
   z-index: 3;
-  /* transition: scale 3s ease; */
   animation: ${enterCity} 4s 1;
 `;
 type CharacterProps = {

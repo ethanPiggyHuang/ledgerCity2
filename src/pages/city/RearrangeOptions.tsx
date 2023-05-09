@@ -24,20 +24,14 @@ import {
   SET_SCALE,
   GENERATE_AVAILABLE_POSITION,
 } from '../../redux/reducers/cityArrangementSlice';
-import iconReconstruct from '../../assets/iconReconstruct.png';
 import { citySetting } from '../../utils/gameSettings';
 import { Alert } from '../../component/Alert';
-import {
-  ALERT_DIALOUGE_TOGGLE,
-  ALERT_TOGGLE,
-} from '../../redux/reducers/pageControlSlice';
 
 interface Props {
   props: HTMLDivElement | null;
 }
 
 export const RearrangeOptions: React.FC<Props> = ({ props }) => {
-  const { cityList } = useAppSelector((state) => state.userInfo.data);
   const { dragMode, nextHousePosition, scale, housesPosition, isTouring } =
     useAppSelector((state) => state.cityArrangement);
   const { dataList } = useAppSelector((state) => state.ledgerList);
@@ -47,15 +41,9 @@ export const RearrangeOptions: React.FC<Props> = ({ props }) => {
   const [isMusicPlay, setIsMusicPlay] = useState(false);
   const [playHammer, { stop }] = useSound(hammer_2, { volume: 0.8 });
 
-  const cityId = cityList[0];
-
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const [show, setShow] = useState(true);
-
-  // useEffect(() => {
-  // if (props) console.log('props', props);
-  // }, []);
 
   const handleConstruction = () => {
     if (dragMode === 'houses') {
@@ -144,11 +132,6 @@ export const RearrangeOptions: React.FC<Props> = ({ props }) => {
     dispatch(END_CITY_TOUR());
   };
 
-  // TODO: 只在第一次進入遊戲時 redirect
-  // useEffect(() => {
-  //   handleRedirectCityHall();
-  // }, [housesPosition]);
-
   useEffect(() => {
     const { xIndex, yIndex } = nextHousePosition;
     if (housesPosition.flat(2).length !== 1) {
@@ -176,8 +159,6 @@ export const RearrangeOptions: React.FC<Props> = ({ props }) => {
   return (
     <>
       <Wrapper $isFolded={isTouring}>
-        {/* TODO */}
-        {/* <IconImage src={iconReconstruct} onClick={() => setShow(!show)} /> */}
         {show && (
           <>
             <Title>城市經營</Title>
@@ -220,36 +201,9 @@ export const RearrangeOptions: React.FC<Props> = ({ props }) => {
               <IconBack $isActivate={isMusicPlay} onClick={handleMusicToggle}>
                 <Icon icon={isMusicPlay ? faVolumeHigh : faVolumeXmark} />
               </IconBack>
-              {/* <button
-              onClick={() => {
-                dispatch(GENERATE_AVAILABLE_POSITION());
-                dispatch(
-                  CITY_SET_SHIFT({
-                    shiftX:
-                      -cityPaddingX +
-                      window.innerWidth / 2 -
-                      (nextHousePosition.xIndex + 0.5) * gridLength * scale,
-                    shiftY:
-                      -cityPaddingY +
-                      window.innerHeight / 2 -
-                      (nextHousePosition.yIndex + 0.5) * gridLength * scale,
-                  })
-                );
-              }}
-            >
-              {`${nextHousePosition.xIndex},${nextHousePosition.yIndex}`}
-            </button> */}
             </IconsWrapper>
           </>
         )}
-        {/* <button
-          onClick={() => {
-            dispatch(ALERT_TOGGLE());
-            setTimeout(() => dispatch(ALERT_DIALOUGE_TOGGLE()), 200);
-          }}
-        >
-          alert
-        </button> */}
         {isShown && <Alert title="hi" text="hi" handleAlert={handleAlert} />}
         <audio src={chocolate_world} preload={'metadata'} loop ref={audioRef} />
       </Wrapper>
@@ -346,7 +300,6 @@ const IconBackTouring = styled.div<IconBackTouringProps>`
   height: 44px;
   border-radius: 33px;
   display: flex;
-  /* opacity: ${({ $isTouring }) => ($isTouring ? '0.5' : '0')}; */
   justify-content: center;
   align-items: center;
   background-color: black;
@@ -380,12 +333,4 @@ const IconImg = styled.img`
 const ScaleText = styled.p`
   font-size: 16px;
   color: #f2f2f2;
-`;
-
-const IconImage = styled.img`
-  height: 200px;
-  cursor: pointer;
-  &:hover {
-    transform: translateY(-10px);
-  }
 `;

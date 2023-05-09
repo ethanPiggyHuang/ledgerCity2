@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { fetchLedgerList } from '../api/ledgerListAPI';
 import { FriendInfoState } from '../reducers/usersActivitySlice';
 import {
   createAccount,
@@ -34,7 +33,6 @@ export interface UserDataState {
 export interface FriendStatusState {
   userId: string;
   name: string;
-  // friendStatus: 'inviting' | 'beenInvited' | 'friend';
   coopStatus:
     | 'inviting'
     | 'beenInvited'
@@ -157,8 +155,6 @@ export const SAVE_NICKNAME = createAsyncThunk(
 export const QUEST_FRIEND = createAsyncThunk(
   'userInfo/QUEST_FRIEND',
   async (friendEmail: string, { getState }) => {
-    // const allStates = getState() as RootState;
-    // const { userId } = allStates.userInfo.data;
     const fullEmail = `${friendEmail}@gmail.com`;
     const response = await FIND_ACCOUNT_MATCH(fullEmail);
     return response.result;
@@ -286,7 +282,6 @@ export const userInfo = createSlice({
     builder
       .addCase(CREATE_ACCOUNT.pending, (state) => {
         state.status = 'loading';
-        //要跳出提示「帳號創建中」
       })
       .addCase(CREATE_ACCOUNT.fulfilled, (state, action) => {
         state.status = 'idle';
@@ -299,7 +294,6 @@ export const userInfo = createSlice({
         state.data.userNickName = userNickName === '' ? userName : userNickName;
         state.data.userPortraitUrl = userPortraitUrl;
         state.data.userEmail = userEmail;
-        // console.log('check', cityId, ledgerBookId);
         state.data.cityList = [cityId];
       })
       .addCase(CREATE_ACCOUNT.rejected, (state) => {
@@ -313,10 +307,7 @@ export const userInfo = createSlice({
         state.status = 'idle';
         state.loginStatus.isLogin = true;
         if (action.payload) {
-          // const cityId = action.payload.cityList[0];
-          // state.data.cityList = [cityId];
           state.data = action.payload.data;
-          // // state.friends = action.payload.friendResponse;
         }
       })
       .addCase(GET_ACCOUNT_INFO.rejected, (state) => {
@@ -364,7 +355,6 @@ export const userInfo = createSlice({
       })
       .addCase(CITY_REDIRECTION.fulfilled, (state, action) => {
         state.status = 'idle';
-        // alert('request redirect');
         state.data.cityList = action.payload;
       })
       .addCase(CITY_REDIRECTION.rejected, (state) => {

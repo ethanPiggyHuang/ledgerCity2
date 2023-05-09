@@ -21,14 +21,11 @@ import {
   SWITCH_PAGE,
 } from '../../redux/reducers/pageControlSlice';
 import banner from '../../assets/banner.png';
-//TODO:
-import { VISIT_CITY } from '../../redux/reducers/cityBasicInfoSlice';
 import { UserBasics } from '../profile/UserBasics';
 
 export const Social: React.FC = () => {
   const { userId, cityList } = useAppSelector((state) => state.userInfo.data);
   const { friends } = useAppSelector((state) => state.userInfo);
-  const { cityName } = useAppSelector((state) => state.cityBasicInfo);
   const { cityNames, cityAccessUsers, chosenCoopCityIndex } = useAppSelector(
     (state) => state.userInfo.additionalData
   );
@@ -61,16 +58,6 @@ export const Social: React.FC = () => {
     }
   }, [friends]);
 
-  // useEffect(() => {
-  //   const friendIds = Object.keys(friendsInfo);
-  //   if (friendIds.length !== 0) {
-  //     const allFriendsCityId = friendIds
-  //       .map((friendId) => friendsInfo[friendId].cityList)
-  //       .flat();
-  //     allFriendsCityId.forEach((cityId) => dispatch(GET_CITY_NAME(cityId)));
-  //   }
-  // }, [friendsInfo]);
-
   useEffect(() => {
     if (cityList.length !== 0) {
       cityList.forEach((cityId) => dispatch(GET_CITY_NAME(cityId)));
@@ -83,29 +70,19 @@ export const Social: React.FC = () => {
     (state) => state.userInfo.editStatus
   );
 
-  // useEffect(() => {if(queryResult.length!==0){
-  //   SET_COOP_CITY(cityList[0])
-  // }}, []);
-
   const friendsArray = Object.values(friendsInfo);
 
   const friendInfoCollection = friendsArray.map((friendInfo) => {
     const friendId = friendInfo.userId;
-    // const friendCityList = friendInfo.cityList;
     const findFriendCondition = (user: FriendStatusState) =>
       user.userId === friendId;
     const coopCityId = friends.find(findFriendCondition)?.coopCityId || '';
-    // const personalCityId =
-    //   friendCityList.find((data) => data !== coopCityId) || '';
     return {
       ...friendInfo,
-      // friendStatus: friends.find(findFriendCondition)?.friendStatus || '',
       coopStatus: friends.find(findFriendCondition)?.coopStatus || '',
       lastActiveTime: coopInfo[friendId]?.latestActiveTimeSecond || 0,
       coopCityId,
       coopCityName: cityNames[coopCityId] || '',
-      // personalCityId,
-      // personalCityName: cityNames[personalCityId] || '',
     };
   });
 
@@ -183,8 +160,6 @@ export const Social: React.FC = () => {
             {friendInfoCollection.length !== 0 &&
               friendInfoCollection.map(
                 (friendInfo, index) =>
-                  // TODO 改成 還在確認友情關係
-                  // friendInfo.friendStatus === 'friend' &&
                   friendInfo.coopStatus === 'inviting' && (
                     <FriendInfo key={friendInfo.userId}>
                       <UserBasics
@@ -216,9 +191,7 @@ export const Social: React.FC = () => {
           <FriendInfoWrap $isClosed={socialSectionClosed.includes('inviting')}>
             {friendInfoCollection.length !== 0 &&
               friendInfoCollection.map(
-                (friendInfo, index) =>
-                  // TODO 改成 還在確認友情關係
-                  // friendInfo.friendStatus === 'friend' &&
+                (friendInfo) =>
                   friendInfo.coopStatus === 'beenInvited' && (
                     <FriendInfo key={friendInfo.userId}>
                       <UserBasics
@@ -468,11 +441,7 @@ const FriendCityInfoTitle = styled.p`
   line-height: 22px;
   color: #808080;
 `;
-const FriendCityInfoText = styled(FriendCityInfoTitle)`
-  opacity: 0.6;
-  line-height: 22px;
-  font-size: 12px;
-`;
+
 const FriendCityWrap = styled(FriendInfoTextWrap)`
   width: 20%;
 `;
@@ -491,23 +460,12 @@ const CityBannerWrap = styled.div`
   cursor: pointer;
 `;
 
-const InviteCityBannerWrap = styled(CityBannerWrap)`
-  /* height: 18px; */
-  /* width: 70%; */
-  /* margin: auto; */
-  opacity: 0.7;
-`;
-
 const MyCityText = styled.div`
   font-size: 14px;
   color: #ae7a00;
   display: flex;
   align-items: center;
   justify-content: center;
-`;
-
-const InviteCityText = styled(MyCityText)`
-  font-size: 12px;
 `;
 
 const MyCityNoticeWrap = styled.div`
@@ -542,12 +500,6 @@ const MyCityNotice = styled.div`
   background-color: #ae7a00;
 `;
 
-const FriendsCityNoticeWrap = styled(MyCityNoticeWrap)`
-  &:hover {
-    opacity: 1;
-  }
-`;
-
 const ButtonTemplate = styled.button`
   margin: auto;
   padding: 1px 0;
@@ -560,11 +512,6 @@ const ButtonTemplate = styled.button`
   &:hover {
     filter: brightness(1.1);
   }
-`;
-
-const InvitationButton = styled(ButtonTemplate)`
-  background-color: #f0d2aa;
-  color: #ae7a00;
 `;
 
 const AgreeButton = styled(ButtonTemplate)`

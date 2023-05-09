@@ -1,10 +1,7 @@
-import React, { ReactNode, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import {
-  chooseLabel,
-  SET_CURRENT_MONTH,
-} from '../../redux/reducers/ledgerListSlice';
+import { SET_CURRENT_MONTH } from '../../redux/reducers/ledgerListSlice';
 import { mainLabel } from '../../utils/gameSettings';
 import { DoughnutChart } from './DoughnutChart';
 import { LedgerDetail } from './LedgerDetail';

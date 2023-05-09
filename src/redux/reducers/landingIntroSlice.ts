@@ -1,6 +1,4 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { updateActivity } from '../api/userAPI';
-import { RootState } from '../store';
 
 export interface PageControlState {
   demoHouses: { type: string }[][];

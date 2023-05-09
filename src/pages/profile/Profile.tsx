@@ -1,16 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import styled, { keyframes } from 'styled-components/macro';
-import { getAuth, signOut } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
-import { LOG_OUT } from '../../redux/reducers/userInfoSlice';
 import { UserPanel } from './UserPanel';
 import { PANEL_CONTROL } from '../../redux/reducers/pageControlSlice';
 
 export const Profile: React.FC = () => {
-  const { userId, userNickName, userPortraitUrl, cityList } = useAppSelector(
+  const { userNickName, userPortraitUrl } = useAppSelector(
     (state) => state.userInfo.data
   );
   const { panelOpened } = useAppSelector((state) => state.pageControl);
@@ -22,7 +17,6 @@ export const Profile: React.FC = () => {
     <Wrapper $isFolded={isTouring}>
       <Background />
       <TextWrap>
-        {/* <Text>{`歡迎回來，`}</Text> */}
         <Text>{`${userNickName}市長`}</Text>
       </TextWrap>
       <PorTraitWrap
@@ -41,10 +35,6 @@ export const Profile: React.FC = () => {
   );
 };
 
-// type IconBackProps = {
-//   $isActivate: boolean;
-// };
-
 type WrapperProps = {
   $isFolded: boolean;
 };
@@ -54,7 +44,6 @@ const Wrapper = styled.div<WrapperProps>`
   z-index: 4;
   right: 50px;
   top: 30px;
-  /* width: 18.5vw; */
   display: flex;
   flex-direction: column;
   align-items: flex-end;

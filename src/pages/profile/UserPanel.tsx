@@ -26,14 +26,8 @@ import { useNavigate } from 'react-router-dom';
 import banner from '../../assets/banner.png';
 
 export const UserPanel: React.FC = () => {
-  const {
-    userId,
-    userName,
-    userNickName,
-    userEmail,
-    userPortraitUrl,
-    cityList,
-  } = useAppSelector((state) => state.userInfo.data);
+  const { userId, userNickName, userEmail, userPortraitUrl, cityList } =
+    useAppSelector((state) => state.userInfo.data);
   const { isNickNameEdit, inputText } = useAppSelector(
     (state) => state.userInfo.editStatus
   );
@@ -46,7 +40,6 @@ export const UserPanel: React.FC = () => {
   const { friendsInfo } = useAppSelector((state) => state.userActivity);
 
   const auth = getAuth();
-  const navigate = useNavigate();
 
   const dispatch = useAppDispatch();
 
@@ -122,7 +115,6 @@ export const UserPanel: React.FC = () => {
             <AddNewCityWrap
               onClick={() => {
                 alert('注意，每個帳號最多只能擁有兩座城市，請細心管理 :D');
-                //need double confirm
                 dispatch(CREATE_NEW_CITY(userId));
               }}
             >
@@ -149,7 +141,6 @@ export const UserPanel: React.FC = () => {
 };
 
 const Wrap = styled.div`
-  /* height: 20vh; */
   position: absolute;
   width: 30vw;
   top: 80px;
@@ -187,7 +178,6 @@ const AccountTextWrap = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  /* gap: 17px; */
   padding: 10px 0;
 `;
 
@@ -219,7 +209,6 @@ const NickNameInput = styled.input`
 
 const SaveIcon = styled(FontAwesomeIcon)`
   margin-left: 10px;
-  /* font-size: 10px; */
   color: #808080;
   cursor: pointer;
   display: inline;
@@ -255,7 +244,6 @@ const MyCityTypeText = styled.div`
   height: 100%;
   width: 20px;
   color: #f2f2f2;
-  /* border: 1px solid #ae7a00; */
   background-color: #ae7a00;
   opacity: 0.6;
   border-radius: 5px;
@@ -268,7 +256,6 @@ const MyCityTypeText = styled.div`
 const CityBannerWrap = styled.div`
   padding: 0 30px;
   height: 36px;
-  /* overflow: hidden; */
   display: flex;
   justify-content: center;
   background-image: url(${banner});
@@ -316,8 +303,6 @@ const CityMayors = styled.div<CityMayorsState>`
 `;
 
 const MyCityNoticeWrap = styled.div`
-  /* font-size: 18px; */
-  /* line-height: 36px; */
   width: 100%;
   height: 100%;
   color: #ae7a00;
@@ -385,9 +370,6 @@ const IconText = styled.div`
 const LeaveIcon = styled(FontAwesomeIcon)`
   font-size: 16px;
   color: #f2f2f2;
-  /* &:hover {
-    opacity: 0;
-  } */
 `;
 
 const CrossIconWrap = styled.div`

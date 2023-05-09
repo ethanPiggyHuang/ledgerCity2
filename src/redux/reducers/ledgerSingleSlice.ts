@@ -11,7 +11,7 @@ export interface LedgerDataState {
   labelSubs: string[];
   payWho: string;
   payHow: 'cash' | 'creditCard' | 'mobile';
-  amount: { currency: string; number: number; numberNT: number }; //TODO: currency exchange
+  amount: { currency: string; number: number; numberNT: number };
   recordTime: number;
   recordWho: string;
 }
@@ -67,7 +67,6 @@ export const ledgerSubmit = createAsyncThunk(
     };
     const { nextHousePosition } = allStates.cityArrangement;
 
-    // if (availableGrids.length === 0) alert('not enough grids'); //TODO: auto expand grid
     await postLedger(cityId, ledgerBookId, ledgerData, nextHousePosition);
   }
 );
@@ -112,14 +111,11 @@ export const ledgerSingle = createSlice({
     },
     labelChooseMain: (state, action: PayloadAction<string>) => {
       state.data.labelMain = action.payload;
-
-      //TODO: case 次要標籤
     },
     labelRetrieve: (state, action: PayloadAction<string>) => {
       if (state.data.labelMain === action.payload) {
         state.data.labelMain = '';
       } else {
-        //TODO: case 次要標籤
         state.data.labelSubs = state.data.labelSubs.filter(
           (labelSub) => labelSub !== action.payload
         );
@@ -270,8 +266,7 @@ export const ledgerSingle = createSlice({
         default: {
         }
       }
-      // const now = new Date().getTime(); //TODO ESSENTIAL: Reducers Must Not Have Side Effects
-      // if (newTimeInSeconds > now) alert('注意，未來日期！');
+
       state.data.timeLedger = time.getTime();
       state.data.timeMonth = time.getMonth() + 1;
       state.data.timeYear = time.getFullYear();

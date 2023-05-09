@@ -47,13 +47,6 @@ export const TimeBar: React.FC = () => {
   const time = new Date(ledgerTime);
   const timeInSeconds = time.getTime();
 
-  // const scopes = [
-  // { scope: 'year', text: `${new Date(ledgerTime).getFullYear()}年` },
-  // { scope: 'month', text: `${new Date(ledgerTime).getMonth() + 1}月` },
-  // { scope: 'date',  text: `${new Date(ledgerTime).getDate()} 日` },
-  // { scope: 'day', text: `星期${weekdays[new Date(ledgerTime).getDay()]}` },
-  // ];
-
   return (
     <Wrapper>
       <DateSwitch
@@ -82,9 +75,6 @@ export const TimeBar: React.FC = () => {
         icon={faCaretRight}
       />
 
-      {/* <DateOption>
-        <DateText> {`${time.getMinutes()}分${time.getSeconds()}秒`}</DateText>
-      </DateOption> */}
       {semantizeDate(ledgerTime) !== '今天' && (
         <TodayWrap
           onClick={() => {
@@ -99,11 +89,6 @@ export const TimeBar: React.FC = () => {
     </Wrapper>
   );
 };
-
-// type HouseProps = {
-//   $zoomRatio: number;
-//   $type: number;
-// };
 
 const Wrapper = styled.div`
   height: 40px;

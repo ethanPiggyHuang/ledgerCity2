@@ -1,7 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { FETCH_COORPERATE_LOCATION, fetchFrinedInfo } from '../api/userAPI';
-import { DocumentData } from '@firebase/firestore-types';
-import { RootState } from '../store';
+import { fetchFrinedInfo } from '../api/userAPI';
 
 export type CurrentActionState =
   | 'city'
@@ -24,7 +22,6 @@ export interface FriendInfoState {
   userNickName: string;
   userEmail: string;
   userPortraitUrl: string;
-  // cityList: string[];
 }
 
 export interface UsersActivityState {
@@ -39,7 +36,7 @@ export interface UsersActivityState {
 const initialState: UsersActivityState = {
   status: 'idle',
   friendsInfo: {},
-  friendsCityName: {}, //TODO: fetchFriend's city name
+  friendsCityName: {},
   coopInfo: {},
 };
 
@@ -86,7 +83,6 @@ export const usersActivity = createSlice({
     builder
       .addCase(GET_FRIENDS_INFO.pending, (state) => {
         state.status = 'loading';
-        //要跳出提示「帳號創建中」
       })
       .addCase(GET_FRIENDS_INFO.fulfilled, (state, action) => {
         state.status = 'idle';

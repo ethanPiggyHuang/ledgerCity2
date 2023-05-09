@@ -4,10 +4,7 @@ import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import {
   ALERT_DIALOUGE_TOGGLE,
   ALERT_TOGGLE,
-  SWITCH_PAGE,
 } from '../redux/reducers/pageControlSlice';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 interface Props {
   title: string;
@@ -60,7 +57,6 @@ const showUp = keyframes`
 `;
 
 const Wrap = styled.div<WrapProps>`
-  /* display: ${({ $isShown }) => ($isShown ? 'block' : 'none')}; */
   position: fixed;
   z-index: ${({ $isShown }) => ($isShown ? '10' : '-10')};
   left: 0;
@@ -76,7 +72,6 @@ const BlackCurtain = styled.div`
   width: 100vw;
   height: 100vh;
   background-color: #00000066;
-  /* background-color: #00000000; */
 `;
 const Dialogue = styled.div<DialogueProps>`
   position: absolute;

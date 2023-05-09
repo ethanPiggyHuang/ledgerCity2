@@ -3,13 +3,10 @@ import {
   getDocs,
   collection,
   query,
-  where,
   doc,
   orderBy,
   deleteDoc,
   updateDoc,
-  deleteField,
-  arrayRemove,
 } from 'firebase/firestore';
 import { WhereFilterOp } from '@firebase/firestore-types';
 import { HouseState } from '../reducers/cityBasicInfoSlice';
@@ -31,26 +28,23 @@ export interface LedgerRecordedState {
       numberNT: number;
     };
     recordWho: string;
-    recordTime: any; //TODO typescript
+    recordTime: any;
   };
 }
 
 export async function fetchLedgerList(
   ledgerBookId: string,
   queryParams: {
-    // TODO: delete sometime
     field: string;
     whereFilterOp: WhereFilterOp;
     value: string | number;
   }
 ) {
   const ledgersRef = collection(db, 'ledgerBooks', ledgerBookId, 'ledgers');
-  // const { field, whereFilterOp, value } = queryParams;
-  // const q = query(ledgersRef, where(field, whereFilterOp, value));
   const q = query(ledgersRef, orderBy('timeLedger'));
 
   const querySnapshot = await getDocs(q);
-  let result: any[] = []; //TODO typescript
+  let result: any[] = [];
   querySnapshot.forEach((doc) => {
     result.push({ ledgerId: doc.id, data: doc.data() });
   });

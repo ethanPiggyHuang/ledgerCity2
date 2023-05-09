@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../../redux/hooks';
+import { useAppSelector } from '../../../redux/hooks';
 import {
   citySetting,
   mainLabels,
@@ -42,7 +42,6 @@ export const HouseGrid: React.FC<{ houseType: string }> = ({ houseType }) => {
   const { gridLength } = citySetting;
   const { scale } = useAppSelector((state) => state.cityArrangement);
   const widthNormalize = gridLength / 160;
-  // const dispatch = useAppDispatch();
 
   const labelIndex = mainLabels.findIndex((label) => label === houseType);
   const floorColor = labelColorCodes[labelIndex] || '#9DA6A5';

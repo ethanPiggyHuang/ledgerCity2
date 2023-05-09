@@ -15,7 +15,7 @@ import {
 } from 'firebase/firestore';
 import { rtdb } from '../../utils/firebase';
 import { ref, set } from 'firebase/database';
-import { UserDataState, FriendStatusState } from '../reducers/userInfoSlice';
+import { UserDataState } from '../reducers/userInfoSlice';
 import { FriendInfoState } from '../reducers/usersActivitySlice';
 
 export async function createAccount(userInfo: {
@@ -142,19 +142,17 @@ export async function getAccountInfo(userInfo: {
 }
 
 export async function postFadeOutTime(userId: string) {
-  // await setDoc(doc(db, 'allUserStatus', userId), {
-  //   fadeOutTime: serverTimestamp(),
-  // });
-  console.log('最後要打開此function: postFadeOutTime()');
+  await setDoc(doc(db, 'allUserStatus', userId), {
+    fadeOutTime: serverTimestamp(),
+  });
 }
 
 export async function postFadeOutTimeRT(userId: string, enableType: string) {
-  // const logoutTime = new Date();
-  // set(ref(rtdb, `users/${userId}/logout`), {
-  //   logoutTime: logoutTime,
-  //   enableType: enableType,
-  // });
-  console.log('最後要打開此function: postFadeOutTimeRT()');
+  const logoutTime = new Date();
+  set(ref(rtdb, `users/${userId}/logout`), {
+    logoutTime: logoutTime,
+    enableType: enableType,
+  });
 }
 
 export async function FETCH_COORPERATE_LOCATION(userId: string) {
@@ -203,13 +201,11 @@ export async function NEW_FRIEND_REQUEST(
   const friendData = {
     coopCityId: cityId,
     coopStatus: 'beenInvited',
-    // friendStatus: 'beenInvited',
     userId: userId,
   };
   const selfData = {
     coopCityId: cityId,
     coopStatus: 'inviting',
-    // friendStatus: 'inviting',
     userId: friendId,
   };
 
@@ -222,7 +218,7 @@ export async function fetchFrinedInfo(friendId: string) {
   const docSnap = await getDoc(doc(db, 'users', friendId));
 
   if (docSnap.exists()) {
-    const data = docSnap.data() as UserDataState; //TODO typescript
+    const data = docSnap.data() as UserDataState;
     const friendInfo = {
       userId: data.userId,
       userName: data.userName,
@@ -274,7 +270,7 @@ export async function updateCityList(userId: string, newCityList: string[]) {
 export async function getOtherCityInfo(cityId: string) {
   const citySnap = await getDoc(doc(db, 'cities', cityId));
   if (citySnap.exists()) {
-    const cityName = citySnap.data().cityName as string; //TODO typescript
+    const cityName = citySnap.data().cityName as string;
     const accessUsers = citySnap.data().accessUsers as string[];
     return new Promise<{ cityName: string; accessUsers: string[] }>((resolve) =>
       resolve({ cityName, accessUsers })

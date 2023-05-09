@@ -35,12 +35,11 @@ import { CurrentActionState } from '../../redux/reducers/pageControlSlice';
 
 export const Ledger: React.FC = () => {
   const { userId } = useAppSelector((state) => state.userInfo.data);
-  const { number } = useAppSelector((state) => state.ledgerSingle.data.amount);
   const { ledgerId } = useAppSelector((state) => state.ledgerSingle);
   const numberAfterOperator = useAppSelector(
     (state) => state.ledgerSingle.calculationHolder.number
   );
-  const { item, labelMain, amount } = useAppSelector(
+  const { labelMain, amount } = useAppSelector(
     (state) => state.ledgerSingle.data
   );
   const { ledgerPosition, pageActivity } = useAppSelector(
@@ -50,7 +49,7 @@ export const Ledger: React.FC = () => {
   const { nextHousePosition, scale } = useAppSelector(
     (state) => state.cityArrangement
   );
-  const { gridLength, cityPaddingX, cityPaddingY } = citySetting;
+  const { gridLength } = citySetting;
 
   const dispatch = useAppDispatch();
 
@@ -121,13 +120,10 @@ export const Ledger: React.FC = () => {
                 }
                 onClick={() => {
                   if (amount.number === 0) {
-                    // alert('請輸入花費金額');
                     return;
                   } else if (labelMain === '') {
-                    // alert('請選擇類別');
                     return;
                   } else if (numberAfterOperator !== 0) {
-                    // alert('請按等號確認數字');
                     return;
                   }
                   if (ledgerId === '') {
@@ -204,8 +200,6 @@ const Wrap = styled.div<WrapProps>`
   &:hover {
     transform: ${({ $isShown }) =>
       $isShown ? 'translateY(0px)' : 'translateY(-20px)'};
-    /* width: 40%; */
-    /* margin: 0 30%; */
   }
 `;
 

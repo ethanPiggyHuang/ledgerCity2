@@ -1,9 +1,8 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components/macro';
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { LOGGED_IN, AUTHING_TOGGLE } from '../../redux/reducers/userInfoSlice';
+import { AUTHING_TOGGLE } from '../../redux/reducers/userInfoSlice';
 import googleLogo from '../../assets/googleLogo.png';
 import cityLandScape from '../../assets/cityLandscape.png';
 import loginSlogan from '../../assets/login_slogan.png';
@@ -14,16 +13,13 @@ export interface IloginPageProps {}
 export const LoginPanel: React.FunctionComponent<IloginPageProps> = () => {
   const { isFocusingLogin } = useAppSelector((state) => state.landingIntro);
   const dispatch = useAppDispatch();
-  // const authing = useAppSelector(
-  //   (state) => state.userInfo.loginStatus.isAuthing
-  // );
 
   const auth = getAuth();
 
   const signInWithGoogle = async () => {
     dispatch(AUTHING_TOGGLE(true));
     signInWithPopup(auth, new GoogleAuthProvider())
-      .then((response) => {
+      .then(() => {
         dispatch(AUTHING_TOGGLE(false));
       })
       .catch((error) => {
@@ -70,13 +66,6 @@ const Wrap = styled.div`
 
   gap: 10%;
 `;
-const Title = styled.p`
-  line-height: 60px;
-  font-size: 32px;
-  font-weight: bold;
-  color: #cc8159;
-  margin-bottom: auto;
-`;
 
 const flashing = keyframes`
   0%{
@@ -101,7 +90,6 @@ const LogInWrap = styled.div<LoginElementsProps>`
   display: flex;
   justify-content: center;
   align-items: center;
-  /* margin-top: auto; */
   gap: 20px;
   cursor: pointer;
   animation: ${flashing}

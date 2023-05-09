@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components/macro';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

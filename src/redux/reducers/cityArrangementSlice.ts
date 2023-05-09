@@ -142,11 +142,6 @@ export const cityArrangement = createSlice({
         mouseY: number;
       }>
     ) => {
-      // 舊的奇怪的算法
-      // state.cityShift.dragStart.x =
-      //   action.payload.mouseX - state.cityShift.current.x;
-      // state.cityShift.dragStart.y =
-      //   action.payload.mouseY - state.cityShift.current.y;
       state.cityShift.mouseStart.x = action.payload.mouseX;
       state.cityShift.mouseStart.y = action.payload.mouseY;
     },
@@ -157,13 +152,6 @@ export const cityArrangement = createSlice({
         mouseY: number;
       }>
     ) => {
-      // 舊的奇怪的算法
-      // const { mouseX, mouseY, cityHeight } = action.payload;
-      // const dragStart = state.cityShift.dragStart;
-      // const current = state.cityShift.current;
-      // current.x = mouseX - 2 * dragStart.x;
-      // current.y = mouseY + cityHeight * state.scale - 2 * dragStart.y;
-
       const { x, y } = state.cityShift.mouseStart;
       const { mouseX, mouseY } = action.payload;
       const { current } = state.cityShift;

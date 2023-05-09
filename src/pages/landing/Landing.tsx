@@ -1,11 +1,9 @@
-import React, { useEffect, WheelEvent } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import logoBanner from '../../assets/logoBanner.png';
 import { LoginPanel } from './LoginPanel';
-import { Ledger } from '../ledger/Ledger';
 import { LedgerDemo } from './LedgerDemo';
-import { LANDING_SCROLL_Y } from '../../redux/reducers/pageControlSlice';
 import { CityDemo } from './CityDemo';
 import titleLedger from '../../assets/intro_title_ledger.png';
 import titleStatistics from '../../assets/intro_title_statistics.png';
@@ -22,22 +20,11 @@ import { StatisticsDemo } from './StatisticsDemo';
 import { CoopDemo } from './CoopDemo';
 
 export const Landing: React.FC = () => {
-  const { userId } = useAppSelector((state) => state.userInfo.data);
-  // const { landingScrollY } = useAppSelector((state) => state.pageControl);
   const { introSection, isPlayingCarousel, isFocusingLogin } = useAppSelector(
     (state) => state.landingIntro
   );
 
   const dispatch = useAppDispatch();
-
-  // useEffect(() => {
-  //   const handleWheel = (event: any) => {
-  //     dispatch(LANDING_SCROLL_Y(event.deltaY));
-  //   };
-
-  //   window.addEventListener('wheel', handleWheel);
-  //   return () => window.removeEventListener('wheel', handleWheel);
-  // }, []);
 
   useEffect(() => {
     const sections = ['ledger', 'statistics', 'cooperation'] as (
@@ -235,13 +222,9 @@ const LedgerIntro = styled.div<IntroSectionProps>`
   opacity: ${({ $isShown }) => ($isShown ? '1' : '0')};
 `;
 
-const StatisticsIntro = styled(LedgerIntro)`
-  /* box-shadow: none; */
-`;
+const StatisticsIntro = styled(LedgerIntro)``;
 
-const CoopIntro = styled(LedgerIntro)`
-  /* box-shadow: none; */
-`;
+const CoopIntro = styled(LedgerIntro)``;
 
 const Slogan = styled.img`
   position: absolute;

@@ -74,7 +74,6 @@ export const CooperatorTrace: React.FC = () => {
   useEffect(() => {
     if (accessUsers.length !== 0 && accessUsers.includes(userId) === false) {
     } else if (accessUsers.length !== 0 && coopFriends.length !== 0) {
-      //TODO ?? 非accessUsers仍會觸發此處？
       coopFriends.forEach((friendId) => {
         const unsubscribe = onSnapshot(
           doc(db, 'allUserStatus', friendId),
@@ -285,7 +284,6 @@ const UserPinWrap = styled.div<UserPinWrapProps>`
   flex-direction: column;
   align-items: center;
   transition: transform 1s ease;
-  /* animation: ${move} 1.5s ease-in-out forwards; */
 `;
 
 const UserPortraitWrap = styled.div`

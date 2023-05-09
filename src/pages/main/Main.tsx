@@ -1,9 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components/macro';
 import { City } from '../city/City';
-import { DialogBoard } from '../../component/DialogBoard';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { postFadeOutTime, postFadeOutTimeRT } from '../../redux/api/userAPI';
+import { postFadeOutTime } from '../../redux/api/userAPI';
 import { Ledger } from '../ledger/Ledger';
 import Footer from '../../component/Footer';
 import { Statistics } from '../statistics/Statistics';
@@ -13,8 +12,6 @@ import {
 } from '../../redux/reducers/pageControlSlice';
 import {
   CITY_SLOWLY_TRANSITION,
-  RENAME_CITY,
-  SET_CITY_LOCATION,
   CITY_SHIFT_END,
 } from '../../redux/reducers/cityArrangementSlice';
 import { CooperatorTrace } from '../profile/CooperatorTrace';
@@ -22,35 +19,17 @@ import { RearrangeOptions } from '../city/RearrangeOptions';
 import { Profile } from '../profile/Profile';
 import { Social } from '../social/Social';
 import { useNavigate } from 'react-router-dom';
-import { Alert } from '../../component/Alert';
 
 export const Main: React.FC = () => {
-  const { isLogin, isAuthing } = useAppSelector(
-    (state) => state.userInfo.loginStatus
-  );
   const { userId } = useAppSelector((state) => state.userInfo.data);
   const { pageActivity, panelOpened } = useAppSelector(
     (state) => state.pageControl
   );
-  const { isRenaming, cityScrollShift, isRelocateActivate, isTouring } =
-    useAppSelector((state) => state.cityArrangement);
-
-  const navigate = useNavigate();
+  const { cityScrollShift, isRelocateActivate, isTouring } = useAppSelector(
+    (state) => state.cityArrangement
+  );
 
   const dispatch = useAppDispatch();
-
-  // useEffect(() => {
-  //   if (cityList.length !== 0) {
-  //     dispatch(getCityInfo(cityList[0]));
-  //     console.log('go fetch');
-  //   }
-  // }, [cityList]);
-
-  // useEffect(() => {
-  //   if (ledgerBookId.length !== 0) {
-  //     dispatch(getLedgerList(ledgerBookId));
-  //   }
-  // }, [ledgerBookId]);
 
   // 監聽使用者（關閉/離開）網頁動態 -> 送到 db
   useEffect(() => {
@@ -71,7 +50,6 @@ export const Main: React.FC = () => {
       window.addEventListener('visibilitychange', () =>
         logOutTime('visibilitychange')
       );
-      // TODO: 離線 ???
       // window.addEventListener('offline', () => logOutTime('offline'));
       // window.addEventListener('pagehide', logOutTime); // 離開此頁導向其他網站，不太實用
       // window.addEventListener('beforeunload', logOutTime); //關閉頁面
@@ -95,10 +73,6 @@ export const Main: React.FC = () => {
     }
   }, [userId]);
 
-  // if (!isLogin && !isAuthing) {
-  //   navigate('/landing');
-  // }
-
   const cityRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -114,9 +88,6 @@ export const Main: React.FC = () => {
 
   return (
     <Wrapper>
-      {/* && status === 'loading' */}
-      {/* {!isLogin && !isAuthing && <DialogBoard />} */}
-      {/* <button onClick={executeScroll}>scroll to</button> */}
       <Profile />
       <CityWrapper
         $isTouring={isTouring}
@@ -128,11 +99,9 @@ export const Main: React.FC = () => {
         ref={cityRef}
       >
         <City />
-        {/* <City /> */}
       </CityWrapper>
       <RearrangeOptions props={cityRef.current} />
       <CooperatorTrace />
-      {/* {(pageActivity === 'statistics' || pageActivity === 'profile') && ( */}
       <BlackCurtain
         $isShown={pageActivity === 'statistics' || pageActivity === 'profile'}
         onClick={() => {
@@ -148,8 +117,6 @@ export const Main: React.FC = () => {
           dispatch(CITY_SLOWLY_TRANSITION(false));
         }}
       />
-      {/* )} */}
-      {/* {pageActivity === 'ledger' && <Ledger />} */}
       <Ledger />
       <Statistics />
       <Social />
@@ -193,7 +160,6 @@ const CityWrapper = styled.div<CityWrapperProps>`
   overflow: ${({ $isTouring }) => ($isTouring ? 'hidden' : 'scroll')};
   overflow-x: ${({ $isTouring }) => ($isTouring ? 'hidden' : 'scroll')};
   overflow-y: ${({ $isTouring }) => ($isTouring ? 'hidden' : 'scroll')};
-  /* overflow: scroll; */
 
   &::-webkit-scrollbar {
     display: none;

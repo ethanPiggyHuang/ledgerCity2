@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../../redux/hooks';
+import { useAppSelector } from '../../../redux/hooks';
 import { citySetting } from '../../../utils/gameSettings';
 
 const landing = keyframes`
@@ -31,12 +31,6 @@ const Wrapper = styled.div`
   &:hover {
     transform: translateY(-10px);
     cursor: grab;
-  }
-`;
-
-const InteractiveGroup = styled.g`
-  &:hover {
-    transform: translateY(-5px);
   }
 `;
 

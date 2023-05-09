@@ -4,7 +4,6 @@ import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import {
   itemKeyIn,
   labelChooseMain,
-  labelRetrieve,
 } from '../../redux/reducers/ledgerSingleSlice';
 import {
   mainLabels,
@@ -27,7 +26,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 export const Label: React.FC = () => {
-  const { labelMain, labelSubs, item } = useAppSelector(
+  const { labelMain, item } = useAppSelector(
     (state) => state.ledgerSingle.data
   );
   const dispatch = useAppDispatch();

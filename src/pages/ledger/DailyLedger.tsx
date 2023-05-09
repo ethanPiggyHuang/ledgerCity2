@@ -100,7 +100,6 @@ export const DailyLedger: React.FC = () => {
                         : friendsInfo[ledger.data.recordWho]?.userPortraitUrl
                     }
                   />
-                  {/* <RecorderText>記錄</RecorderText> */}
                 </Recorder>
                 <LedgerAmount>{`$ ${ledger.data.amount.number}`}</LedgerAmount>
               </LedgerSingle>
@@ -145,7 +144,6 @@ const LedgerSingle = styled.div`
   align-items: center;
   background-color: #ebebeb;
   gap: 18px;
-  /* border: 1px solid black; */
 `;
 const LedgerSingleHeader = styled(LedgerSingle)`
   height: 40px;
@@ -154,7 +152,6 @@ const LedgerSingleHeader = styled(LedgerSingle)`
   background-color: #ebebeb;
   color: #dabd7a;
   gap: 18px;
-  /* border: 1px solid black; */
 `;
 const LedgerOperation = styled.div`
   background-color: #ede9db;
@@ -163,7 +160,6 @@ const LedgerOperation = styled.div`
   display: flex;
   justify-content: space-around;
   align-items: center;
-  /* gap: 5px; */
   padding: 0 3px;
 `;
 const EditIcon = styled(FontAwesomeIcon)`

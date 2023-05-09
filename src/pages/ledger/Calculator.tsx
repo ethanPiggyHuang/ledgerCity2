@@ -11,8 +11,6 @@ import {
 } from '../../redux/reducers/ledgerSingleSlice';
 
 export const Calculator: React.FC = () => {
-  const { calculationHolder } = useAppSelector((state) => state.ledgerSingle);
-  const { amount } = useAppSelector((state) => state.ledgerSingle.data);
   const dispatch = useAppDispatch();
 
   const buttons: string[][] = [
@@ -21,8 +19,6 @@ export const Calculator: React.FC = () => {
     ['1', '2', '3', '-'],
     ['0', '⇤', '=', '+'],
   ];
-
-  //TODO: .的處理
 
   const getButtonType: (button: string) => 'number' | 'operator' | 'allClear' =
     function (button) {

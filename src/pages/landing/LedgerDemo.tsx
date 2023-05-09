@@ -1,11 +1,7 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import {
-  itemKeyIn,
-  labelChooseMain,
-  labelRetrieve,
-} from '../../redux/reducers/ledgerSingleSlice';
+import { itemKeyIn } from '../../redux/reducers/ledgerSingleSlice';
 import { mainLabel } from '../../utils/gameSettings';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {

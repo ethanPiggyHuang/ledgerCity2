@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { updateActivity } from '../api/userAPI';
-import { RootState } from '../store';
 
 export type CurrentActionState =
   | 'city'

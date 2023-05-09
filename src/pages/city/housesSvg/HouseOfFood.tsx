@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../../redux/hooks';
+import { useAppSelector } from '../../../redux/hooks';
 import { citySetting } from '../../../utils/gameSettings';
 
 const landing = keyframes`
@@ -53,7 +53,6 @@ export const HouseOfFood: React.FC = () => {
   const { scale } = useAppSelector((state) => state.cityArrangement);
   const { houseWidth } = citySetting;
   const widthNormalize = houseWidth / 205;
-  // const dispatch = useAppDispatch();
 
   return (
     <Wrapper>
