@@ -233,6 +233,7 @@ export const Social: React.FC = () => {
                         <FriendCityInfoTitle>協作邀請</FriendCityInfoTitle>
                         <p style={{ fontSize: '12px' }}>受邀城市：</p>
                         <p style={{ fontSize: '12px' }}>
+                          記帳小城
                           {cityNames[friendInfo.coopCityId]}
                         </p>
                         <ButtonWrap>
