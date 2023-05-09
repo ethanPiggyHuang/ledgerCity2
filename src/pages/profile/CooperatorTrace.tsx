@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { doc, onSnapshot } from 'firebase/firestore';
-import { db } from '../../config/firebase';
+import { db } from '../../utils/firebase';
 import {
   GET_COOP_FRIEND_ACTIVITY,
   CurrentActionState,

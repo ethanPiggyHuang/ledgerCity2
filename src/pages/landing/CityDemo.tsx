@@ -3,11 +3,11 @@ import useSound from 'use-sound';
 import styled, { keyframes } from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import hammer_ice from '../../assets/hammer_ice.wav';
-import { HouseOfFood } from '../gameMap/housesSvg/HouseOfFood';
-import { HouseOfClothes } from '../gameMap/housesSvg/HouseOfClothes';
-import { HouseOfDrinks } from '../gameMap/housesSvg/HouseOfDrinks';
-import { HouseGrid } from '../gameMap/housesSvg/HouseGrid';
-import { HouseOfPlants } from '../gameMap/housesSvg/HouseOfPlants';
+import { HouseOfFood } from '../city/housesSvg/HouseOfFood';
+import { HouseOfClothes } from '../city/housesSvg/HouseOfClothes';
+import { HouseOfDrinks } from '../city/housesSvg/HouseOfDrinks';
+import { HouseGrid } from '../city/housesSvg/HouseGrid';
+import { HouseOfPlants } from '../city/housesSvg/HouseOfPlants';
 import { SET_SCALE } from '../../redux/reducers/cityArrangementSlice';
 
 export const CityDemo: React.FC = () => {

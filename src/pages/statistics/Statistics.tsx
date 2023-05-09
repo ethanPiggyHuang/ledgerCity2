@@ -11,7 +11,6 @@ import {
 } from '../../redux/reducers/ledgerListSlice';
 import { getAuth, signOut } from 'firebase/auth';
 import { updateActivity } from '../../redux/api/userAPI';
-import { NavBar } from '../gameMap/NavBar';
 import {
   CHANGE_CHART_TYPE,
   CHART_SHOWN_SWITCH,
@@ -71,8 +70,7 @@ export const Statistics: React.FC = () => {
         <LedgerWarp>
           <LedgerDetail />
         </LedgerWarp>
-        <br />
-        <NavBar /> */}
+        */}
       </Main>
     </Wrap>
   );

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components/macro';
-import { City } from './City';
+import { City } from '../city/City';
 import { DialogBoard } from '../../component/DialogBoard';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { postFadeOutTime, postFadeOutTimeRT } from '../../redux/api/userAPI';
@@ -17,16 +17,14 @@ import {
   SET_CITY_LOCATION,
   CITY_SHIFT_END,
 } from '../../redux/reducers/cityArrangementSlice';
-import { CooperatorTrace } from './CooperatorTrace';
-import { RearrangeOptions } from './RearrangeOptions';
-import { ScaleBar } from './ScaleBar';
-import { UserBar } from './UserBar';
-import { Social } from '../profile/Social';
+import { CooperatorTrace } from '../profile/CooperatorTrace';
+import { RearrangeOptions } from '../city/RearrangeOptions';
+import { Profile } from '../profile/Profile';
+import { Social } from '../social/Social';
 import { useNavigate } from 'react-router-dom';
-import { CityShiftControl } from './CityShiftControl';
 import { Alert } from '../../component/Alert';
 
-export const GameMap: React.FC = () => {
+export const Main: React.FC = () => {
   const { isLogin, isAuthing } = useAppSelector(
     (state) => state.userInfo.loginStatus
   );
@@ -119,7 +117,7 @@ export const GameMap: React.FC = () => {
       {/* && status === 'loading' */}
       {/* {!isLogin && !isAuthing && <DialogBoard />} */}
       {/* <button onClick={executeScroll}>scroll to</button> */}
-      <UserBar />
+      <Profile />
       <CityWrapper
         $isTouring={isTouring}
         onClick={() => {
@@ -133,8 +131,6 @@ export const GameMap: React.FC = () => {
         {/* <City /> */}
       </CityWrapper>
       <RearrangeOptions props={cityRef.current} />
-      {/* <NavBar /> */}
-      {/* <ScaleBar /> */}
       <CooperatorTrace />
       {/* {(pageActivity === 'statistics' || pageActivity === 'profile') && ( */}
       <BlackCurtain

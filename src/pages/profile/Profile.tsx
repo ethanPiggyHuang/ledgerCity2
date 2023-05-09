@@ -9,7 +9,7 @@ import { LOG_OUT } from '../../redux/reducers/userInfoSlice';
 import { UserPanel } from './UserPanel';
 import { PANEL_CONTROL } from '../../redux/reducers/pageControlSlice';
 
-export const UserBar: React.FC = () => {
+export const Profile: React.FC = () => {
   const { userId, userNickName, userPortraitUrl, cityList } = useAppSelector(
     (state) => state.userInfo.data
   );

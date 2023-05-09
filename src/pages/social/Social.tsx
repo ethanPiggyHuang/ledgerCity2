@@ -23,7 +23,7 @@ import {
 import banner from '../../assets/banner.png';
 //TODO:
 import { VISIT_CITY } from '../../redux/reducers/cityBasicInfoSlice';
-import { UserBasics } from '../../component/UserBasics';
+import { UserBasics } from '../profile/UserBasics';
 
 export const Social: React.FC = () => {
   const { userId, cityList } = useAppSelector((state) => state.userInfo.data);

@@ -1,4 +1,4 @@
-import { db } from '../../config/firebase';
+import { db } from '../../utils/firebase';
 import {
   setDoc,
   getDoc,
@@ -13,7 +13,7 @@ import {
   getDocs,
   deleteDoc,
 } from 'firebase/firestore';
-import { rtdb } from '../../config/firebase';
+import { rtdb } from '../../utils/firebase';
 import { ref, set } from 'firebase/database';
 import { UserDataState, FriendStatusState } from '../reducers/userInfoSlice';
 import { FriendInfoState } from '../reducers/usersActivitySlice';

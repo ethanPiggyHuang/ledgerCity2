@@ -10,7 +10,7 @@ import {
 import { RENAME_CITY } from '../redux/reducers/cityArrangementSlice';
 import { UPDATE_LEDGER_LIST } from '../redux/reducers/ledgerListSlice';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
-import { db } from '../config/firebase';
+import { db } from '../utils/firebase';
 import { doc } from 'firebase/firestore';
 import { LedgerDataState } from '../redux/reducers/ledgerSingleSlice';
 import { useNavigate } from 'react-router-dom';
