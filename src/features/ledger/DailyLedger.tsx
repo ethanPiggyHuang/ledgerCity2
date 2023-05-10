@@ -4,7 +4,7 @@ import React from 'react';
 import styled from 'styled-components/macro';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { SWITCH_CITY_TRANSITION_MODE } from '../../redux/reducers/citySlice';
-import { deleteSingleLedger } from '../../redux/reducers/ledgerListSlice';
+import { DELETE_SINGLE_LEDGER } from '../../redux/reducers/ledgerListSlice';
 import {
   CLEAR_LEDGER_ID,
   ledgerEdit,
@@ -78,7 +78,7 @@ export const DailyLedger: React.FC = () => {
                     icon={faTrashCan}
                     onClick={() => {
                       alert('確定刪除');
-                      dispatch(deleteSingleLedger(ledger.ledgerId));
+                      dispatch(DELETE_SINGLE_LEDGER(ledger.ledgerId));
                     }}
                   />
                 </LedgerOperation>

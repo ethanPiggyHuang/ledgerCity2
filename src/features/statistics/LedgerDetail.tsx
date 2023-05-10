@@ -1,28 +1,30 @@
-import React from 'react';
-import styled from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { ledgerEdit } from '../../redux/reducers/ledgerSingleSlice';
 import {
-  SORT_LIST,
-  deleteSingleLedger,
-} from '../../redux/reducers/ledgerListSlice';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
+  faAnglesRight,
   faArrowDown19,
+  faArrowDownLong,
   faArrowUp91,
   faArrowUpLong,
-  faArrowDownLong,
-  faTrashCan,
   faPen,
-  faAnglesRight,
+  faTrashCan,
 } from '@fortawesome/free-solid-svg-icons';
-import { mainLabel, labelIndex } from '../../utils/gameSettings';
-import { LedgerDataState } from '../../redux/reducers/ledgerSingleSlice';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React from 'react';
+import styled from 'styled-components/macro';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import {
+  DELETE_SINGLE_LEDGER,
+  SORT_LIST,
+} from '../../redux/reducers/ledgerListSlice';
+import {
+  LedgerDataState,
+  ledgerEdit,
+} from '../../redux/reducers/ledgerSingleSlice';
+import {
+  CHANGE_LEDGER_POSITION,
   CHART_SHOWN_SWITCH,
   SWITCH_PAGE,
 } from '../../redux/reducers/pageControlSlice';
-import { CHANGE_LEDGER_POSITION } from '../../redux/reducers/pageControlSlice';
+import { labelIndex, mainLabel } from '../../utils/gameSettings';
 
 export const LedgerDetail: React.FC = () => {
   const { userId } = useAppSelector((state) => state.userInfo.data);
@@ -211,7 +213,7 @@ export const LedgerDetail: React.FC = () => {
                   icon={faTrashCan}
                   onClick={() => {
                     alert('確定刪除');
-                    dispatch(deleteSingleLedger(ledger.ledgerId));
+                    dispatch(DELETE_SINGLE_LEDGER(ledger.ledgerId));
                   }}
                 />
               </LedgerText>

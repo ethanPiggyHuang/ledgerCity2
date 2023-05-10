@@ -32,7 +32,7 @@ export interface LedgerRecordedState {
   };
 }
 
-export async function fetchLedgerList(
+export async function getLedgerList(
   ledgerBookId: string,
   queryParams: {
     field: string;
@@ -54,7 +54,7 @@ export async function fetchLedgerList(
   );
 }
 
-export async function deleteLedger(
+export async function deleteSingleLedger(
   cityId: string,
   newHouses: HouseState[],
   ledgerBookId: string,

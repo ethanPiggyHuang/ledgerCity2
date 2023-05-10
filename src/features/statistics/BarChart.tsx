@@ -1,11 +1,14 @@
-import React, { ReactNode, useState } from 'react';
-import styled from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { chooseLabel, chooseMonth } from '../../redux/reducers/ledgerListSlice';
-import { mainLabels, labelColorCodes } from '../../utils/gameSettings';
-import { CHART_SHOWN_SWITCH } from '../../redux/reducers/pageControlSlice';
 import { faAnglesLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { ReactNode, useState } from 'react';
+import styled from 'styled-components/macro';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import {
+  CHOOSE_LABEL,
+  CHOOSE_MONTH,
+} from '../../redux/reducers/ledgerListSlice';
+import { CHART_SHOWN_SWITCH } from '../../redux/reducers/pageControlSlice';
+import { labelColorCodes, mainLabels } from '../../utils/gameSettings';
 
 interface BarChartSetting {
   svgHeight: number;
@@ -120,8 +123,8 @@ export const BarChart: React.FC = () => {
       <BarPath
         key={index}
         onClick={() => {
-          dispatch(chooseMonth(monthValue));
-          dispatch(chooseLabel(''));
+          dispatch(CHOOSE_MONTH(monthValue));
+          dispatch(CHOOSE_LABEL(''));
         }}
         d={dScript}
         fill={'grey'}
@@ -163,8 +166,8 @@ export const BarChart: React.FC = () => {
       <BarPath
         key={index}
         onClick={() => {
-          dispatch(chooseMonth(monthValue));
-          dispatch(chooseLabel(''));
+          dispatch(CHOOSE_MONTH(monthValue));
+          dispatch(CHOOSE_LABEL(''));
         }}
         d={dScript}
         fill={labelColorCodes[labelIndex]}

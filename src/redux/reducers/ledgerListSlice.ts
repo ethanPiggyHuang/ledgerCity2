@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { deleteLedger, fetchLedgerList } from '../api/ledgerListAPI';
+import { deleteSingleLedger, getLedgerList } from '../api/ledgerListAPI';
 import { RootState } from '../store';
 import { LedgerDataState } from './ledgerSingleSlice';
 
@@ -29,10 +29,10 @@ const initialState: LedgerListState = {
   status: 'idle',
 };
 
-export const getLedgerList = createAsyncThunk(
-  'statistics/getLedgerList',
+export const GET_LEDGER_LIST = createAsyncThunk(
+  'statistics/GET_LEDGER_LIST',
   async (ledgerBookId: string) => {
-    const response = await fetchLedgerList(ledgerBookId, {
+    const response = await getLedgerList(ledgerBookId, {
       field: 'timeYear',
       whereFilterOp: '>=',
       value: 0,
@@ -50,8 +50,8 @@ export const getLedgerList = createAsyncThunk(
   }
 );
 
-export const deleteSingleLedger = createAsyncThunk(
-  'statistics/deleteSingleLedger',
+export const DELETE_SINGLE_LEDGER = createAsyncThunk(
+  'statistics/DELETE_SINGLE_LEDGER',
   async (ledgerId: string, { getState }) => {
     const allStates = getState() as RootState;
     const cityId = allStates.userInfo.data.cityList[0];
@@ -59,7 +59,7 @@ export const deleteSingleLedger = createAsyncThunk(
     const houses = allStates.city.basicInfo.houses;
     const newHouses = houses.filter((house) => house.ledgerId !== ledgerId);
     houses.forEach((house) => console.log(house.ledgerId !== ledgerId));
-    await deleteLedger(cityId, newHouses, ledgerBookId, ledgerId);
+    await deleteSingleLedger(cityId, newHouses, ledgerBookId, ledgerId);
     return ledgerId;
   }
 );
@@ -75,10 +75,10 @@ export const ledgerList = createSlice({
       state.choices.chosenMonth = action.payload.currentMonth;
       state.choices.chosenYear = action.payload.currentYear;
     },
-    chooseYear: (state, action: PayloadAction<number>) => {
+    CHOOSE_YEAR: (state, action: PayloadAction<number>) => {
       state.choices.chosenYear = action.payload;
     },
-    chooseMonth: (state, action: PayloadAction<number>) => {
+    CHOOSE_MONTH: (state, action: PayloadAction<number>) => {
       if (action.payload < 1) {
         state.choices.chosenMonth = 12;
         state.choices.chosenYear = state.choices.chosenYear - 1;
@@ -89,7 +89,7 @@ export const ledgerList = createSlice({
         state.choices.chosenMonth = action.payload;
       }
     },
-    chooseLabel: (state, action: PayloadAction<string>) => {
+    CHOOSE_LABEL: (state, action: PayloadAction<string>) => {
       state.choices.chosenLabel = action.payload;
     },
     UPDATE_LEDGER_LIST: (
@@ -112,28 +112,28 @@ export const ledgerList = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getLedgerList.pending, (state) => {
+      .addCase(GET_LEDGER_LIST.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(getLedgerList.fulfilled, (state, action) => {
+      .addCase(GET_LEDGER_LIST.fulfilled, (state, action) => {
         state.status = 'idle';
         state.dataList = action.payload;
       })
-      .addCase(getLedgerList.rejected, (state) => {
+      .addCase(GET_LEDGER_LIST.rejected, (state) => {
         state.status = 'failed';
         alert('getLedgerList rejected');
       })
-      .addCase(deleteSingleLedger.pending, (state) => {
+      .addCase(DELETE_SINGLE_LEDGER.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(deleteSingleLedger.fulfilled, (state, action) => {
+      .addCase(DELETE_SINGLE_LEDGER.fulfilled, (state, action) => {
         state.status = 'idle';
         state.dataList = state.dataList.filter(
           (ledger) => ledger.ledgerId !== action.payload
         );
         console.log('delete ledger complete');
       })
-      .addCase(deleteSingleLedger.rejected, (state) => {
+      .addCase(DELETE_SINGLE_LEDGER.rejected, (state) => {
         state.status = 'failed';
         alert('delete ledger rejected');
       });
@@ -141,12 +141,12 @@ export const ledgerList = createSlice({
 });
 
 export const {
-  chooseYear,
-  chooseMonth,
-  chooseLabel,
+  SET_CURRENT_MONTH,
+  CHOOSE_YEAR,
+  CHOOSE_MONTH,
+  CHOOSE_LABEL,
   UPDATE_LEDGER_LIST,
   SORT_LIST,
-  SET_CURRENT_MONTH,
 } = ledgerList.actions;
 
 export default ledgerList.reducer;

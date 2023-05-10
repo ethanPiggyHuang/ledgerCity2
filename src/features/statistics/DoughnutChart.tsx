@@ -1,13 +1,16 @@
-import React, { ReactNode } from 'react';
-import styled from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { chooseLabel, chooseMonth } from '../../redux/reducers/ledgerListSlice';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faAnglesLeft,
   faCaretLeft,
   faCaretRight,
 } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { ReactNode } from 'react';
+import styled from 'styled-components/macro';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import {
+  CHOOSE_LABEL,
+  CHOOSE_MONTH,
+} from '../../redux/reducers/ledgerListSlice';
 import { CHART_SHOWN_SWITCH } from '../../redux/reducers/pageControlSlice';
 
 interface Props {
@@ -130,8 +133,8 @@ export const DoughnutChart: React.FC<Props> = ({ props }) => {
 
     const handleClickingLabel = () => {
       label === chosenLabel
-        ? dispatch(chooseLabel(''))
-        : dispatch(chooseLabel(label));
+        ? dispatch(CHOOSE_LABEL(''))
+        : dispatch(CHOOSE_LABEL(label));
       if (chartShown !== 'monthAndDetail')
         dispatch(CHART_SHOWN_SWITCH('monthAndDetail'));
     };
@@ -207,7 +210,7 @@ export const DoughnutChart: React.FC<Props> = ({ props }) => {
             data.find((label) => label.label === chosenLabel)?.colorCode ||
             '#5b4105'
           }
-          onClick={() => dispatch(chooseLabel(''))}
+          onClick={() => dispatch(CHOOSE_LABEL(''))}
         >
           {chosenLabel === '' ? `支出總額：` : `${chosenLabel}類支出：`}
         </ChartAbstract>
@@ -218,7 +221,7 @@ export const DoughnutChart: React.FC<Props> = ({ props }) => {
             data.find((label) => label.label === chosenLabel)?.colorCode ||
             '#5b4105'
           }
-          onClick={() => dispatch(chooseLabel(''))}
+          onClick={() => dispatch(CHOOSE_LABEL(''))}
         >
           {chosenLabel === ''
             ? `${totalValue}元`
@@ -229,15 +232,15 @@ export const DoughnutChart: React.FC<Props> = ({ props }) => {
         <MonthSwitchIcon
           icon={faCaretLeft}
           onClick={() => {
-            dispatch(chooseMonth(chosenMonth - 1));
-            dispatch(chooseLabel(''));
+            dispatch(CHOOSE_MONTH(chosenMonth - 1));
+            dispatch(CHOOSE_LABEL(''));
           }}
         />
         <MonthSwitchIcon
           icon={faCaretRight}
           onClick={() => {
-            dispatch(chooseMonth(chosenMonth + 1));
-            dispatch(chooseLabel(''));
+            dispatch(CHOOSE_MONTH(chosenMonth + 1));
+            dispatch(CHOOSE_LABEL(''));
           }}
         />
       </MonthSwitchWrap>
