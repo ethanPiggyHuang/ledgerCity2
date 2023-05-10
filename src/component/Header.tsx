@@ -47,6 +47,8 @@ const Header: React.FC = () => {
   const { userId, cityList } = useAppSelector((state) => state.userInfo.data);
   const navigate = useNavigate();
 
+  // async await
+
   useEffect(() => {
     if (cityList.length !== 0) {
       const q = doc(db, 'cities', cityList[0]);
@@ -119,9 +121,11 @@ const Header: React.FC = () => {
     }
   }, [userId]);
 
+  const useless = 'aaa';
+
   return (
     <Wrapper $isFolded={isTouring}>
-      {userId ? (
+      {userId && (
         <>
           <Banner />
           <TextWrapper>
@@ -150,8 +154,6 @@ const Header: React.FC = () => {
             />
           </TextWrapper>
         </>
-      ) : (
-        ''
       )}
     </Wrapper>
   );

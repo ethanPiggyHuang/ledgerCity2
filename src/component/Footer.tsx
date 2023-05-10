@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';

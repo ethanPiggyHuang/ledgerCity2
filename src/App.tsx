@@ -2,10 +2,10 @@ import { Reset } from 'styled-reset';
 import { createGlobalStyle } from 'styled-components';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import React from 'react';
-import { Main } from './pages/main/Main';
+import { Main } from './features/main/Main';
 import AuthRoute from './component/AuthRoute';
 import Header from './component/Header';
-import { Landing } from './pages/landing/Landing';
+import { Landing } from './features/landing/Landing';
 
 export interface IApplicationProps {}
 
@@ -40,6 +40,7 @@ const GlobalStyle = createGlobalStyle`
   }
   body {
     font-family: 'Noto Sans', sans-serif;
+    /* font-family: 'Taipei Sans TC'; */
     background: linear-gradient(#c8e2cc, #98d5da);
   }
 
