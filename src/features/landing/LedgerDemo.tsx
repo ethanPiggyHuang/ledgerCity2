@@ -1,19 +1,19 @@
-import React from 'react';
-import styled, { keyframes } from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { itemKeyIn } from '../../redux/reducers/ledgerSingleSlice';
-import { mainLabel } from '../../utils/gameSettings';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCheck,
   faClipboard,
   faReply,
 } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React from 'react';
+import styled, { keyframes } from 'styled-components/macro';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import {
-  INTRO_CHOOSE_LABEL,
-  INTRO_CLEAR_HOUSE,
-  INTRO_LEDGER_SUBMIT,
+  CHOOSE_LABEL,
+  CLEAR_HOUSE,
+  SUBMIT_LEDGER,
 } from '../../redux/reducers/landingIntroSlice';
+import { itemKeyIn } from '../../redux/reducers/ledgerSingleSlice';
+import { mainLabel } from '../../utils/gameSettings';
 
 export const LedgerDemo: React.FC = () => {
   const { chosenLabel, isTrying } = useAppSelector(
@@ -37,9 +37,7 @@ export const LedgerDemo: React.FC = () => {
             $isChosen={chosenLabel === label.name}
             $color={label.colorCode}
             onClick={() =>
-              dispatch(
-                INTRO_CHOOSE_LABEL(label.name as '食物' | '飲品' | '交通')
-              )
+              dispatch(CHOOSE_LABEL(label.name as '食物' | '飲品' | '交通'))
             }
           >
             <LabelIcons icon={label.icon} />
@@ -71,8 +69,8 @@ export const LedgerDemo: React.FC = () => {
       <ConfirmRow>
         <ConfirmButton
           onClick={() => {
-            dispatch(INTRO_LEDGER_SUBMIT());
-            setTimeout(() => dispatch(INTRO_CLEAR_HOUSE()), 3000);
+            dispatch(SUBMIT_LEDGER());
+            setTimeout(() => dispatch(CLEAR_HOUSE()), 3000);
           }}
         >
           <CheckIcon icon={faCheck} />

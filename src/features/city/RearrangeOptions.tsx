@@ -21,7 +21,7 @@ import {
   SHIFT_CITY_VIA_SCROLL,
   START_CITY_TOUR,
   TOGGLE_HOUSE_DRAGGABLE,
-  UPDATE_CITY_ARRANGEMENT,
+  UPDATE_HOUSE_ARRANGEMENT,
 } from '../../redux/reducers/citySlice';
 import { citySetting } from '../../utils/gameSettings';
 
@@ -45,7 +45,7 @@ export const RearrangeOptions: React.FC<Props> = ({ props }) => {
 
   const handleConstruction = () => {
     if (dragMode === 'houses') {
-      dispatch(UPDATE_CITY_ARRANGEMENT());
+      dispatch(UPDATE_HOUSE_ARRANGEMENT());
       playHammer();
     } else {
       dispatch(TOGGLE_HOUSE_DRAGGABLE());

@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   pickRandomPosition,
   updateCityName,
-  updateHousePosition,
+  updateHouseArrangement,
 } from '../api/cityAPI';
 
 import { RootState } from '../store';
@@ -72,8 +72,8 @@ const initialState: CityState = {
   scale: 1,
 };
 
-export const UPDATE_CITY_ARRANGEMENT = createAsyncThunk(
-  'city/UPDATE_CITY_ARRANGEMENT',
+export const UPDATE_HOUSE_ARRANGEMENT = createAsyncThunk(
+  'city/UPDATE_HOUSE_ARRANGEMENT',
   async (arg, { getState }) => {
     const allStates = getState() as RootState;
     const cityId = allStates.userInfo.data.cityList[0];
@@ -92,7 +92,7 @@ export const UPDATE_CITY_ARRANGEMENT = createAsyncThunk(
       return { ...house, position: newPostions[house.ledgerId] };
     });
     try {
-      await updateHousePosition(cityId, newHouses);
+      await updateHouseArrangement(cityId, newHouses);
     } catch (error) {
       console.log(error);
     }
@@ -287,15 +287,15 @@ export const city = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(UPDATE_CITY_ARRANGEMENT.pending, (state) => {
+      .addCase(UPDATE_HOUSE_ARRANGEMENT.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(UPDATE_CITY_ARRANGEMENT.fulfilled, (state) => {
+      .addCase(UPDATE_HOUSE_ARRANGEMENT.fulfilled, (state) => {
         state.status = 'idle';
         state.dragMode = 'city';
         // console.log('街道重建已紀錄');
       })
-      .addCase(UPDATE_CITY_ARRANGEMENT.rejected, (state) => {
+      .addCase(UPDATE_HOUSE_ARRANGEMENT.rejected, (state) => {
         state.status = 'failed';
         alert('街道重建儲存失敗');
       })

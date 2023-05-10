@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface PageControlState {
   demoHouses: { type: string }[][];
@@ -20,66 +20,43 @@ const initialState: PageControlState = {
   status: 'idle',
 };
 
-export const SWITCH_PAGE = createAsyncThunk(
-  'landingIntro/SWITCH_PAGE',
-  async (payload: { userId: string }) => {
-    const { userId } = payload;
-  }
-);
-
 export const landingIntro = createSlice({
   name: 'landingIntro',
   initialState,
   reducers: {
-    INTRO_CHOOSE_LABEL: (
-      state,
-      action: PayloadAction<'食物' | '飲品' | '交通'>
-    ) => {
+    CHOOSE_LABEL: (state, action: PayloadAction<'食物' | '飲品' | '交通'>) => {
       state.chosenLabel = action.payload;
     },
-    INTRO_LEDGER_SUBMIT: (state) => {
+    SUBMIT_LEDGER: (state) => {
       state.demoHouses[0][1].type = state.chosenLabel;
       state.isTrying = true;
     },
-    INTRO_CLEAR_HOUSE: (state) => {
+    CLEAR_HOUSE: (state) => {
       state.demoHouses[0][1].type = '';
       state.isTrying = false;
     },
-    LOGIN_SECTION_FOCUS_TOGGLE: (state, action: PayloadAction<boolean>) => {
+    TOGGLE_LOGIN_SECTION_FOCUS: (state, action: PayloadAction<boolean>) => {
       state.isFocusingLogin = action.payload;
     },
-    INTRO_SECTION_SWITCH: (
+    SWITCH_INTRO_SECTION: (
       state,
       action: PayloadAction<'ledger' | 'statistics' | 'cooperation'>
     ) => {
       state.introSection = action.payload;
     },
-    CAROUSEL_PLAYING_TOGGLE: (state, action: PayloadAction<boolean>) => {
+    TOGGLE_CAROUSEL_PLAYING: (state, action: PayloadAction<boolean>) => {
       state.isPlayingCarousel = action.payload;
     },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(SWITCH_PAGE.pending, (state) => {
-        state.status = 'loading';
-      })
-      .addCase(SWITCH_PAGE.fulfilled, (state, action) => {
-        state.status = 'idle';
-      })
-      .addCase(SWITCH_PAGE.rejected, (state) => {
-        state.status = 'failed';
-        alert('登錄失敗');
-      });
   },
 });
 
 export const {
-  INTRO_CHOOSE_LABEL,
-  INTRO_LEDGER_SUBMIT,
-  INTRO_CLEAR_HOUSE,
-  LOGIN_SECTION_FOCUS_TOGGLE,
-  INTRO_SECTION_SWITCH,
-  CAROUSEL_PLAYING_TOGGLE,
+  CHOOSE_LABEL,
+  SUBMIT_LEDGER,
+  CLEAR_HOUSE,
+  TOGGLE_LOGIN_SECTION_FOCUS,
+  SWITCH_INTRO_SECTION,
+  TOGGLE_CAROUSEL_PLAYING,
 } = landingIntro.actions;
 
 export default landingIntro.reducer;

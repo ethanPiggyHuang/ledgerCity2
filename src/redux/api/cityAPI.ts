@@ -10,7 +10,7 @@ export async function fetchCityInfo(cityId: string) {
   );
 }
 
-export async function updateHousePosition(
+export async function updateHouseArrangement(
   cityId: string,
   newHouses: HouseState[]
 ) {

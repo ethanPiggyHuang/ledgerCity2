@@ -1,12 +1,12 @@
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import React from 'react';
 import styled, { keyframes } from 'styled-components/macro';
-import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { AUTHING_TOGGLE } from '../../redux/reducers/userInfoSlice';
-import googleLogo from '../../assets/googleLogo.png';
 import cityLandScape from '../../assets/cityLandscape.png';
+import googleLogo from '../../assets/googleLogo.png';
 import loginSlogan from '../../assets/login_slogan.png';
-import { LOGIN_SECTION_FOCUS_TOGGLE } from '../../redux/reducers/landingIntroSlice';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { TOGGLE_LOGIN_SECTION_FOCUS } from '../../redux/reducers/landingIntroSlice';
+import { AUTHING_TOGGLE } from '../../redux/reducers/userInfoSlice';
 
 export interface IloginPageProps {}
 
@@ -30,9 +30,9 @@ export const LoginPanel: React.FunctionComponent<IloginPageProps> = () => {
 
   return (
     <Wrap
-      onMouseEnter={() => dispatch(LOGIN_SECTION_FOCUS_TOGGLE(true))}
+      onMouseEnter={() => dispatch(TOGGLE_LOGIN_SECTION_FOCUS(true))}
       onMouseLeave={() =>
-        setTimeout(() => dispatch(LOGIN_SECTION_FOCUS_TOGGLE(false)))
+        setTimeout(() => dispatch(TOGGLE_LOGIN_SECTION_FOCUS(false)))
       }
     >
       <LoginSlogan $isFocusing={isFocusingLogin} src={loginSlogan} />

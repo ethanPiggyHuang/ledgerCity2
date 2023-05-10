@@ -1,23 +1,23 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import logoBanner from '../../assets/logoBanner.png';
-import { LoginPanel } from './LoginPanel';
-import { LedgerDemo } from './LedgerDemo';
-import { CityDemo } from './CityDemo';
-import titleLedger from '../../assets/intro_title_ledger.png';
-import titleStatistics from '../../assets/intro_title_statistics.png';
-import titleCoop from '../../assets/intro_title_coop.png';
-import titleX from '../../assets/intro_title_x.png';
+import sloganCooperation from '../../assets/intro_slogan_coop.png';
 import sloganLedger from '../../assets/intro_slogan_ledger.png';
 import sloganStatistics from '../../assets/intro_slogan_statistics.png';
-import sloganCooperation from '../../assets/intro_slogan_coop.png';
+import titleCoop from '../../assets/intro_title_coop.png';
+import titleLedger from '../../assets/intro_title_ledger.png';
+import titleStatistics from '../../assets/intro_title_statistics.png';
+import titleX from '../../assets/intro_title_x.png';
+import logoBanner from '../../assets/logoBanner.png';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import {
-  CAROUSEL_PLAYING_TOGGLE,
-  INTRO_SECTION_SWITCH,
+  SWITCH_INTRO_SECTION,
+  TOGGLE_CAROUSEL_PLAYING,
 } from '../../redux/reducers/landingIntroSlice';
-import { StatisticsDemo } from './StatisticsDemo';
+import { CityDemo } from './CityDemo';
 import { CoopDemo } from './CoopDemo';
+import { LedgerDemo } from './LedgerDemo';
+import { LoginPanel } from './LoginPanel';
+import { StatisticsDemo } from './StatisticsDemo';
 
 export const Landing: React.FC = () => {
   const { introSection, isPlayingCarousel, isFocusingLogin } = useAppSelector(
@@ -36,7 +36,7 @@ export const Landing: React.FC = () => {
       (sections.findIndex((section) => section === introSection) + 1) % 3;
     if (isPlayingCarousel) {
       const carouselInterval = setInterval(
-        () => dispatch(INTRO_SECTION_SWITCH(sections[nextIndex])),
+        () => dispatch(SWITCH_INTRO_SECTION(sections[nextIndex])),
         5000
       );
       return () => clearInterval(carouselInterval);
@@ -52,8 +52,8 @@ export const Landing: React.FC = () => {
         <IntroTitles>
           <TitleWrap
             onClick={() => {
-              dispatch(INTRO_SECTION_SWITCH('ledger'));
-              dispatch(CAROUSEL_PLAYING_TOGGLE(false));
+              dispatch(SWITCH_INTRO_SECTION('ledger'));
+              dispatch(TOGGLE_CAROUSEL_PLAYING(false));
             }}
           >
             <IntroTitleImg
@@ -65,8 +65,8 @@ export const Landing: React.FC = () => {
           <IntroTitleImgX src={titleX} />
           <TitleWrap
             onClick={() => {
-              dispatch(INTRO_SECTION_SWITCH('statistics'));
-              dispatch(CAROUSEL_PLAYING_TOGGLE(false));
+              dispatch(SWITCH_INTRO_SECTION('statistics'));
+              dispatch(TOGGLE_CAROUSEL_PLAYING(false));
             }}
           >
             <IntroTitleImg
@@ -78,8 +78,8 @@ export const Landing: React.FC = () => {
           <IntroTitleImgX src={titleX} />
           <TitleWrap
             onClick={() => {
-              dispatch(INTRO_SECTION_SWITCH('cooperation'));
-              dispatch(CAROUSEL_PLAYING_TOGGLE(false));
+              dispatch(SWITCH_INTRO_SECTION('cooperation'));
+              dispatch(TOGGLE_CAROUSEL_PLAYING(false));
             }}
           >
             <IntroTitleImg
@@ -99,8 +99,8 @@ export const Landing: React.FC = () => {
               ? 'right'
               : 'left'
           }
-          onMouseEnter={() => dispatch(CAROUSEL_PLAYING_TOGGLE(false))}
-          onMouseLeave={() => dispatch(CAROUSEL_PLAYING_TOGGLE(true))}
+          onMouseEnter={() => dispatch(TOGGLE_CAROUSEL_PLAYING(false))}
+          onMouseLeave={() => dispatch(TOGGLE_CAROUSEL_PLAYING(true))}
         >
           <Slogan src={sloganLedger} />
           <CityDemo />
@@ -116,8 +116,8 @@ export const Landing: React.FC = () => {
               ? 'right'
               : 'left'
           }
-          onMouseEnter={() => dispatch(CAROUSEL_PLAYING_TOGGLE(false))}
-          onMouseLeave={() => dispatch(CAROUSEL_PLAYING_TOGGLE(true))}
+          onMouseEnter={() => dispatch(TOGGLE_CAROUSEL_PLAYING(false))}
+          onMouseLeave={() => dispatch(TOGGLE_CAROUSEL_PLAYING(true))}
         >
           <SloganStatistics src={sloganStatistics} />
           <StatisticsDemo />
@@ -131,8 +131,8 @@ export const Landing: React.FC = () => {
               ? 'right'
               : 'left'
           }
-          onMouseEnter={() => dispatch(CAROUSEL_PLAYING_TOGGLE(false))}
-          onMouseLeave={() => dispatch(CAROUSEL_PLAYING_TOGGLE(true))}
+          onMouseEnter={() => dispatch(TOGGLE_CAROUSEL_PLAYING(false))}
+          onMouseLeave={() => dispatch(TOGGLE_CAROUSEL_PLAYING(true))}
         >
           <SloganCoop src={sloganCooperation} />
           <CoopDemo />
