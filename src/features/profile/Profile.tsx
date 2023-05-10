@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components/macro';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { PANEL_CONTROL } from '../../redux/reducers/pageControlSlice';
+import { CONTROL_PANEL_DISPLAYED } from '../../redux/reducers/pageControlSlice';
 import { UserPanel } from './UserPanel';
 
 export const Profile: React.FC = () => {
@@ -22,9 +22,9 @@ export const Profile: React.FC = () => {
       <PorTraitWrap
         onClick={() => {
           if (panelOpened === 'none') {
-            dispatch(PANEL_CONTROL('user'));
+            dispatch(CONTROL_PANEL_DISPLAYED('user'));
           } else {
-            dispatch(PANEL_CONTROL('none'));
+            dispatch(CONTROL_PANEL_DISPLAYED('none'));
           }
         }}
       >

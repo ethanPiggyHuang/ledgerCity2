@@ -1,29 +1,27 @@
+import {
+  faCirclePlus,
+  faFloppyDisk,
+  faRightFromBracket,
+  faXmark,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { getAuth, signOut } from 'firebase/auth';
 import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { getAuth, signOut } from 'firebase/auth';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import banner from '../../assets/banner.png';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import {
-  faRightFromBracket,
-  faFloppyDisk,
-  faXmark,
-  faCirclePlus,
-} from '@fortawesome/free-solid-svg-icons';
-import {
-  PANEL_CONTROL,
-  SWITCH_PAGE,
+  CONTROL_PANEL_DISPLAYED,
+  SWITCH_SECTION_FOCUSED,
 } from '../../redux/reducers/pageControlSlice';
 import {
-  LOG_OUT,
-  EDIT_NICKNAME_SWITCH,
-  TYPING_NICKNAME,
-  SAVE_NICKNAME,
   CITY_REDIRECTION,
-  GET_CITY_NAME,
   CREATE_NEW_CITY,
+  EDIT_NICKNAME_SWITCH,
+  LOG_OUT,
+  SAVE_NICKNAME,
+  TYPING_NICKNAME,
 } from '../../redux/reducers/userInfoSlice';
-import { useNavigate } from 'react-router-dom';
-import banner from '../../assets/banner.png';
 
 export const UserPanel: React.FC = () => {
   const { userId, userNickName, userEmail, userPortraitUrl, cityList } =
@@ -92,8 +90,10 @@ export const UserPanel: React.FC = () => {
                 onClick={() => {
                   if (index === 0) return;
                   dispatch(CITY_REDIRECTION({ userId, cityId }));
-                  dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }));
-                  dispatch(PANEL_CONTROL('none'));
+                  dispatch(
+                    SWITCH_SECTION_FOCUSED({ userId, pageActivity: 'city' })
+                  );
+                  dispatch(CONTROL_PANEL_DISPLAYED('none'));
                 }}
               >
                 <MyCityNotice>{index === 0 ? '目前' : '前往'}</MyCityNotice>
@@ -125,7 +125,7 @@ export const UserPanel: React.FC = () => {
       </MyCitiesWrap>
       <IconBack
         onClick={() => {
-          dispatch(PANEL_CONTROL('none'));
+          dispatch(CONTROL_PANEL_DISPLAYED('none'));
           signOut(auth);
           dispatch(LOG_OUT());
         }}
@@ -133,7 +133,7 @@ export const UserPanel: React.FC = () => {
         <LeaveIcon icon={faRightFromBracket} />
         <IconText>登出</IconText>
       </IconBack>
-      <CrossIconWrap onClick={() => dispatch(PANEL_CONTROL('none'))}>
+      <CrossIconWrap onClick={() => dispatch(CONTROL_PANEL_DISPLAYED('none'))}>
         <CrossIcon icon={faXmark} />
       </CrossIconWrap>
     </Wrap>

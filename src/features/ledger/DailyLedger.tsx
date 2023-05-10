@@ -9,7 +9,7 @@ import {
   CLEAR_LEDGER_INPUTS,
   EDIT_LEDGER,
 } from '../../redux/reducers/ledgerSingleSlice';
-import { CHANGE_LEDGER_POSITION } from '../../redux/reducers/pageControlSlice';
+import { SWITCH_LEDGER_POSITION } from '../../redux/reducers/pageControlSlice';
 import { labelIndex, mainLabel } from '../../utils/gameSettings';
 
 export const DailyLedger: React.FC = () => {
@@ -43,7 +43,7 @@ export const DailyLedger: React.FC = () => {
           <EmptyLedger
             onClick={() => {
               dispatch(CLEAR_LEDGER_INPUTS());
-              dispatch(CHANGE_LEDGER_POSITION('expand'));
+              dispatch(SWITCH_LEDGER_POSITION('expand'));
               dispatch(SWITCH_CITY_TRANSITION_MODE(true));
             }}
           >
@@ -70,7 +70,7 @@ export const DailyLedger: React.FC = () => {
                       );
                       if (chosenLedger) {
                         dispatch(EDIT_LEDGER(chosenLedger));
-                        dispatch(CHANGE_LEDGER_POSITION('expand'));
+                        dispatch(SWITCH_LEDGER_POSITION('expand'));
                       }
                     }}
                   ></EditIcon>

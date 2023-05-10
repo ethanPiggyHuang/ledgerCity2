@@ -4,7 +4,7 @@ import React from 'react';
 import styled from 'styled-components/macro';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { SWITCH_CITY_TRANSITION_MODE } from '../redux/reducers/citySlice';
-import { SWITCH_PAGE } from '../redux/reducers/pageControlSlice';
+import { SWITCH_SECTION_FOCUSED } from '../redux/reducers/pageControlSlice';
 
 interface Props {
   size: number;
@@ -18,7 +18,7 @@ export const ClosingButton: React.FC<Props> = ({ size }) => {
     <CrossIconWrap
       $size={size}
       onClick={() => {
-        dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }));
+        dispatch(SWITCH_SECTION_FOCUSED({ userId, pageActivity: 'city' }));
         dispatch(SWITCH_CITY_TRANSITION_MODE(false));
       }}
     >

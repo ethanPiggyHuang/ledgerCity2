@@ -1,26 +1,26 @@
+import { faUsers } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../redux/hooks';
+import banner from '../../assets/banner.png';
+import { ClosingButton } from '../../component/ClosingButton';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import {
+  SWITCH_SECTION_FOCUSED,
+  TOGGLE_SOCIAL_SECTION,
+} from '../../redux/reducers/pageControlSlice';
+import {
+  AGREE_COOPERATION,
   CITY_REDIRECTION,
+  DISAGREE_COOPERATION,
   FRIEND_REQUEST,
   FriendStatusState,
   GET_CITY_NAME,
   QUEST_FRIEND,
   SWITCH_COOP_CITY_OPTION,
   TYPING_FRIEND_EMAIL,
-  AGREE_COOPERATION,
-  DISAGREE_COOPERATION,
 } from '../../redux/reducers/userInfoSlice';
 import { GET_FRIENDS_INFO } from '../../redux/reducers/usersActivitySlice';
-import { ClosingButton } from '../../component/ClosingButton';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUsers } from '@fortawesome/free-solid-svg-icons';
-import {
-  SOCIAL_SECTION_TOGGLE,
-  SWITCH_PAGE,
-} from '../../redux/reducers/pageControlSlice';
-import banner from '../../assets/banner.png';
 import { UserBasics } from '../profile/UserBasics';
 
 export const Social: React.FC = () => {
@@ -96,7 +96,7 @@ export const Social: React.FC = () => {
       <FriendListsWrap>
         <FriendListWrap>
           <FriendListTitle
-            onClick={() => dispatch(SOCIAL_SECTION_TOGGLE('cooperated'))}
+            onClick={() => dispatch(TOGGLE_SOCIAL_SECTION('cooperated'))}
           >
             協作好友
           </FriendListTitle>
@@ -132,7 +132,10 @@ export const Social: React.FC = () => {
                                   })
                                 );
                                 dispatch(
-                                  SWITCH_PAGE({ userId, pageActivity: 'city' })
+                                  SWITCH_SECTION_FOCUSED({
+                                    userId,
+                                    pageActivity: 'city',
+                                  })
                                 );
                               }
                             }}
@@ -152,7 +155,7 @@ export const Social: React.FC = () => {
         </FriendListWrap>
         <FriendListWrap>
           <FriendListTitle
-            onClick={() => dispatch(SOCIAL_SECTION_TOGGLE('inviting'))}
+            onClick={() => dispatch(TOGGLE_SOCIAL_SECTION('inviting'))}
           >
             邀請中
           </FriendListTitle>
@@ -184,7 +187,7 @@ export const Social: React.FC = () => {
         </FriendListWrap>
         <FriendListWrap>
           <FriendListTitle
-            onClick={() => dispatch(SOCIAL_SECTION_TOGGLE('inviting'))}
+            onClick={() => dispatch(TOGGLE_SOCIAL_SECTION('inviting'))}
           >
             受邀請
           </FriendListTitle>
@@ -241,7 +244,7 @@ export const Social: React.FC = () => {
 
         <FriendListWrap>
           <FriendListTitle
-            onClick={() => dispatch(SOCIAL_SECTION_TOGGLE('search'))}
+            onClick={() => dispatch(TOGGLE_SOCIAL_SECTION('search'))}
           >
             查詢好友
           </FriendListTitle>

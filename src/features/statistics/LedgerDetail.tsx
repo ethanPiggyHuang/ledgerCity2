@@ -20,9 +20,9 @@ import {
   LedgerDataState,
 } from '../../redux/reducers/ledgerSingleSlice';
 import {
-  CHANGE_LEDGER_POSITION,
-  CHART_SHOWN_SWITCH,
-  SWITCH_PAGE,
+  SWITCH_LEDGER_POSITION,
+  SWITCH_SECTION_FOCUSED,
+  SWITCH_STATISTICS_MODE,
 } from '../../redux/reducers/pageControlSlice';
 import { labelIndex, mainLabel } from '../../utils/gameSettings';
 
@@ -204,8 +204,13 @@ export const LedgerDetail: React.FC = () => {
                     );
                     if (chosenLedger) {
                       dispatch(EDIT_LEDGER(chosenLedger));
-                      dispatch(SWITCH_PAGE({ userId, pageActivity: 'ledger' }));
-                      dispatch(CHANGE_LEDGER_POSITION('expand'));
+                      dispatch(
+                        SWITCH_SECTION_FOCUSED({
+                          userId,
+                          pageActivity: 'ledger',
+                        })
+                      );
+                      dispatch(SWITCH_LEDGER_POSITION('expand'));
                     }
                   }}
                 />
@@ -220,7 +225,9 @@ export const LedgerDetail: React.FC = () => {
             </LedgerRow>
           ))}
       </LedgerRowsWrap>
-      <MinimizeWrap onClick={() => dispatch(CHART_SHOWN_SWITCH('monthOnly'))}>
+      <MinimizeWrap
+        onClick={() => dispatch(SWITCH_STATISTICS_MODE('monthOnly'))}
+      >
         <MinimizeIcon icon={faAnglesRight} />
         <MinimizeText>收合</MinimizeText>
       </MinimizeWrap>

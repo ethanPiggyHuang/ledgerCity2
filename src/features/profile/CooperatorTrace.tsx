@@ -12,7 +12,7 @@ import styled, { keyframes } from 'styled-components/macro';
 import cityIcon from '../../assets/cityIcon.png';
 import mapPin from '../../assets/mapPin.png';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { SWITCH_PAGE } from '../../redux/reducers/pageControlSlice';
+import { SWITCH_SECTION_FOCUSED } from '../../redux/reducers/pageControlSlice';
 import {
   CurrentActionState,
   GET_COOP_FRIEND_ACTIVITY,
@@ -110,7 +110,9 @@ export const CooperatorTrace: React.FC = () => {
         {coopFriends.length === 0 && (
           <Suggestion
             onClick={() =>
-              dispatch(SWITCH_PAGE({ userId, pageActivity: 'profile' }))
+              dispatch(
+                SWITCH_SECTION_FOCUSED({ userId, pageActivity: 'profile' })
+              )
             }
           >
             <SuggestionText>本座城市還沒有協作市長</SuggestionText>

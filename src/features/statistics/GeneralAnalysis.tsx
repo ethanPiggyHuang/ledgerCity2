@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { SET_CURRENT_MONTH } from '../../redux/reducers/ledgerListSlice';
 import { mainLabel } from '../../utils/gameSettings';
+import { BarChart } from './BarChart';
 import { DoughnutChart } from './DoughnutChart';
 import { LedgerDetail } from './LedgerDetail';
-import { BarChart } from './BarChart';
 
 export const GeneralAnalysis: React.FC = () => {
   const loadingStatus = useAppSelector((state) => state.ledgerList.status);
@@ -13,7 +13,9 @@ export const GeneralAnalysis: React.FC = () => {
   const { chosenYear, chosenMonth } = useAppSelector(
     (state) => state.ledgerList.choices
   );
-  const { chartShown } = useAppSelector((state) => state.pageControl);
+  const { statisticsMode: chartShown } = useAppSelector(
+    (state) => state.pageControl
+  );
   const dispatch = useAppDispatch();
   useEffect(() => {
     if (chosenYear === 0 || chosenMonth === 0) {

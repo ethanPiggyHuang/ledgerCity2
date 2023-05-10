@@ -1,9 +1,9 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import {
-  ALERT_DIALOUGE_TOGGLE,
-  ALERT_TOGGLE,
+  TOGGLE_ALERT_CURTAIN,
+  TOGGLE_ALERT_DIALOUGE,
 } from '../redux/reducers/pageControlSlice';
 
 interface Props {
@@ -25,8 +25,8 @@ export const Alert: React.FC<Props> = ({ title, text, handleAlert }) => {
         <p>{title}</p>
         <button
           onClick={() => {
-            dispatch(ALERT_DIALOUGE_TOGGLE());
-            setTimeout(() => dispatch(ALERT_TOGGLE()), 200);
+            dispatch(TOGGLE_ALERT_DIALOUGE());
+            setTimeout(() => dispatch(TOGGLE_ALERT_CURTAIN()), 200);
           }}
         >
           close

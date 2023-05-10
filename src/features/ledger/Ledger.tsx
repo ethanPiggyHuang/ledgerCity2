@@ -20,10 +20,10 @@ import {
   UPDATE_LEDGER,
 } from '../../redux/reducers/ledgerSingleSlice';
 import {
-  CHANGE_LEDGER_POSITION,
+  CONTROL_PANEL_DISPLAYED,
   CurrentActionState,
-  PANEL_CONTROL,
-  SWITCH_PAGE,
+  SWITCH_LEDGER_POSITION,
+  SWITCH_SECTION_FOCUSED,
 } from '../../redux/reducers/pageControlSlice';
 import { citySetting } from '../../utils/gameSettings';
 import { Amount } from './Amount';
@@ -62,8 +62,10 @@ export const Ledger: React.FC = () => {
         <Header
           onClick={() => {
             if (pageActivity !== 'ledger') {
-              dispatch(SWITCH_PAGE({ userId, pageActivity: 'ledger' }));
-              dispatch(PANEL_CONTROL('none'));
+              dispatch(
+                SWITCH_SECTION_FOCUSED({ userId, pageActivity: 'ledger' })
+              );
+              dispatch(CONTROL_PANEL_DISPLAYED('none'));
             }
           }}
           $pageActivity={pageActivity}
@@ -71,7 +73,7 @@ export const Ledger: React.FC = () => {
           {ledgerPosition === 'normal' && <ClosingButton size={60} />}
           {ledgerPosition === 'expand' && (
             <IconWrap
-              onClick={() => dispatch(CHANGE_LEDGER_POSITION('normal'))}
+              onClick={() => dispatch(SWITCH_LEDGER_POSITION('normal'))}
             >
               <Icon
                 icon={faArrowLeft}
@@ -91,7 +93,7 @@ export const Ledger: React.FC = () => {
               <AddNewButton
                 onClick={() => {
                   dispatch(CLEAR_LEDGER_INPUTS());
-                  dispatch(CHANGE_LEDGER_POSITION('expand'));
+                  dispatch(SWITCH_LEDGER_POSITION('expand'));
                   dispatch(SWITCH_CITY_TRANSITION_MODE(true));
                 }}
               >
@@ -125,7 +127,9 @@ export const Ledger: React.FC = () => {
                     return;
                   }
                   if (ledgerId === '') {
-                    dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }));
+                    dispatch(
+                      SWITCH_SECTION_FOCUSED({ userId, pageActivity: 'city' })
+                    );
                     setTimeout(
                       () =>
                         dispatch(
@@ -147,14 +151,20 @@ export const Ledger: React.FC = () => {
                     setTimeout(
                       () =>
                         dispatch(
-                          SWITCH_PAGE({ userId, pageActivity: 'ledger' })
+                          SWITCH_SECTION_FOCUSED({
+                            userId,
+                            pageActivity: 'ledger',
+                          })
                         ),
                       3000
                     );
                   } else {
                     dispatch(UPDATE_LEDGER());
                     dispatch(
-                      SWITCH_PAGE({ userId, pageActivity: 'statistics' })
+                      SWITCH_SECTION_FOCUSED({
+                        userId,
+                        pageActivity: 'statistics',
+                      })
                     );
                   }
                 }}

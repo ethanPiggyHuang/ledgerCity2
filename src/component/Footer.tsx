@@ -8,7 +8,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import styled from 'styled-components/macro';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { PANEL_CONTROL, SWITCH_PAGE } from '../redux/reducers/pageControlSlice';
+import {
+  CONTROL_PANEL_DISPLAYED,
+  SWITCH_SECTION_FOCUSED,
+} from '../redux/reducers/pageControlSlice';
 
 const Footer: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -31,8 +34,10 @@ const Footer: React.FC = () => {
         <SectionLabel
           key={label.page}
           onClick={() => {
-            dispatch(SWITCH_PAGE({ userId, pageActivity: label.page }));
-            dispatch(PANEL_CONTROL('none'));
+            dispatch(
+              SWITCH_SECTION_FOCUSED({ userId, pageActivity: label.page })
+            );
+            dispatch(CONTROL_PANEL_DISPLAYED('none'));
           }}
           $chosen={label.page === pageActivity}
           $pageActivity={pageActivity}

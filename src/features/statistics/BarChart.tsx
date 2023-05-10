@@ -7,7 +7,7 @@ import {
   CHOOSE_LABEL,
   CHOOSE_MONTH,
 } from '../../redux/reducers/ledgerListSlice';
-import { CHART_SHOWN_SWITCH } from '../../redux/reducers/pageControlSlice';
+import { SWITCH_STATISTICS_MODE } from '../../redux/reducers/pageControlSlice';
 import { labelColorCodes, mainLabels } from '../../utils/gameSettings';
 
 interface BarChartSetting {
@@ -349,7 +349,9 @@ export const BarChart: React.FC = () => {
           </LabelWrap>
         )}
       </ChartOperations>
-      <MinimizeWrap onClick={() => dispatch(CHART_SHOWN_SWITCH('monthOnly'))}>
+      <MinimizeWrap
+        onClick={() => dispatch(SWITCH_STATISTICS_MODE('monthOnly'))}
+      >
         <MinimizeIcon icon={faAnglesLeft} />
         <MinimizeText>收合</MinimizeText>
       </MinimizeWrap>

@@ -1,15 +1,12 @@
+import { faChartPie } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import styled from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { GeneralAnalysis } from './GeneralAnalysis';
-import { getAuth } from 'firebase/auth';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartPie } from '@fortawesome/free-solid-svg-icons';
 import { ClosingButton } from '../../component/ClosingButton';
+import { useAppSelector } from '../../redux/hooks';
+import { GeneralAnalysis } from './GeneralAnalysis';
 
 export const Statistics: React.FC = () => {
-  const { chartType } = useAppSelector((state) => state.pageControl);
   const { pageActivity } = useAppSelector((state) => state.pageControl);
 
   return (
@@ -19,7 +16,9 @@ export const Statistics: React.FC = () => {
         <Title>{'分析'}</Title>
         <ClosingButton size={60} />
       </Header>
-      <Main>{chartType === 'oneMonth' && <GeneralAnalysis />}</Main>
+      <Main>
+        <GeneralAnalysis />
+      </Main>
     </Wrap>
   );
 };

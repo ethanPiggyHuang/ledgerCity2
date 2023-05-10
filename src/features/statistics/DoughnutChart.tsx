@@ -11,7 +11,7 @@ import {
   CHOOSE_LABEL,
   CHOOSE_MONTH,
 } from '../../redux/reducers/ledgerListSlice';
-import { CHART_SHOWN_SWITCH } from '../../redux/reducers/pageControlSlice';
+import { SWITCH_STATISTICS_MODE } from '../../redux/reducers/pageControlSlice';
 
 interface Props {
   props: {
@@ -32,7 +32,9 @@ export const DoughnutChart: React.FC<Props> = ({ props }) => {
   const { chosenLabel, chosenMonth } = useAppSelector(
     (state) => state.ledgerList.choices
   );
-  const { chartShown } = useAppSelector((state) => state.pageControl);
+  const { statisticsMode: chartShown } = useAppSelector(
+    (state) => state.pageControl
+  );
   const dispatch = useAppDispatch();
   const { radius, holeRatio, hoverDelta, labelDelta } = props.setting;
   const { data, title } = props;
@@ -136,7 +138,7 @@ export const DoughnutChart: React.FC<Props> = ({ props }) => {
         ? dispatch(CHOOSE_LABEL(''))
         : dispatch(CHOOSE_LABEL(label));
       if (chartShown !== 'monthAndDetail')
-        dispatch(CHART_SHOWN_SWITCH('monthAndDetail'));
+        dispatch(SWITCH_STATISTICS_MODE('monthAndDetail'));
     };
 
     return (
@@ -245,7 +247,7 @@ export const DoughnutChart: React.FC<Props> = ({ props }) => {
         />
       </MonthSwitchWrap>
       <SwitchModeWrap
-        onClick={() => dispatch(CHART_SHOWN_SWITCH('yearAndMonth'))}
+        onClick={() => dispatch(SWITCH_STATISTICS_MODE('yearAndMonth'))}
         $isHidden={chartShown === 'yearAndMonth'}
       >
         <SwitchModeIcon icon={faAnglesLeft} />

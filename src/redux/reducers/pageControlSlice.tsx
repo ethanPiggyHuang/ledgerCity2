@@ -14,11 +14,9 @@ type SocialSections = 'cooperated' | 'friend' | 'inviting' | 'search';
 export interface PageControlState {
   pageActivity: CurrentActionState;
   ledgerPosition: 'minimize' | 'normal' | 'expand';
-  chartType: 'oneMonth' | 'monthly' | 'split';
-  chartShown: 'yearAndMonth' | 'monthOnly' | 'monthAndDetail';
+  statisticsMode: 'yearAndMonth' | 'monthOnly' | 'monthAndDetail';
   panelOpened: 'none' | 'user';
   socialSectionClosed: SocialSections[];
-  landingScrollY: number;
   alert: {
     isShown: boolean;
     dialogueOpen: boolean;
@@ -29,11 +27,9 @@ export interface PageControlState {
 const initialState: PageControlState = {
   pageActivity: 'city',
   ledgerPosition: 'normal',
-  chartType: 'oneMonth',
-  chartShown: 'monthOnly',
+  statisticsMode: 'monthOnly',
   panelOpened: 'none',
   socialSectionClosed: ['search'],
-  landingScrollY: 0,
   alert: {
     isShown: false,
     dialogueOpen: false,
@@ -41,8 +37,8 @@ const initialState: PageControlState = {
   status: 'idle',
 };
 
-export const SWITCH_PAGE = createAsyncThunk(
-  'pageControl/SWITCH_PAGE',
+export const SWITCH_SECTION_FOCUSED = createAsyncThunk(
+  'pageControl/SWITCH_SECTION_FOCUSED',
   async (payload: { userId: string; pageActivity: CurrentActionState }) => {
     const { userId, pageActivity } = payload;
     await updateActivity(userId, pageActivity);
@@ -54,22 +50,19 @@ export const pageControl = createSlice({
   name: 'pageControl',
   initialState,
   reducers: {
-    CHANGE_LEDGER_POSITION: (
+    SWITCH_LEDGER_POSITION: (
       state,
       action: PayloadAction<'minimize' | 'normal' | 'expand'>
     ) => {
       state.ledgerPosition = action.payload;
     },
-    CHANGE_CHART_TYPE: (
+    CONTROL_PANEL_DISPLAYED: (
       state,
-      action: PayloadAction<'oneMonth' | 'monthly' | 'split'>
+      action: PayloadAction<'none' | 'user'>
     ) => {
-      state.chartType = action.payload;
-    },
-    PANEL_CONTROL: (state, action: PayloadAction<'none' | 'user'>) => {
       state.panelOpened = action.payload;
     },
-    SOCIAL_SECTION_TOGGLE: (state, action: PayloadAction<SocialSections>) => {
+    TOGGLE_SOCIAL_SECTION: (state, action: PayloadAction<SocialSections>) => {
       if (state.socialSectionClosed.includes(action.payload)) {
         state.socialSectionClosed = state.socialSectionClosed.filter(
           (section) => section !== action.payload
@@ -81,34 +74,29 @@ export const pageControl = createSlice({
         ];
       }
     },
-    LANDING_SCROLL_Y: (state, action: PayloadAction<number>) => {
-      const delta =
-        state.landingScrollY + action.payload < 0 ? 0 : action.payload;
-      state.landingScrollY = state.landingScrollY + delta;
-    },
-    CHART_SHOWN_SWITCH: (
+    SWITCH_STATISTICS_MODE: (
       state,
       action: PayloadAction<'yearAndMonth' | 'monthOnly' | 'monthAndDetail'>
     ) => {
-      state.chartShown = action.payload;
+      state.statisticsMode = action.payload;
     },
-    ALERT_TOGGLE: (state) => {
+    TOGGLE_ALERT_CURTAIN: (state) => {
       state.alert.isShown = !state.alert.isShown;
     },
-    ALERT_DIALOUGE_TOGGLE: (state) => {
+    TOGGLE_ALERT_DIALOUGE: (state) => {
       state.alert.dialogueOpen = !state.alert.dialogueOpen;
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(SWITCH_PAGE.pending, (state) => {
+      .addCase(SWITCH_SECTION_FOCUSED.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(SWITCH_PAGE.fulfilled, (state, action) => {
+      .addCase(SWITCH_SECTION_FOCUSED.fulfilled, (state, action) => {
         state.status = 'idle';
         state.pageActivity = action.payload;
       })
-      .addCase(SWITCH_PAGE.rejected, (state) => {
+      .addCase(SWITCH_SECTION_FOCUSED.rejected, (state) => {
         state.status = 'failed';
         alert('登錄失敗');
       });
@@ -116,14 +104,12 @@ export const pageControl = createSlice({
 });
 
 export const {
-  CHANGE_LEDGER_POSITION,
-  CHANGE_CHART_TYPE,
-  PANEL_CONTROL,
-  SOCIAL_SECTION_TOGGLE,
-  LANDING_SCROLL_Y,
-  CHART_SHOWN_SWITCH,
-  ALERT_TOGGLE,
-  ALERT_DIALOUGE_TOGGLE,
+  SWITCH_LEDGER_POSITION,
+  CONTROL_PANEL_DISPLAYED,
+  TOGGLE_SOCIAL_SECTION,
+  SWITCH_STATISTICS_MODE,
+  TOGGLE_ALERT_CURTAIN,
+  TOGGLE_ALERT_DIALOUGE,
 } = pageControl.actions;
 
 export default pageControl.reducer;

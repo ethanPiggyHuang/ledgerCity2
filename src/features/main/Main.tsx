@@ -8,8 +8,8 @@ import {
   SWITCH_CITY_TRANSITION_MODE,
 } from '../../redux/reducers/citySlice';
 import {
-  PANEL_CONTROL,
-  SWITCH_PAGE,
+  CONTROL_PANEL_DISPLAYED,
+  SWITCH_SECTION_FOCUSED,
 } from '../../redux/reducers/pageControlSlice';
 import { City } from '../City/City';
 import { RearrangeOptions } from '../City/RearrangeOptions';
@@ -69,7 +69,7 @@ export const Main: React.FC = () => {
   // 監聽使用者進入頁面 -> 送到 db
   useEffect(() => {
     if (userId) {
-      dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }));
+      dispatch(SWITCH_SECTION_FOCUSED({ userId, pageActivity: 'city' }));
       // console.log('useEffect', userId);
     }
   }, [userId]);
@@ -94,7 +94,7 @@ export const Main: React.FC = () => {
         $isTouring={isTouring}
         onClick={() => {
           if (panelOpened !== 'none') {
-            dispatch(PANEL_CONTROL('none'));
+            dispatch(CONTROL_PANEL_DISPLAYED('none'));
           }
         }}
         ref={cityRef}
@@ -106,15 +106,15 @@ export const Main: React.FC = () => {
       <BlackCurtain
         $isShown={pageActivity === 'statistics' || pageActivity === 'profile'}
         onClick={() => {
-          dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }));
-          dispatch(PANEL_CONTROL('none'));
+          dispatch(SWITCH_SECTION_FOCUSED({ userId, pageActivity: 'city' }));
+          dispatch(CONTROL_PANEL_DISPLAYED('none'));
         }}
       />
       <InvisibleCurtain
         $isShown={pageActivity === 'ledger'}
         onClick={() => {
-          dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }));
-          dispatch(PANEL_CONTROL('none'));
+          dispatch(SWITCH_SECTION_FOCUSED({ userId, pageActivity: 'city' }));
+          dispatch(CONTROL_PANEL_DISPLAYED('none'));
           dispatch(SWITCH_CITY_TRANSITION_MODE(false));
         }}
       />
