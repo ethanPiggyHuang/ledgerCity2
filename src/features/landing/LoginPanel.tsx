@@ -6,7 +6,7 @@ import googleLogo from '../../assets/googleLogo.png';
 import loginSlogan from '../../assets/login_slogan.png';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { TOGGLE_LOGIN_SECTION_FOCUS } from '../../redux/reducers/landingIntroSlice';
-import { AUTHING_TOGGLE } from '../../redux/reducers/userInfoSlice';
+import { TOGGLE_AUTHING } from '../../redux/reducers/userInfoSlice';
 
 export interface IloginPageProps {}
 
@@ -17,14 +17,14 @@ export const LoginPanel: React.FunctionComponent<IloginPageProps> = () => {
   const auth = getAuth();
 
   const signInWithGoogle = async () => {
-    dispatch(AUTHING_TOGGLE(true));
+    dispatch(TOGGLE_AUTHING(true));
     signInWithPopup(auth, new GoogleAuthProvider())
       .then(() => {
-        dispatch(AUTHING_TOGGLE(false));
+        dispatch(TOGGLE_AUTHING(false));
       })
       .catch((error) => {
         console.log('error', error);
-        dispatch(AUTHING_TOGGLE(false));
+        dispatch(TOGGLE_AUTHING(false));
       });
   };
 

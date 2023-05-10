@@ -10,9 +10,9 @@ import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components/macro';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import {
-  AUTHING_TOGGLE,
   CREATE_ACCOUNT,
   GET_ACCOUNT_INFO,
+  TOGGLE_AUTHING,
 } from '../redux/reducers/userInfoSlice';
 
 export interface IAuthRouteProps {
@@ -28,7 +28,7 @@ const AuthRoute: React.FunctionComponent<IAuthRouteProps> = (props) => {
   const auth = getAuth();
 
   useEffect(() => {
-    dispatch(AUTHING_TOGGLE(true));
+    dispatch(TOGGLE_AUTHING(true));
     const AuthCheck = onAuthStateChanged(auth, (user) => {
       if (user) {
         const { uid, displayName, email, photoURL } = user;
@@ -37,9 +37,9 @@ const AuthRoute: React.FunctionComponent<IAuthRouteProps> = (props) => {
         } else {
           dispatch(GET_ACCOUNT_INFO({ uid, displayName, email, photoURL }));
         }
-        dispatch(AUTHING_TOGGLE(false));
+        dispatch(TOGGLE_AUTHING(false));
       } else {
-        dispatch(AUTHING_TOGGLE(false));
+        dispatch(TOGGLE_AUTHING(false));
         console.log('unauthorized');
         navigate('/landing');
       }

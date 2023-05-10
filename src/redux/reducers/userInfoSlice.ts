@@ -1,17 +1,17 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { FriendInfoState } from '../reducers/usersActivitySlice';
 import {
-  createAccount,
-  getAccountInfo,
-  POST_NICKNAME,
-  FIND_ACCOUNT_MATCH,
-  NEW_FRIEND_REQUEST,
-  updateCityList,
-  getOtherCityInfo,
-  createNewCity,
   agreeCooperation,
+  createAccount,
+  createNewCity,
   disagreeCooperation,
+  getAccountInfo,
+  getOtherCityInfo,
+  searchFriend,
+  sendCooperationRequest,
+  updateCityList,
+  updateNickname,
 } from '../api/userAPI';
+import { FriendInfoState } from '../reducers/usersActivitySlice';
 import { RootState } from '../store';
 
 export interface UserDataState {
@@ -142,41 +142,41 @@ export const GET_ACCOUNT_INFO = createAsyncThunk(
   }
 );
 
-export const SAVE_NICKNAME = createAsyncThunk(
-  'userInfo/SAVE_NICKNAME',
+export const UPDATE_NICKNAME = createAsyncThunk(
+  'userInfo/UPDATE_NICKNAME',
   async (userNickName: string, { getState }) => {
     const allStates = getState() as RootState;
     const { userId } = allStates.userInfo.data;
-    await POST_NICKNAME(userId, userNickName);
+    await updateNickname(userId, userNickName);
     return userNickName;
   }
 );
 
-export const QUEST_FRIEND = createAsyncThunk(
-  'userInfo/QUEST_FRIEND',
+export const SEARCH_FRIEND = createAsyncThunk(
+  'userInfo/SEARCH_FRIEND',
   async (friendEmail: string, { getState }) => {
     const fullEmail = `${friendEmail}@gmail.com`;
-    const response = await FIND_ACCOUNT_MATCH(fullEmail);
+    const response = await searchFriend(fullEmail);
     return response.result;
   }
 );
 
-export const FRIEND_REQUEST = createAsyncThunk(
-  'userInfo/FRIEND_REQUEST',
+export const SEND_COOPERATION_REQUEST = createAsyncThunk(
+  'userInfo/SEND_COOPERATION_REQUEST',
   async (payload: { friendId: string; cityId: string }, { getState }) => {
     const { cityId, friendId } = payload;
     const allStates = getState() as RootState;
     const { userId } = allStates.userInfo.data;
     try {
-      await NEW_FRIEND_REQUEST(userId, friendId, cityId);
+      await sendCooperationRequest(userId, friendId, cityId);
     } catch (error) {
       console.log(error);
     }
   }
 );
 
-export const CITY_REDIRECTION = createAsyncThunk(
-  'userInfo/CITY_REDIRECTION',
+export const REDIRECT_CITY = createAsyncThunk(
+  'userInfo/REDIRECT_CITY',
   async (payload: { userId: string; cityId: string }, { getState }) => {
     const { userId, cityId } = payload;
     const allStates = getState() as RootState;
@@ -229,10 +229,10 @@ export const userInfo = createSlice({
   name: 'userInfo',
   initialState,
   reducers: {
-    AUTHING_TOGGLE: (state, action: PayloadAction<boolean>) => {
+    TOGGLE_AUTHING: (state, action: PayloadAction<boolean>) => {
       state.loginStatus.isAuthing = action.payload;
     },
-    LOGGED_IN: (
+    LOG_IN: (
       state,
       action: PayloadAction<{
         uid: string;
@@ -259,10 +259,10 @@ export const userInfo = createSlice({
     EDIT_NICKNAME_SWITCH: (state, action: PayloadAction<boolean>) => {
       state.editStatus.isNickNameEdit = action.payload;
     },
-    TYPING_NICKNAME: (state, action: PayloadAction<string>) => {
+    TYPE_NICKNAME: (state, action: PayloadAction<string>) => {
       state.editStatus.inputText = action.payload;
     },
-    TYPING_FRIEND_EMAIL: (state, action: PayloadAction<string>) => {
+    TYPE_FRIEND_EMAIL: (state, action: PayloadAction<string>) => {
       state.editStatus.emailInput = action.payload;
     },
     UPDATE_INSTANT_FRIENDS_STATUS: (
@@ -314,50 +314,50 @@ export const userInfo = createSlice({
         state.status = 'failed';
         alert('get account info rejected');
       })
-      .addCase(SAVE_NICKNAME.pending, (state) => {
+      .addCase(UPDATE_NICKNAME.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(SAVE_NICKNAME.fulfilled, (state, action) => {
+      .addCase(UPDATE_NICKNAME.fulfilled, (state, action) => {
         state.status = 'idle';
         state.editStatus.isNickNameEdit = false;
         state.data.userNickName = action.payload;
         console.log('nickname updated');
       })
-      .addCase(SAVE_NICKNAME.rejected, (state) => {
+      .addCase(UPDATE_NICKNAME.rejected, (state) => {
         state.status = 'failed';
         alert('get account info rejected');
       })
-      .addCase(QUEST_FRIEND.pending, (state) => {
+      .addCase(SEARCH_FRIEND.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(QUEST_FRIEND.fulfilled, (state, action) => {
+      .addCase(SEARCH_FRIEND.fulfilled, (state, action) => {
         state.status = 'idle';
         if (action.payload.length === 0) alert('無此帳號，請再次確認');
         state.editStatus.queryResult = action.payload;
       })
-      .addCase(QUEST_FRIEND.rejected, (state) => {
+      .addCase(SEARCH_FRIEND.rejected, (state) => {
         state.status = 'failed';
         alert('searching friend rejected');
       })
-      .addCase(FRIEND_REQUEST.pending, (state) => {
+      .addCase(SEND_COOPERATION_REQUEST.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(FRIEND_REQUEST.fulfilled, (state, action) => {
+      .addCase(SEND_COOPERATION_REQUEST.fulfilled, (state, action) => {
         state.status = 'idle';
         alert('request sent');
       })
-      .addCase(FRIEND_REQUEST.rejected, (state) => {
+      .addCase(SEND_COOPERATION_REQUEST.rejected, (state) => {
         state.status = 'failed';
         alert('friend request rejected');
       })
-      .addCase(CITY_REDIRECTION.pending, (state) => {
+      .addCase(REDIRECT_CITY.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(CITY_REDIRECTION.fulfilled, (state, action) => {
+      .addCase(REDIRECT_CITY.fulfilled, (state, action) => {
         state.status = 'idle';
         state.data.cityList = action.payload;
       })
-      .addCase(CITY_REDIRECTION.rejected, (state) => {
+      .addCase(REDIRECT_CITY.rejected, (state) => {
         state.status = 'failed';
         alert('friend request rejected');
       })
@@ -406,12 +406,12 @@ export const userInfo = createSlice({
 });
 
 export const {
-  AUTHING_TOGGLE,
-  LOGGED_IN,
+  TOGGLE_AUTHING,
+  LOG_IN,
   LOG_OUT,
   EDIT_NICKNAME_SWITCH,
-  TYPING_NICKNAME,
-  TYPING_FRIEND_EMAIL,
+  TYPE_NICKNAME,
+  TYPE_FRIEND_EMAIL,
   UPDATE_INSTANT_FRIENDS_STATUS,
   SWITCH_COOP_CITY_OPTION,
 } = userInfo.actions;

@@ -1,20 +1,19 @@
-import { db } from '../../utils/firebase';
-import {
-  setDoc,
-  getDoc,
-  addDoc,
-  collection,
-  doc,
-  serverTimestamp,
-  updateDoc,
-  arrayUnion,
-  query,
-  where,
-  getDocs,
-  deleteDoc,
-} from 'firebase/firestore';
-import { rtdb } from '../../utils/firebase';
 import { ref, set } from 'firebase/database';
+import {
+  addDoc,
+  arrayUnion,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+  where,
+} from 'firebase/firestore';
+import { db, rtdb } from '../../utils/firebase';
 import { UserDataState } from '../reducers/userInfoSlice';
 import { FriendInfoState } from '../reducers/usersActivitySlice';
 
@@ -155,7 +154,7 @@ export async function postFadeOutTimeRT(userId: string, enableType: string) {
   });
 }
 
-export async function FETCH_COORPERATE_LOCATION(userId: string) {
+export async function getCooperatorLocation(userId: string) {
   console.log('userId', userId);
   const docSnap = await getDoc(doc(db, 'allUserStatus', userId));
   if (docSnap) {
@@ -170,11 +169,11 @@ export async function updateActivity(userId: string, pageActivity: string) {
   });
 }
 
-export async function POST_NICKNAME(userId: string, userNickName: string) {
+export async function updateNickname(userId: string, userNickName: string) {
   await updateDoc(doc(db, 'users', userId), { userNickName: userNickName });
 }
 
-export async function FIND_ACCOUNT_MATCH(email: string) {
+export async function searchFriend(email: string) {
   const q = query(collection(db, 'users'), where('userEmail', '==', email));
   const querySnapshot = await getDocs(q);
   let result: FriendInfoState[] = [];
@@ -193,7 +192,7 @@ export async function FIND_ACCOUNT_MATCH(email: string) {
   );
 }
 
-export async function NEW_FRIEND_REQUEST(
+export async function sendCooperationRequest(
   userId: string,
   friendId: string,
   cityId: string

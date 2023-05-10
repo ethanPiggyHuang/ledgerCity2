@@ -15,12 +15,12 @@ import {
   SWITCH_SECTION_FOCUSED,
 } from '../../redux/reducers/pageControlSlice';
 import {
-  CITY_REDIRECTION,
   CREATE_NEW_CITY,
   EDIT_NICKNAME_SWITCH,
   LOG_OUT,
-  SAVE_NICKNAME,
-  TYPING_NICKNAME,
+  REDIRECT_CITY,
+  TYPE_NICKNAME,
+  UPDATE_NICKNAME,
 } from '../../redux/reducers/userInfoSlice';
 
 export const UserPanel: React.FC = () => {
@@ -42,7 +42,7 @@ export const UserPanel: React.FC = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(TYPING_NICKNAME(userNickName));
+    dispatch(TYPE_NICKNAME(userNickName));
   }, []);
 
   return (
@@ -57,7 +57,7 @@ export const UserPanel: React.FC = () => {
               type="text"
               value={inputText}
               onChange={(event) => {
-                dispatch(TYPING_NICKNAME(event.target.value));
+                dispatch(TYPE_NICKNAME(event.target.value));
               }}
               onClick={() => dispatch(EDIT_NICKNAME_SWITCH(true))}
               onBlur={() =>
@@ -68,7 +68,7 @@ export const UserPanel: React.FC = () => {
               <SaveIcon
                 icon={faFloppyDisk}
                 onClick={() => {
-                  dispatch(SAVE_NICKNAME(inputText));
+                  dispatch(UPDATE_NICKNAME(inputText));
                 }}
               />
             )}
@@ -89,7 +89,7 @@ export const UserPanel: React.FC = () => {
               <MyCityNoticeWrap
                 onClick={() => {
                   if (index === 0) return;
-                  dispatch(CITY_REDIRECTION({ userId, cityId }));
+                  dispatch(REDIRECT_CITY({ userId, cityId }));
                   dispatch(
                     SWITCH_SECTION_FOCUSED({ userId, pageActivity: 'city' })
                   );

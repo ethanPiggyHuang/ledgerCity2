@@ -11,14 +11,14 @@ import {
 } from '../../redux/reducers/pageControlSlice';
 import {
   AGREE_COOPERATION,
-  CITY_REDIRECTION,
   DISAGREE_COOPERATION,
-  FRIEND_REQUEST,
   FriendStatusState,
   GET_CITY_NAME,
-  QUEST_FRIEND,
+  REDIRECT_CITY,
+  SEARCH_FRIEND,
+  SEND_COOPERATION_REQUEST,
   SWITCH_COOP_CITY_OPTION,
-  TYPING_FRIEND_EMAIL,
+  TYPE_FRIEND_EMAIL,
 } from '../../redux/reducers/userInfoSlice';
 import { GET_FRIENDS_INFO } from '../../redux/reducers/usersActivitySlice';
 import { UserBasics } from '../profile/UserBasics';
@@ -126,7 +126,7 @@ export const Social: React.FC = () => {
                                 return;
                               } else {
                                 dispatch(
-                                  CITY_REDIRECTION({
+                                  REDIRECT_CITY({
                                     userId,
                                     cityId: friendInfo.coopCityId,
                                   })
@@ -254,14 +254,14 @@ export const Social: React.FC = () => {
               type="text"
               value={emailInput}
               onChange={(event) => {
-                dispatch(TYPING_FRIEND_EMAIL(event.target.value));
+                dispatch(TYPE_FRIEND_EMAIL(event.target.value));
               }}
             />
             <span>@gmail.com</span>
 
             <button
               onClick={() => {
-                dispatch(QUEST_FRIEND(emailInput));
+                dispatch(SEARCH_FRIEND(emailInput));
               }}
             >
               查詢
@@ -322,7 +322,7 @@ export const Social: React.FC = () => {
                       );
                     } else {
                       const friendId = queryResult[0].userId;
-                      dispatch(FRIEND_REQUEST({ friendId, cityId }));
+                      dispatch(SEND_COOPERATION_REQUEST({ friendId, cityId }));
                     }
                   }}
                 >
