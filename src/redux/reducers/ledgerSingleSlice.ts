@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { postLedger, updateLedger } from '../api/ledgerSingleAPI';
+import { createLedger, updateLedger } from '../api/ledgerSingleAPI';
 import { RootState } from '../store';
 
 export interface LedgerDataState {
@@ -52,8 +52,8 @@ const initialState: LedgerSingleState = {
   status: 'idle',
 };
 
-export const ledgerSubmit = createAsyncThunk(
-  'ledger/ledgerSubmit',
+export const SUBMIT_LEDGER = createAsyncThunk(
+  'ledger/SUBMIT_LEDGER',
   async (arg, { getState }) => {
     const allStates = getState() as RootState;
     const ledgerSingle = allStates.ledgerSingle;
@@ -67,12 +67,12 @@ export const ledgerSubmit = createAsyncThunk(
     };
     const { nextHousePosition } = allStates.city;
 
-    await postLedger(cityId, ledgerBookId, ledgerData, nextHousePosition);
+    await createLedger(cityId, ledgerBookId, ledgerData, nextHousePosition);
   }
 );
 
-export const ledgerUpdate = createAsyncThunk(
-  'ledger/ledgerUpdate',
+export const UPDATE_LEDGER = createAsyncThunk(
+  'ledger/UPDATE_LEDGER',
   async (arg, { getState }) => {
     const allStates = getState() as RootState;
     const ledgerBookId = allStates.city.basicInfo.ledgerBookId;
@@ -91,12 +91,12 @@ export const ledgerSingle = createSlice({
   name: 'ledgerSingle',
   initialState,
   reducers: {
-    CLEAR_LEDGER_ID: (state) => {
+    CLEAR_LEDGER_INPUTS: (state) => {
       state.ledgerId = '';
       state.data.item = '';
       state.data.amount.number = 0;
     },
-    ledgerEdit: (
+    EDIT_LEDGER: (
       state,
       action: PayloadAction<{
         ledgerId: string;
@@ -106,22 +106,13 @@ export const ledgerSingle = createSlice({
       state.ledgerId = action.payload.ledgerId;
       state.data = action.payload.data;
     },
-    itemKeyIn: (state, action: PayloadAction<string>) => {
+    TYPE_ITEM: (state, action: PayloadAction<string>) => {
       state.data.item = action.payload;
     },
-    labelChooseMain: (state, action: PayloadAction<string>) => {
+    CHOOSE_LABEL: (state, action: PayloadAction<string>) => {
       state.data.labelMain = action.payload;
     },
-    labelRetrieve: (state, action: PayloadAction<string>) => {
-      if (state.data.labelMain === action.payload) {
-        state.data.labelMain = '';
-      } else {
-        state.data.labelSubs = state.data.labelSubs.filter(
-          (labelSub) => labelSub !== action.payload
-        );
-      }
-    },
-    amountKeyNumber: (state, action: PayloadAction<string>) => {
+    PRESS_NUMBER: (state, action: PayloadAction<string>) => {
       const pastNumberString = state.data.amount.number.toString();
       const pastHolderNumberString = state.calculationHolder.number.toString();
       const maximumLength = 8;
@@ -143,7 +134,7 @@ export const ledgerSingle = createSlice({
         }
       }
     },
-    amountDelete: (state) => {
+    PRESS_DELETE: (state) => {
       const pastNumberString = state.data.amount.number.toString();
       const pastHolderNumberString = state.calculationHolder.number.toString();
       if (state.calculationHolder.operator === '') {
@@ -158,7 +149,7 @@ export const ledgerSingle = createSlice({
         );
       }
     },
-    amountHoldOperator: (
+    PRESS_OPERATOR: (
       state,
       action: PayloadAction<'' | '+' | '-' | 'x' | '÷'>
     ) => {
@@ -169,7 +160,7 @@ export const ledgerSingle = createSlice({
       state.calculationHolder.operator = action.payload;
       state.calculationHolder.number = newNumber;
     },
-    amountCalculate: (state) => {
+    EXECUTE_CALCULATION: (state) => {
       const numberBeforeOperator = state.data.amount.number;
       const { number, operator } = state.calculationHolder;
       let result: number;
@@ -207,18 +198,18 @@ export const ledgerSingle = createSlice({
       state.calculationHolder.operator = '';
       state.calculationHolder.number = 0;
     },
-    amountAllClear: (state) => {
+    CLEAR_AMOUNT: (state) => {
       state.data.amount.number = 0;
       state.calculationHolder.operator = '';
       state.calculationHolder.number = 0;
     },
-    AMOUNT_LONG_LENGTH: (state, action: PayloadAction<boolean>) => {
+    TOGGLE_AMOUNT_LENGTH: (state, action: PayloadAction<boolean>) => {
       state.calculationHolder.isLong = action.payload;
     },
-    AMOUNT_ERROR_CONFIRM: (state) => {
+    CLEAR_AMOUNT_ERROR: (state) => {
       state.calculationHolder.errorType = '';
     },
-    payPeopleSwitch: (
+    SWITCH_PAY_PEOPLE: (
       state,
       action: PayloadAction<{ name: string; list: string[]; init?: boolean }>
     ) => {
@@ -229,7 +220,7 @@ export const ledgerSingle = createSlice({
       const index = list.findIndex((personName) => personName === name);
       state.data.payWho = list[(index + 1) % list.length];
     },
-    payMethodSwitch: (
+    SWITCH_PAY_METHOD: (
       state,
       action: PayloadAction<'cash' | 'creditCard' | 'mobile'>
     ) => {
@@ -241,7 +232,7 @@ export const ledgerSingle = createSlice({
       const index = options.findIndex((option) => option === action.payload);
       state.data.payHow = options[(index + 1) % options.length];
     },
-    timeEdit: (
+    SWITCH_TIME: (
       state,
       action: PayloadAction<{ prevTime: number; scope: string; delta: number }>
     ) => {
@@ -271,7 +262,7 @@ export const ledgerSingle = createSlice({
       state.data.timeMonth = time.getMonth() + 1;
       state.data.timeYear = time.getFullYear();
     },
-    TIME_INITIALIZE: (state, action: PayloadAction<number>) => {
+    SET_CURRENT_TIME: (state, action: PayloadAction<number>) => {
       state.data.timeLedger = action.payload;
       state.data.timeMonth = new Date(action.payload).getMonth() + 1;
       state.data.timeYear = new Date(action.payload).getFullYear();
@@ -279,10 +270,10 @@ export const ledgerSingle = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(ledgerSubmit.pending, (state) => {
+      .addCase(SUBMIT_LEDGER.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(ledgerSubmit.fulfilled, (state) => {
+      .addCase(SUBMIT_LEDGER.fulfilled, (state) => {
         state.status = 'idle';
         state.data.item = '';
         state.data.labelMain = '食物';
@@ -295,14 +286,14 @@ export const ledgerSingle = createSlice({
           errorType: '',
         };
       })
-      .addCase(ledgerSubmit.rejected, (state) => {
+      .addCase(SUBMIT_LEDGER.rejected, (state) => {
         state.status = 'failed';
         alert('登錄失敗');
       })
-      .addCase(ledgerUpdate.pending, (state) => {
+      .addCase(UPDATE_LEDGER.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(ledgerUpdate.fulfilled, (state) => {
+      .addCase(UPDATE_LEDGER.fulfilled, (state) => {
         state.status = 'idle';
         state.data.item = '';
         state.data.labelMain = '食物';
@@ -316,7 +307,7 @@ export const ledgerSingle = createSlice({
         };
         state.ledgerId = '';
       })
-      .addCase(ledgerUpdate.rejected, (state) => {
+      .addCase(UPDATE_LEDGER.rejected, (state) => {
         state.status = 'failed';
         alert('更新失敗');
       });
@@ -324,22 +315,21 @@ export const ledgerSingle = createSlice({
 });
 
 export const {
-  CLEAR_LEDGER_ID,
-  ledgerEdit,
-  itemKeyIn,
-  labelChooseMain,
-  labelRetrieve,
-  amountKeyNumber,
-  amountDelete,
-  amountHoldOperator,
-  amountCalculate,
-  amountAllClear,
-  AMOUNT_LONG_LENGTH,
-  payPeopleSwitch,
-  payMethodSwitch,
-  timeEdit,
-  TIME_INITIALIZE,
-  AMOUNT_ERROR_CONFIRM,
+  CLEAR_LEDGER_INPUTS,
+  EDIT_LEDGER,
+  TYPE_ITEM,
+  CHOOSE_LABEL,
+  PRESS_NUMBER,
+  PRESS_DELETE,
+  PRESS_OPERATOR,
+  EXECUTE_CALCULATION,
+  CLEAR_AMOUNT,
+  TOGGLE_AMOUNT_LENGTH,
+  SWITCH_PAY_PEOPLE,
+  SWITCH_PAY_METHOD,
+  SWITCH_TIME,
+  SET_CURRENT_TIME,
+  CLEAR_AMOUNT_ERROR,
 } = ledgerSingle.actions;
 
 export default ledgerSingle.reducer;

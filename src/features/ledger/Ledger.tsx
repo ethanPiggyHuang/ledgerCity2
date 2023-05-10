@@ -14,10 +14,10 @@ import {
   SWITCH_CITY_TRANSITION_MODE,
 } from '../../redux/reducers/citySlice';
 import {
-  CLEAR_LEDGER_ID,
-  amountAllClear,
-  ledgerSubmit,
-  ledgerUpdate,
+  CLEAR_AMOUNT,
+  CLEAR_LEDGER_INPUTS,
+  SUBMIT_LEDGER,
+  UPDATE_LEDGER,
 } from '../../redux/reducers/ledgerSingleSlice';
 import {
   CHANGE_LEDGER_POSITION,
@@ -76,8 +76,8 @@ export const Ledger: React.FC = () => {
               <Icon
                 icon={faArrowLeft}
                 onClick={() => {
-                  dispatch(CLEAR_LEDGER_ID());
-                  dispatch(amountAllClear());
+                  dispatch(CLEAR_LEDGER_INPUTS());
+                  dispatch(CLEAR_AMOUNT());
                 }}
               />
             </IconWrap>
@@ -90,7 +90,7 @@ export const Ledger: React.FC = () => {
             <AddNewWrap>
               <AddNewButton
                 onClick={() => {
-                  dispatch(CLEAR_LEDGER_ID());
+                  dispatch(CLEAR_LEDGER_INPUTS());
                   dispatch(CHANGE_LEDGER_POSITION('expand'));
                   dispatch(SWITCH_CITY_TRANSITION_MODE(true));
                 }}
@@ -142,7 +142,7 @@ export const Ledger: React.FC = () => {
                         ),
                       200
                     );
-                    setTimeout(() => dispatch(ledgerSubmit()), 1000);
+                    setTimeout(() => dispatch(SUBMIT_LEDGER()), 1000);
 
                     setTimeout(
                       () =>
@@ -152,7 +152,7 @@ export const Ledger: React.FC = () => {
                       3000
                     );
                   } else {
-                    dispatch(ledgerUpdate());
+                    dispatch(UPDATE_LEDGER());
                     dispatch(
                       SWITCH_PAGE({ userId, pageActivity: 'statistics' })
                     );

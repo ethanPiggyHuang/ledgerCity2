@@ -1,15 +1,15 @@
-import { db } from '../../utils/firebase';
 import {
-  collection,
   addDoc,
-  doc,
   arrayUnion,
-  updateDoc,
+  collection,
+  doc,
   serverTimestamp,
+  updateDoc,
 } from 'firebase/firestore';
+import { db } from '../../utils/firebase';
 import { LedgerDataState } from '../reducers/ledgerSingleSlice';
 
-export async function postLedger(
+export async function createLedger(
   cityId: string,
   ledgerBookId: string,
   ledgerData: LedgerDataState,

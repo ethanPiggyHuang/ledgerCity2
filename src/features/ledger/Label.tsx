@@ -1,29 +1,29 @@
-import React from 'react';
-import styled from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import {
-  itemKeyIn,
-  labelChooseMain,
-} from '../../redux/reducers/ledgerSingleSlice';
-import {
-  mainLabels,
-  labelColorCodes,
-  subLabels,
-} from '../../utils/gameSettings';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faUtensils,
-  faMugHot,
-  faTrainSubway,
-  faShirt,
+  faBriefcaseMedical,
+  faClipboard,
   faGamepad,
+  faGift,
   faHouse,
   faMobileScreenButton,
-  faBriefcaseMedical,
-  faGift,
+  faMugHot,
+  faShirt,
   faTags,
-  faClipboard,
+  faTrainSubway,
+  faUtensils,
 } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React from 'react';
+import styled from 'styled-components/macro';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import {
+  CHOOSE_LABEL,
+  TYPE_ITEM,
+} from '../../redux/reducers/ledgerSingleSlice';
+import {
+  labelColorCodes,
+  mainLabels,
+  subLabels,
+} from '../../utils/gameSettings';
 
 export const Label: React.FC = () => {
   const { labelMain, item } = useAppSelector(
@@ -52,7 +52,7 @@ export const Label: React.FC = () => {
             key={index}
             $isChosen={labelMain === label}
             $color={labelColorCodes[index]}
-            onClick={() => dispatch(labelChooseMain(label))}
+            onClick={() => dispatch(CHOOSE_LABEL(label))}
           >
             <LabelIcons icon={labelIcons[index]} />
             <LabelText>{label}</LabelText>
@@ -63,7 +63,7 @@ export const Label: React.FC = () => {
         {subLabels[labelMain].map((subLabel) => (
           <SubLabelOption
             key={subLabel}
-            onClick={() => dispatch(itemKeyIn(subLabel))}
+            onClick={() => dispatch(TYPE_ITEM(subLabel))}
           >
             {`${subLabel}`}
           </SubLabelOption>
@@ -75,7 +75,7 @@ export const Label: React.FC = () => {
           type="text"
           value={item}
           placeholder="（可增加註記）"
-          onChange={(e) => dispatch(itemKeyIn(e.target.value))}
+          onChange={(e) => dispatch(TYPE_ITEM(e.target.value))}
         />
       </ItemDisplay>
     </>

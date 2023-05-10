@@ -12,7 +12,7 @@ import {
   CLEAR_HOUSE,
   SUBMIT_LEDGER,
 } from '../../redux/reducers/landingIntroSlice';
-import { itemKeyIn } from '../../redux/reducers/ledgerSingleSlice';
+import { TYPE_ITEM } from '../../redux/reducers/ledgerSingleSlice';
 import { mainLabel } from '../../utils/gameSettings';
 
 export const LedgerDemo: React.FC = () => {
@@ -50,7 +50,7 @@ export const LedgerDemo: React.FC = () => {
           subLabels.map((subLabel) => (
             <SubLabelOption
               key={subLabel}
-              onClick={() => dispatch(itemKeyIn(subLabel))}
+              onClick={() => dispatch(TYPE_ITEM(subLabel))}
             >
               {`${subLabel}`}
             </SubLabelOption>
@@ -62,7 +62,7 @@ export const LedgerDemo: React.FC = () => {
           type="text"
           value={item}
           placeholder="(消費品項)"
-          onChange={(e) => dispatch(itemKeyIn(e.target.value))}
+          onChange={(e) => dispatch(TYPE_ITEM(e.target.value))}
         />
       </ItemDisplay>
       <AmountText>{`$ 888`}</AmountText>

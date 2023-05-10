@@ -16,8 +16,8 @@ import {
   SORT_LIST,
 } from '../../redux/reducers/ledgerListSlice';
 import {
+  EDIT_LEDGER,
   LedgerDataState,
-  ledgerEdit,
 } from '../../redux/reducers/ledgerSingleSlice';
 import {
   CHANGE_LEDGER_POSITION,
@@ -203,7 +203,7 @@ export const LedgerDetail: React.FC = () => {
                       (data) => data.ledgerId === ledger.ledgerId
                     );
                     if (chosenLedger) {
-                      dispatch(ledgerEdit(chosenLedger));
+                      dispatch(EDIT_LEDGER(chosenLedger));
                       dispatch(SWITCH_PAGE({ userId, pageActivity: 'ledger' }));
                       dispatch(CHANGE_LEDGER_POSITION('expand'));
                     }

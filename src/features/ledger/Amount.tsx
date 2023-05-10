@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import {
-  amountAllClear,
-  amountCalculate,
-  amountDelete,
-  amountHoldOperator,
-  amountKeyNumber,
-  AMOUNT_LONG_LENGTH,
-  AMOUNT_ERROR_CONFIRM,
+  CLEAR_AMOUNT,
+  CLEAR_AMOUNT_ERROR,
+  EXECUTE_CALCULATION,
+  PRESS_DELETE,
+  PRESS_NUMBER,
+  PRESS_OPERATOR,
+  TOGGLE_AMOUNT_LENGTH,
 } from '../../redux/reducers/ledgerSingleSlice';
 
 export const Amount: React.FC = () => {
@@ -38,18 +38,18 @@ export const Amount: React.FC = () => {
       numberAfterOperator !== 0 ? thousandsSeparator(numberAfterOperator) : ''
     }`;
     if (amountInput.length > 13 && !isLong) {
-      dispatch(AMOUNT_LONG_LENGTH(true));
+      dispatch(TOGGLE_AMOUNT_LENGTH(true));
     } else if (amountInput.length <= 13 && isLong) {
-      dispatch(AMOUNT_LONG_LENGTH(false));
+      dispatch(TOGGLE_AMOUNT_LENGTH(false));
     }
 
     if (errorType === 'maximum') {
       alert('meet maximum');
-      dispatch(AMOUNT_ERROR_CONFIRM());
+      dispatch(CLEAR_AMOUNT_ERROR());
     }
     if (errorType === 'negative') {
       alert('negative number');
-      dispatch(AMOUNT_ERROR_CONFIRM());
+      dispatch(CLEAR_AMOUNT_ERROR());
     }
   }, [number, operator, numberAfterOperator, errorType]);
 
@@ -67,15 +67,15 @@ export const Amount: React.FC = () => {
         onKeyUp={(event) => {
           const numberRegex: RegExp = /^\d+$/;
           if (event.key === 'Escape') {
-            dispatch(amountAllClear());
+            dispatch(CLEAR_AMOUNT());
           } else if (event.key === 'Backspace') {
-            dispatch(amountDelete());
+            dispatch(PRESS_DELETE());
           } else if (event.key === 'Enter' || event.key === '=') {
-            dispatch(amountCalculate());
+            dispatch(EXECUTE_CALCULATION());
           } else if (numberRegex.test(event.key)) {
-            dispatch(amountKeyNumber(event.key));
+            dispatch(PRESS_NUMBER(event.key));
           } else if (['+', '-'].includes(event.key)) {
-            dispatch(amountHoldOperator(event.key as '' | '+' | '-'));
+            dispatch(PRESS_OPERATOR(event.key as '' | '+' | '-'));
           } else if (event.key) {
             alert('請輸入數字或運算符號');
           }

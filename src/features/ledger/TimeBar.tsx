@@ -1,16 +1,16 @@
-import React, { useEffect } from 'react';
-import styled from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import {
-  timeEdit,
-  TIME_INITIALIZE,
-} from '../../redux/reducers/ledgerSingleSlice';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCalendarDay,
   faCaretLeft,
   faCaretRight,
 } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useEffect } from 'react';
+import styled from 'styled-components/macro';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import {
+  SET_CURRENT_TIME,
+  SWITCH_TIME,
+} from '../../redux/reducers/ledgerSingleSlice';
 
 const semantizeDate = (displayTime: number) => {
   const today = new Date();
@@ -40,7 +40,7 @@ export const TimeBar: React.FC = () => {
   useEffect(() => {
     if (ledgerTime === 0) {
       const nowInSeconds = new Date().getTime();
-      dispatch(TIME_INITIALIZE(nowInSeconds));
+      dispatch(SET_CURRENT_TIME(nowInSeconds));
     }
   }, []);
 
@@ -52,7 +52,7 @@ export const TimeBar: React.FC = () => {
       <DateSwitch
         onClick={() =>
           dispatch(
-            timeEdit({
+            SWITCH_TIME({
               prevTime: timeInSeconds,
               scope: 'date',
               delta: -1,
@@ -65,7 +65,7 @@ export const TimeBar: React.FC = () => {
       <DateSwitch
         onClick={() =>
           dispatch(
-            timeEdit({
+            SWITCH_TIME({
               prevTime: timeInSeconds,
               scope: 'date',
               delta: 1,
@@ -79,7 +79,7 @@ export const TimeBar: React.FC = () => {
         <TodayWrap
           onClick={() => {
             const nowInSeconds = new Date().getTime();
-            dispatch(TIME_INITIALIZE(nowInSeconds));
+            dispatch(SET_CURRENT_TIME(nowInSeconds));
           }}
         >
           <TodayIcon icon={faCalendarDay} />

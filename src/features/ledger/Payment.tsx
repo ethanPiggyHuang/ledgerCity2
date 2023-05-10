@@ -1,16 +1,16 @@
-import React, { useEffect } from 'react';
-import styled from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import {
-  payPeopleSwitch,
-  payMethodSwitch,
-} from '../../redux/reducers/ledgerSingleSlice';
-import { ReactComponent as Cash } from '../../assets/cash.svg';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCreditCard,
   faMobileScreen,
 } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useEffect } from 'react';
+import styled from 'styled-components/macro';
+import { ReactComponent as Cash } from '../../assets/cash.svg';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import {
+  SWITCH_PAY_METHOD,
+  SWITCH_PAY_PEOPLE,
+} from '../../redux/reducers/ledgerSingleSlice';
 
 export const Payment: React.FC = () => {
   const { payWho, payHow } = useAppSelector((state) => state.ledgerSingle.data);
@@ -35,7 +35,7 @@ export const Payment: React.FC = () => {
 
   useEffect(() => {
     dispatch(
-      payPeopleSwitch({
+      SWITCH_PAY_PEOPLE({
         name: userNickName as string,
         list: people,
         init: true,
@@ -47,7 +47,7 @@ export const Payment: React.FC = () => {
     <PaymentInfo>
       <PaidMethod
         onClick={() => {
-          dispatch(payMethodSwitch(payHow));
+          dispatch(SWITCH_PAY_METHOD(payHow));
         }}
       >
         {payHow === 'cash' ? (
@@ -63,7 +63,7 @@ export const Payment: React.FC = () => {
         onClick={() =>
           people.length === 1
             ? ''
-            : dispatch(payPeopleSwitch({ name: payWho, list: people }))
+            : dispatch(SWITCH_PAY_PEOPLE({ name: payWho, list: people }))
         }
       >
         <PersonOption $isMultiple={people.length > 1}>

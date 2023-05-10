@@ -1,14 +1,14 @@
 import React from 'react';
 import styled from 'styled-components/macro';
-import { MEDIA_QUERY_TABLET } from '../../utils/RWDbreakpoints';
-import { useAppSelector, useAppDispatch } from '../../redux/hooks';
+import { useAppDispatch } from '../../redux/hooks';
 import {
-  amountKeyNumber,
-  amountDelete,
-  amountHoldOperator,
-  amountCalculate,
-  amountAllClear,
+  CLEAR_AMOUNT,
+  EXECUTE_CALCULATION,
+  PRESS_DELETE,
+  PRESS_NUMBER,
+  PRESS_OPERATOR,
 } from '../../redux/reducers/ledgerSingleSlice';
+import { MEDIA_QUERY_TABLET } from '../../utils/RWDbreakpoints';
 
 export const Calculator: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -41,17 +41,17 @@ export const Calculator: React.FC = () => {
                 key={`${rowIndex + index}`}
                 onClick={() => {
                   if (button === 'AC') {
-                    dispatch(amountAllClear());
+                    dispatch(CLEAR_AMOUNT());
                   } else if (button === '⇤') {
-                    dispatch(amountDelete());
+                    dispatch(PRESS_DELETE());
                   } else if (button === '=') {
-                    dispatch(amountCalculate());
+                    dispatch(EXECUTE_CALCULATION());
                   } else if (['+', '-', 'x', '÷'].includes(button)) {
                     dispatch(
-                      amountHoldOperator(button as '' | '+' | '-' | 'x' | '÷')
+                      PRESS_OPERATOR(button as '' | '+' | '-' | 'x' | '÷')
                     );
                   } else {
-                    dispatch(amountKeyNumber(button));
+                    dispatch(PRESS_NUMBER(button));
                   }
                 }}
                 $buttonType={getButtonType(button)}
