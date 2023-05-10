@@ -14,8 +14,7 @@ import {
   where,
 } from 'firebase/firestore';
 import { db, rtdb } from '../../utils/firebase';
-import { UserDataState } from '../reducers/userInfoSlice';
-import { FriendInfoState } from '../reducers/usersActivitySlice';
+import { FriendInfoState, UserDataState } from '../reducers/userInfoSlice';
 
 export async function createAccount(userInfo: {
   userId: string;

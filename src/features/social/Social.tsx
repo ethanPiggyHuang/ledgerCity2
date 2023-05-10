@@ -13,24 +13,23 @@ import {
   AGREE_COOPERATION,
   DISAGREE_COOPERATION,
   FriendStatusState,
-  GET_CITY_NAME,
+  GET_FRIENDS_INFO,
+  GET_OTHER_CITY_NAME,
   REDIRECT_CITY,
   SEARCH_FRIEND,
   SEND_COOPERATION_REQUEST,
   SWITCH_COOP_CITY_OPTION,
   TYPE_FRIEND_EMAIL,
 } from '../../redux/reducers/userInfoSlice';
-import { GET_FRIENDS_INFO } from '../../redux/reducers/usersActivitySlice';
 import { UserBasics } from '../profile/UserBasics';
 
 export const Social: React.FC = () => {
   const { userId, cityList } = useAppSelector((state) => state.userInfo.data);
-  const { friends } = useAppSelector((state) => state.userInfo);
+  const { friends, friendsInfo, coopInfo } = useAppSelector(
+    (state) => state.userInfo
+  );
   const { cityNames, cityAccessUsers, chosenCoopCityIndex } = useAppSelector(
     (state) => state.userInfo.additionalData
-  );
-  const { friendsInfo, coopInfo } = useAppSelector(
-    (state) => state.userActivity
   );
   const { pageActivity, socialSectionClosed } = useAppSelector(
     (state) => state.pageControl
@@ -60,7 +59,7 @@ export const Social: React.FC = () => {
 
   useEffect(() => {
     if (cityList.length !== 0) {
-      cityList.forEach((cityId) => dispatch(GET_CITY_NAME(cityId)));
+      cityList.forEach((cityId) => dispatch(GET_OTHER_CITY_NAME(cityId)));
     }
   }, [cityList]);
 

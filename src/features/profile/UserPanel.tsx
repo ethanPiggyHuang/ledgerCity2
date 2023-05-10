@@ -35,7 +35,7 @@ export const UserPanel: React.FC = () => {
   const { cityAccessUsers } = useAppSelector(
     (state) => state.userInfo.additionalData
   );
-  const { friendsInfo } = useAppSelector((state) => state.userActivity);
+  const { friendsInfo } = useAppSelector((state) => state.userInfo);
 
   const auth = getAuth();
 

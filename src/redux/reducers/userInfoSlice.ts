@@ -5,13 +5,13 @@ import {
   createNewCity,
   disagreeCooperation,
   getAccountInfo,
+  getFrinedsInfo,
   getOtherCityInfo,
   searchFriend,
   sendCooperationRequest,
   updateCityList,
   updateNickname,
 } from '../api/userAPI';
-import { FriendInfoState } from '../reducers/usersActivitySlice';
 import { RootState } from '../store';
 
 export interface UserDataState {
@@ -28,6 +28,29 @@ export interface UserDataState {
     hasHints: boolean;
     isRecordContinue: boolean;
   };
+}
+
+export interface FriendInfoState {
+  userId: string;
+  userName: string;
+  userNickName: string;
+  userEmail: string;
+  userPortraitUrl: string;
+}
+
+export type CurrentActionState =
+  | 'city'
+  | 'rearrange'
+  | 'ledger'
+  | 'statistics'
+  | 'profile'
+  | 'leave';
+
+interface UserActivityState {
+  lastActivity: CurrentActionState;
+  currentActivity: CurrentActionState;
+  fadeOutTimeSecond: number;
+  latestActiveTimeSecond: number;
 }
 
 export interface FriendStatusState {
@@ -62,6 +85,10 @@ export interface UserInfoState {
     cityAccessUsers: { [key: string]: string[] };
     chosenCoopCityIndex: number;
   };
+  friendsInfo: {
+    [key: string]: FriendInfoState;
+  };
+  coopInfo: { [key: string]: UserActivityState };
 }
 
 const initialState: UserInfoState = {
@@ -94,6 +121,8 @@ const initialState: UserInfoState = {
     cityAccessUsers: {},
     chosenCoopCityIndex: 0,
   },
+  friendsInfo: {},
+  coopInfo: {},
 };
 
 export const CREATE_ACCOUNT = createAsyncThunk(
@@ -188,8 +217,8 @@ export const REDIRECT_CITY = createAsyncThunk(
   }
 );
 
-export const GET_CITY_NAME = createAsyncThunk(
-  'userInfo/GET_CITY_NAME',
+export const GET_OTHER_CITY_NAME = createAsyncThunk(
+  'userInfo/GET_OTHER_CITY_NAME',
   async (cityId: string) => {
     const response = await getOtherCityInfo(cityId);
     if (response) {
@@ -199,6 +228,15 @@ export const GET_CITY_NAME = createAsyncThunk(
         accessUsers: response.accessUsers,
       };
     }
+  }
+);
+
+export const GET_FRIENDS_INFO = createAsyncThunk(
+  'userInfo/GET_FRIENDS_INFO',
+  async (friendId: string) => {
+    const response = await getFrinedsInfo(friendId);
+
+    return response?.friendInfo;
   }
 );
 
@@ -271,6 +309,32 @@ export const userInfo = createSlice({
     ) => {
       state.friends = action.payload;
     },
+    GET_COOP_FRIEND_ACTIVITY: (
+      state,
+      action: PayloadAction<{
+        friendId: string;
+        data: {
+          currentActivity: CurrentActionState;
+          fadeOutTimeSecond: number;
+          latestActiveTimeSecond: number;
+        };
+      }>
+    ) => {
+      if (action.payload) {
+        const { friendId } = action.payload;
+        const { currentActivity, fadeOutTimeSecond, latestActiveTimeSecond } =
+          action.payload.data;
+        const lastActivity =
+          state.coopInfo[friendId]?.currentActivity || 'city';
+        state.coopInfo[friendId] = {
+          currentActivity,
+          fadeOutTimeSecond,
+          latestActiveTimeSecond,
+          lastActivity,
+        };
+      }
+    },
+
     SWITCH_COOP_CITY_OPTION: (state) => {
       const cityOptionAmount = state.data.cityList.length;
       const pastOption = state.additionalData.chosenCoopCityIndex;
@@ -361,10 +425,10 @@ export const userInfo = createSlice({
         state.status = 'failed';
         alert('friend request rejected');
       })
-      .addCase(GET_CITY_NAME.pending, (state) => {
+      .addCase(GET_OTHER_CITY_NAME.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(GET_CITY_NAME.fulfilled, (state, action) => {
+      .addCase(GET_OTHER_CITY_NAME.fulfilled, (state, action) => {
         state.status = 'idle';
         if (action.payload) {
           const { cityId, cityName, accessUsers } = action.payload;
@@ -374,9 +438,23 @@ export const userInfo = createSlice({
           }
         }
       })
-      .addCase(GET_CITY_NAME.rejected, (state) => {
+      .addCase(GET_OTHER_CITY_NAME.rejected, (state) => {
         state.status = 'failed';
         alert('get city name rejected');
+      })
+      .addCase(GET_FRIENDS_INFO.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(GET_FRIENDS_INFO.fulfilled, (state, action) => {
+        state.status = 'idle';
+        if (action.payload) {
+          const { userId } = action.payload;
+          state.friendsInfo[userId] = action.payload;
+        }
+      })
+      .addCase(GET_FRIENDS_INFO.rejected, (state) => {
+        state.status = 'failed';
+        alert('get friend info failed');
       })
       .addCase(CREATE_NEW_CITY.pending, (state) => {
         state.status = 'loading';
@@ -413,6 +491,7 @@ export const {
   TYPE_NICKNAME,
   TYPE_FRIEND_EMAIL,
   UPDATE_INSTANT_FRIENDS_STATUS,
+  GET_COOP_FRIEND_ACTIVITY,
   SWITCH_COOP_CITY_OPTION,
 } = userInfo.actions;
 

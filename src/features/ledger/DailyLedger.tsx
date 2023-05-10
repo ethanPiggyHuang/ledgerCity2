@@ -18,7 +18,7 @@ export const DailyLedger: React.FC = () => {
   const { userId, userPortraitUrl } = useAppSelector(
     (state) => state.userInfo.data
   );
-  const { friendsInfo } = useAppSelector((state) => state.userActivity);
+  const { friendsInfo } = useAppSelector((state) => state.userInfo);
   const dispatch = useAppDispatch();
   const labelSetting = mainLabel;
   const ledgerTime = new Date(timeLedger);

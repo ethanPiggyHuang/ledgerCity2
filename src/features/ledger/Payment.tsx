@@ -15,9 +15,7 @@ import {
 export const Payment: React.FC = () => {
   const { payWho, payHow } = useAppSelector((state) => state.ledgerSingle.data);
   const { userNickName } = useAppSelector((state) => state.userInfo.data);
-  const { coopInfo, friendsInfo } = useAppSelector(
-    (state) => state.userActivity
-  );
+  const { coopInfo, friendsInfo } = useAppSelector((state) => state.userInfo);
   const dispatch = useAppDispatch();
   const friendIds = Object.keys(coopInfo);
   const friendNames =

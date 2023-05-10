@@ -17,17 +17,16 @@ import {
   CurrentActionState,
   GET_COOP_FRIEND_ACTIVITY,
   GET_FRIENDS_INFO,
-} from '../../redux/reducers/usersActivitySlice';
+} from '../../redux/reducers/userInfoSlice';
 import { db } from '../../utils/firebase';
 
 export const CooperatorTrace: React.FC = () => {
   const { userId } = useAppSelector((state) => state.userInfo.data);
   const { accessUsers } = useAppSelector((state) => state.city.basicInfo);
-  const { coopInfo, friendsInfo } = useAppSelector(
-    (state) => state.userActivity
+  const { coopInfo, friendsInfo, friends } = useAppSelector(
+    (state) => state.userInfo
   );
   const { isTouring } = useAppSelector((state) => state.city);
-  const { friends } = useAppSelector((state) => state.userInfo);
   const friendIds = friends.map((friend) => friend.userId);
 
   const coopFriends = accessUsers.filter((id) => id !== userId);
