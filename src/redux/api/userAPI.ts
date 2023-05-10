@@ -213,7 +213,7 @@ export async function sendCooperationRequest(
   await setDoc(doc(db, 'users', friendId, 'friends', userId), friendData);
 }
 
-export async function fetchFrinedInfo(friendId: string) {
+export async function getFrinedsInfo(friendId: string) {
   const docSnap = await getDoc(doc(db, 'users', friendId));
 
   if (docSnap.exists()) {

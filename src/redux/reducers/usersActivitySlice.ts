@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { fetchFrinedInfo } from '../api/userAPI';
+import { getFrinedsInfo } from '../api/userAPI';
 
 export type CurrentActionState =
   | 'city'
@@ -43,7 +43,7 @@ const initialState: UsersActivityState = {
 export const GET_FRIENDS_INFO = createAsyncThunk(
   'userInfo/GET_FRIENDS_INFO',
   async (friendId: string) => {
-    const response = await fetchFrinedInfo(friendId);
+    const response = await getFrinedsInfo(friendId);
 
     return response?.friendInfo;
   }
