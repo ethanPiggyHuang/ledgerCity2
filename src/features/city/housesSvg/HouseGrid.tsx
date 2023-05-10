@@ -3,8 +3,8 @@ import styled, { keyframes } from 'styled-components/macro';
 import { useAppSelector } from '../../../redux/hooks';
 import {
   citySetting,
-  mainLabels,
   labelColorCodes,
+  mainLabels,
 } from '../../../utils/gameSettings';
 
 const landing = keyframes`
@@ -40,7 +40,7 @@ const StyledSvg = styled.svg``;
 
 export const HouseGrid: React.FC<{ houseType: string }> = ({ houseType }) => {
   const { gridLength } = citySetting;
-  const { scale } = useAppSelector((state) => state.cityArrangement);
+  const { scale } = useAppSelector((state) => state.city);
   const widthNormalize = gridLength / 160;
 
   const labelIndex = mainLabels.findIndex((label) => label === houseType);

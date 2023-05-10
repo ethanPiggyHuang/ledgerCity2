@@ -1,19 +1,19 @@
-import React, { useEffect } from 'react';
-import styled, { keyframes } from 'styled-components/macro';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import {
-  AUTHING_TOGGLE,
-  GET_ACCOUNT_INFO,
-  CREATE_ACCOUNT,
-} from '../redux/reducers/userInfoSlice';
-import { useNavigate } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faPlaneDeparture,
   faPlane,
   faPlaneArrival,
+  faPlaneDeparture,
 } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styled, { keyframes } from 'styled-components/macro';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import {
+  AUTHING_TOGGLE,
+  CREATE_ACCOUNT,
+  GET_ACCOUNT_INFO,
+} from '../redux/reducers/userInfoSlice';
 
 export interface IAuthRouteProps {
   children?: React.ReactNode;

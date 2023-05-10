@@ -1,16 +1,16 @@
+import { faPen, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import styled from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { SWITCH_CITY_TRANSITION_MODE } from '../../redux/reducers/citySlice';
+import { deleteSingleLedger } from '../../redux/reducers/ledgerListSlice';
 import {
   CLEAR_LEDGER_ID,
   ledgerEdit,
 } from '../../redux/reducers/ledgerSingleSlice';
-import { mainLabel, labelIndex } from '../../utils/gameSettings';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPen, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { CHANGE_LEDGER_POSITION } from '../../redux/reducers/pageControlSlice';
-import { deleteSingleLedger } from '../../redux/reducers/ledgerListSlice';
-import { CITY_SLOWLY_TRANSITION } from '../../redux/reducers/cityArrangementSlice';
+import { labelIndex, mainLabel } from '../../utils/gameSettings';
 
 export const DailyLedger: React.FC = () => {
   const { timeLedger } = useAppSelector((state) => state.ledgerSingle.data);
@@ -44,7 +44,7 @@ export const DailyLedger: React.FC = () => {
             onClick={() => {
               dispatch(CLEAR_LEDGER_ID());
               dispatch(CHANGE_LEDGER_POSITION('expand'));
-              dispatch(CITY_SLOWLY_TRANSITION(true));
+              dispatch(SWITCH_CITY_TRANSITION_MODE(true));
             }}
           >
             <EmptyLedgerText>本日還沒有帳目紀錄</EmptyLedgerText>

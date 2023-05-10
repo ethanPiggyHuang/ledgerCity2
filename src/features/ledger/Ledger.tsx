@@ -1,37 +1,37 @@
+import {
+  faArrowLeft,
+  faCheck,
+  faPlus,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import styled from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../redux/hooks';
+import { ReactComponent as Receipt } from '../../assets/receipt.svg';
+import { ClosingButton } from '../../component/ClosingButton';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import {
+  SHIFT_CITY_VIA_SCROLL,
+  SWITCH_CITY_TRANSITION_MODE,
+} from '../../redux/reducers/citySlice';
 import {
   CLEAR_LEDGER_ID,
   amountAllClear,
   ledgerSubmit,
   ledgerUpdate,
 } from '../../redux/reducers/ledgerSingleSlice';
-import { TimeBar } from './TimeBar';
-import { Label } from './Label';
-import { Payment } from './Payment';
-import { Calculator } from './Calculator';
-import { ReactComponent as Receipt } from '../../assets/receipt.svg';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faArrowLeft,
-  faCheck,
-  faPlus,
-} from '@fortawesome/free-solid-svg-icons';
 import {
   CHANGE_LEDGER_POSITION,
+  CurrentActionState,
   PANEL_CONTROL,
   SWITCH_PAGE,
 } from '../../redux/reducers/pageControlSlice';
-import { DailyLedger } from './DailyLedger';
-import { ClosingButton } from '../../component/ClosingButton';
-import { Amount } from './Amount';
-import {
-  CITY_SET_SHIFT,
-  CITY_SLOWLY_TRANSITION,
-} from '../../redux/reducers/cityArrangementSlice';
 import { citySetting } from '../../utils/gameSettings';
-import { CurrentActionState } from '../../redux/reducers/pageControlSlice';
+import { Amount } from './Amount';
+import { Calculator } from './Calculator';
+import { DailyLedger } from './DailyLedger';
+import { Label } from './Label';
+import { Payment } from './Payment';
+import { TimeBar } from './TimeBar';
 
 export const Ledger: React.FC = () => {
   const { userId } = useAppSelector((state) => state.userInfo.data);
@@ -46,9 +46,7 @@ export const Ledger: React.FC = () => {
     (state) => state.pageControl
   );
 
-  const { nextHousePosition, scale } = useAppSelector(
-    (state) => state.cityArrangement
-  );
+  const { nextHousePosition, scale } = useAppSelector((state) => state.city);
   const { gridLength } = citySetting;
 
   const dispatch = useAppDispatch();
@@ -94,7 +92,7 @@ export const Ledger: React.FC = () => {
                 onClick={() => {
                   dispatch(CLEAR_LEDGER_ID());
                   dispatch(CHANGE_LEDGER_POSITION('expand'));
-                  dispatch(CITY_SLOWLY_TRANSITION(true));
+                  dispatch(SWITCH_CITY_TRANSITION_MODE(true));
                 }}
               >
                 <AddNewIcon icon={faPlus} />
@@ -131,7 +129,7 @@ export const Ledger: React.FC = () => {
                     setTimeout(
                       () =>
                         dispatch(
-                          CITY_SET_SHIFT({
+                          SHIFT_CITY_VIA_SCROLL({
                             shiftX:
                               (nextHousePosition.xIndex + 0.5) *
                               gridLength *

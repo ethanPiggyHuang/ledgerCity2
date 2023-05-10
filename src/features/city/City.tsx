@@ -1,30 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import useSound from 'use-sound';
 import styled, { keyframes } from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import {
-  displayCity,
-  dropHouse,
-  dragHouseStart,
-  dragLightOn,
-  dragLightOff,
-  CITY_KEY_SHIFT,
-  SET_SCALE,
-} from '../../redux/reducers/cityArrangementSlice';
-import { citySetting } from '../../utils/gameSettings';
+import useSound from 'use-sound';
+import character_green from '../../assets/character_green.png';
 import hammer_ice from '../../assets/hammer_ice.wav';
-import { HouseOfFood } from './housesSvg/HouseOfFood';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import {
+  DRAG_HOUSE_START,
+  DROP_HOUSE,
+  RENDER_CITY,
+  SET_SCALE,
+  SHIFT_CITY_VIA_KEYBOARD,
+  SWITCH_GRID_LIGHT_OFF,
+  SWITCH_GRID_LIGHT_ON,
+} from '../../redux/reducers/citySlice';
+import { citySetting } from '../../utils/gameSettings';
+import { HouseCityHall } from './housesSvg/HouseCityHall';
+import { HouseGrid } from './housesSvg/HouseGrid';
 import { HouseOfClothes } from './housesSvg/HouseOfClothes';
 import { HouseOfDrinks } from './housesSvg/HouseOfDrinks';
+import { HouseOfFood } from './housesSvg/HouseOfFood';
 import { HouseOfPlants } from './housesSvg/HouseOfPlants';
-import { HouseGrid } from './housesSvg/HouseGrid';
-import character_green from '../../assets/character_green.png';
-import { HouseCityHall } from './housesSvg/HouseCityHall';
 
 export const City: React.FC = () => {
   const { gridGap, gridLength, houseWidth, cityPaddingX, cityPaddingY } =
     citySetting;
-  const cityBasicInfo = useAppSelector((state) => state.cityBasicInfo);
+  const cityBasicInfo = useAppSelector((state) => state.city.basicInfo);
   const {
     housesPosition,
     gridsStatus,
@@ -32,8 +32,8 @@ export const City: React.FC = () => {
     scale,
     cityKeyShift,
     isTouring,
-    isAddingNew,
-  } = useAppSelector((state) => state.cityArrangement);
+    isAddingNewHouse: isAddingNew,
+  } = useAppSelector((state) => state.city);
   const dispatch = useAppDispatch();
   const cityWidth = (gridLength + gridGap) * housesPosition[0].length;
   const cityHeight = (gridLength + gridGap) * housesPosition.length;
@@ -61,32 +61,32 @@ export const City: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(displayCity(cityBasicInfo));
+    dispatch(RENDER_CITY(cityBasicInfo));
   }, [cityBasicInfo, dispatch]);
 
   useEffect(() => {
     const handelKeypress = (event: KeyboardEvent) => {
       if (event.code === 'ArrowDown') {
         event.preventDefault();
-        dispatch(CITY_KEY_SHIFT({ deltaX: 0, deltaY: 15 }));
+        dispatch(SHIFT_CITY_VIA_KEYBOARD({ deltaX: 0, deltaY: 15 }));
         setGreenMoveY(0);
         setGreenMoveX((prev) => (prev + 1) % 3);
       }
       if (event.code === 'ArrowUp') {
         event.preventDefault();
-        dispatch(CITY_KEY_SHIFT({ deltaX: 0, deltaY: -15 }));
+        dispatch(SHIFT_CITY_VIA_KEYBOARD({ deltaX: 0, deltaY: -15 }));
         setGreenMoveY(1);
         setGreenMoveX((prev) => (prev + 1) % 3);
       }
       if (event.code === 'ArrowRight') {
         event.preventDefault();
-        dispatch(CITY_KEY_SHIFT({ deltaX: 15, deltaY: 0 }));
+        dispatch(SHIFT_CITY_VIA_KEYBOARD({ deltaX: 15, deltaY: 0 }));
         setGreenMoveY(3);
         setGreenMoveX((prev) => (prev + 1) % 3);
       }
       if (event.code === 'ArrowLeft') {
         event.preventDefault();
-        dispatch(CITY_KEY_SHIFT({ deltaX: -15, deltaY: 0 }));
+        dispatch(SHIFT_CITY_VIA_KEYBOARD({ deltaX: -15, deltaY: 0 }));
         setGreenMoveY(2);
         setGreenMoveX((prev) => (prev + 1) % 3);
       }
@@ -142,16 +142,16 @@ export const City: React.FC = () => {
                   key={xIndex}
                   onDragLeave={(e) => {
                     if (dragMode !== 'houses') return;
-                    dispatch(dragLightOff());
+                    dispatch(SWITCH_GRID_LIGHT_OFF());
                   }}
                   onDragOver={(e) => {
                     if (dragMode !== 'houses') return;
                     e.preventDefault();
-                    dispatch(dragLightOn({ xIndex, yIndex }));
+                    dispatch(SWITCH_GRID_LIGHT_ON({ xIndex, yIndex }));
                   }}
                   onDrop={(e) => {
                     if (dragMode !== 'houses') return;
-                    dispatch(dropHouse({ xIndex, yIndex }));
+                    dispatch(DROP_HOUSE({ xIndex, yIndex }));
                     if (gridsStatus[yIndex][xIndex] === 1) {
                       playHammerShort();
                       setTimeout(() => playHammerShort(), 500);
@@ -172,7 +172,7 @@ export const City: React.FC = () => {
                           const target = event.target as HTMLDivElement;
                           target.style.opacity = '0.01';
                           dispatch(
-                            dragHouseStart({
+                            DRAG_HOUSE_START({
                               id: house.id,
                               target: house.type,
                               pastIndex: { xIndex, yIndex },

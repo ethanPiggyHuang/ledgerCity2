@@ -58,14 +58,14 @@ export const ledgerSubmit = createAsyncThunk(
     const allStates = getState() as RootState;
     const ledgerSingle = allStates.ledgerSingle;
     const data = ledgerSingle.data;
-    const ledgerBookId = allStates.cityBasicInfo.ledgerBookId;
+    const ledgerBookId = allStates.city.basicInfo.ledgerBookId;
     const cityId = allStates.userInfo.data.cityList[0];
     const { userId } = allStates.userInfo.data;
     const ledgerData = {
       ...data,
       recordWho: userId,
     };
-    const { nextHousePosition } = allStates.cityArrangement;
+    const { nextHousePosition } = allStates.city;
 
     await postLedger(cityId, ledgerBookId, ledgerData, nextHousePosition);
   }
@@ -75,7 +75,7 @@ export const ledgerUpdate = createAsyncThunk(
   'ledger/ledgerUpdate',
   async (arg, { getState }) => {
     const allStates = getState() as RootState;
-    const ledgerBookId = allStates.cityBasicInfo.ledgerBookId;
+    const ledgerBookId = allStates.city.basicInfo.ledgerBookId;
     const { userId } = allStates.userInfo.data;
     const { ledgerId, data } = allStates.ledgerSingle;
 

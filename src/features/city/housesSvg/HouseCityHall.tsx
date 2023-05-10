@@ -35,7 +35,7 @@ const Wrapper = styled.div`
 `;
 
 export const HouseCityHall: React.FC = () => {
-  const { scale } = useAppSelector((state) => state.cityArrangement);
+  const { scale } = useAppSelector((state) => state.city);
   const { houseWidth } = citySetting;
   const widthNormalize = houseWidth / 199;
   // const dispatch = useAppDispatch();

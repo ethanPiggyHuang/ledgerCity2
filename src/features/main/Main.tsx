@@ -1,33 +1,34 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components/macro';
-import { City } from '../city/City';
-import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { postFadeOutTime } from '../../redux/api/userAPI';
-import { Ledger } from '../ledger/Ledger';
 import Footer from '../../component/Footer';
-import { Statistics } from '../statistics/Statistics';
+import { postFadeOutTime } from '../../redux/api/userAPI';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import {
-  SWITCH_PAGE,
+  END_CITY_SHIFT,
+  SWITCH_CITY_TRANSITION_MODE,
+} from '../../redux/reducers/citySlice';
+import {
   PANEL_CONTROL,
+  SWITCH_PAGE,
 } from '../../redux/reducers/pageControlSlice';
-import {
-  CITY_SLOWLY_TRANSITION,
-  CITY_SHIFT_END,
-} from '../../redux/reducers/cityArrangementSlice';
+import { City } from '../City/City';
+import { RearrangeOptions } from '../City/RearrangeOptions';
+import { Ledger } from '../ledger/Ledger';
 import { CooperatorTrace } from '../profile/CooperatorTrace';
-import { RearrangeOptions } from '../city/RearrangeOptions';
 import { Profile } from '../profile/Profile';
 import { Social } from '../social/Social';
-import { useNavigate } from 'react-router-dom';
+import { Statistics } from '../statistics/Statistics';
 
 export const Main: React.FC = () => {
   const { userId } = useAppSelector((state) => state.userInfo.data);
   const { pageActivity, panelOpened } = useAppSelector(
     (state) => state.pageControl
   );
-  const { cityScrollShift, isRelocateActivate, isTouring } = useAppSelector(
-    (state) => state.cityArrangement
-  );
+  const {
+    cityScrollShift,
+    isCityScrollable: isRelocateActivate,
+    isTouring,
+  } = useAppSelector((state) => state.city);
 
   const dispatch = useAppDispatch();
 
@@ -82,7 +83,7 @@ export const Main: React.FC = () => {
         left: cityScrollShift.x,
         behavior: 'smooth',
       });
-      dispatch(CITY_SHIFT_END());
+      dispatch(END_CITY_SHIFT());
     }
   }, [isRelocateActivate]);
 
@@ -114,7 +115,7 @@ export const Main: React.FC = () => {
         onClick={() => {
           dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }));
           dispatch(PANEL_CONTROL('none'));
-          dispatch(CITY_SLOWLY_TRANSITION(false));
+          dispatch(SWITCH_CITY_TRANSITION_MODE(false));
         }}
       />
       <Ledger />

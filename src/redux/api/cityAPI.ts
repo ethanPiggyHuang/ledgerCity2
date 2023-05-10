@@ -1,6 +1,6 @@
-import { db } from '../../utils/firebase';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { CityBasicInfoState, HouseState } from '../reducers/cityBasicInfoSlice';
+import { db } from '../../utils/firebase';
+import { CityBasicInfoState, HouseState } from '../reducers/citySlice';
 
 export async function fetchCityInfo(cityId: string) {
   const cityRef = doc(db, 'cities', cityId);

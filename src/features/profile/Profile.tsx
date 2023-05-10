@@ -1,15 +1,15 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { UserPanel } from './UserPanel';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { PANEL_CONTROL } from '../../redux/reducers/pageControlSlice';
+import { UserPanel } from './UserPanel';
 
 export const Profile: React.FC = () => {
   const { userNickName, userPortraitUrl } = useAppSelector(
     (state) => state.userInfo.data
   );
   const { panelOpened } = useAppSelector((state) => state.pageControl);
-  const { isTouring } = useAppSelector((state) => state.cityArrangement);
+  const { isTouring } = useAppSelector((state) => state.city);
 
   const dispatch = useAppDispatch();
 

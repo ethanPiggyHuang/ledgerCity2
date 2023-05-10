@@ -1,15 +1,15 @@
-import { db } from '../../utils/firebase';
+import { WhereFilterOp } from '@firebase/firestore-types';
 import {
-  getDocs,
   collection,
-  query,
-  doc,
-  orderBy,
   deleteDoc,
+  doc,
+  getDocs,
+  orderBy,
+  query,
   updateDoc,
 } from 'firebase/firestore';
-import { WhereFilterOp } from '@firebase/firestore-types';
-import { HouseState } from '../reducers/cityBasicInfoSlice';
+import { db } from '../../utils/firebase';
+import { HouseState } from '../reducers/citySlice';
 
 export interface LedgerRecordedState {
   ledgerId: string;

@@ -1,10 +1,10 @@
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import styled from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { SWITCH_CITY_TRANSITION_MODE } from '../redux/reducers/citySlice';
 import { SWITCH_PAGE } from '../redux/reducers/pageControlSlice';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import { CITY_SLOWLY_TRANSITION } from '../redux/reducers/cityArrangementSlice';
 
 interface Props {
   size: number;
@@ -19,7 +19,7 @@ export const ClosingButton: React.FC<Props> = ({ size }) => {
       $size={size}
       onClick={() => {
         dispatch(SWITCH_PAGE({ userId, pageActivity: 'city' }));
-        dispatch(CITY_SLOWLY_TRANSITION(false));
+        dispatch(SWITCH_CITY_TRANSITION_MODE(false));
       }}
     >
       <CrossIcon icon={faXmark} />

@@ -1,20 +1,20 @@
-import React, { useEffect } from 'react';
-import styled from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faChartPie,
   faFilePen,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
-import { SWITCH_PAGE, PANEL_CONTROL } from '../redux/reducers/pageControlSlice';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React from 'react';
+import styled from 'styled-components/macro';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { PANEL_CONTROL, SWITCH_PAGE } from '../redux/reducers/pageControlSlice';
 
 const Footer: React.FC = () => {
   const dispatch = useAppDispatch();
   const { pageActivity } = useAppSelector((state) => state.pageControl);
   const { userId } = useAppSelector((state) => state.userInfo.data);
-  const { isTouring } = useAppSelector((state) => state.cityArrangement);
+  const { isTouring } = useAppSelector((state) => state.city);
   const labelOrder: {
     page: 'ledger' | 'statistics' | 'profile';
     icon: IconDefinition;

@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { fetchLedgerList, deleteLedger } from '../api/ledgerListAPI';
-import { LedgerDataState } from './ledgerSingleSlice';
+import { deleteLedger, fetchLedgerList } from '../api/ledgerListAPI';
 import { RootState } from '../store';
+import { LedgerDataState } from './ledgerSingleSlice';
 
 interface LedgerListState {
   dataList: { ledgerId: string; data: LedgerDataState }[];
@@ -55,8 +55,8 @@ export const deleteSingleLedger = createAsyncThunk(
   async (ledgerId: string, { getState }) => {
     const allStates = getState() as RootState;
     const cityId = allStates.userInfo.data.cityList[0];
-    const ledgerBookId = allStates.cityBasicInfo.ledgerBookId;
-    const houses = allStates.cityBasicInfo.houses;
+    const ledgerBookId = allStates.city.basicInfo.ledgerBookId;
+    const houses = allStates.city.basicInfo.houses;
     const newHouses = houses.filter((house) => house.ledgerId !== ledgerId);
     houses.forEach((house) => console.log(house.ledgerId !== ledgerId));
     await deleteLedger(cityId, newHouses, ledgerBookId, ledgerId);

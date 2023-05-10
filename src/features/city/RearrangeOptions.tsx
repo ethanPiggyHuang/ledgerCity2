@@ -1,31 +1,29 @@
-import React, { useState, useRef, useEffect } from 'react';
-import useSound from 'use-sound';
-import styled, { keyframes } from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import {
-  saveCityAsync,
-  draggableToggle,
-  CITY_SET_SHIFT,
-  START_CITY_TOUR,
-  END_CITY_TOUR,
-} from '../../redux/reducers/cityArrangementSlice';
-import chocolate_world from '../../assets/chocolate_world.mp3';
-import hammer_2 from '../../assets/hammer_2.wav';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faVolumeHigh,
-  faVolumeXmark,
   faFloppyDisk,
   faLandmarkDome,
   faPersonThroughWindow,
+  faVolumeHigh,
+  faVolumeXmark,
 } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useEffect, useRef, useState } from 'react';
+import styled, { keyframes } from 'styled-components/macro';
+import useSound from 'use-sound';
+import chocolate_world from '../../assets/chocolate_world.mp3';
+import hammer_2 from '../../assets/hammer_2.wav';
 import reconstruct from '../../assets/reconstruct.png';
-import {
-  SET_SCALE,
-  GENERATE_AVAILABLE_POSITION,
-} from '../../redux/reducers/cityArrangementSlice';
-import { citySetting } from '../../utils/gameSettings';
 import { Alert } from '../../component/Alert';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import {
+  END_CITY_TOUR,
+  GENERATE_AVAILABLE_POSITION,
+  SET_SCALE,
+  SHIFT_CITY_VIA_SCROLL,
+  START_CITY_TOUR,
+  TOGGLE_HOUSE_DRAGGABLE,
+  UPDATE_CITY_ARRANGEMENT,
+} from '../../redux/reducers/citySlice';
+import { citySetting } from '../../utils/gameSettings';
 
 interface Props {
   props: HTMLDivElement | null;
@@ -33,7 +31,7 @@ interface Props {
 
 export const RearrangeOptions: React.FC<Props> = ({ props }) => {
   const { dragMode, nextHousePosition, scale, housesPosition, isTouring } =
-    useAppSelector((state) => state.cityArrangement);
+    useAppSelector((state) => state.city);
   const { dataList } = useAppSelector((state) => state.ledgerList);
   const { isShown } = useAppSelector((state) => state.pageControl.alert);
   const { gridLength, cityPaddingX, cityPaddingY } = citySetting;
@@ -47,10 +45,10 @@ export const RearrangeOptions: React.FC<Props> = ({ props }) => {
 
   const handleConstruction = () => {
     if (dragMode === 'houses') {
-      dispatch(saveCityAsync());
+      dispatch(UPDATE_CITY_ARRANGEMENT());
       playHammer();
     } else {
-      dispatch(draggableToggle());
+      dispatch(TOGGLE_HOUSE_DRAGGABLE());
     }
   };
 
@@ -87,7 +85,7 @@ export const RearrangeOptions: React.FC<Props> = ({ props }) => {
     const hallShiftX = (hallPosition.xIndex + 0.5) * gridLength * scale;
     const hallShiftY = (hallPosition.yIndex + 0.5) * gridLength * scale;
 
-    dispatch(CITY_SET_SHIFT({ shiftX: hallShiftX, shiftY: hallShiftY }));
+    dispatch(SHIFT_CITY_VIA_SCROLL({ shiftX: hallShiftX, shiftY: hallShiftY }));
   };
 
   const handleStartCityTour = () => {
@@ -103,7 +101,7 @@ export const RearrangeOptions: React.FC<Props> = ({ props }) => {
     const hallShiftX = (hallPosition.xIndex + 0.5) * gridLength * newScale;
     const hallShiftY =
       (hallPosition.yIndex + 0.5 + 3 / 8) * gridLength * newScale;
-    dispatch(CITY_SET_SHIFT({ shiftX: hallShiftX, shiftY: hallShiftY }));
+    dispatch(SHIFT_CITY_VIA_SCROLL({ shiftX: hallShiftX, shiftY: hallShiftY }));
     dispatch(SET_SCALE(2));
     setTimeout(() => {
       dispatch(START_CITY_TOUR());
@@ -128,7 +126,7 @@ export const RearrangeOptions: React.FC<Props> = ({ props }) => {
       -cityPaddingY +
       window.innerHeight / 2 -
       (hallPosition.yIndex + 0.5 + 6 / 16) * gridLength * newScale;
-    dispatch(CITY_SET_SHIFT({ shiftX, shiftY }));
+    dispatch(SHIFT_CITY_VIA_SCROLL({ shiftX, shiftY }));
     dispatch(END_CITY_TOUR());
   };
 

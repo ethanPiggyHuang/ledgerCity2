@@ -1,26 +1,31 @@
-import React, { useEffect } from 'react';
-import styled from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../redux/hooks';
-import {
-  UPDATE_CITY_INFO,
-  CityBasicInfoState,
-  CHANGE_CITY_NAME,
-  UPDATE_CITY_NAME,
-} from '../redux/reducers/cityBasicInfoSlice';
-import { RENAME_CITY } from '../redux/reducers/cityArrangementSlice';
-import { UPDATE_LEDGER_LIST } from '../redux/reducers/ledgerListSlice';
-import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
-import { db } from '../utils/firebase';
-import { doc } from 'firebase/firestore';
-import { LedgerDataState } from '../redux/reducers/ledgerSingleSlice';
-import { useNavigate } from 'react-router-dom';
-import { Banner } from '../component/Banner';
-import {
-  UPDATE_INSTANT_FRIENDS_STATUS,
-  FriendStatusState,
-} from '../redux/reducers/userInfoSlice';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  collection,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+} from 'firebase/firestore';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components/macro';
+import { Banner } from '../component/Banner';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import {
+  CityBasicInfoState,
+  GET_CITY_INFO,
+  RENAME_CITY,
+  TYPE_CITY_NAME,
+  UPDATE_CITY_NAME,
+} from '../redux/reducers/citySlice';
+import { UPDATE_LEDGER_LIST } from '../redux/reducers/ledgerListSlice';
+import { LedgerDataState } from '../redux/reducers/ledgerSingleSlice';
+import {
+  FriendStatusState,
+  UPDATE_INSTANT_FRIENDS_STATUS,
+} from '../redux/reducers/userInfoSlice';
+import { db } from '../utils/firebase';
 
 interface LedgerDatabaseState {
   timeLedger: number;
@@ -39,11 +44,9 @@ interface LedgerDatabaseState {
 const Header: React.FC = () => {
   const dispatch = useAppDispatch();
   const { ledgerBookId, cityName, accessUsers } = useAppSelector(
-    (state) => state.cityBasicInfo
+    (state) => state.city.basicInfo
   );
-  const { isRenaming, isTouring } = useAppSelector(
-    (state) => state.cityArrangement
-  );
+  const { isRenaming, isTouring } = useAppSelector((state) => state.city);
   const { userId, cityList } = useAppSelector((state) => state.userInfo.data);
   const navigate = useNavigate();
 
@@ -54,7 +57,7 @@ const Header: React.FC = () => {
       const q = doc(db, 'cities', cityList[0]);
       const unsubscribe = onSnapshot(q, (doc) => {
         const cityInfo = doc.data();
-        dispatch(UPDATE_CITY_INFO(cityInfo as CityBasicInfoState));
+        dispatch(GET_CITY_INFO(cityInfo as CityBasicInfoState));
       });
       navigate('/city');
       return () => unsubscribe();
@@ -121,8 +124,6 @@ const Header: React.FC = () => {
     }
   }, [userId]);
 
-  const useless = 'aaa';
-
   return (
     <Wrapper $isFolded={isTouring}>
       {userId && (
@@ -136,7 +137,7 @@ const Header: React.FC = () => {
               onClick={() => dispatch(RENAME_CITY(true))}
               onChange={(event) => {
                 const target = event.target as HTMLInputElement;
-                dispatch(CHANGE_CITY_NAME(target.value));
+                dispatch(TYPE_CITY_NAME(target.value));
               }}
               onKeyDown={(event) => {
                 if (event.code === 'Enter') {

@@ -1,32 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import styled, { keyframes } from 'styled-components/macro';
-import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { doc, onSnapshot } from 'firebase/firestore';
-import { db } from '../../utils/firebase';
 import {
-  GET_COOP_FRIEND_ACTIVITY,
+  faBed,
+  faChartPie,
+  faFilePen,
+  faPersonRunning,
+  faUsers,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { doc, onSnapshot } from 'firebase/firestore';
+import React, { useEffect } from 'react';
+import styled, { keyframes } from 'styled-components/macro';
+import cityIcon from '../../assets/cityIcon.png';
+import mapPin from '../../assets/mapPin.png';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { SWITCH_PAGE } from '../../redux/reducers/pageControlSlice';
+import {
   CurrentActionState,
+  GET_COOP_FRIEND_ACTIVITY,
   GET_FRIENDS_INFO,
 } from '../../redux/reducers/usersActivitySlice';
-import cityIcon from '../../assets/cityIcon.png';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faChartPie,
-  faUsers,
-  faFilePen,
-  faBed,
-  faPersonRunning,
-} from '@fortawesome/free-solid-svg-icons';
-import mapPin from '../../assets/mapPin.png';
-import { SWITCH_PAGE } from '../../redux/reducers/pageControlSlice';
+import { db } from '../../utils/firebase';
 
 export const CooperatorTrace: React.FC = () => {
   const { userId } = useAppSelector((state) => state.userInfo.data);
-  const { accessUsers } = useAppSelector((state) => state.cityBasicInfo);
+  const { accessUsers } = useAppSelector((state) => state.city.basicInfo);
   const { coopInfo, friendsInfo } = useAppSelector(
     (state) => state.userActivity
   );
-  const { isTouring } = useAppSelector((state) => state.cityArrangement);
+  const { isTouring } = useAppSelector((state) => state.city);
   const { friends } = useAppSelector((state) => state.userInfo);
   const friendIds = friends.map((friend) => friend.userId);
 

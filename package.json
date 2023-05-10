@@ -15,7 +15,6 @@
     "@types/node": "^18.15.11",
     "@types/react": "^18.0.33",
     "@types/react-dom": "^18.0.11",
-    "eslint": "^8.40.0",
     "firebase": "^9.19.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -55,7 +54,6 @@
   },
   "devDependencies": {
     "@types/styled-components": "^5.1.26",
-    "prettier": "^2.8.8",
-    "prettier-eslint": "^15.0.1"
+    "prettier": "^2.8.8"
   }
 }
