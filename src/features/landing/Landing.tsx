@@ -1,5 +1,11 @@
+import {
+  faPlane,
+  faPlaneArrival,
+  faPlaneDeparture,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect } from 'react';
-import styled from 'styled-components/macro';
+import styled, { keyframes } from 'styled-components/macro';
 import sloganCooperation from '../../assets/intro_slogan_coop.png';
 import sloganLedger from '../../assets/intro_slogan_ledger.png';
 import sloganStatistics from '../../assets/intro_slogan_statistics.png';
@@ -23,6 +29,7 @@ export const Landing: React.FC = () => {
   const { introSection, isPlayingCarousel, isFocusingLogin } = useAppSelector(
     (state) => state.landingIntro
   );
+  const { isAuthing } = useAppSelector((state) => state.userInfo.loginStatus);
 
   const dispatch = useAppDispatch();
 
@@ -42,6 +49,16 @@ export const Landing: React.FC = () => {
       return () => clearInterval(carouselInterval);
     }
   }, [introSection, isPlayingCarousel]);
+
+  // if (isAuthing)
+  //   return (
+  //     <LoadingMessage>
+  //       <LoadingText>前往城市中...</LoadingText>
+  //       <LoadingIconDeparture icon={faPlaneDeparture} />
+  //       <LoadingIconFlying icon={faPlane} />
+  //       <LoadingIconLanding icon={faPlaneArrival} />
+  //     </LoadingMessage>
+  //   );
 
   return (
     <Wrapper>
@@ -279,4 +296,89 @@ const IntroTitleImg = styled.img<IntroSectionProps>`
 const IntroTitleImgX = styled.img`
   height: 50px;
   filter: opacity(0.7);
+`;
+
+const LoadingMessage = styled.div`
+  min-height: 80vh;
+
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #cc8159;
+`;
+
+const LoadingText = styled.p`
+  font-size: 60px;
+`;
+
+const departure = keyframes`
+  0%{
+    opacity: 1;
+  }
+  17%{
+    opacity: 1;
+  }
+  33%{
+    opacity: 0;
+  }
+  100%{
+    opacity: 0;
+  }
+`;
+
+const flying = keyframes`
+  0%{
+    opacity: 0;
+  }
+  17%{
+    opacity: 0;
+  }
+  33%{
+    opacity: 1;
+  }
+  50%{
+    opacity: 1;
+  }
+  66%{
+    opacity: 0;
+  }
+  100%{
+    opacity: 0;
+  }
+
+`;
+
+const landing = keyframes`
+  0%{
+    opacity: 0;
+  }
+  50%{
+    opacity: 0;
+  }
+  66%{
+    opacity: 1;
+  }
+  83%{
+    opacity: 1;
+  }
+  100%{
+    opacity: 0;
+  }
+`;
+
+const LoadingIconFlying = styled(FontAwesomeIcon)`
+  font-size: 48px;
+  padding: 20px 20px 60px;
+  animation: ${flying} 3s infinite;
+`;
+
+const LoadingIconDeparture = styled(FontAwesomeIcon)`
+  font-size: 48px;
+  animation: ${departure} 3s infinite;
+`;
+
+const LoadingIconLanding = styled(FontAwesomeIcon)`
+  font-size: 48px;
+  animation: ${landing} 3s infinite;
 `;

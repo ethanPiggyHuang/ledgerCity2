@@ -1,12 +1,22 @@
-import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import React from 'react';
+import {
+  getAuth,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInWithPopup,
+} from 'firebase/auth';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components/macro';
 import cityLandScape from '../../assets/cityLandscape.png';
 import googleLogo from '../../assets/googleLogo.png';
 import loginSlogan from '../../assets/login_slogan.png';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { TOGGLE_LOGIN_SECTION_FOCUS } from '../../redux/reducers/landingIntroSlice';
-import { TOGGLE_AUTHING } from '../../redux/reducers/userInfoSlice';
+import {
+  CREATE_ACCOUNT,
+  GET_ACCOUNT_INFO,
+  TOGGLE_AUTHING,
+} from '../../redux/reducers/userInfoSlice';
 
 export interface IloginPageProps {}
 
@@ -14,6 +24,7 @@ export const LoginPanel: React.FunctionComponent<IloginPageProps> = () => {
   const { isFocusingLogin } = useAppSelector((state) => state.landingIntro);
   const dispatch = useAppDispatch();
 
+  const navigate = useNavigate();
   const auth = getAuth();
 
   const signInWithGoogle = async () => {
@@ -28,6 +39,27 @@ export const LoginPanel: React.FunctionComponent<IloginPageProps> = () => {
       });
   };
 
+  useEffect(() => {
+    console.log(auth);
+    dispatch(TOGGLE_AUTHING(true));
+    const AuthCheck = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const { uid, displayName, email, photoURL } = user;
+        if (user.metadata.creationTime === user.metadata.lastSignInTime) {
+          dispatch(CREATE_ACCOUNT({ uid, displayName, email, photoURL }));
+        } else {
+          dispatch(GET_ACCOUNT_INFO({ uid, displayName, email, photoURL }));
+        }
+        dispatch(TOGGLE_AUTHING(false));
+      } else {
+        dispatch(TOGGLE_AUTHING(false));
+        navigate('/landing');
+      }
+    });
+
+    return () => AuthCheck();
+  }, [auth]);
+
   return (
     <Wrap
       onMouseEnter={() => dispatch(TOGGLE_LOGIN_SECTION_FOCUS(true))}
@@ -37,10 +69,7 @@ export const LoginPanel: React.FunctionComponent<IloginPageProps> = () => {
     >
       <LoginSlogan $isFocusing={isFocusingLogin} src={loginSlogan} />
       <CityImage src={cityLandScape} />
-      <LogInWrap
-        $isFocusing={isFocusingLogin}
-        onClick={() => signInWithGoogle()}
-      >
+      <LogInWrap $isFocusing={isFocusingLogin} onClick={signInWithGoogle}>
         <GoogleLogo src={googleLogo} />
         以Google登入
       </LogInWrap>

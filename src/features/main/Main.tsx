@@ -13,11 +13,11 @@ import {
 } from '../../redux/reducers/pageControlSlice';
 import { City } from '../City/City';
 import { RearrangeOptions } from '../City/RearrangeOptions';
-import { Ledger } from '../ledger/Ledger';
-import { CooperatorTrace } from '../profile/CooperatorTrace';
-import { Profile } from '../profile/Profile';
-import { Social } from '../social/Social';
-import { Statistics } from '../statistics/Statistics';
+import { Ledger } from '../Ledger/Ledger';
+import { CooperatorTrace } from '../Profile/CooperatorTrace';
+import { Profile } from '../Profile/Profile';
+import { Social } from '../Social/Social';
+import { Statistics } from '../Statistics/Statistics';
 
 export const Main: React.FC = () => {
   const { userId } = useAppSelector((state) => state.userInfo.data);

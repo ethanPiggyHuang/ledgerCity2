@@ -70,7 +70,6 @@ export interface UserInfoState {
   loginStatus: {
     isLogin: boolean;
     isAuthing: boolean;
-    isLoading: boolean;
   };
   friends: FriendStatusState[];
   editStatus: {
@@ -96,7 +95,6 @@ const initialState: UserInfoState = {
   loginStatus: {
     isLogin: false,
     isAuthing: true,
-    isLoading: false,
   },
   editStatus: {
     isNickNameEdit: false,

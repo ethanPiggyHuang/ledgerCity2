@@ -1,11 +1,10 @@
-import { Reset } from 'styled-reset';
-import { createGlobalStyle } from 'styled-components';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import React from 'react';
-import { Main } from './features/main/Main';
-import AuthRoute from './component/AuthRoute';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { createGlobalStyle } from 'styled-components';
+import { Reset } from 'styled-reset';
 import Header from './component/Header';
-import { Landing } from './features/landing/Landing';
+import { Landing } from './features/Landing/Landing';
+import { Main } from './features/Main/Main';
 
 export interface IApplicationProps {}
 
@@ -14,14 +13,14 @@ const App: React.FunctionComponent<IApplicationProps> = (props) => {
     <BrowserRouter>
       <Reset />
       <GlobalStyle />
-      <AuthRoute>
-        <Header />
-        <Routes>
-          <Route path="/city" element={<Main />} />
-          <Route path="/landing" element={<Landing />} />
-          <Route path="*" element={<Navigate to="/landing" replace />} />
-        </Routes>
-      </AuthRoute>
+      {/* <AuthRoute> */}
+      <Header />
+      <Routes>
+        <Route index path="/landing" element={<Landing />} />
+        <Route path="/" element={<Main />} />
+        <Route path="*" element={<Navigate to="/landing" replace />} />
+      </Routes>
+      {/* </AuthRoute> */}
     </BrowserRouter>
   );
 };
