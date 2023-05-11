@@ -9,7 +9,7 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import { db } from '../../utils/firebase';
-import { HouseState } from '../reducers/citySlice';
+import { HouseState } from '../../utils/interface';
 
 export interface LedgerRecordedState {
   ledgerId: string;

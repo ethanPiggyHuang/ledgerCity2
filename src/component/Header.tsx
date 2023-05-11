@@ -13,7 +13,6 @@ import styled from 'styled-components/macro';
 import { Banner } from '../component/Banner';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import {
-  CityBasicInfoState,
   GET_CITY_INFO,
   RENAME_CITY,
   TYPE_CITY_NAME,

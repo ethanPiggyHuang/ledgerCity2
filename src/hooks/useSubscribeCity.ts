@@ -1,8 +1,9 @@
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../utils/firebase';
 import { useDispatch } from 'react-redux';
-import { CityBasicInfoState, GET_CITY_INFO } from '../redux/reducers/citySlice';
+import { GET_CITY_INFO } from '../redux/reducers/citySlice';
 import { useEffect } from 'react';
+import { CityBasicInfoState } from '../utils/interface';
 
 export const useSubscribeCity = (cityList: string[]) => {
   const dispatch = useDispatch();

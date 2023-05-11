@@ -1,22 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-
 import { RootState } from '../store';
 import api from '../../utils/firebase';
-
-export interface HouseState {
-  type: string;
-  position: { xIndex: number; yIndex: number };
-  height: number;
-  ledgerId: string;
-}
-
-export interface CityBasicInfoState {
-  accessUsers: string[];
-  citizen: string[];
-  cityName: string;
-  houses: HouseState[];
-  ledgerBookId: string;
-}
+import { CityBasicInfoState } from '../../utils/interface';
 
 export interface CityState {
   basicInfo: CityBasicInfoState;

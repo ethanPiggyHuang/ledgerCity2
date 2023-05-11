@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app';
-import { doc, getDoc, getFirestore, updateDoc } from 'firebase/firestore';
+import { doc, getFirestore, updateDoc } from 'firebase/firestore';
 import { getDatabase } from 'firebase/database';
-import { CityBasicInfoState, HouseState } from '../redux/reducers/citySlice';
+import { HouseState } from './interface';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_APIKEY,
