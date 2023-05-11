@@ -28,7 +28,6 @@ const AuthRoute: React.FunctionComponent<IAuthRouteProps> = (props) => {
   const auth = getAuth();
 
   useEffect(() => {
-    dispatch(TOGGLE_AUTHING(true));
     const AuthCheck = onAuthStateChanged(auth, (user) => {
       if (user) {
         const { uid, displayName, email, photoURL } = user;
@@ -38,6 +37,8 @@ const AuthRoute: React.FunctionComponent<IAuthRouteProps> = (props) => {
           dispatch(GET_ACCOUNT_INFO({ uid, displayName, email, photoURL }));
         }
         dispatch(TOGGLE_AUTHING(false));
+        console.log('finish authing');
+        navigate('/city');
       } else {
         dispatch(TOGGLE_AUTHING(false));
         console.log('unauthorized');
@@ -46,7 +47,7 @@ const AuthRoute: React.FunctionComponent<IAuthRouteProps> = (props) => {
     });
 
     return () => AuthCheck();
-  }, [auth]);
+  }, []);
 
   if (isAuthing)
     return (

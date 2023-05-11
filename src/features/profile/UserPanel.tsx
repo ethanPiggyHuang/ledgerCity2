@@ -101,10 +101,11 @@ export const UserPanel: React.FC = () => {
             </CityBannerWrap>
             {cityAccessUsers[cityId].map((mayor) =>
               mayor === userId ? (
-                <CityMayors backgroundImg={userPortraitUrl} />
+                <CityMayors backgroundImg={userPortraitUrl} key={mayor} />
               ) : (
                 <CityMayors
                   backgroundImg={friendsInfo[mayor].userPortraitUrl}
+                  key={mayor}
                 />
               )
             )}

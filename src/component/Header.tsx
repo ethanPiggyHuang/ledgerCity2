@@ -23,6 +23,7 @@ import { UPDATE_LEDGER_LIST } from '../redux/reducers/ledgerListSlice';
 import { LedgerDataState } from '../redux/reducers/ledgerSingleSlice';
 import {
   FriendStatusState,
+  TOGGLE_AUTHING,
   UPDATE_INSTANT_FRIENDS_STATUS,
 } from '../redux/reducers/userInfoSlice';
 import { db } from '../utils/firebase';
@@ -48,7 +49,6 @@ const Header: React.FC = () => {
   );
   const { isRenaming, isTouring } = useAppSelector((state) => state.city);
   const { userId, cityList } = useAppSelector((state) => state.userInfo.data);
-  const navigate = useNavigate();
 
   // async await
 
@@ -59,15 +59,13 @@ const Header: React.FC = () => {
         const cityInfo = doc.data();
         dispatch(GET_CITY_INFO(cityInfo as CityBasicInfoState));
       });
-      navigate('/');
       return () => unsubscribe();
-    } else {
-      navigate('/landing');
     }
   }, [cityList]);
 
   useEffect(() => {
     if (ledgerBookId.length !== 0) {
+      dispatch(TOGGLE_AUTHING(false));
       if (accessUsers.findIndex((id) => id === userId) === -1) {
         return;
       } else {
@@ -125,6 +123,8 @@ const Header: React.FC = () => {
       return () => unsub();
     }
   }, [userId]);
+
+  // console.log('enter header');
 
   return (
     <Wrapper $isFolded={isTouring}>

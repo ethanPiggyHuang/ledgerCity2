@@ -24,14 +24,13 @@ export const Main: React.FC = () => {
   const { pageActivity, panelOpened } = useAppSelector(
     (state) => state.pageControl
   );
-  const {
-    cityScrollShift,
-    isCityScrollable: isRelocateActivate,
-    isTouring,
-  } = useAppSelector((state) => state.city);
+  const { cityScrollShift, isCityScrollable, isTouring } = useAppSelector(
+    (state) => state.city
+  );
 
   const dispatch = useAppDispatch();
 
+  // console.log('enter main component', userId);
   // 監聽使用者（關閉/離開）網頁動態 -> 送到 db
   useEffect(() => {
     if (userId) {
@@ -77,7 +76,7 @@ export const Main: React.FC = () => {
   const cityRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (isRelocateActivate) {
+    if (isCityScrollable) {
       cityRef.current?.scrollTo({
         top: cityScrollShift.y,
         left: cityScrollShift.x,
@@ -85,7 +84,7 @@ export const Main: React.FC = () => {
       });
       dispatch(END_CITY_SHIFT());
     }
-  }, [isRelocateActivate]);
+  }, [isCityScrollable]);
 
   return (
     <Wrapper>

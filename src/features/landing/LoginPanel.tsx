@@ -31,34 +31,12 @@ export const LoginPanel: React.FunctionComponent<IloginPageProps> = () => {
     dispatch(TOGGLE_AUTHING(true));
     signInWithPopup(auth, new GoogleAuthProvider())
       .then(() => {
-        dispatch(TOGGLE_AUTHING(false));
+        // navigate('/city');
       })
       .catch((error) => {
         console.log('error', error);
-        dispatch(TOGGLE_AUTHING(false));
       });
   };
-
-  useEffect(() => {
-    console.log(auth);
-    dispatch(TOGGLE_AUTHING(true));
-    const AuthCheck = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const { uid, displayName, email, photoURL } = user;
-        if (user.metadata.creationTime === user.metadata.lastSignInTime) {
-          dispatch(CREATE_ACCOUNT({ uid, displayName, email, photoURL }));
-        } else {
-          dispatch(GET_ACCOUNT_INFO({ uid, displayName, email, photoURL }));
-        }
-        dispatch(TOGGLE_AUTHING(false));
-      } else {
-        dispatch(TOGGLE_AUTHING(false));
-        navigate('/landing');
-      }
-    });
-
-    return () => AuthCheck();
-  }, [auth]);
 
   return (
     <Wrap
