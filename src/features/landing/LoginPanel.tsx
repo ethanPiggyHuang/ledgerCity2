@@ -1,41 +1,26 @@
-import {
-  getAuth,
-  GoogleAuthProvider,
-  onAuthStateChanged,
-  signInWithPopup,
-} from 'firebase/auth';
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import React from 'react';
 import styled, { keyframes } from 'styled-components/macro';
 import cityLandScape from '../../assets/cityLandscape.png';
 import googleLogo from '../../assets/googleLogo.png';
 import loginSlogan from '../../assets/login_slogan.png';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { TOGGLE_LOGIN_SECTION_FOCUS } from '../../redux/reducers/landingIntroSlice';
-import {
-  CREATE_ACCOUNT,
-  GET_ACCOUNT_INFO,
-  TOGGLE_AUTHING,
-} from '../../redux/reducers/userInfoSlice';
+import { TOGGLE_AUTHING } from '../../redux/reducers/userInfoSlice';
 
-export interface IloginPageProps {}
-
-export const LoginPanel: React.FunctionComponent<IloginPageProps> = () => {
+export const LoginPanel: React.FC = () => {
   const { isFocusingLogin } = useAppSelector((state) => state.landingIntro);
   const dispatch = useAppDispatch();
 
-  const navigate = useNavigate();
   const auth = getAuth();
 
   const signInWithGoogle = async () => {
     dispatch(TOGGLE_AUTHING(true));
-    signInWithPopup(auth, new GoogleAuthProvider())
-      .then(() => {
-        // navigate('/city');
-      })
-      .catch((error) => {
-        console.log('error', error);
-      });
+    try {
+      await signInWithPopup(auth, new GoogleAuthProvider());
+    } catch (error) {
+      console.log('error', error);
+    }
   };
 
   return (
@@ -144,6 +129,6 @@ const LoginSlogan = styled.img<LoginElementsProps>`
   margin-top: auto;
   width: 100%;
   display: block;
-  animation: ${floating}
-    ${({ $isFocusing }) => ($isFocusing ? '4s ease infinite' : '')};
+  animation: ${({ $isFocusing }) => ($isFocusing ? '4s ease infinite' : '')};
+  animation-name: ${floating};
 `;

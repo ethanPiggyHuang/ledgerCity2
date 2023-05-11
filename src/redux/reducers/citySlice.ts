@@ -1,11 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import {
-  pickRandomPosition,
-  updateCityName,
-  updateHouseArrangement,
-} from '../api/cityAPI';
 
 import { RootState } from '../store';
+import api from '../../utils/firebase';
 
 export interface HouseState {
   type: string;
@@ -92,7 +88,8 @@ export const UPDATE_HOUSE_ARRANGEMENT = createAsyncThunk(
       return { ...house, position: newPostions[house.ledgerId] };
     });
     try {
-      await updateHouseArrangement(cityId, newHouses);
+      await api.city.updateHouseArrangement(cityId, newHouses);
+      console.log('eeee');
     } catch (error) {
       console.log(error);
     }
@@ -114,13 +111,8 @@ export const GENERATE_AVAILABLE_POSITION = createAsyncThunk(
       });
     });
 
-    try {
-      const response = await pickRandomPosition(emptyPostions);
-      if (response) return response.data;
-    } catch (error) {
-      console.log(error);
-      return { xIndex: 0, yIndex: 0 };
-    }
+    const randomNumber = Math.floor(Math.random() * emptyPostions.length);
+    return emptyPostions[randomNumber];
   }
 );
 
@@ -129,7 +121,7 @@ export const UPDATE_CITY_NAME = createAsyncThunk(
   async (payload: { cityId: string; cityName: string }) => {
     try {
       const { cityId, cityName } = payload;
-      await updateCityName(cityId, cityName);
+      await api.city.updateCityName(cityId, cityName);
     } catch (error) {
       console.log(error);
     }

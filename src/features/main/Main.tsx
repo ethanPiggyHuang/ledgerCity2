@@ -18,17 +18,22 @@ import { CooperatorTrace } from '../Profile/CooperatorTrace';
 import { Profile } from '../Profile/Profile';
 import { Social } from '../Social/Social';
 import { Statistics } from '../Statistics/Statistics';
+import { useSubscribeCity } from '../../hooks/useSubscribeCity';
 
 export const Main: React.FC = () => {
-  const { userId } = useAppSelector((state) => state.userInfo.data);
+  const { userId, cityList } = useAppSelector((state) => state.userInfo.data);
   const { pageActivity, panelOpened } = useAppSelector(
     (state) => state.pageControl
   );
   const { cityScrollShift, isCityScrollable, isTouring } = useAppSelector(
     (state) => state.city
   );
+  const cityRef = useRef<HTMLDivElement>(null);
 
   const dispatch = useAppDispatch();
+
+  useSubscribeCity(cityList);
+  console.log('render main');
 
   // console.log('enter main component', userId);
   // 監聽使用者（關閉/離開）網頁動態 -> 送到 db
@@ -72,8 +77,6 @@ export const Main: React.FC = () => {
       // console.log('useEffect', userId);
     }
   }, [userId]);
-
-  const cityRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isCityScrollable) {

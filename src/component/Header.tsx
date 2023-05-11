@@ -53,20 +53,9 @@ const Header: React.FC = () => {
   // async await
 
   useEffect(() => {
-    if (cityList.length !== 0) {
-      const q = doc(db, 'cities', cityList[0]);
-      const unsubscribe = onSnapshot(q, (doc) => {
-        const cityInfo = doc.data();
-        dispatch(GET_CITY_INFO(cityInfo as CityBasicInfoState));
-      });
-      return () => unsubscribe();
-    }
-  }, [cityList]);
-
-  useEffect(() => {
     if (ledgerBookId.length !== 0) {
-      dispatch(TOGGLE_AUTHING(false));
       if (accessUsers.findIndex((id) => id === userId) === -1) {
+        // visitor
         return;
       } else {
         const q = query(
@@ -123,8 +112,6 @@ const Header: React.FC = () => {
       return () => unsub();
     }
   }, [userId]);
-
-  // console.log('enter header');
 
   return (
     <Wrapper $isFolded={isTouring}>

@@ -24,14 +24,16 @@ import { CoopDemo } from './CoopDemo';
 import { LedgerDemo } from './LedgerDemo';
 import { LoginPanel } from './LoginPanel';
 import { StatisticsDemo } from './StatisticsDemo';
+import { useNavigate } from 'react-router-dom';
+import Loading from '../../component/Loading';
 
 export const Landing: React.FC = () => {
   const { introSection, isPlayingCarousel, isFocusingLogin } = useAppSelector(
     (state) => state.landingIntro
   );
-
   const { userId } = useAppSelector((state) => state.userInfo.data);
 
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -51,7 +53,9 @@ export const Landing: React.FC = () => {
     }
   }, [introSection, isPlayingCarousel]);
 
-  console.log(userId);
+  useEffect(() => {
+    if (userId) navigate('/city');
+  }, [userId]);
 
   return (
     <Wrapper>
