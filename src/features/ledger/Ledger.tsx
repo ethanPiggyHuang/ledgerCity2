@@ -11,7 +11,7 @@ import { ClosingButton } from '../../component/ClosingButton';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import {
   SHIFT_CITY_VIA_SCROLL,
-  SWITCH_CITY_TRANSITION_MODE,
+  TOGGLE_HOUSE_ADDING_MODE,
 } from '../../redux/reducers/citySlice';
 import {
   CLEAR_AMOUNT,
@@ -94,7 +94,7 @@ export const Ledger: React.FC = () => {
                 onClick={() => {
                   dispatch(CLEAR_LEDGER_INPUTS());
                   dispatch(SWITCH_LEDGER_POSITION('expand'));
-                  dispatch(SWITCH_CITY_TRANSITION_MODE(true));
+                  dispatch(TOGGLE_HOUSE_ADDING_MODE(true));
                 }}
               >
                 <AddNewIcon icon={faPlus} />

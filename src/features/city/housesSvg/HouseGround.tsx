@@ -38,7 +38,7 @@ const Wrapper = styled.div`
 
 const StyledSvg = styled.svg``;
 
-export const HouseGrid: React.FC<{ houseType: string }> = ({ houseType }) => {
+export const HouseGround: React.FC<{ houseType: string }> = ({ houseType }) => {
   const { gridLength } = citySetting;
   const { scale } = useAppSelector((state) => state.city);
   const widthNormalize = gridLength / 160;

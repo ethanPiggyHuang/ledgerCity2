@@ -9,11 +9,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useRef, useState } from 'react';
 import styled, { keyframes } from 'styled-components/macro';
 import useSound from 'use-sound';
-import chocolate_world from '../../assets/chocolate_world.mp3';
-import hammer_2 from '../../assets/hammer_2.wav';
-import reconstruct from '../../assets/reconstruct.png';
-import { Alert } from '../../component/Alert';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import chocolate_world from '../assets/chocolate_world.mp3';
+import hammer_2 from '../assets/hammer_2.wav';
+import reconstruct from '../assets/reconstruct.png';
+import { Alert } from './Alert';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import {
   END_CITY_TOUR,
   GENERATE_AVAILABLE_POSITION,
@@ -22,14 +22,14 @@ import {
   START_CITY_TOUR,
   TOGGLE_HOUSE_DRAGGABLE,
   UPDATE_HOUSE_ARRANGEMENT,
-} from '../../redux/reducers/citySlice';
-import { citySetting } from '../../utils/gameSettings';
+} from '../redux/reducers/citySlice';
+import { citySetting } from '../utils/gameSettings';
 
 interface Props {
   props: HTMLDivElement | null;
 }
 
-export const RearrangeOptions: React.FC<Props> = ({ props }) => {
+export const OperationPanel: React.FC<Props> = ({ props }) => {
   const { dragMode, nextHousePosition, scale, housesPosition, isTouring } =
     useAppSelector((state) => state.city);
   const { dataList } = useAppSelector((state) => state.ledgerList);
@@ -139,16 +139,16 @@ export const RearrangeOptions: React.FC<Props> = ({ props }) => {
             housesPosition[yIndex][xIndex].type !== '' ||
             (xIndex === 0 && yIndex === 0)
           ) {
-            dispatch(GENERATE_AVAILABLE_POSITION());
+            dispatch(GENERATE_AVAILABLE_POSITION(housesPosition));
           }
         } else {
-          dispatch(GENERATE_AVAILABLE_POSITION());
+          dispatch(GENERATE_AVAILABLE_POSITION(housesPosition));
         }
       } else {
-        dispatch(GENERATE_AVAILABLE_POSITION());
+        dispatch(GENERATE_AVAILABLE_POSITION(housesPosition));
       }
     }
-  }, [dispatch, nextHousePosition, housesPosition, dataList]);
+  }, [dispatch, nextHousePosition, housesPosition]);
 
   const handleAlert = () => {
     alert('hey');
@@ -182,7 +182,6 @@ export const RearrangeOptions: React.FC<Props> = ({ props }) => {
                   <IconImg src={reconstruct} />
                 )}
               </IconBackLongActive>
-
               <IconBackLongActive
                 $isActivate={isTouring}
                 onClick={() => {

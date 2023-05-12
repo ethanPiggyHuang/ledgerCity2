@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import styled, { keyframes } from 'styled-components/macro';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { SET_SCALE } from '../../redux/reducers/citySlice';
-import { HouseGrid } from '../City/housesSvg/HouseGrid';
+import { HouseGround } from '../City/housesSvg/HouseGround';
 import { HouseOfClothes } from '../City/housesSvg/HouseOfClothes';
 import { HouseOfDrinks } from '../City/housesSvg/HouseOfDrinks';
 import { HouseOfFood } from '../City/housesSvg/HouseOfFood';
@@ -26,7 +26,7 @@ export const CityDemo: React.FC = () => {
                 <Grid key={xIndex}>
                   {house.type !== '' ? (
                     <>
-                      <HouseGrid houseType={house.type} />
+                      <HouseGround houseType={house.type} />
                       <House>
                         {house.type === '食物' ? (
                           <HouseOfFood />

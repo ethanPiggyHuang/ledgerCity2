@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import styled from 'styled-components/macro';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { SWITCH_CITY_TRANSITION_MODE } from '../../redux/reducers/citySlice';
+import { TOGGLE_HOUSE_ADDING_MODE } from '../../redux/reducers/citySlice';
 import { DELETE_SINGLE_LEDGER } from '../../redux/reducers/ledgerListSlice';
 import {
   CLEAR_LEDGER_INPUTS,
@@ -44,7 +44,7 @@ export const DailyLedger: React.FC = () => {
             onClick={() => {
               dispatch(CLEAR_LEDGER_INPUTS());
               dispatch(SWITCH_LEDGER_POSITION('expand'));
-              dispatch(SWITCH_CITY_TRANSITION_MODE(true));
+              dispatch(TOGGLE_HOUSE_ADDING_MODE(true));
             }}
           >
             <EmptyLedgerText>本日還沒有帳目紀錄</EmptyLedgerText>

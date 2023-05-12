@@ -11,6 +11,9 @@ import {
   faGift,
   faTags,
 } from '@fortawesome/free-solid-svg-icons';
+import { HouseOfFood } from '../features/City/housesSvg/HouseOfFood';
+import { HouseOfClothes } from '../features/City/housesSvg/HouseOfClothes';
+import { HouseOfDrinks } from '../features/City/housesSvg/HouseOfDrinks';
 
 export const labelIndex: {
   [key: string]: number;
@@ -32,18 +35,21 @@ export const mainLabel: {
   colorCode: string;
   icon: IconDefinition;
   subLabels: string[];
+  houseComponent?: React.FC<{}>;
 }[] = [
   {
     name: '食物',
     colorCode: '#F09492',
     icon: faUtensils,
     subLabels: ['早餐', '午餐', '晚餐'],
+    houseComponent: HouseOfFood,
   },
   {
     name: '飲品',
     colorCode: '#94C0B8',
     icon: faMugHot,
     subLabels: ['手搖杯', '咖啡', '水'],
+    houseComponent: HouseOfDrinks,
   },
   {
     name: '交通',
@@ -56,6 +62,7 @@ export const mainLabel: {
     colorCode: '#E6C352',
     icon: faShirt,
     subLabels: ['上衣', '褲/裙', '貼身衣物', '配件'],
+    houseComponent: HouseOfClothes,
   },
   {
     name: '娛樂',
@@ -153,4 +160,6 @@ export const citySetting = {
   houseWidth: 120,
   cityPaddingX: window.innerWidth / 2,
   cityPaddingY: window.innerHeight / 2,
+  mayorWidth: 26,
+  mayorHeight: 30,
 };

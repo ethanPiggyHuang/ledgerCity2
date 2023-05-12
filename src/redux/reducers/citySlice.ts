@@ -74,7 +74,6 @@ export const UPDATE_HOUSE_ARRANGEMENT = createAsyncThunk(
     });
     try {
       await api.city.updateHouseArrangement(cityId, newHouses);
-      console.log('eeee');
     } catch (error) {
       console.log(error);
     }
@@ -83,12 +82,9 @@ export const UPDATE_HOUSE_ARRANGEMENT = createAsyncThunk(
 
 export const GENERATE_AVAILABLE_POSITION = createAsyncThunk(
   'city/GENERATE_AVAILABLE_POSITION',
-  async (arg, { getState }) => {
-    const allStates = getState() as RootState;
-    const housesPosition = allStates.city.housesPosition;
-
+  async (housesPosition: { type: string; id: string }[][]) => {
     let emptyPostions: { xIndex: number; yIndex: number }[] = [];
-    housesPosition?.forEach((raw, yIndex) => {
+    housesPosition.forEach((raw, yIndex) => {
       raw?.forEach((grid, xIndex) => {
         if (grid.type === '') {
           emptyPostions.push({ yIndex, xIndex });
@@ -162,12 +158,15 @@ export const city = createSlice({
       const { yIndex, xIndex } = action.payload;
       const pastYIndex = state.houseDragInfo.pastIndex.yIndex;
       const pastXIndex = state.houseDragInfo.pastIndex.xIndex;
+
       if (state.housesPosition[yIndex][xIndex].type === '') {
         state.housesPosition[pastYIndex][pastXIndex] = { type: '', id: '' };
+        console.log(state.housesPosition[yIndex][xIndex]);
         state.housesPosition[yIndex][xIndex] = {
           type: state.houseDragInfo.target,
           id: state.houseDragInfo.id,
         };
+        console.log(state.housesPosition[yIndex][xIndex]);
         state.houseDragInfo.target = '';
         state.houseDragInfo.id = '';
       }
@@ -258,7 +257,7 @@ export const city = createSlice({
       state.cityKeyShift.x = 0;
       state.cityKeyShift.y = 0;
     },
-    SWITCH_CITY_TRANSITION_MODE: (state, action: PayloadAction<boolean>) => {
+    TOGGLE_HOUSE_ADDING_MODE: (state, action: PayloadAction<boolean>) => {
       state.isAddingNewHouse = action.payload;
     },
   },
@@ -281,12 +280,10 @@ export const city = createSlice({
       })
       .addCase(GENERATE_AVAILABLE_POSITION.fulfilled, (state, action) => {
         state.status = 'idle';
-        const yIndex = action.payload?.yIndex;
-        const xIndex = action.payload?.xIndex;
-        if (yIndex && xIndex) {
-          state.nextHousePosition = { yIndex, xIndex };
-        }
-        // console.log(`下次位置 y:${yIndex},x:${xIndex}`);
+        const yIndex = action.payload.yIndex;
+        const xIndex = action.payload.xIndex;
+        state.nextHousePosition = { yIndex, xIndex };
+        // state.gridsStatus[yIndex][xIndex] = 1;
       })
       .addCase(GENERATE_AVAILABLE_POSITION.rejected, (state) => {
         state.status = 'failed';
@@ -322,7 +319,7 @@ export const {
   END_CITY_SHIFT,
   START_CITY_TOUR,
   END_CITY_TOUR,
-  SWITCH_CITY_TRANSITION_MODE,
+  TOGGLE_HOUSE_ADDING_MODE,
 } = city.actions;
 
 export default city.reducer;

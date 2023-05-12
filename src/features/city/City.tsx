@@ -1,29 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import styled, { keyframes } from 'styled-components/macro';
-import useSound from 'use-sound';
 import character_green from '../../assets/character_green.png';
-import hammer_ice from '../../assets/hammer_ice.wav';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import {
-  DRAG_HOUSE_START,
-  DROP_HOUSE,
-  RENDER_CITY,
-  SET_SCALE,
-  SHIFT_CITY_VIA_KEYBOARD,
-  SWITCH_GRID_LIGHT_OFF,
-  SWITCH_GRID_LIGHT_ON,
-} from '../../redux/reducers/citySlice';
-import { citySetting } from '../../utils/gameSettings';
+import { RENDER_CITY, SET_SCALE } from '../../redux/reducers/citySlice';
+import { citySetting, mainLabel } from '../../utils/gameSettings';
 import { HouseCityHall } from './housesSvg/HouseCityHall';
-import { HouseGrid } from './housesSvg/HouseGrid';
-import { HouseOfClothes } from './housesSvg/HouseOfClothes';
-import { HouseOfDrinks } from './housesSvg/HouseOfDrinks';
-import { HouseOfFood } from './housesSvg/HouseOfFood';
+import { HouseGround } from './housesSvg/HouseGround';
 import { HouseOfPlants } from './housesSvg/HouseOfPlants';
+import useControlMayor from './hooks/useControlMayor';
+import useDisplayCitizen from './hooks/useDisplayCitizen';
+import useGridDrag from './hooks/useGridDrag';
+import useHouseDrag from './hooks/useHouseDrag';
+// import { House } from './House';
 
 export const City: React.FC = () => {
-  const { gridGap, gridLength, houseWidth, cityPaddingX, cityPaddingY } =
-    citySetting;
+  const {
+    gridGap,
+    gridLength,
+    houseWidth,
+    cityPaddingX,
+    cityPaddingY,
+    mayorWidth,
+    mayorHeight,
+  } = citySetting;
   const cityBasicInfo = useAppSelector((state) => state.city.basicInfo);
   const {
     housesPosition,
@@ -32,29 +31,13 @@ export const City: React.FC = () => {
     scale,
     cityKeyShift,
     isTouring,
-    isAddingNewHouse: isAddingNew,
+    isAddingNewHouse,
   } = useAppSelector((state) => state.city);
   const dispatch = useAppDispatch();
   const cityWidth = (gridLength + gridGap) * housesPosition[0].length;
   const cityHeight = (gridLength + gridGap) * housesPosition.length;
-  const [figurePosition, setFigurePosition] = useState(0);
-  const [greenMoveX, setGreenMoveX] = useState(0);
-  const [greenMoveY, setGreenMoveY] = useState(0);
 
-  const [playHammerShort] = useSound(hammer_ice, { volume: 0.5 });
-
-  useEffect(() => {
-    const handlePosition = () => {
-      setFigurePosition((prev) => prev + 30);
-    };
-    const interval = setInterval(handlePosition, 2000);
-    const timeout = setTimeout(() => clearInterval(interval), 8000);
-
-    return () => {
-      clearInterval(interval);
-      clearTimeout(timeout);
-    };
-  }, []);
+  useDisplayCitizen();
 
   useEffect(() => {
     dispatch(SET_SCALE(1));
@@ -64,68 +47,37 @@ export const City: React.FC = () => {
     dispatch(RENDER_CITY(cityBasicInfo));
   }, [cityBasicInfo, dispatch]);
 
-  useEffect(() => {
-    const handelKeypress = (event: KeyboardEvent) => {
-      if (event.code === 'ArrowDown') {
-        event.preventDefault();
-        dispatch(SHIFT_CITY_VIA_KEYBOARD({ deltaX: 0, deltaY: 15 }));
-        setGreenMoveY(0);
-        setGreenMoveX((prev) => (prev + 1) % 3);
-      }
-      if (event.code === 'ArrowUp') {
-        event.preventDefault();
-        dispatch(SHIFT_CITY_VIA_KEYBOARD({ deltaX: 0, deltaY: -15 }));
-        setGreenMoveY(1);
-        setGreenMoveX((prev) => (prev + 1) % 3);
-      }
-      if (event.code === 'ArrowRight') {
-        event.preventDefault();
-        dispatch(SHIFT_CITY_VIA_KEYBOARD({ deltaX: 15, deltaY: 0 }));
-        setGreenMoveY(3);
-        setGreenMoveX((prev) => (prev + 1) % 3);
-      }
-      if (event.code === 'ArrowLeft') {
-        event.preventDefault();
-        dispatch(SHIFT_CITY_VIA_KEYBOARD({ deltaX: -15, deltaY: 0 }));
-        setGreenMoveY(2);
-        setGreenMoveX((prev) => (prev + 1) % 3);
-      }
-    };
+  const { mayorImgX, mayorImgY } = useControlMayor();
 
-    if (isTouring) {
-      window.addEventListener('keydown', handelKeypress);
-    } else {
-      window.removeEventListener('keydown', handelKeypress);
-    }
-    return () => {
-      window.removeEventListener('keydown', handelKeypress);
-    };
-  }, [isTouring]);
+  const { handleGridLeave, handleGridOver, handleGridDrop } = useGridDrag({
+    dragMode,
+    dispatch,
+    gridsStatus,
+  });
+
+  const { handleHouseDragStart, handleHouseDragEnd } = useHouseDrag({
+    dragMode,
+    dispatch,
+  });
+
+  const renderHouse = (houseType: string) => {
+    if (houseType === '市政廳') return <HouseCityHall />;
+    const HouseComponent =
+      mainLabel.find((label) => label.name === houseType)?.houseComponent ||
+      HouseOfPlants;
+    return <HouseComponent />;
+  };
 
   return (
     <CityRange
-      $widthAttrs={`${cityWidth * scale + 2 * cityPaddingX}px`}
-      $heightAttrs={`${cityHeight * scale + 2 * cityPaddingY}px`}
+      $width={cityWidth * scale + 2 * cityPaddingX}
+      $height={cityHeight * scale + 2 * cityPaddingY}
       $topAttrs={`${cityKeyShift.y}px`}
       $leftAttrs={`${cityKeyShift.x}px`}
       $paddingX={cityPaddingX}
       $paddingY={cityPaddingY}
-      $relocatMode={isAddingNew ? 'newHouse' : 'others'}
+      $relocatMode={isAddingNewHouse ? 'newHouse' : 'others'}
     >
-      {isTouring && (
-        <CharacterWrap
-          $widthAttrs={`${scale * 26}px`}
-          $heightAttrs={`${scale * 30}px`}
-        >
-          <Character
-            src={character_green}
-            $xIndex={greenMoveX}
-            $yIndex={greenMoveY}
-            $scale={scale}
-          />
-        </CharacterWrap>
-      )}
-
       {housesPosition.map((row, yIndex) => {
         return (
           <Row
@@ -133,85 +85,59 @@ export const City: React.FC = () => {
             $paddingTopAttrs={`${gridGap * scale}px`}
             $gapAttrs={`${gridGap * scale}px`}
           >
-            {row.map((house, xIndex) => {
-              return (
-                <Grid
-                  $lengthAttrs={`${gridLength * scale}px`}
-                  $status={gridsStatus[yIndex][xIndex]}
-                  $type={house.type}
-                  key={xIndex}
-                  onDragLeave={(e) => {
-                    if (dragMode !== 'houses') return;
-                    dispatch(SWITCH_GRID_LIGHT_OFF());
-                  }}
-                  onDragOver={(e) => {
-                    if (dragMode !== 'houses') return;
-                    e.preventDefault();
-                    dispatch(SWITCH_GRID_LIGHT_ON({ xIndex, yIndex }));
-                  }}
-                  onDrop={(e) => {
-                    if (dragMode !== 'houses') return;
-                    dispatch(DROP_HOUSE({ xIndex, yIndex }));
-                    if (gridsStatus[yIndex][xIndex] === 1) {
-                      playHammerShort();
-                      setTimeout(() => playHammerShort(), 500);
-                      setTimeout(() => playHammerShort(), 1000);
-                    }
-                  }}
-                >
-                  {house.type !== '' && (
-                    <>
-                      <HouseGrid houseType={house.type} />
-                      <House
-                        $lengthAttrs={`${houseWidth * scale}px`}
-                        $fontSizeAttrs={`${24 * scale}px`}
-                        $isdraggable={dragMode === 'houses'}
-                        draggable={dragMode === 'houses'}
-                        onDragStart={(event: React.DragEvent) => {
-                          if (dragMode !== 'houses') return;
-                          const target = event.target as HTMLDivElement;
-                          target.style.opacity = '0.01';
-                          dispatch(
-                            DRAG_HOUSE_START({
-                              id: house.id,
-                              target: house.type,
-                              pastIndex: { xIndex, yIndex },
-                            })
-                          );
-                        }}
-                        onDragEnd={(event: React.DragEvent) => {
-                          if (dragMode !== 'houses') return;
-                          const target = event.target as HTMLDivElement;
-                          target.style.opacity = '1';
-                        }}
-                      >
-                        {house.type === '食物' ? (
-                          <HouseOfFood />
-                        ) : house.type === '服裝' ? (
-                          <HouseOfClothes />
-                        ) : house.type === '飲品' ? (
-                          <HouseOfDrinks />
-                        ) : house.type === '市政廳' ? (
-                          <HouseCityHall />
-                        ) : (
-                          <HouseOfPlants />
-                        )}
-                      </House>
-                    </>
-                  )}
-                </Grid>
-              );
-            })}
+            {row.map((house, xIndex) => (
+              <Grid
+                $lengthAttrs={`${gridLength * scale}px`}
+                $status={gridsStatus[yIndex][xIndex]}
+                $type={house.type}
+                key={xIndex}
+                onDragLeave={handleGridLeave}
+                onDragOver={(event) => handleGridOver(event, xIndex, yIndex)}
+                onDrop={() => handleGridDrop(xIndex, yIndex)}
+              >
+                {house.type !== '' && (
+                  <>
+                    <HouseGround houseType={house.type} />
+                    {/* <House house={house} xIndex={xIndex} yIndex={yIndex} /> */}
+                    <House
+                      $lengthAttrs={`${houseWidth * scale}px`}
+                      $fontSizeAttrs={`${24 * scale}px`}
+                      $isdraggable={dragMode === 'houses'}
+                      draggable={dragMode === 'houses'}
+                      onDragStart={(event) =>
+                        handleHouseDragStart(event, house, xIndex, yIndex)
+                      }
+                      onDragEnd={(event) => handleHouseDragEnd(event)}
+                    >
+                      {renderHouse(house.type)}
+                    </House>
+                  </>
+                )}
+              </Grid>
+            ))}
           </Row>
         );
       })}
+      {isTouring && (
+        <CharacterWrap
+          $widthAttrs={`${scale * mayorWidth}px`}
+          $heightAttrs={`${scale * mayorHeight}px`}
+        >
+          <Character
+            src={character_green}
+            $xIndex={mayorImgX}
+            $yIndex={mayorImgY}
+            $scale={scale}
+          />
+        </CharacterWrap>
+      )}
     </CityRange>
   );
 };
 
 type CityRangeProps = {
-  $widthAttrs: string;
-  $heightAttrs: string;
+  $width: number;
+  $height: number;
   $topAttrs: string;
   $leftAttrs: string;
   $paddingX: number;
@@ -234,10 +160,8 @@ type HouseProps = {
 };
 
 const CityRange = styled.div.attrs<CityRangeProps>(
-  ({ $widthAttrs, $heightAttrs, $topAttrs, $leftAttrs }) => ({
+  ({ $topAttrs, $leftAttrs }) => ({
     style: {
-      width: $widthAttrs,
-      height: $heightAttrs,
       top: $topAttrs,
       left: $leftAttrs,
     },
@@ -248,7 +172,8 @@ const CityRange = styled.div.attrs<CityRangeProps>(
   height: fit-content;
   padding: ${({ $paddingX, $paddingY }) => `${$paddingY}px ${$paddingX}px`};
   position: relative;
-
+  width: ${({ $width }) => `${$width}px`};
+  height: ${({ $height }) => `${$height}px`};
   transition: ${({ $relocatMode }) =>
     $relocatMode === 'newHouse'
       ? 'top 1s ease, left 1s ease'
