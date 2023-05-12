@@ -11,18 +11,18 @@ import hammer_ice from '../../../assets/hammer_ice.wav';
 interface useGridDragProps {
   dragMode: string;
   dispatch: Dispatch<any>;
-  gridsStatus: number[][];
+  gridsStatus: ('available' | 'forbidden' | 'none')[][];
 }
 
 const useGridDrag = ({ dragMode, dispatch, gridsStatus }: useGridDragProps) => {
   const [playHammerShort] = useSound(hammer_ice, { volume: 0.5 });
 
-  const handleGridLeave = useCallback(() => {
+  const handleGridDragLeave = useCallback(() => {
     if (dragMode !== 'houses') return;
     dispatch(SWITCH_GRID_LIGHT_OFF());
   }, [dragMode, dispatch]);
 
-  const handleGridOver = useCallback(
+  const handleGridDragOver = useCallback(
     (event: React.DragEvent, xIndex: number, yIndex: number) => {
       if (dragMode !== 'houses') return;
       event.preventDefault();
@@ -35,7 +35,7 @@ const useGridDrag = ({ dragMode, dispatch, gridsStatus }: useGridDragProps) => {
     (xIndex: number, yIndex: number) => {
       if (dragMode !== 'houses') return;
       dispatch(DROP_HOUSE({ xIndex, yIndex }));
-      if (gridsStatus[yIndex][xIndex] === 1) {
+      if (gridsStatus[yIndex][xIndex] === 'available') {
         playHammerShort();
         setTimeout(() => playHammerShort(), 500);
         setTimeout(() => playHammerShort(), 1000);
@@ -44,7 +44,11 @@ const useGridDrag = ({ dragMode, dispatch, gridsStatus }: useGridDragProps) => {
     [dragMode, dispatch, gridsStatus, playHammerShort]
   );
 
-  return { handleGridLeave, handleGridOver, handleGridDrop };
+  return {
+    handleGridDragLeave,
+    handleGridDragOver,
+    handleGridDrop,
+  };
 };
 
 export default useGridDrag;

@@ -208,7 +208,6 @@ export async function sendCooperationRequest(
   };
 
   await setDoc(doc(db, 'users', userId, 'friends', friendId), selfData);
-
   await setDoc(doc(db, 'users', friendId, 'friends', userId), friendData);
 }
 

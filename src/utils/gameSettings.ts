@@ -14,6 +14,7 @@ import {
 import { HouseOfFood } from '../features/City/housesSvg/HouseOfFood';
 import { HouseOfClothes } from '../features/City/housesSvg/HouseOfClothes';
 import { HouseOfDrinks } from '../features/City/housesSvg/HouseOfDrinks';
+import { HouseOfPlants } from '../features/City/housesSvg/HouseOfPlants';
 
 export const labelIndex: {
   [key: string]: number;
@@ -35,7 +36,7 @@ export const mainLabel: {
   colorCode: string;
   icon: IconDefinition;
   subLabels: string[];
-  houseComponent?: React.FC<{}>;
+  houseComponent: React.FC<{}>;
 }[] = [
   {
     name: '食物',
@@ -56,6 +57,7 @@ export const mainLabel: {
     colorCode: '#78C1FA',
     icon: faTrainSubway,
     subLabels: ['通勤', '火車', '高鐵'],
+    houseComponent: HouseOfPlants,
   },
   {
     name: '衣裝',
@@ -69,36 +71,42 @@ export const mainLabel: {
     colorCode: '#FFB071',
     icon: faGamepad,
     subLabels: ['電影', 'KTV', '展覽'],
+    houseComponent: HouseOfPlants,
   },
   {
     name: '居家',
     colorCode: '#B6C64A',
     icon: faHouse,
     subLabels: ['房租', '房貸', '水費', '電費'],
+    houseComponent: HouseOfPlants,
   },
   {
     name: '3C',
     colorCode: '#5F5DB7',
     icon: faMobileScreenButton,
     subLabels: ['網路費', '手機', '電腦'],
+    houseComponent: HouseOfPlants,
   },
   {
     name: '醫藥',
     colorCode: '#FF6868',
     icon: faBriefcaseMedical,
     subLabels: ['掛號', '保健食品', '牙醫'],
+    houseComponent: HouseOfPlants,
   },
   {
     name: '人際',
     colorCode: '#9896EB',
     icon: faGift,
     subLabels: ['伴侶', '親人', '朋友', '職場'],
+    houseComponent: HouseOfPlants,
   },
   {
     name: '其他',
     colorCode: '#9DA6A5',
     icon: faTags,
     subLabels: ['繳稅'],
+    houseComponent: HouseOfPlants,
   },
 ];
 
@@ -155,11 +163,16 @@ export const subLabels: { [key: string]: string[] } = {
 };
 
 export const citySetting = {
-  gridGap: 0,
   gridLength: 160,
   houseWidth: 120,
   cityPaddingX: window.innerWidth / 2,
   cityPaddingY: window.innerHeight / 2,
   mayorWidth: 26,
   mayorHeight: 30,
+};
+
+export const gridColor: { [key: string]: 'lightgreen' | 'lightcarol' | '' } = {
+  available: 'lightgreen',
+  forbidden: 'lightcarol',
+  none: '',
 };

@@ -6,7 +6,7 @@ import { CityBasicInfoState } from '../../utils/interface';
 export interface CityState {
   basicInfo: CityBasicInfoState;
   housesPosition: { type: string; id: string }[][];
-  gridsStatus: number[][];
+  gridsStatus: ('available' | 'forbidden' | 'none')[][];
   dragMode: 'city' | 'houses';
   cityScrollShift: {
     x: number;
@@ -39,7 +39,7 @@ const initialState: CityState = {
     ledgerBookId: '',
   },
   housesPosition: [[{ type: '', id: '' }]],
-  gridsStatus: [[0]],
+  gridsStatus: [['none']],
   dragMode: 'city',
   cityScrollShift: { x: 0, y: 0 },
   cityKeyShift: { x: 0, y: 0 },
@@ -135,7 +135,7 @@ export const city = createSlice({
           new Array(ColumnNumber).fill({ type: '', id: '' })
         );
         const newGridsStatus = new Array(RowNumber).fill(
-          new Array(ColumnNumber).fill(0)
+          new Array(ColumnNumber).fill('none')
         );
         houses.forEach((house) => {
           newHousesPosition[house.position.yIndex][house.position.xIndex] = {
@@ -172,7 +172,7 @@ export const city = createSlice({
       }
       for (let i = 0; i < state.gridsStatus.length; i++) {
         for (let j = 0; j < state.gridsStatus[i].length; j++) {
-          state.gridsStatus[i][j] = 0;
+          state.gridsStatus[i][j] = 'none';
         }
       }
     },
@@ -206,16 +206,16 @@ export const city = createSlice({
           (xIndex === pastXIndex && yIndex === pastYIndex) ||
           state.housesPosition[yIndex][xIndex].type === ''
         ) {
-          state.gridsStatus[yIndex][xIndex] = 1;
+          state.gridsStatus[yIndex][xIndex] = 'available';
         } else {
-          state.gridsStatus[yIndex][xIndex] = -1;
+          state.gridsStatus[yIndex][xIndex] = 'forbidden';
         }
       }
     },
     SWITCH_GRID_LIGHT_OFF: (state) => {
       for (let i = 0; i < state.gridsStatus.length; i++) {
         for (let j = 0; j < state.gridsStatus[i].length; j++) {
-          state.gridsStatus[i][j] = 0;
+          state.gridsStatus[i][j] = 'none';
         }
       }
     },
@@ -283,7 +283,7 @@ export const city = createSlice({
         const yIndex = action.payload.yIndex;
         const xIndex = action.payload.xIndex;
         state.nextHousePosition = { yIndex, xIndex };
-        // state.gridsStatus[yIndex][xIndex] = 1;
+        // state.gridsStatus[yIndex][xIndex] = 'available';
       })
       .addCase(GENERATE_AVAILABLE_POSITION.rejected, (state) => {
         state.status = 'failed';
