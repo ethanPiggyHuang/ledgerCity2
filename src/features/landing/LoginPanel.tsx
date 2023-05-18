@@ -1,4 +1,10 @@
-import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from 'firebase/auth';
 import React from 'react';
 import styled, { keyframes } from 'styled-components/macro';
 import cityLandScape from '../../assets/cityLandscape.png';
@@ -7,6 +13,7 @@ import loginSlogan from '../../assets/login_slogan.png';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { TOGGLE_LOGIN_SECTION_FOCUS } from '../../redux/reducers/landingIntroSlice';
 import { TOGGLE_AUTHING } from '../../redux/reducers/userInfoSlice';
+import { FirebaseError } from 'firebase/app';
 
 export const LoginPanel: React.FC = () => {
   const { isFocusingLogin } = useAppSelector((state) => state.landingIntro);
@@ -14,12 +21,36 @@ export const LoginPanel: React.FC = () => {
 
   const auth = getAuth();
 
-  const signInWithGoogle = async () => {
+  const GoogleLogin = async () => {
     dispatch(TOGGLE_AUTHING(true));
     try {
       await signInWithPopup(auth, new GoogleAuthProvider());
     } catch (error) {
       console.log('error', error);
+    }
+  };
+  const nativeRegister = async () => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        'testing@gmail.com',
+        '12345678'
+      );
+      console.log(userCredential.user);
+    } catch (error: any) {
+      console.log(error.code);
+    }
+  };
+  const nativeLogin = async () => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        'testing@gmail.com',
+        '12345678'
+      );
+      console.log(userCredential.user);
+    } catch (error: any) {
+      console.log(error.code);
     }
   };
 
@@ -32,10 +63,17 @@ export const LoginPanel: React.FC = () => {
     >
       <LoginSlogan $isFocusing={isFocusingLogin} src={loginSlogan} />
       <CityImage src={cityLandScape} />
-      <LogInWrap $isFocusing={isFocusingLogin} onClick={signInWithGoogle}>
+      <LoginInput value={'eee'} />
+      <LoginWrap $isFocusing={isFocusingLogin} onClick={nativeRegister}>
+        native註冊
+      </LoginWrap>
+      <LoginWrap $isFocusing={isFocusingLogin} onClick={nativeLogin}>
+        native登入
+      </LoginWrap>
+      <LoginWrap $isFocusing={isFocusingLogin} onClick={GoogleLogin}>
         <GoogleLogo src={googleLogo} />
         以Google登入
-      </LogInWrap>
+      </LoginWrap>
     </Wrap>
   );
 };
@@ -59,19 +97,7 @@ const Wrap = styled.div`
   gap: 10%;
 `;
 
-const flashing = keyframes`
-  0%{
-    filter: brightness(0.95);
-  }
-  50%{
-    filter: brightness(1.15);
-  }
-  100%{
-    filter: brightness(0.95);
-  }
-`;
-
-const LogInWrap = styled.div<LoginElementsProps>`
+const LoginWrap = styled.div<LoginElementsProps>`
   font-size: 24px;
   font-weight: bold;
   color: #cc8159;
@@ -84,8 +110,6 @@ const LogInWrap = styled.div<LoginElementsProps>`
   align-items: center;
   gap: 20px;
   cursor: pointer;
-  animation: ${flashing}
-    ${({ $isFocusing }) => ($isFocusing ? '2s infinite ease' : '')};
   &:hover {
     background-color: #f2d6af;
   }
@@ -96,8 +120,7 @@ const GoogleLogo = styled.img`
   display: block;
 `;
 
-const Text = styled.p`
-  font-size: 24px;
+const LoginInput = styled.input`
   color: #cc8159;
 `;
 
