@@ -31,7 +31,6 @@ const useHouseDrag = ({ dragMode, dispatch }: useHouseDragProps) => {
     },
     [dragMode, dispatch]
   );
-
   const handleHouseDragEnd = useCallback(
     (event: React.DragEvent) => {
       if (dragMode !== 'houses') return;

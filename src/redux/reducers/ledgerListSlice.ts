@@ -30,7 +30,7 @@ const initialState: LedgerListState = {
 };
 
 export const GET_LEDGER_LIST = createAsyncThunk(
-  'statistics/GET_LEDGER_LIST',
+  'ledgerList/GET_LEDGER_LIST',
   async (ledgerBookId: string) => {
     const response = await getLedgerList(ledgerBookId, {
       field: 'timeYear',
@@ -51,7 +51,7 @@ export const GET_LEDGER_LIST = createAsyncThunk(
 );
 
 export const DELETE_SINGLE_LEDGER = createAsyncThunk(
-  'statistics/DELETE_SINGLE_LEDGER',
+  'ledgerList/DELETE_SINGLE_LEDGER',
   async (ledgerId: string, { getState }) => {
     const allStates = getState() as RootState;
     const cityId = allStates.userInfo.data.cityList[0];

@@ -53,10 +53,7 @@ const Header: React.FC = () => {
 
   useEffect(() => {
     if (ledgerBookId.length !== 0) {
-      if (accessUsers.findIndex((id) => id === userId) === -1) {
-        // visitor
-        return;
-      } else {
+      if (accessUsers.includes(userId)) {
         const q = query(
           collection(db, 'ledgerBooks', ledgerBookId, 'ledgers'),
           orderBy('timeLedger')
@@ -70,10 +67,7 @@ const Header: React.FC = () => {
 
           const convertedResult: { ledgerId: string; data: LedgerDataState }[] =
             rawResult.map(
-              (
-                data: { ledgerId: string; data: LedgerDatabaseState },
-                index: number
-              ) => {
+              (data: { ledgerId: string; data: LedgerDatabaseState }) => {
                 const recordTime = data.data.recordTime
                   ? new Date(data.data.recordTime.seconds * 1000).getTime()
                   : 0;
@@ -85,8 +79,10 @@ const Header: React.FC = () => {
             );
           dispatch(UPDATE_LEDGER_LIST(convertedResult));
         });
-
         return () => unsubscribe();
+      } else {
+        // visitor
+        return;
       }
     }
   }, [ledgerBookId]);

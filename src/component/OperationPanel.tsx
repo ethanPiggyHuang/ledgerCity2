@@ -32,9 +32,8 @@ interface Props {
 export const OperationPanel: React.FC<Props> = ({ props }) => {
   const { dragMode, nextHousePosition, scale, housesPosition, isTouring } =
     useAppSelector((state) => state.city);
-  const { dataList } = useAppSelector((state) => state.ledgerList);
   const { isShown } = useAppSelector((state) => state.pageControl.alert);
-  const { gridLength, cityPaddingX, cityPaddingY } = citySetting;
+  const { gridLength, cityPadding } = citySetting;
   const dispatch = useAppDispatch();
   const [isMusicPlay, setIsMusicPlay] = useState(false);
   const [playHammer, { stop }] = useSound(hammer_2, { volume: 0.8 });
@@ -119,11 +118,11 @@ export const OperationPanel: React.FC<Props> = ({ props }) => {
     );
     const newScale = 1;
     const shiftX =
-      -cityPaddingX +
+      -cityPadding.x +
       window.innerWidth / 2 -
       (hallPosition.xIndex + 0.5) * gridLength * newScale;
     const shiftY =
-      -cityPaddingY +
+      -cityPadding.y +
       window.innerHeight / 2 -
       (hallPosition.yIndex + 0.5 + 6 / 16) * gridLength * newScale;
     dispatch(SHIFT_CITY_VIA_SCROLL({ shiftX, shiftY }));

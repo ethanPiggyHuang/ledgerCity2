@@ -50,8 +50,8 @@ const InteractiveGroup = styled.g`
 
 export const HouseOfClothes: React.FC = () => {
   const { scale } = useAppSelector((state) => state.city);
-  const { houseWidth } = citySetting;
-  const widthNormalize = houseWidth / 208;
+  const { houseLength } = citySetting;
+  const widthNormalize = houseLength / 208;
 
   return (
     <Wrapper>

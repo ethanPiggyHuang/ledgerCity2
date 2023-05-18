@@ -11,9 +11,13 @@ export const City: React.FC = () => {
   const cityBasicInfo = useAppSelector((state) => state.city.basicInfo);
   const { housesPosition, scale, cityKeyShift, isTouring, isAddingNewHouse } =
     useAppSelector((state) => state.city);
-  const { gridLength, cityPaddingX, cityPaddingY } = citySetting;
-  const cityWidth = gridLength * housesPosition[0].length;
-  const cityHeight = gridLength * housesPosition.length;
+  const { gridLength, cityPadding } = citySetting;
+  const citySize = {
+    width: gridLength * housesPosition[0].length * scale + 2 * cityPadding.x,
+    height: gridLength * housesPosition.length * scale + 2 * cityPadding.y,
+  };
+  // const cityWidth =
+  // const cityHeight = gridLength * housesPosition.length;
 
   useEffect(() => {
     dispatch(SET_SCALE(1));
@@ -25,12 +29,9 @@ export const City: React.FC = () => {
 
   return (
     <CityRange
-      $width={cityWidth * scale + 2 * cityPaddingX}
-      $height={cityHeight * scale + 2 * cityPaddingY}
-      $topAttrs={`${cityKeyShift.y}px`}
-      $leftAttrs={`${cityKeyShift.x}px`}
-      $paddingX={cityPaddingX}
-      $paddingY={cityPaddingY}
+      $size={citySize}
+      $shiftAttrs={{ top: `${cityKeyShift.y}px`, left: `${cityKeyShift.x}px` }}
+      $padding={cityPadding}
       $relocatMode={isAddingNewHouse ? 'newHouse' : 'others'}
     >
       {housesPosition.map((row, yIndex) => (
@@ -42,30 +43,25 @@ export const City: React.FC = () => {
 };
 
 type CityRangeProps = {
-  $width: number;
-  $height: number;
-  $topAttrs: string;
-  $leftAttrs: string;
-  $paddingX: number;
-  $paddingY: number;
+  $size: { width: number; height: number };
+  $shiftAttrs: { top: string; left: string };
+  $padding: { x: number; y: number };
   $relocatMode: string;
 };
 
-const CityRange = styled.div.attrs<CityRangeProps>(
-  ({ $topAttrs, $leftAttrs }) => ({
-    style: {
-      top: $topAttrs,
-      left: $leftAttrs,
-    },
-  })
-)<CityRangeProps>`
+const CityRange = styled.div.attrs<CityRangeProps>(({ $shiftAttrs }) => ({
+  style: {
+    top: $shiftAttrs.top,
+    left: $shiftAttrs.left,
+  },
+}))<CityRangeProps>`
   margin: auto;
   flex-wrap: wrap;
   height: fit-content;
-  padding: ${({ $paddingX, $paddingY }) => `${$paddingY}px ${$paddingX}px`};
+  padding: ${({ $padding }) => `${$padding.y}px ${$padding.x}px`};
   position: relative;
-  width: ${({ $width }) => `${$width}px`};
-  height: ${({ $height }) => `${$height}px`};
+  width: ${({ $size }) => `${$size.width}px`};
+  height: ${({ $size }) => `${$size.height}px`};
   transition: ${({ $relocatMode }) =>
     $relocatMode === 'newHouse'
       ? 'top 1s ease, left 1s ease'

@@ -41,8 +41,8 @@ const InteractiveGroup = styled.g`
 
 export const HouseOfPlants: React.FC = () => {
   const { scale } = useAppSelector((state) => state.city);
-  const { houseWidth } = citySetting;
-  const widthNormalize = houseWidth / 199;
+  const { houseLength } = citySetting;
+  const widthNormalize = houseLength / 199;
 
   return (
     <Wrapper>

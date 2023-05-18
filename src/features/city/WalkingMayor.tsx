@@ -6,14 +6,14 @@ import { citySetting } from '../../utils/gameSettings';
 import useControlMayor from './hooks/useControlMayor';
 
 export const WalkingMayor: React.FC = () => {
-  const { mayorWidth, mayorHeight } = citySetting;
+  const { mayorSize } = citySetting;
   const { scale } = useAppSelector((state) => state.city);
   const { mayorImgX, mayorImgY } = useControlMayor();
 
   return (
     <CharacterWrap
-      $widthAttrs={`${scale * mayorWidth}px`}
-      $heightAttrs={`${scale * mayorHeight}px`}
+      $widthAttrs={`${scale * mayorSize.width}px`}
+      $heightAttrs={`${scale * mayorSize.height}px`}
     >
       <Character
         src={mayorCycle}

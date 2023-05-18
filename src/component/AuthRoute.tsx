@@ -1,13 +1,6 @@
-import {
-  faPlane,
-  faPlaneArrival,
-  faPlaneDeparture,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components/macro';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import {
   CREATE_ACCOUNT,

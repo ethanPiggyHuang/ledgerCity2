@@ -164,11 +164,15 @@ export const subLabels: { [key: string]: string[] } = {
 
 export const citySetting = {
   gridLength: 160,
-  houseWidth: 120,
-  cityPaddingX: window.innerWidth / 2,
-  cityPaddingY: window.innerHeight / 2,
-  mayorWidth: 26,
-  mayorHeight: 30,
+  houseLength: 120,
+  cityPadding: {
+    x: window.innerWidth / 2,
+    y: window.innerHeight / 2,
+  },
+  mayorSize: {
+    width: 26,
+    height: 30,
+  },
 };
 
 export const gridColor: { [key: string]: 'lightgreen' | 'lightcarol' | '' } = {

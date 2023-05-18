@@ -14,7 +14,7 @@ interface Props {
 }
 
 export const GridRow: React.FC<Props> = ({ row, yIndex }) => {
-  const { gridLength, houseWidth } = citySetting;
+  const { gridLength, houseLength } = citySetting;
   const { gridsStatus, dragMode, scale } = useAppSelector(
     (state) => state.city
   );
@@ -55,7 +55,7 @@ export const GridRow: React.FC<Props> = ({ row, yIndex }) => {
             <>
               <HouseGround houseType={house.type} />
               <House
-                $lengthAttrs={`${houseWidth * scale}px`}
+                $lengthAttrs={`${houseLength * scale}px`}
                 $isdraggable={dragMode === 'houses'}
                 draggable={dragMode === 'houses'}
                 onDragStart={(event) =>
@@ -77,6 +77,7 @@ interface GridProps {
   $lengthAttrs: string;
   $backgroundColor: 'lightgreen' | 'lightcarol' | '';
 }
+
 interface HouseProps {
   $lengthAttrs: string;
   $isdraggable: boolean;
