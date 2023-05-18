@@ -132,9 +132,9 @@ export const CREATE_ACCOUNT = createAsyncThunk(
     photoURL: string | null;
   }) => {
     const { uid, displayName, email, photoURL } = userInfo;
-    const userName = displayName || '';
-    const userEmail = email || '';
-    const userPortraitUrl = photoURL || '';
+    const userEmail = email ?? '';
+    const userName = displayName ?? email?.split('@')[0] ?? '';
+    const userPortraitUrl = photoURL ?? '';
     const user = { userId: uid, userName, userEmail, userPortraitUrl };
     const response = await createAccount(user);
 

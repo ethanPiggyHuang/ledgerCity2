@@ -24,6 +24,7 @@ const AuthRoute: React.FunctionComponent<IAuthRouteProps> = (props) => {
   useEffect(() => {
     const AuthCheck = onAuthStateChanged(auth, (user) => {
       if (user) {
+        console.log('user', user);
         const { uid, displayName, email, photoURL } = user;
         const isNewUser =
           user.metadata.creationTime === user.metadata.lastSignInTime;

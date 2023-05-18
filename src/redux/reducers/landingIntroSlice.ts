@@ -7,6 +7,12 @@ export interface PageControlState {
   isFocusingLogin: boolean;
   isPlayingCarousel: boolean;
   introSection: 'ledger' | 'statistics' | 'cooperation';
+  isNewRegister: boolean;
+  loginInput: {
+    email: string;
+    password: string;
+    isPasswordVisibile: boolean;
+  };
   status: 'idle' | 'loading' | 'failed';
 }
 
@@ -17,6 +23,12 @@ const initialState: PageControlState = {
   isFocusingLogin: false,
   isPlayingCarousel: true,
   introSection: 'ledger',
+  isNewRegister: false,
+  loginInput: {
+    email: 'example@gmail.com',
+    password: '123456',
+    isPasswordVisibile: true,
+  },
   status: 'idle',
 };
 
@@ -47,6 +59,20 @@ export const landingIntro = createSlice({
     TOGGLE_CAROUSEL_PLAYING: (state, action: PayloadAction<boolean>) => {
       state.isPlayingCarousel = action.payload;
     },
+    EDIT_LOGIN_INPUT: (
+      state,
+      action: PayloadAction<{ field: 'email' | 'password'; value: string }>
+    ) => {
+      const { field, value } = action.payload;
+      state.loginInput[field] = value;
+    },
+    TOGGLE_PASSWORD_VISIBILITY: (state) => {
+      state.loginInput.isPasswordVisibile =
+        !state.loginInput.isPasswordVisibile;
+    },
+    TOGGLE_NEW_REGISTER: (state) => {
+      state.isNewRegister = !state.isNewRegister;
+    },
   },
 });
 
@@ -57,6 +83,9 @@ export const {
   TOGGLE_LOGIN_SECTION_FOCUS,
   SWITCH_INTRO_SECTION,
   TOGGLE_CAROUSEL_PLAYING,
+  EDIT_LOGIN_INPUT,
+  TOGGLE_PASSWORD_VISIBILITY,
+  TOGGLE_NEW_REGISTER,
 } = landingIntro.actions;
 
 export default landingIntro.reducer;
