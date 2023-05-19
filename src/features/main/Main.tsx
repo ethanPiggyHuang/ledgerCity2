@@ -16,7 +16,7 @@ import { Ledger } from '../Ledger/Ledger';
 import { CooperatorTrace } from '../Profile/CooperatorTrace';
 import { Profile } from '../Profile/Profile';
 import { Social } from '../Social/Social';
-import { Statistics } from '../Xtatistics/Statistics';
+import { Statistics } from '../Statistics/Statistics';
 import useSubscribeCity from './hooks/useSubscribeCity';
 import useSubscribeActivity from './hooks/useSubscribeActivity';
 
