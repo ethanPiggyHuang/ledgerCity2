@@ -1,46 +1,61 @@
-# Getting Started with Create React App
+<div align="center">
+  <a>
+    <img src="https://github.com/ethanPiggyHuang/ledgerCity2/assets/113769661/144dd818-6dd0-498e-8da9-4705830a106f" alt="Logo" width="250px">
+  </a>
+  <p align="center">
+    <a href="https://github.com/ethanPiggyHuang/ledgerCity2#About-Ledger-City-2">About</a>
+    |
+    <a href="https://github.com/ethanPiggyHuang/ledgerCity2#Demo">Demo</a>
+    |
+    <a href="https://github.com/ethanPiggyHuang/ledgerCity2#Contact">Contact</a>
+  </p>
+</div>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) TS template.
+# Ledger City 2
+[Ledger City 2](https://ledger-city-2.com) is a gamified expense tracker website, with collaboration feature and statistics analysis. You will act as an city mayor in this game, develop the city by keeping expanse record everyday.You may also keeping this habit in collaboration with your love ones.
 
-## Available Scripts
+## About Ledger City 2
+- Developed interactive doughnut and bar charts with native SVG element and applied the concept of Functional Programming.
+- Achieved smooth control of gamified window coordinates with window scrollTo method and css position controlled by keyboard.
+- Built draggable houses with HTML drag and drop API.
+- Implemented CRUD operations and tracked users' real-time activities using Firebase with self-designed database.
 
-In the project directory, you can run:
+### Built with
 
-### `npm start`
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB) ![Redux](https://img.shields.io/badge/redux-%23593d88.svg?style=for-the-badge&logo=redux&logoColor=white) ![Styled Components](https://img.shields.io/badge/styled--components-DB7093?style=for-the-badge&logo=styled-components&logoColor=white) ![Firebase](https://img.shields.io/badge/firebase-ffca28?style=for-the-badge&logo=firebase&logoColor=black) ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white) ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
 
-### `npm test`
+**Libraries**
+- react-rounter-dom
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Example Account
+  - Email: example@gmail.com
+  - Password: 123456
 
-### `npm run build`
+### Flow chart
+<img width="800" alt="structureChart" src="https://github.com/ethanPiggyHuang/ledgerCity2/assets/113769661/6dd210e3-5157-43fa-a9a2-64c689f1f571">
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Demo
+- Gamified mainpage with draggable houses
+<img width="800" alt="main_page" src="https://github.com/ethanPiggyHuang/ledgerCity2/assets/113769661/3955e001-8ef8-4af1-b42a-edd75e55668b">
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Keep expense record easily with essetial infos
+<img width="400" alt="ledger" src="https://github.com/ethanPiggyHuang/ledgerCity2/assets/113769661/eca88bf0-0b25-45be-8c59-ea3161633643">
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- Statistics of monthly expanse record, demostrated by interactive doughnut chart and sortable table
+<img width="800" alt="doughnut_chart_and_table" src="https://github.com/ethanPiggyHuang/ledgerCity2/assets/113769661/7cd5094d-a199-488f-8b68-72c27b2389fb">
 
-### `npm run eject`
+- Trend and analysis of expanse habit could be observed by bar chart
+<img width="400" alt="bar_chart" src="https://github.com/ethanPiggyHuang/ledgerCity2/assets/113769661/8068f290-32ed-4552-92bb-5117cfca3b8e">
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+- Mayor avatar may stroll in the city with the control of keyboards
+<img width="800" alt="city_touring" src="https://github.com/ethanPiggyHuang/ledgerCity2/assets/113769661/b0ec924a-806b-4d59-b9e8-c7a39339fe6a">
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Contact
+  <a href="https://www.linkedin.com/in/ethanpiggyhuang/" text-decoration="none">
+    <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" />
+  </a>
+  <a href="mailto:makoto31996@gmail.com">
+    <img src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white" />
+  </a>
