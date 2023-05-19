@@ -42,18 +42,27 @@
 ### Demo
 
 - Gamified mainpage with draggable houses
+  <br>
   <img width="500" alt="main_page" src="https://github.com/ethanPiggyHuang/ledgerCity2/assets/113769661/3955e001-8ef8-4af1-b42a-edd75e55668b">
+  <br>
 
 - Keep expense record easily with essetial infos
+  <br>
   <img width="250" alt="ledger" src="https://github.com/ethanPiggyHuang/ledgerCity2/assets/113769661/eca88bf0-0b25-45be-8c59-ea3161633643">
+  <br>
 
 - Statistics of monthly expanse record, demostrated by interactive doughnut chart and sortable table
+  <br>
   <img width="500" alt="doughnut_chart_and_table" src="https://github.com/ethanPiggyHuang/ledgerCity2/assets/113769661/7cd5094d-a199-488f-8b68-72c27b2389fb">
+  <br>
 
 - Trend and analysis of expanse habit could be observed by bar chart
+  <br>
   <img width="250" alt="bar_chart" src="https://github.com/ethanPiggyHuang/ledgerCity2/assets/113769661/8068f290-32ed-4552-92bb-5117cfca3b8e">
+  <br>
 
 - Mayor avatar may stroll in the city with the control of keyboards
+  <br>
   <img width="500" alt="city_touring" src="https://github.com/ethanPiggyHuang/ledgerCity2/assets/113769661/b0ec924a-806b-4d59-b9e8-c7a39339fe6a">
 
 ### Contact
