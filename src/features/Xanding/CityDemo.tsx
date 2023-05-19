@@ -2,11 +2,11 @@ import React, { useEffect } from 'react';
 import styled, { keyframes } from 'styled-components/macro';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { SET_SCALE } from '../../redux/reducers/citySlice';
-import { HouseGround } from '../City/housesSvg/HouseGround';
-import { HouseOfClothes } from '../City/housesSvg/HouseOfClothes';
-import { HouseOfDrinks } from '../City/housesSvg/HouseOfDrinks';
-import { HouseOfFood } from '../City/housesSvg/HouseOfFood';
-import { HouseOfPlants } from '../City/housesSvg/HouseOfPlants';
+import { HouseGround } from '../Xity/housesSvg/HouseGround';
+import { HouseOfClothes } from '../Xity/housesSvg/HouseOfClothes';
+import { HouseOfDrinks } from '../Xity/housesSvg/HouseOfDrinks';
+import { HouseOfFood } from '../Xity/housesSvg/HouseOfFood';
+import { HouseOfPlants } from '../Xity/housesSvg/HouseOfPlants';
 
 export const CityDemo: React.FC = () => {
   const { demoHouses } = useAppSelector((state) => state.landingIntro);

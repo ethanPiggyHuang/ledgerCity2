@@ -11,10 +11,10 @@ import {
   faGift,
   faTags,
 } from '@fortawesome/free-solid-svg-icons';
-import { HouseOfFood } from '../features/City/housesSvg/HouseOfFood';
-import { HouseOfClothes } from '../features/City/housesSvg/HouseOfClothes';
-import { HouseOfDrinks } from '../features/City/housesSvg/HouseOfDrinks';
-import { HouseOfPlants } from '../features/City/housesSvg/HouseOfPlants';
+import { HouseOfFood } from '../features/Xity/housesSvg/HouseOfFood';
+import { HouseOfClothes } from '../features/Xity/housesSvg/HouseOfClothes';
+import { HouseOfDrinks } from '../features/Xity/housesSvg/HouseOfDrinks';
+import { HouseOfPlants } from '../features/Xity/housesSvg/HouseOfPlants';
 
 export const labelIndex: {
   [key: string]: number;

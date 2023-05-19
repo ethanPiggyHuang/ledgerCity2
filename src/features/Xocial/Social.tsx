@@ -21,7 +21,7 @@ import {
   SWITCH_COOP_CITY_OPTION,
   TYPE_FRIEND_EMAIL,
 } from '../../redux/reducers/userInfoSlice';
-import { UserBasics } from '../Profile/UserBasics';
+import { UserBasics } from '../Xrofile/UserBasics';
 
 export const Social: React.FC = () => {
   const { userId, cityList } = useAppSelector((state) => state.userInfo.data);
