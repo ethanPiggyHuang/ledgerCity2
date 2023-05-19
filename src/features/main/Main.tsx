@@ -10,12 +10,12 @@ import {
   CONTROL_PANEL_DISPLAYED,
   SWITCH_SECTION_FOCUSED,
 } from '../../redux/reducers/pageControlSlice';
-import { City } from '../Xity/City';
+import { City } from '../City/City';
 import { OperationPanel } from '../../component/OperationPanel';
-import { Ledger } from '../Xedger/Ledger';
-import { CooperatorTrace } from '../Xrofile/CooperatorTrace';
-import { Profile } from '../Xrofile/Profile';
-import { Social } from '../Xocial/Social';
+import { Ledger } from '../Ledger/Ledger';
+import { CooperatorTrace } from '../Profile/CooperatorTrace';
+import { Profile } from '../Profile/Profile';
+import { Social } from '../Social/Social';
 import { Statistics } from '../Xtatistics/Statistics';
 import useSubscribeCity from './hooks/useSubscribeCity';
 import useSubscribeActivity from './hooks/useSubscribeActivity';
