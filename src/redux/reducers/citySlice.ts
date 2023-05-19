@@ -269,7 +269,6 @@ export const city = createSlice({
       .addCase(UPDATE_HOUSE_ARRANGEMENT.fulfilled, (state) => {
         state.status = 'idle';
         state.dragMode = 'city';
-        // console.log('街道重建已紀錄');
       })
       .addCase(UPDATE_HOUSE_ARRANGEMENT.rejected, (state) => {
         state.status = 'failed';
@@ -283,7 +282,6 @@ export const city = createSlice({
         const yIndex = action.payload.yIndex;
         const xIndex = action.payload.xIndex;
         state.nextHousePosition = { yIndex, xIndex };
-        // state.gridsStatus[yIndex][xIndex] = 'available';
       })
       .addCase(GENERATE_AVAILABLE_POSITION.rejected, (state) => {
         state.status = 'failed';

@@ -252,6 +252,6 @@ const DivideLine = styled.div`
 `;
 
 const GoogleLogo = styled.img`
-  max-width: 30px;
+  max-width: 20px;
   display: block;
 `;

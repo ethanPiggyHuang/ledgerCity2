@@ -9,6 +9,7 @@ import { getAuth, signOut } from 'firebase/auth';
 import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
 import banner from '../../assets/banner.png';
+import defaultPortrait from '../../assets/default_portrait.png';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import {
   CONTROL_PANEL_DISPLAYED,
@@ -49,7 +50,17 @@ export const UserPanel: React.FC = () => {
     <Wrap>
       <AccountBasicWrap>
         <PorTraitWrap>
-          <PorTrait src={userPortraitUrl} alt={`portrait of ${userNickName}`} />
+          {userPortraitUrl === '' ? (
+            <PorTrait
+              src={defaultPortrait}
+              alt={`portrait of ${userNickName}`}
+            />
+          ) : (
+            <PorTrait
+              src={userPortraitUrl}
+              alt={`portrait of ${userNickName}`}
+            />
+          )}
         </PorTraitWrap>
         <AccountTextWrap>
           <NickNameWrap>
@@ -101,7 +112,11 @@ export const UserPanel: React.FC = () => {
             </CityBannerWrap>
             {cityAccessUsers[cityId].map((mayor) =>
               mayor === userId ? (
-                <CityMayors backgroundImg={userPortraitUrl} key={mayor} />
+                userPortraitUrl === '' ? (
+                  <CityMayors backgroundImg={defaultPortrait} key={mayor} />
+                ) : (
+                  <CityMayors backgroundImg={userPortraitUrl} key={mayor} />
+                )
               ) : (
                 <CityMayors
                   backgroundImg={friendsInfo[mayor].userPortraitUrl}

@@ -3,6 +3,7 @@ import styled, { keyframes } from 'styled-components/macro';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { CONTROL_PANEL_DISPLAYED } from '../../redux/reducers/pageControlSlice';
 import { UserPanel } from './UserPanel';
+import defaultPortrait from '../../assets/default_portrait.png';
 
 export const Profile: React.FC = () => {
   const { userNickName, userPortraitUrl } = useAppSelector(
@@ -28,7 +29,11 @@ export const Profile: React.FC = () => {
           }
         }}
       >
-        <PorTrait src={userPortraitUrl as string} />
+        {userPortraitUrl === '' ? (
+          <PorTrait src={defaultPortrait} />
+        ) : (
+          <PorTrait src={userPortraitUrl as string} />
+        )}
       </PorTraitWrap>
       {panelOpened === 'user' && <UserPanel />}
     </Wrapper>
