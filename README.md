@@ -1,14 +1,13 @@
 <div align="center">
-  <a href="https://ledger-city-2.com" style="margin-bottom:40px; display:block; border-radius:10px">
+  <a>
     <img src="https://github.com/ethanPiggyHuang/ledgerCity2/assets/113769661/144dd818-6dd0-498e-8da9-4705830a106f" alt="Logo" width="250px">
   </a>
-
   <p align="center">
-    <a href="https://github.com/Joy-port/joyup# About-JoyUp">About</a>
+    <a href="https://github.com/ethanPiggyHuang/ledgerCity2#About-Ledger-City-2">About</a>
     |
-    <a href="https://github.com/Joy-port/joyup# Demo">Demo</a>
+    <a href="https://github.com/ethanPiggyHuang/ledgerCity2#Demo">Demo</a>
     |
-    <a href="https://github.com/Joy-port/joyup#Contact">Contact</a>
+    <a href="https://github.com/ethanPiggyHuang/ledgerCity2#Contact">Contact</a>
   </p>
 </div>
 
@@ -35,30 +34,23 @@
   - Password: 123456
 
 ### Flow chart
- ![flow chart](./src/assets/images/flowchart/flow.drawio.svg)
+<img width="800" alt="structureChart" src="https://github.com/ethanPiggyHuang/ledgerCity2/assets/113769661/6dd210e3-5157-43fa-a9a2-64c689f1f571">
 
 ### Demo
 - Gamified mainpage with draggable houses
 <img width="800" alt="main_page" src="https://github.com/ethanPiggyHuang/ledgerCity2/assets/113769661/3955e001-8ef8-4af1-b42a-edd75e55668b">
 
-
 - Keep expense record easily with essetial infos
 <img width="400" alt="ledger" src="https://github.com/ethanPiggyHuang/ledgerCity2/assets/113769661/eca88bf0-0b25-45be-8c59-ea3161633643">
-
 
 - Statistics of monthly expanse record, demostrated by interactive doughnut chart and sortable table
 <img width="800" alt="doughnut_chart_and_table" src="https://github.com/ethanPiggyHuang/ledgerCity2/assets/113769661/7cd5094d-a199-488f-8b68-72c27b2389fb">
 
-
 - Trend and analysis of expanse habit could be observed by bar chart
 <img width="400" alt="bar_chart" src="https://github.com/ethanPiggyHuang/ledgerCity2/assets/113769661/8068f290-32ed-4552-92bb-5117cfca3b8e">
 
-
 - Mayor avatar may stroll in the city with the control of keyboards
 <img width="800" alt="city_touring" src="https://github.com/ethanPiggyHuang/ledgerCity2/assets/113769661/b0ec924a-806b-4d59-b9e8-c7a39339fe6a">
-
-
-
 
 ### Contact
   <a href="https://www.linkedin.com/in/ethanpiggyhuang/" text-decoration="none">
