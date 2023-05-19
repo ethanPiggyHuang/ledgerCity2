@@ -13,7 +13,7 @@
 
 # Ledger City 2
 
-[Ledger City 2](https://ledger-city-2.com) is a gamified expense tracker website, with collaboration feature and statistics analysis. You will act as an city mayor in this game, develop the city by keeping expanse record everyday.You may also keeping this habit in collaboration with your love ones.
+[Ledger City 2](https://ledger-city-2.com) is a gamified expense tracker website, with collaboration feature and statistics analysis. You will act as an city mayor in this game, develop the city by keeping expanse record everyday. You may also keeping this habit in collaboration with your love ones.
 
 ## About Ledger City 2
 
