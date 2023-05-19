@@ -1,19 +1,60 @@
-import { Reset } from 'styled-reset';
-import { createGlobalStyle } from 'styled-components';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import React from 'react';
-import { Counter } from './feature/counter/Counter';
-import { GameMap } from './pages/gameMap/GameMap';
-import { Ledger } from './pages/ledger/Ledger';
-import { Statistics } from './pages/statistics/Statistics';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { createGlobalStyle } from 'styled-components';
+import { Reset } from 'styled-reset';
+import Header from './component/Header';
+import { Landing } from './features/Landing/Landing';
+import { Main } from './features/Main/Main';
+import AuthRoute from './component/AuthRoute';
+
+export interface IApplicationProps {}
+
+const App: React.FunctionComponent<IApplicationProps> = (props) => {
+  return (
+    <BrowserRouter>
+      <Reset />
+      <GlobalStyle />
+      <AuthRoute>
+        <Header />
+        <Routes>
+          <Route path="/landing" element={<Landing />} />
+          <Route path="/city" element={<Main />} />
+          <Route path="*" element={<Navigate to="/landing" replace />} />
+        </Routes>
+      </AuthRoute>
+    </BrowserRouter>
+  );
+};
+
+export default App;
 
 const GlobalStyle = createGlobalStyle`
   * {
     box-sizing: border-box;
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Edge */
+    user-select: none; /* Standard */
+    
   }
   body {
-    // font-family: 'Poppins';
-    // font-weight: 400;
+    font-family: 'Noto Sans', sans-serif;
+    background: linear-gradient(#c8e2cc, #98d5da);
+  }
+
+  input {
+    border: none;
+    &:focus {
+      outline: none;
+      box-shadow: none;
+      border: none;
+    }
+    &:focus:hover {
+      outline: none;
+      box-shadow: none;
+      border: none;
+    }
+    -webkit-user-select:text;
   }
   
   #root {
@@ -23,21 +64,3 @@ const GlobalStyle = createGlobalStyle`
     }
   }
 `;
-
-const App: React.FC = () => {
-  return (
-    <BrowserRouter>
-      <Reset />
-      <GlobalStyle />
-      <Routes>
-        <Route path="/" element={<GameMap />} />
-        <Route path="/counter" element={<Counter />} />
-        <Route path="/ledger" element={<Ledger />} />
-        <Route path="/statistics" element={<Statistics />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
-  );
-};
-
-export default App;

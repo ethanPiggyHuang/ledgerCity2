@@ -1,53 +1,66 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { fetchLedgerList } from '../api/ledgerListAPI';
+import { deleteSingleLedger, getLedgerList } from '../api/ledgerListAPI';
+import { RootState } from '../store';
+import { LedgerDataState } from './ledgerSingleSlice';
 
-export interface LedgerListState {
-  ledgerId: string;
-  timeLedger: number;
-  item: string;
-  labelMain: string;
-  labelSubs: string[];
-  payWho: string;
-  payHow: 'cash' | 'creditCard' | 'mobile';
-  amount: { currency: string; number: number; numberNT: number }; //TODO currency exchange
-  imageUrl: string;
-  recordTime: number;
+interface LedgerListState {
+  dataList: { ledgerId: string; data: LedgerDataState }[];
+  choices: {
+    chosenLedgerId: string;
+    chosenYear: number;
+    chosenMonth: number;
+    chosenLabel: string;
+    sortBy: 'date' | 'label' | 'value';
+    sortDirection: 'ascending' | 'descending';
+  };
+  status: 'idle' | 'loading' | 'failed';
 }
 
-const initialState: {
-  data: LedgerListState[];
-  choosing: string;
-  status: 'idle' | 'loading' | 'failed';
-} = {
-  data: [
-    {
-      ledgerId: '',
-      timeLedger: 0,
-      item: '',
-      labelMain: '',
-      labelSubs: [],
-      payWho: '',
-      payHow: 'cash',
-      amount: { currency: 'NT', number: 0, numberNT: 0 },
-      imageUrl: '',
-      recordTime: 0,
-    },
-  ],
-  choosing: '',
+const initialState: LedgerListState = {
+  dataList: [],
+  choices: {
+    chosenLedgerId: '',
+    chosenYear: 0,
+    chosenMonth: 0,
+    chosenLabel: '',
+    sortBy: 'date',
+    sortDirection: 'ascending',
+  },
   status: 'idle',
 };
 
-export const getLedgerList = createAsyncThunk(
-  'statistics/getLedgerList',
-  async () => {
-    const ledgerBookId: string = 'UcrgCxiJxo3oA7vvwYtd'; //TODO: import from other State
-    const response = await fetchLedgerList(ledgerBookId);
-    const modifiedResponse = response.data.map((data) => {
-      const timeInSeconds = new Date(data.recordTime.seconds * 1000).getTime();
-      return { ...data, recordTime: timeInSeconds };
+export const GET_LEDGER_LIST = createAsyncThunk(
+  'ledgerList/GET_LEDGER_LIST',
+  async (ledgerBookId: string) => {
+    const response = await getLedgerList(ledgerBookId, {
+      field: 'timeYear',
+      whereFilterOp: '>=',
+      value: 0,
     });
-
+    const modifiedResponse = response.dataList.map((ledger) => {
+      const timeInSeconds = new Date(
+        ledger.data.recordTime.seconds * 1000
+      ).getTime();
+      return {
+        ledgerId: ledger.ledgerId,
+        data: { ...ledger.data, recordTime: timeInSeconds },
+      };
+    });
     return modifiedResponse;
+  }
+);
+
+export const DELETE_SINGLE_LEDGER = createAsyncThunk(
+  'ledgerList/DELETE_SINGLE_LEDGER',
+  async (ledgerId: string, { getState }) => {
+    const allStates = getState() as RootState;
+    const cityId = allStates.userInfo.data.cityList[0];
+    const ledgerBookId = allStates.city.basicInfo.ledgerBookId;
+    const houses = allStates.city.basicInfo.houses;
+    const newHouses = houses.filter((house) => house.ledgerId !== ledgerId);
+    houses.forEach((house) => console.log(house.ledgerId !== ledgerId));
+    await deleteSingleLedger(cityId, newHouses, ledgerBookId, ledgerId);
+    return ledgerId;
   }
 );
 
@@ -55,38 +68,85 @@ export const ledgerList = createSlice({
   name: 'ledgerList',
   initialState,
   reducers: {
-    chooseTarget: (
+    SET_CURRENT_MONTH: (
       state,
-      action: PayloadAction<{ targetType: string; targetValue: string }>
+      action: PayloadAction<{ currentMonth: number; currentYear: number }>
     ) => {
-      console.log(action.payload.targetValue);
-      if (action.payload.targetType === 'ledgerId') {
-        return {
-          ...state,
-          choosing: action.payload.targetValue,
-        };
+      state.choices.chosenMonth = action.payload.currentMonth;
+      state.choices.chosenYear = action.payload.currentYear;
+    },
+    CHOOSE_YEAR: (state, action: PayloadAction<number>) => {
+      state.choices.chosenYear = action.payload;
+    },
+    CHOOSE_MONTH: (state, action: PayloadAction<number>) => {
+      if (action.payload < 1) {
+        state.choices.chosenMonth = 12;
+        state.choices.chosenYear = state.choices.chosenYear - 1;
+      } else if (action.payload > 12) {
+        state.choices.chosenMonth = 1;
+        state.choices.chosenYear = state.choices.chosenYear + 1;
+      } else {
+        state.choices.chosenMonth = action.payload;
       }
-      return state;
+    },
+    CHOOSE_LABEL: (state, action: PayloadAction<string>) => {
+      state.choices.chosenLabel = action.payload;
+    },
+    UPDATE_LEDGER_LIST: (
+      state,
+      action: PayloadAction<{ ledgerId: string; data: LedgerDataState }[]>
+    ) => {
+      state.dataList = action.payload;
+    },
+    SORT_LIST: (state, action: PayloadAction<'date' | 'label' | 'value'>) => {
+      if (action.payload === state.choices.sortBy) {
+        state.choices.sortDirection =
+          state.choices.sortDirection === 'ascending'
+            ? 'descending'
+            : 'ascending';
+      } else {
+        state.choices.sortBy = action.payload;
+        state.choices.sortDirection = 'ascending';
+      }
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getLedgerList.pending, (state) => {
+      .addCase(GET_LEDGER_LIST.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(getLedgerList.fulfilled, (state, action) => {
+      .addCase(GET_LEDGER_LIST.fulfilled, (state, action) => {
         state.status = 'idle';
-        state.data = action.payload;
-        console.log('fetch succeed');
-        return state;
+        state.dataList = action.payload;
       })
-      .addCase(getLedgerList.rejected, (state) => {
+      .addCase(GET_LEDGER_LIST.rejected, (state) => {
         state.status = 'failed';
         alert('getLedgerList rejected');
+      })
+      .addCase(DELETE_SINGLE_LEDGER.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(DELETE_SINGLE_LEDGER.fulfilled, (state, action) => {
+        state.status = 'idle';
+        state.dataList = state.dataList.filter(
+          (ledger) => ledger.ledgerId !== action.payload
+        );
+        console.log('delete ledger complete');
+      })
+      .addCase(DELETE_SINGLE_LEDGER.rejected, (state) => {
+        state.status = 'failed';
+        alert('delete ledger rejected');
       });
   },
 });
 
-export const { chooseTarget } = ledgerList.actions;
+export const {
+  SET_CURRENT_MONTH,
+  CHOOSE_YEAR,
+  CHOOSE_MONTH,
+  CHOOSE_LABEL,
+  UPDATE_LEDGER_LIST,
+  SORT_LIST,
+} = ledgerList.actions;
 
 export default ledgerList.reducer;

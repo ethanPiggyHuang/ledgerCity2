@@ -1,89 +1,89 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { postLedger } from '../api/ledgerSingleAPI';
+import { createLedger, updateLedger } from '../api/ledgerSingleAPI';
+import { RootState } from '../store';
 
-export interface LedgerSingleState {
-  mode: 'manual' | 'qrCode' | 'cloud';
+export interface LedgerDataState {
   timeLedger: number;
+  timeMonth: number;
+  timeYear: number;
   item: string;
-  labelChoosingType: 'main' | 'sub';
   labelMain: string;
   labelSubs: string[];
   payWho: string;
   payHow: 'cash' | 'creditCard' | 'mobile';
-  amount: { currency: string; number: number; numberNT: number }; //TODO currency exchange
+  amount: { currency: string; number: number; numberNT: number };
+  recordTime: number;
+  recordWho: string;
+}
+
+export interface LedgerSingleState {
+  ledgerId: string;
+  data: LedgerDataState;
   calculationHolder: {
     operator: '' | '+' | '-' | 'x' | '÷';
     number: number;
+    isLong: boolean;
+    errorType: '' | 'maximum' | 'negative';
   };
   status: 'idle' | 'loading' | 'failed';
-  imageUrl: string;
 }
 
-const now = new Date().getTime(); //TODO ESSENTIAL: Reducers Must Not Have Side Effects
-
 const initialState: LedgerSingleState = {
-  mode: 'manual',
-  timeLedger: now,
-  item: '',
-  labelChoosingType: 'main',
-  labelMain: '',
-  labelSubs: [],
-  payWho: 'Ethan', // TODO: 要改掉！
-  payHow: 'cash',
-  amount: { currency: '', number: 0, numberNT: 0 },
+  ledgerId: '',
+  data: {
+    timeLedger: 0,
+    timeMonth: 0,
+    timeYear: 0,
+    item: '',
+    labelMain: '食物',
+    labelSubs: [],
+    payWho: '',
+    payHow: 'cash',
+    amount: { currency: '', number: 0, numberNT: 0 },
+    recordTime: 0,
+    recordWho: '',
+  },
   calculationHolder: {
     operator: '',
     number: 0,
+    isLong: false,
+    errorType: '',
   },
   status: 'idle',
-  imageUrl: '',
 };
 
-export const ledgerSubmit = createAsyncThunk(
-  'ledger/ledgerSubmit',
+export const SUBMIT_LEDGER = createAsyncThunk(
+  'ledger/SUBMIT_LEDGER',
   async (arg, { getState }) => {
-    const allStates = getState() as any; //TODO typeScript
-    const ledgerSingle = allStates.ledgerSingle as LedgerSingleState;
-    const {
-      timeLedger,
-      item,
-      labelMain,
-      labelSubs,
-      payWho,
-      payHow,
-      amount: { number },
-      imageUrl,
-    } = ledgerSingle;
+    const allStates = getState() as RootState;
+    const ledgerSingle = allStates.ledgerSingle;
+    const data = ledgerSingle.data;
+    const ledgerBookId = allStates.city.basicInfo.ledgerBookId;
+    const cityId = allStates.userInfo.data.cityList[0];
+    const { userId } = allStates.userInfo.data;
     const ledgerData = {
-      timeLedger,
-      timeYear: new Date(timeLedger).getFullYear(),
-      timeMonth: new Date(timeLedger).getMonth() + 1,
-      item,
-      labelMain,
-      labelSubs,
-      payWho,
-      payHow,
-      amount: {
-        currency: 'NT',
-        number,
-        numberNT: number,
-      },
-      imageUrl,
-      recordWho: 'Ethan', //TODO: import from Account State
+      ...data,
+      recordWho: userId,
     };
-    const availableGrids: { yIndex: number; xIndex: number }[] = [];
-    const housesPosition = allStates.cityArrangement.housesPosition as {
-      type: string;
-      id: string;
-    }[][];
-    housesPosition.forEach((raw, yIndex) => {
-      raw.forEach((grid, xIndex) => {
-        if (grid.type === '') availableGrids.push({ yIndex, xIndex });
-      });
-    });
-    console.log('available', availableGrids);
-    if (availableGrids.length === 0) alert('not enough grids'); //TODO: auto expand grid
-    await postLedger(ledgerData, availableGrids);
+    const { nextHousePosition } = allStates.city;
+
+    await createLedger(cityId, ledgerBookId, ledgerData, nextHousePosition);
+  }
+);
+
+export const UPDATE_LEDGER = createAsyncThunk(
+  'ledger/UPDATE_LEDGER',
+  async (arg, { getState }) => {
+    const allStates = getState() as RootState;
+    const ledgerBookId = allStates.city.basicInfo.ledgerBookId;
+    const { userId } = allStates.userInfo.data;
+    const { ledgerId, data } = allStates.ledgerSingle;
+
+    const updateData = {
+      ...data,
+      recordWho: userId,
+    };
+    await updateLedger(ledgerBookId, ledgerId, updateData);
   }
 );
 
@@ -91,105 +91,65 @@ export const ledgerSingle = createSlice({
   name: 'ledgerSingle',
   initialState,
   reducers: {
-    itemKeyIn: (state, action: PayloadAction<string>) => {
-      return {
-        ...state,
-        item: action.payload,
-      };
+    CLEAR_LEDGER_INPUTS: (state) => {
+      state.ledgerId = '';
+      state.data.item = '';
+      state.data.amount.number = 0;
     },
-    labelChooseType: (state, action: PayloadAction<'main' | 'sub'>) => {
-      if (state.labelChoosingType !== action.payload) {
-        return {
-          ...state,
-          labelChoosingType: action.payload,
-        };
-      }
+    EDIT_LEDGER: (
+      state,
+      action: PayloadAction<{
+        ledgerId: string;
+        data: LedgerDataState;
+      }>
+    ) => {
+      state.ledgerId = action.payload.ledgerId;
+      state.data = action.payload.data;
     },
-    labelChoose: (state, action: PayloadAction<string>) => {
-      if (state.labelChoosingType === 'main') {
-        return {
-          ...state,
-          labelMain: action.payload,
-        };
-      }
-      //TODO: case 次要標籤
+    TYPE_ITEM: (state, action: PayloadAction<string>) => {
+      state.data.item = action.payload;
     },
-    labelRetrieve: (state, action: PayloadAction<string>) => {
-      if (state.labelMain === action.payload) {
-        return {
-          ...state,
-          labelMain: '',
-        };
-      }
-      const removeIndex = state.labelSubs.indexOf(action.payload);
-      return {
-        ...state,
-        labelSubs: [
-          ...state.labelSubs.slice(0, removeIndex),
-          ...state.labelSubs.slice(removeIndex + 1),
-        ],
-      };
-      //TODO: case 次要標籤
+    CHOOSE_LABEL: (state, action: PayloadAction<string>) => {
+      state.data.labelMain = action.payload;
     },
-    amountKeyNumber: (state, action: PayloadAction<string>) => {
-      const pastNumberString = state.amount.number.toString();
+    PRESS_NUMBER: (state, action: PayloadAction<string>) => {
+      const pastNumberString = state.data.amount.number.toString();
       const pastHolderNumberString = state.calculationHolder.number.toString();
-      // if (pastNumberString.length > 12) {
-      //   alert('動用「一兆元」以上資金！？恭喜您已財富自由！');
-      //   return state;
-      // }
+      const maximumLength = 8;
       if (state.calculationHolder.operator === '') {
-        return {
-          ...state,
-          amount: {
-            ...state.amount,
-            number: Number(pastNumberString + action.payload),
-          },
-        };
+        if ((pastNumberString + action.payload).length > maximumLength) {
+          state.data.amount.number = Number(pastNumberString);
+          state.calculationHolder.errorType = 'maximum';
+        } else {
+          state.data.amount.number = Number(pastNumberString + action.payload);
+        }
       } else {
-        return {
-          ...state,
-          calculationHolder: {
-            ...state.calculationHolder,
-            number: Number(pastHolderNumberString + action.payload),
-          },
-        };
+        if ((pastHolderNumberString + action.payload).length > maximumLength) {
+          state.calculationHolder.number = Number(pastHolderNumberString);
+          state.calculationHolder.errorType = 'maximum';
+        } else {
+          state.calculationHolder.number = Number(
+            pastHolderNumberString + action.payload
+          );
+        }
       }
     },
-    amountDelete: (state) => {
-      const pastNumberString = state.amount.number.toString();
+    PRESS_DELETE: (state) => {
+      const pastNumberString = state.data.amount.number.toString();
       const pastHolderNumberString = state.calculationHolder.number.toString();
       if (state.calculationHolder.operator === '') {
-        return {
-          ...state,
-          amount: {
-            ...state.amount,
-            number: Number(
-              pastNumberString.slice(0, pastNumberString.length - 1)
-            ),
-          },
-        };
+        state.data.amount.number = Number(
+          pastNumberString.slice(0, pastNumberString.length - 1)
+        );
       } else if (pastHolderNumberString === '0') {
-        return {
-          ...state,
-          calculationHolder: {
-            ...state.calculationHolder,
-            operator: '',
-          },
-        };
+        state.calculationHolder.operator = '';
       } else {
-        return {
-          ...state,
-          calculationHolder: {
-            ...state.calculationHolder,
-            number: Number(
-              pastHolderNumberString.slice(0, pastHolderNumberString.length - 1)
-            ),
-          },
-        };
+        state.calculationHolder.number = Number(
+          pastHolderNumberString.slice(0, pastHolderNumberString.length - 1)
+        );
       }
     },
-    amountHoldOperator: (
+    PRESS_OPERATOR: (
       state,
       action: PayloadAction<'' | '+' | '-' | 'x' | '÷'>
     ) => {
@@ -197,16 +157,11 @@ export const ledgerSingle = createSlice({
         state.calculationHolder.operator === action.payload
           ? state.calculationHolder.number
           : 0;
-      return {
-        ...state,
-        calculationHolder: {
-          operator: action.payload,
-          number: newNumber,
-        },
-      };
+      state.calculationHolder.operator = action.payload;
+      state.calculationHolder.number = newNumber;
     },
-    amountCalculate: (state) => {
-      const numberBeforeOperator = state.amount.number;
+    EXECUTE_CALCULATION: (state) => {
+      const numberBeforeOperator = state.data.amount.number;
       const { number, operator } = state.calculationHolder;
       let result: number;
       switch (operator) {
@@ -230,53 +185,54 @@ export const ledgerSingle = createSlice({
           result = numberBeforeOperator;
         }
       }
-      return {
-        ...state,
-        amount: {
-          ...state.amount,
-          number: result,
-        },
-        calculationHolder: {
-          operator: '',
-          number: 0,
-        },
-      };
-    },
-    amountAllClear: (state) => {
-      return {
-        ...state,
-        amount: {
-          ...state.amount,
-          number: 0,
-        },
-        calculationHolder: {
-          operator: '',
-          number: 0,
-        },
-      };
-    },
-    paySelectPerson: (state, action: PayloadAction<string>) => {
-      if (state.payWho !== action.payload) {
-        return {
-          ...state,
-          payWho: action.payload,
-        };
+      const maximum = 99999999;
+      if (result > maximum) {
+        state.data.amount.number = numberBeforeOperator;
+        state.calculationHolder.errorType = 'maximum';
+      } else if (result < 0) {
+        state.data.amount.number = numberBeforeOperator;
+        state.calculationHolder.errorType = 'negative';
+      } else {
+        state.data.amount.number = result;
       }
-      return { ...state };
+      state.calculationHolder.operator = '';
+      state.calculationHolder.number = 0;
     },
-    paySelectMethod: (
+    CLEAR_AMOUNT: (state) => {
+      state.data.amount.number = 0;
+      state.calculationHolder.operator = '';
+      state.calculationHolder.number = 0;
+    },
+    TOGGLE_AMOUNT_LENGTH: (state, action: PayloadAction<boolean>) => {
+      state.calculationHolder.isLong = action.payload;
+    },
+    CLEAR_AMOUNT_ERROR: (state) => {
+      state.calculationHolder.errorType = '';
+    },
+    SWITCH_PAY_PEOPLE: (
+      state,
+      action: PayloadAction<{ name: string; list: string[]; init?: boolean }>
+    ) => {
+      const { name, list, init } = action.payload;
+      if (init) {
+        state.data.payWho = name;
+      }
+      const index = list.findIndex((personName) => personName === name);
+      state.data.payWho = list[(index + 1) % list.length];
+    },
+    SWITCH_PAY_METHOD: (
       state,
       action: PayloadAction<'cash' | 'creditCard' | 'mobile'>
     ) => {
-      if (state.payHow !== action.payload) {
-        return {
-          ...state,
-          payHow: action.payload,
-        };
-      }
-      return { ...state };
+      const options: ('cash' | 'creditCard' | 'mobile')[] = [
+        'cash',
+        'creditCard',
+        'mobile',
+      ];
+      const index = options.findIndex((option) => option === action.payload);
+      state.data.payHow = options[(index + 1) % options.length];
     },
-    timeEdit: (
+    SWITCH_TIME: (
       state,
       action: PayloadAction<{ prevTime: number; scope: string; delta: number }>
     ) => {
@@ -301,56 +257,79 @@ export const ledgerSingle = createSlice({
         default: {
         }
       }
-      const newTimeInSeconds = time.getTime();
-      const now = new Date().getTime(); //TODO ESSENTIAL: Reducers Must Not Have Side Effects
-      if (newTimeInSeconds > now) alert('注意，未來日期！');
 
-      return {
-        ...state,
-        timeLedger: newTimeInSeconds,
-      };
+      state.data.timeLedger = time.getTime();
+      state.data.timeMonth = time.getMonth() + 1;
+      state.data.timeYear = time.getFullYear();
+    },
+    SET_CURRENT_TIME: (state, action: PayloadAction<number>) => {
+      state.data.timeLedger = action.payload;
+      state.data.timeMonth = new Date(action.payload).getMonth() + 1;
+      state.data.timeYear = new Date(action.payload).getFullYear();
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(ledgerSubmit.pending, (state) => {
+      .addCase(SUBMIT_LEDGER.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(ledgerSubmit.fulfilled, (state) => {
+      .addCase(SUBMIT_LEDGER.fulfilled, (state) => {
         state.status = 'idle';
-        alert('已登錄');
-        state.item = '';
-        state.labelChoosingType = 'main';
-        state.labelMain = '';
-        state.labelSubs = [];
-        state.amount = { currency: '', number: 0, numberNT: 0 };
+        state.data.item = '';
+        state.data.labelMain = '食物';
+        state.data.labelSubs = [];
+        state.data.amount = { currency: '', number: 0, numberNT: 0 };
         state.calculationHolder = {
           operator: '',
           number: 0,
+          isLong: false,
+          errorType: '',
         };
-        state.imageUrl = '';
-        return state;
       })
-      .addCase(ledgerSubmit.rejected, (state) => {
+      .addCase(SUBMIT_LEDGER.rejected, (state) => {
         state.status = 'failed';
         alert('登錄失敗');
+      })
+      .addCase(UPDATE_LEDGER.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(UPDATE_LEDGER.fulfilled, (state) => {
+        state.status = 'idle';
+        state.data.item = '';
+        state.data.labelMain = '食物';
+        state.data.labelSubs = [];
+        state.data.amount = { currency: '', number: 0, numberNT: 0 };
+        state.calculationHolder = {
+          operator: '',
+          number: 0,
+          isLong: false,
+          errorType: '',
+        };
+        state.ledgerId = '';
+      })
+      .addCase(UPDATE_LEDGER.rejected, (state) => {
+        state.status = 'failed';
+        alert('更新失敗');
       });
   },
 });
 
 export const {
-  itemKeyIn,
-  labelChooseType,
-  labelChoose,
-  labelRetrieve,
-  amountKeyNumber,
-  amountDelete,
-  amountHoldOperator,
-  amountCalculate,
-  amountAllClear,
-  paySelectPerson,
-  paySelectMethod,
-  timeEdit,
+  CLEAR_LEDGER_INPUTS,
+  EDIT_LEDGER,
+  TYPE_ITEM,
+  CHOOSE_LABEL,
+  PRESS_NUMBER,
+  PRESS_DELETE,
+  PRESS_OPERATOR,
+  EXECUTE_CALCULATION,
+  CLEAR_AMOUNT,
+  TOGGLE_AMOUNT_LENGTH,
+  SWITCH_PAY_PEOPLE,
+  SWITCH_PAY_METHOD,
+  SWITCH_TIME,
+  SET_CURRENT_TIME,
+  CLEAR_AMOUNT_ERROR,
 } = ledgerSingle.actions;
 
 export default ledgerSingle.reducer;

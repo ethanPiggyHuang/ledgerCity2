@@ -1,17 +1,19 @@
-import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import counterReducer from '../feature/counter/counterSlice';
-import cityBasicInfoReducer from './reducers/cityBasicInfoSlice';
-import cityArrangementReducer from './reducers/cityArrangementSlice';
-import ledgerSingleReducer from './reducers/ledgerSingleSlice';
+import { Action, ThunkAction, configureStore } from '@reduxjs/toolkit';
+import cityReducer from './reducers/citySlice';
+import landingIntroReducer from './reducers/landingIntroSlice';
 import ledgerListReducer from './reducers/ledgerListSlice';
+import ledgerSingleReducer from './reducers/ledgerSingleSlice';
+import pageControlReducer from './reducers/pageControlSlice';
+import userInfoReducer from './reducers/userInfoSlice';
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
-    cityBasicInfo: cityBasicInfoReducer,
-    cityArrangement: cityArrangementReducer,
+    city: cityReducer,
     ledgerSingle: ledgerSingleReducer,
     ledgerList: ledgerListReducer,
+    userInfo: userInfoReducer,
+    pageControl: pageControlReducer,
+    landingIntro: landingIntroReducer,
   },
 });
 
