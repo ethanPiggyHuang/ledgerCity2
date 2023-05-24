@@ -75,6 +75,8 @@ export const Label: React.FC = () => {
           type="text"
           value={item}
           placeholder="（可增加註記）"
+          size={10}
+          // maxLength={10}
           onChange={(e) => dispatch(TYPE_ITEM(e.target.value))}
         />
       </ItemDisplay>
