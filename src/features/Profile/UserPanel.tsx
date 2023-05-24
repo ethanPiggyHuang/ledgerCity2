@@ -299,7 +299,7 @@ const AddNewIcon = styled(FontAwesomeIcon)`
 `;
 
 const MyCityText = styled.div`
-  font-size: 18px;
+  font-size: 16px;
   color: #ae7a00;
   display: flex;
   align-items: center;
