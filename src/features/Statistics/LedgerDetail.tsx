@@ -124,7 +124,7 @@ export const LedgerDetail: React.FC = () => {
             </SortIconWrap>
           )}
         </HeaderText>
-        <HeaderTextSmall
+        <HeaderText
           $sortable={true}
           onClick={() => dispatch(SORT_LIST('label'))}
         >
@@ -140,8 +140,8 @@ export const LedgerDetail: React.FC = () => {
               />
             </SortIconWrap>
           )}
-        </HeaderTextSmall>
-        <HeaderText $sortable={false}>項目</HeaderText>
+        </HeaderText>
+        <HeaderTextLarge $sortable={false}>項目</HeaderTextLarge>
         <HeaderText
           $sortable={true}
           onClick={() => dispatch(SORT_LIST('value'))}
@@ -172,7 +172,7 @@ export const LedgerDetail: React.FC = () => {
               $isHeader={false}
             >
               <LedgerText>{`${ledger.month}月${ledger.date}日`}</LedgerText>
-              <LedgerTextSmall>
+              <LedgerText>
                 <LabelIconWrap
                   $backGround={
                     mainLabel[
@@ -192,8 +192,8 @@ export const LedgerDetail: React.FC = () => {
                     }
                   ></LabelIcon>
                 </LabelIconWrap>
-              </LedgerTextSmall>
-              <LedgerText>{ledger.item}</LedgerText>
+              </LedgerText>
+              <LedgerTextLarge>{ledger.item}</LedgerTextLarge>
               <LedgerText>{ledger.amount}</LedgerText>
               <LedgerText>
                 <EditIcon
@@ -249,10 +249,11 @@ const Wrap = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: 600px;
+  min-width: 600px;
+  width: 90%;
   border: 3px solid #ebebeb;
   border-radius: 10px;
-  height: 500px;
+  height: 100%;
   padding: 20px;
 `;
 
@@ -278,11 +279,10 @@ const LedgerRow = styled(HeaderRow)<LedgerRowProps>`
 
 const HeaderText = styled.div<HeaderTextProps>`
   position: relative;
-
   background-color: #ebebeb;
   color: #dabd7a;
   padding: 5px;
-  width: 16%;
+  width: 15%;
   text-align: center;
   border-radius: 10px;
   cursor: ${({ $sortable }) => ($sortable ? 'pointer' : 'default')};
@@ -318,19 +318,19 @@ const SortIcon = styled(FontAwesomeIcon)`
   color: #808080;
 `;
 
-const HeaderTextSmall = styled(HeaderText)`
-  width: 12%;
+const HeaderTextLarge = styled(HeaderText)`
+  width: 32%;
 `;
 
 const LedgerText = styled.div`
-  width: 16%;
+  width: 15%;
   text-align: center;
   display: flex;
   justify-content: space-around;
 `;
 
-const LedgerTextSmall = styled(LedgerText)`
-  width: 12%;
+const LedgerTextLarge = styled(LedgerText)`
+  width: 32%;
 `;
 
 const EditIcon = styled(FontAwesomeIcon)`

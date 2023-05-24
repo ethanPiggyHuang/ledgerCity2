@@ -108,6 +108,17 @@ const Header: React.FC = () => {
     }
   }, [userId]);
 
+  const textSizeAdjust = (
+    textLength: number
+  ): { fontSize: number; letterSpacing: number } => {
+    if (textLength > 10) {
+      return { fontSize: 32, letterSpacing: 0.2 };
+    } else if (textLength > 8) {
+      return { fontSize: 36, letterSpacing: 0.3 };
+    }
+    return { fontSize: 42, letterSpacing: 0.4 };
+  };
+
   return (
     <Wrapper $isFolded={isTouring}>
       {userId && (
@@ -117,7 +128,10 @@ const Header: React.FC = () => {
             <BannerText
               type="text"
               $isRenaming={isRenaming}
+              $sizeAdjust={textSizeAdjust(cityName.length)}
               value={`${cityName}`}
+              placeholder={'(最多12個字)'}
+              maxLength={12}
               onClick={() => dispatch(RENAME_CITY(true))}
               onChange={(event) => {
                 const target = event.target as HTMLInputElement;
@@ -148,6 +162,7 @@ export default Header;
 
 type BannerTextProps = {
   $isRenaming: boolean;
+  $sizeAdjust: { fontSize: number; letterSpacing: number };
 };
 type SaveIconProps = {
   $isRenaming: boolean;
@@ -172,16 +187,16 @@ const Wrapper = styled.div<WrapperProps>`
 const TextWrapper = styled.div`
   position: absolute;
   height: 65%;
-  width: 70%;
+  width: 80%;
   display: flex;
   align-items: bottom;
 `;
 
 const BannerText = styled.input<BannerTextProps>`
   color: #ae7a00;
-  font-size: 42px;
+  font-size: ${({ $sizeAdjust }) => `${$sizeAdjust.fontSize}px`};
   text-align: center;
-  letter-spacing: 0.4em;
+  letter-spacing: ${({ $sizeAdjust }) => `${$sizeAdjust.letterSpacing}em`};
   font-weight: bold;
   border: none;
   border-bottom: ${({ $isRenaming }) =>
@@ -199,6 +214,11 @@ const BannerText = styled.input<BannerTextProps>`
   }
   &:focus:hover {
     border-bottom: 2px solid #df9469;
+  }
+
+  &::placeholder {
+    color: #df9469;
+    font-size: 32px;
   }
 `;
 
