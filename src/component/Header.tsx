@@ -1,19 +1,11 @@
 import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  collection,
-  doc,
-  onSnapshot,
-  orderBy,
-  query,
-} from 'firebase/firestore';
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import { Banner } from '../component/Banner';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import {
-  GET_CITY_INFO,
   RENAME_CITY,
   TYPE_CITY_NAME,
   UPDATE_CITY_NAME,
@@ -22,7 +14,6 @@ import { UPDATE_LEDGER_LIST } from '../redux/reducers/ledgerListSlice';
 import { LedgerDataState } from '../redux/reducers/ledgerSingleSlice';
 import {
   FriendStatusState,
-  TOGGLE_AUTHING,
   UPDATE_INSTANT_FRIENDS_STATUS,
 } from '../redux/reducers/userInfoSlice';
 import { db } from '../utils/firebase';
