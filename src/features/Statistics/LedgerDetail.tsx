@@ -253,7 +253,7 @@ const Wrap = styled.div`
   width: 90%;
   border: 3px solid #ebebeb;
   border-radius: 10px;
-  height: 100%;
+  height: 70vh;
   padding: 20px;
 `;
 

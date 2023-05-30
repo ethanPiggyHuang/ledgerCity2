@@ -66,7 +66,11 @@ export const GeneralAnalysis: React.FC = () => {
             <BarChart />
           </LeftSection>
           <CenterSection $isShown={chartShown === 'monthOnly'}>
-            <DoughnutChart props={props} />
+            <DoughnutChart
+              setting={props.setting}
+              data={data}
+              title={props.title}
+            />
           </CenterSection>
           <RightSection $isShown={chartShown === 'monthAndDetail'}>
             <LedgerDetail />
