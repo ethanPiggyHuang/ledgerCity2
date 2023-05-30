@@ -42,7 +42,11 @@ export const DoughnutChart: React.FC<Props> = ({ setting, data, title }) => {
   const svgWidth = 2 * (radius + hoverDelta + labelDelta + bufferSpace);
   const svgHeight = svgWidth + abstractSpace;
 
-  const totalValue = data.reduce((total, data) => (total += data.value), 0);
+  const sumValues = (array: { value: number }[]) => {
+    return array.reduce((total, data) => (total += data.value), 0);
+  };
+
+  const totalValue = sumValues(data);
 
   const sectorRatios = data.map((data) =>
     totalValue === 0 ? 0 : data.value / totalValue
