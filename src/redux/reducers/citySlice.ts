@@ -161,12 +161,12 @@ export const city = createSlice({
 
       if (state.housesPosition[yIndex][xIndex].type === '') {
         state.housesPosition[pastYIndex][pastXIndex] = { type: '', id: '' };
-        console.log(state.housesPosition[yIndex][xIndex]);
+        // console.log(state.housesPosition[yIndex][xIndex]);
         state.housesPosition[yIndex][xIndex] = {
           type: state.houseDragInfo.target,
           id: state.houseDragInfo.id,
         };
-        console.log(state.housesPosition[yIndex][xIndex]);
+        // console.log(state.housesPosition[yIndex][xIndex]);
         state.houseDragInfo.target = '';
         state.houseDragInfo.id = '';
       }

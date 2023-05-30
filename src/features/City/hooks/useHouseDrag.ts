@@ -1,6 +1,7 @@
 import { Dispatch } from 'redux';
 import { useCallback } from 'react';
 import { DRAG_HOUSE_START } from '../../../redux/reducers/citySlice';
+import { RefObject } from 'react';
 
 interface useHouseDragProps {
   dragMode: string;
@@ -16,11 +17,16 @@ const useHouseDrag = ({ dragMode, dispatch }: useHouseDragProps) => {
         id: string;
       },
       xIndex: number,
-      yIndex: number
+      yIndex: number,
+      houseRef: RefObject<HTMLDivElement>
     ) => {
       if (dragMode !== 'houses') return;
       const target = event.target as HTMLDivElement;
       target.style.opacity = '0.01';
+      // if (houseRef.current) {
+      //   console.log('DragStart', houseRef.current);
+      //   houseRef.current.style.opacity = '0.1';
+      // }
       dispatch(
         DRAG_HOUSE_START({
           id: house.id,
@@ -32,10 +38,14 @@ const useHouseDrag = ({ dragMode, dispatch }: useHouseDragProps) => {
     [dragMode, dispatch]
   );
   const handleHouseDragEnd = useCallback(
-    (event: React.DragEvent) => {
+    (event: React.DragEvent, houseRef: RefObject<HTMLDivElement>) => {
       if (dragMode !== 'houses') return;
+      // console.log('DragEnd', houseRef.current);
       const target = event.target as HTMLDivElement;
       target.style.opacity = '1';
+      // if (houseRef.current) {
+      //   houseRef.current.style.opacity = '1';
+      // }
     },
     [dragMode]
   );

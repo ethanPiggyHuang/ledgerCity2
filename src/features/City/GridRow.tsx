@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { RefObject, useRef } from 'react';
 import styled from 'styled-components/macro';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { citySetting, mainLabel, gridColor } from '../../utils/gameSettings';
@@ -40,6 +40,9 @@ export const GridRow: React.FC<Props> = ({ row, yIndex }) => {
     return <HouseComponent />;
   };
 
+  const houseRef = useRef(null);
+  // console.log(houseRef.current);
+
   return (
     <Wrapper key={yIndex}>
       {row.map((house, xIndex) => (
@@ -59,9 +62,11 @@ export const GridRow: React.FC<Props> = ({ row, yIndex }) => {
                 $isdraggable={dragMode === 'houses'}
                 draggable={dragMode === 'houses'}
                 onDragStart={(event) =>
-                  handleHouseDragStart(event, house, xIndex, yIndex)
+                  handleHouseDragStart(event, house, xIndex, yIndex, houseRef)
                 }
-                onDragEnd={(event) => handleHouseDragEnd(event)}
+                onDragEnd={(event) => handleHouseDragEnd(event, houseRef)}
+                ref={houseRef}
+                id={`${yIndex},${xIndex}`}
               >
                 {renderHouse(house.type)}
               </House>
