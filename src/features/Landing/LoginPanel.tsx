@@ -27,15 +27,16 @@ export const LoginPanel: React.FC = () => {
     (state) => state.landingIntro
   );
   const dispatch = useAppDispatch();
-
   const auth = getAuth();
 
   const GoogleLogin = async () => {
     dispatch(TOGGLE_AUTHING(true));
     try {
       await signInWithPopup(auth, new GoogleAuthProvider());
-    } catch (error: any) {
-      console.log(error.code);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.log('message', error.message);
+      }
     }
   };
   const nativeRegister = async () => {
@@ -45,8 +46,10 @@ export const LoginPanel: React.FC = () => {
         loginInput.email,
         loginInput.password
       );
-    } catch (error: any) {
-      console.log(error.code);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.log('message', error.message);
+      }
     }
   };
   const nativeLogin = async () => {
@@ -56,8 +59,10 @@ export const LoginPanel: React.FC = () => {
         loginInput.email,
         loginInput.password
       );
-    } catch (error: any) {
-      console.log(error.code);
+    } catch (error: unknown) {
+      if (error instanceof FirebaseError) {
+        console.log('message', error.code);
+      }
     }
   };
 

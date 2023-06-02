@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { deleteSingleLedger, getLedgerList } from '../api/ledgerListAPI';
+import { deleteSingleLedger } from '../api/ledgerListAPI';
 import { RootState } from '../store';
 import { LedgerDataState } from './ledgerSingleSlice';
 
@@ -28,27 +28,6 @@ const initialState: LedgerListState = {
   },
   status: 'idle',
 };
-
-export const GET_LEDGER_LIST = createAsyncThunk(
-  'ledgerList/GET_LEDGER_LIST',
-  async (ledgerBookId: string) => {
-    const response = await getLedgerList(ledgerBookId, {
-      field: 'timeYear',
-      whereFilterOp: '>=',
-      value: 0,
-    });
-    const modifiedResponse = response.dataList.map((ledger) => {
-      const timeInSeconds = new Date(
-        ledger.data.recordTime.seconds * 1000
-      ).getTime();
-      return {
-        ledgerId: ledger.ledgerId,
-        data: { ...ledger.data, recordTime: timeInSeconds },
-      };
-    });
-    return modifiedResponse;
-  }
-);
 
 export const DELETE_SINGLE_LEDGER = createAsyncThunk(
   'ledgerList/DELETE_SINGLE_LEDGER',
@@ -112,17 +91,6 @@ export const ledgerList = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(GET_LEDGER_LIST.pending, (state) => {
-        state.status = 'loading';
-      })
-      .addCase(GET_LEDGER_LIST.fulfilled, (state, action) => {
-        state.status = 'idle';
-        state.dataList = action.payload;
-      })
-      .addCase(GET_LEDGER_LIST.rejected, (state) => {
-        state.status = 'failed';
-        alert('getLedgerList rejected');
-      })
       .addCase(DELETE_SINGLE_LEDGER.pending, (state) => {
         state.status = 'loading';
       })

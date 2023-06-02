@@ -1,6 +1,12 @@
 import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
+import {
+  DocumentData,
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+} from 'firebase/firestore';
 import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
 import { Banner } from '../component/Banner';
@@ -17,20 +23,6 @@ import {
   UPDATE_INSTANT_FRIENDS_STATUS,
 } from '../redux/reducers/userInfoSlice';
 import { db } from '../utils/firebase';
-
-interface LedgerDatabaseState {
-  timeLedger: number;
-  timeMonth: number;
-  timeYear: number;
-  item: string;
-  labelMain: string;
-  labelSubs: string[];
-  payWho: string;
-  payHow: 'cash' | 'creditCard' | 'mobile';
-  amount: { currency: string; number: number; numberNT: number }; //TODO: currency exchange
-  recordTime: { seconds: number; nanoseconds: number };
-  recordWho: string;
-}
 
 const Header: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -49,34 +41,30 @@ const Header: React.FC = () => {
           collection(db, 'ledgerBooks', ledgerBookId, 'ledgers'),
           orderBy('timeLedger')
         );
-
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
-          let rawResult = [] as any;
+          let rawResult = [] as {
+            ledgerId: string;
+            data: DocumentData;
+          }[];
           querySnapshot.forEach((doc) => {
             rawResult.push({ ledgerId: doc.id, data: doc.data() });
           });
-
           const convertedResult: { ledgerId: string; data: LedgerDataState }[] =
-            rawResult.map(
-              (data: { ledgerId: string; data: LedgerDatabaseState }) => {
-                const recordTime = data.data.recordTime
-                  ? new Date(data.data.recordTime.seconds * 1000).getTime()
-                  : 0;
-                return {
-                  ...data,
-                  data: { ...data.data, recordTime },
-                };
-              }
-            );
+            rawResult.map((data: { ledgerId: string; data: DocumentData }) => {
+              const recordTime = data.data.recordTime
+                ? new Date(data.data.recordTime.seconds * 1000).getTime()
+                : 0;
+              return {
+                ...data,
+                data: { ...data.data, recordTime } as LedgerDataState,
+              };
+            });
           dispatch(UPDATE_LEDGER_LIST(convertedResult));
         });
         return () => unsubscribe();
-      } else {
-        // visitor
-        return;
       }
     }
-  }, [ledgerBookId]);
+  }, [ledgerBookId, dispatch]);
 
   useEffect(() => {
     if (userId) {

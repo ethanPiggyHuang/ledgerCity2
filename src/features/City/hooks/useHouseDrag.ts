@@ -5,7 +5,7 @@ import { RefObject } from 'react';
 
 interface useHouseDragProps {
   dragMode: string;
-  dispatch: Dispatch<any>;
+  dispatch: Dispatch;
 }
 
 const useHouseDrag = ({ dragMode, dispatch }: useHouseDragProps) => {
@@ -20,6 +20,7 @@ const useHouseDrag = ({ dragMode, dispatch }: useHouseDragProps) => {
       yIndex: number,
       houseRef: RefObject<HTMLDivElement>
     ) => {
+      console.log('drag_start');
       if (dragMode !== 'houses') return;
       const target = event.target as HTMLDivElement;
       target.style.opacity = '0.01';
@@ -37,6 +38,7 @@ const useHouseDrag = ({ dragMode, dispatch }: useHouseDragProps) => {
     },
     [dragMode, dispatch]
   );
+
   const handleHouseDragEnd = useCallback(
     (event: React.DragEvent, houseRef: RefObject<HTMLDivElement>) => {
       if (dragMode !== 'houses') return;

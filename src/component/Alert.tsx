@@ -9,7 +9,7 @@ import {
 interface Props {
   title: string;
   text: string;
-  handleAlert: any;
+  handleAlert: () => void;
 }
 
 export const Alert: React.FC<Props> = ({ title, text, handleAlert }) => {

@@ -10,13 +10,12 @@ import hammer_ice from '../../../assets/hammer_ice.wav';
 
 interface useGridDragProps {
   dragMode: string;
-  dispatch: Dispatch<any>;
+  dispatch: Dispatch;
   gridsStatus: ('available' | 'forbidden' | 'none')[][];
 }
 
 const useGridDrag = ({ dragMode, dispatch, gridsStatus }: useGridDragProps) => {
   const [playHammerShort] = useSound(hammer_ice, { volume: 0.5 });
-
   const handleGridDragLeave = useCallback(() => {
     if (dragMode !== 'houses') return;
     dispatch(SWITCH_GRID_LIGHT_OFF());
