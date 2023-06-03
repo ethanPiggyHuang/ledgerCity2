@@ -10,7 +10,7 @@ import {
   EDIT_LEDGER,
 } from '../../redux/reducers/ledgerSingleSlice';
 import { SWITCH_LEDGER_POSITION } from '../../redux/reducers/pageControlSlice';
-import { labelIndex, mainLabel } from '../../utils/gameSettings';
+import { labelIndex, mainLabels } from '../../utils/gameSettings';
 
 export const DailyLedger: React.FC = () => {
   const { timeLedger } = useAppSelector((state) => state.ledgerSingle.data);
@@ -20,7 +20,7 @@ export const DailyLedger: React.FC = () => {
   );
   const { friendsInfo } = useAppSelector((state) => state.userInfo);
   const dispatch = useAppDispatch();
-  const labelSetting = mainLabel;
+  const labelSetting = mainLabels;
   const ledgerTime = new Date(timeLedger);
 
   const dailyLedger = dataList.filter(

@@ -13,7 +13,7 @@ import {
   SUBMIT_LEDGER,
 } from '../../redux/reducers/landingIntroSlice';
 import { TYPE_ITEM } from '../../redux/reducers/ledgerSingleSlice';
-import { mainLabel } from '../../utils/gameSettings';
+import { mainLabels } from '../../utils/gameSettings';
 
 export const LedgerDemo: React.FC = () => {
   const { chosenLabel, isTrying } = useAppSelector(
@@ -22,16 +22,16 @@ export const LedgerDemo: React.FC = () => {
   const { item } = useAppSelector((state) => state.ledgerSingle.data);
   const dispatch = useAppDispatch();
 
-  const demoLabel = mainLabel.slice(0, 3);
+  const demoLabels = mainLabels.slice(0, 3);
 
-  const subLabels = mainLabel.find(
+  const subLabels = mainLabels.find(
     (label) => label.name === chosenLabel
   )?.subLabels;
 
   return (
     <Wrapper>
       <LabelOptions>
-        {demoLabel.map((label, index) => (
+        {demoLabels.map((label, index) => (
           <LabelOption
             key={index}
             $isChosen={chosenLabel === label.name}

@@ -8,7 +8,7 @@ import {
   CHOOSE_MONTH,
 } from '../../redux/reducers/ledgerListSlice';
 import { SWITCH_STATISTICS_MODE } from '../../redux/reducers/pageControlSlice';
-import { labelColorCodes, mainLabels } from '../../utils/gameSettings';
+import { mainLabels } from '../../utils/gameSettings';
 
 interface BarChartSetting {
   svgHeight: number;
@@ -93,7 +93,7 @@ export const BarChart: React.FC = () => {
           (ledger) =>
             ledger.month === monthValue &&
             ledger.year === chosenYear &&
-            ledger.label === label
+            ledger.label === label.name
         )
         .reduce((acc, cur) => acc + cur.value, 0);
       return { value, xLabel, monthValue };
@@ -105,7 +105,6 @@ export const BarChart: React.FC = () => {
     value: number,
     monthValue: number,
     { svgHeight, svgWidth, barWidth, yShrinkRatio, xStart }: BarChartSetting,
-    labelColorCodes: string[],
     xMax: number,
     yMax: number,
     index: number
@@ -136,7 +135,7 @@ export const BarChart: React.FC = () => {
     value: number,
     monthValue: number,
     { svgHeight, svgWidth, barWidth, yShrinkRatio, xStart }: BarChartSetting,
-    labelColorCodes: string[],
+    labelColorCode: string,
     xMax: number,
     yMax: number,
     index: number,
@@ -170,7 +169,7 @@ export const BarChart: React.FC = () => {
           dispatch(CHOOSE_LABEL(''));
         }}
         d={dScript}
-        fill={labelColorCodes[labelIndex]}
+        fill={labelColorCode}
       />
     );
   };
@@ -207,15 +206,7 @@ export const BarChart: React.FC = () => {
       {loadingStatus === 'idle' && !hasCategory && (
         <BarSvg>
           {datas.map(({ value, monthValue }, index) =>
-            drawBar(
-              value,
-              monthValue,
-              barChartSetting,
-              labelColorCodes,
-              xMax,
-              yMax,
-              index
-            )
+            drawBar(value, monthValue, barChartSetting, xMax, yMax, index)
           )}
           {datas.map(({ xLabel }, index) =>
             setXLabel(xLabel, barChartSetting, xMax, index)
@@ -267,7 +258,7 @@ export const BarChart: React.FC = () => {
                   value,
                   monthValue,
                   barChartSetting,
-                  labelColorCodes,
+                  mainLabels[labelIndex].colorCode,
                   xMax,
                   yMax,
                   index,
@@ -325,25 +316,19 @@ export const BarChart: React.FC = () => {
         {hasCategory && (
           <LabelWrap>
             {mainLabels.map((label, index) => (
-              <Label key={index}>
+              <Label
+                key={index}
+                onClick={() => {
+                  let newArr = [...labelsDisplay];
+                  newArr[index] = !newArr[index];
+                  setLabelsDisplay(newArr);
+                }}
+              >
                 <LabelColor
                   $display={labelsDisplay[index]}
-                  $backgroundColor={labelColorCodes[index]}
-                  onClick={() => {
-                    let newArr = [...labelsDisplay];
-                    newArr[index] = !newArr[index];
-                    setLabelsDisplay(newArr);
-                  }}
+                  $backgroundColor={label.colorCode}
                 />
-                <LabelText
-                  onClick={() => {
-                    let newArr = [...labelsDisplay];
-                    newArr[index] = !newArr[index];
-                    setLabelsDisplay(newArr);
-                  }}
-                >
-                  {label}
-                </LabelText>
+                <LabelText>{label.name}</LabelText>
               </Label>
             ))}
           </LabelWrap>
@@ -453,6 +438,7 @@ const LabelWrap = styled.div`
 const Label = styled.div`
   display: flex;
   gap: 5px;
+  cursor: pointer;
 `;
 
 const LabelColor = styled.div<LabelColorProps>`

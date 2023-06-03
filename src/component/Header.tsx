@@ -32,8 +32,6 @@ const Header: React.FC = () => {
   const { isRenaming, isTouring } = useAppSelector((state) => state.city);
   const { userId, cityList } = useAppSelector((state) => state.userInfo.data);
 
-  // async await
-
   useEffect(() => {
     if (ledgerBookId.length !== 0) {
       if (accessUsers.includes(userId)) {

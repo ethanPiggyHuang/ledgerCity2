@@ -33,9 +33,9 @@ export const LoginPanel: React.FC = () => {
     dispatch(TOGGLE_AUTHING(true));
     try {
       await signInWithPopup(auth, new GoogleAuthProvider());
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.log('message', error.message);
+    } catch (error) {
+      if (error instanceof FirebaseError) {
+        console.log('message', error.code);
       }
     }
   };
@@ -46,9 +46,9 @@ export const LoginPanel: React.FC = () => {
         loginInput.email,
         loginInput.password
       );
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.log('message', error.message);
+    } catch (error) {
+      if (error instanceof FirebaseError) {
+        console.log('message', error.code);
       }
     }
   };
@@ -59,7 +59,7 @@ export const LoginPanel: React.FC = () => {
         loginInput.email,
         loginInput.password
       );
-    } catch (error: unknown) {
+    } catch (error) {
       if (error instanceof FirebaseError) {
         console.log('message', error.code);
       }

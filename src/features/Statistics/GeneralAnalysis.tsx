@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components/macro';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { SET_CURRENT_MONTH } from '../../redux/reducers/ledgerListSlice';
-import { mainLabel } from '../../utils/gameSettings';
+import { mainLabels } from '../../utils/gameSettings';
 import { BarChart } from './BarChart';
 import { DoughnutChart } from './DoughnutChart';
 import { LedgerDetail } from './LedgerDetail';
@@ -37,7 +37,7 @@ export const GeneralAnalysis: React.FC = () => {
     };
   });
 
-  const data = mainLabel.map((label) => {
+  const data = mainLabels.map((label) => {
     const ledgersMatched = rawData.filter(
       (ledger) =>
         ledger.year === chosenYear &&

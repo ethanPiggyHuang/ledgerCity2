@@ -6,6 +6,7 @@ import {
   faArrowUpLong,
   faPen,
   faTrashCan,
+  faUtensils,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
@@ -24,7 +25,7 @@ import {
   SWITCH_SECTION_FOCUSED,
   SWITCH_STATISTICS_MODE,
 } from '../../redux/reducers/pageControlSlice';
-import { labelIndex, mainLabel } from '../../utils/gameSettings';
+import { labelIndex, mainLabels } from '../../utils/gameSettings';
 
 export const LedgerDetail: React.FC = () => {
   const { userId } = useAppSelector((state) => state.userInfo.data);
@@ -175,20 +176,15 @@ export const LedgerDetail: React.FC = () => {
               <LedgerText>
                 <LabelIconWrap
                   $backGround={
-                    mainLabel[
-                      mainLabel.findIndex(
-                        (label) => label.name === ledger.labelMain
-                      )
-                    ].colorCode
+                    mainLabels.find((label) => label.name === ledger.labelMain)
+                      ?.colorCode ?? '#F09492'
                   }
                 >
                   <LabelIcon
                     icon={
-                      mainLabel[
-                        mainLabel.findIndex(
-                          (label) => label.name === ledger.labelMain
-                        )
-                      ].icon
+                      mainLabels.find(
+                        (label) => label.name === ledger.labelMain
+                      )?.icon ?? faUtensils
                     }
                   ></LabelIcon>
                 </LabelIconWrap>

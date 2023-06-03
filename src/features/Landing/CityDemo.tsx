@@ -10,11 +10,11 @@ import { HouseOfPlants } from '../City/housesSvg/HouseOfPlants';
 
 export const CityDemo: React.FC = () => {
   const { demoHouses } = useAppSelector((state) => state.landingIntro);
-
   const dispatch = useAppDispatch();
+
   useEffect(() => {
     dispatch(SET_SCALE(0.75));
-  }, []);
+  }, [dispatch]);
 
   return (
     <CityRange>

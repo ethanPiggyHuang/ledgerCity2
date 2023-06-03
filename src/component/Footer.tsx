@@ -28,17 +28,17 @@ const Footer: React.FC = () => {
     { page: 'profile', icon: faUsers, textCh: '協作' },
   ];
 
+  const handleSwitchSection = (page: 'ledger' | 'statistics' | 'profile') => {
+    dispatch(SWITCH_SECTION_FOCUSED({ userId, pageActivity: page }));
+    dispatch(CONTROL_PANEL_DISPLAYED('none'));
+  };
+
   return (
     <Wrapper $isFolded={isTouring}>
       {labelOrder.map((label) => (
         <SectionLabel
           key={label.page}
-          onClick={() => {
-            dispatch(
-              SWITCH_SECTION_FOCUSED({ userId, pageActivity: label.page })
-            );
-            dispatch(CONTROL_PANEL_DISPLAYED('none'));
-          }}
+          onClick={() => handleSwitchSection(label.page)}
           $chosen={label.page === pageActivity}
           $pageActivity={pageActivity}
         >

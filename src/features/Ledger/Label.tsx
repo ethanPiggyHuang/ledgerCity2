@@ -1,16 +1,4 @@
-import {
-  faBriefcaseMedical,
-  faClipboard,
-  faGamepad,
-  faGift,
-  faHouse,
-  faMobileScreenButton,
-  faMugHot,
-  faShirt,
-  faTags,
-  faTrainSubway,
-  faUtensils,
-} from '@fortawesome/free-solid-svg-icons';
+import { faClipboard } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import styled from 'styled-components/macro';
@@ -19,11 +7,7 @@ import {
   CHOOSE_LABEL,
   TYPE_ITEM,
 } from '../../redux/reducers/ledgerSingleSlice';
-import {
-  labelColorCodes,
-  mainLabels,
-  subLabels,
-} from '../../utils/gameSettings';
+import { mainLabels } from '../../utils/gameSettings';
 
 export const Label: React.FC = () => {
   const { labelMain, item } = useAppSelector(
@@ -31,43 +15,32 @@ export const Label: React.FC = () => {
   );
   const dispatch = useAppDispatch();
 
-  const labelIcons = [
-    faUtensils,
-    faMugHot,
-    faTrainSubway,
-    faShirt,
-    faGamepad,
-    faHouse,
-    faMobileScreenButton,
-    faBriefcaseMedical,
-    faGift,
-    faTags,
-  ];
-
   return (
     <>
       <LabelOptions>
         {mainLabels.map((label, index) => (
           <LabelOption
             key={index}
-            $isChosen={labelMain === label}
-            $color={labelColorCodes[index]}
-            onClick={() => dispatch(CHOOSE_LABEL(label))}
+            $isChosen={labelMain === label.name}
+            $color={label.colorCode}
+            onClick={() => dispatch(CHOOSE_LABEL(label.name))}
           >
-            <LabelIcons icon={labelIcons[index]} />
-            <LabelText>{label}</LabelText>
+            <LabelIcons icon={label.icon} />
+            <LabelText>{label.name}</LabelText>
           </LabelOption>
         ))}
       </LabelOptions>
       <SubLabelOptions>
-        {subLabels[labelMain].map((subLabel) => (
-          <SubLabelOption
-            key={subLabel}
-            onClick={() => dispatch(TYPE_ITEM(subLabel))}
-          >
-            {`${subLabel}`}
-          </SubLabelOption>
-        ))}
+        {mainLabels
+          .find((label) => label.name === labelMain)
+          ?.subLabels.map((subLabel, index) => (
+            <SubLabelOption
+              key={index}
+              onClick={() => dispatch(TYPE_ITEM(subLabel))}
+            >
+              {`${subLabel}`}
+            </SubLabelOption>
+          ))}
       </SubLabelOptions>
       <ItemDisplay>
         <ItemIcon icon={faClipboard} />
@@ -76,7 +49,6 @@ export const Label: React.FC = () => {
           value={item}
           placeholder="（可增加註記）"
           size={10}
-          // maxLength={10}
           onChange={(e) => dispatch(TYPE_ITEM(e.target.value))}
         />
       </ItemDisplay>

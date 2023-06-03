@@ -1,7 +1,7 @@
 import React, { RefObject, useRef } from 'react';
 import styled from 'styled-components/macro';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { citySetting, mainLabel, gridColor } from '../../utils/gameSettings';
+import { citySetting, mainLabels, gridColor } from '../../utils/gameSettings';
 import { HouseCityHall } from './housesSvg/HouseCityHall';
 import { HouseGround } from './housesSvg/HouseGround';
 import { HouseOfPlants } from './housesSvg/HouseOfPlants';
@@ -35,13 +35,12 @@ export const GridRow: React.FC<Props> = ({ row, yIndex }) => {
   const renderHouse = (houseType: string) => {
     if (houseType === '市政廳') return <HouseCityHall />;
     const HouseComponent =
-      mainLabel.find((label) => label.name === houseType)?.houseComponent ??
+      mainLabels.find((label) => label.name === houseType)?.houseComponent ??
       HouseOfPlants;
     return <HouseComponent />;
   };
 
   const houseRef = useRef(null);
-  // console.log(houseRef.current);
 
   return (
     <Wrapper key={yIndex}>
