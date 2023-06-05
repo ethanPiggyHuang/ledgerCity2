@@ -266,15 +266,6 @@ type UserPinWrapProps = {
   endPoint: string;
 };
 
-const move = keyframes`
-  from {
-    transform: translateY(-50%) translateX(300%);
-  }
-  to{
-    transform: translateY(-50%) translateX(100%);
-  }
-`;
-
 const UserPinWrap = styled.div<UserPinWrapProps>`
   position: absolute;
   z-index: 2;

@@ -132,7 +132,7 @@ export async function getAccountInfo(userInfo: {
   const docSnap = await getDoc(doc(db, 'users', userId));
 
   if (docSnap.exists()) {
-    const data = docSnap.data() as UserDataState; //TODO typescript
+    const data = docSnap.data() as UserDataState;
     return new Promise<{
       data: UserDataState;
     }>((resolve) => resolve({ data }));

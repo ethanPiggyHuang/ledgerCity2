@@ -34,20 +34,10 @@ export const Social: React.FC = () => {
   const { pageActivity, socialSectionClosed } = useAppSelector(
     (state) => state.pageControl
   );
+  const dispatch = useAppDispatch();
+
   const currentCityId = cityList[0];
-
   const friendIds = friends.map((friend) => friend.userId);
-
-  const lastActiveDate = (timeInSecond: number): string => {
-    const currentInSecond = new Date().getTime();
-    const result = Math.round((currentInSecond / 1000 - timeInSecond) / 86400);
-    if (timeInSecond === 0) {
-      return '暫無資料';
-    } else if (result < 1) {
-      return '今日';
-    }
-    return `${result}日前`;
-  };
 
   useEffect(() => {
     if (friends.length !== 0) {
@@ -63,8 +53,6 @@ export const Social: React.FC = () => {
     }
   }, [cityList]);
 
-  const dispatch = useAppDispatch();
-
   const { emailInput, queryResult } = useAppSelector(
     (state) => state.userInfo.editStatus
   );
@@ -79,7 +67,10 @@ export const Social: React.FC = () => {
     return {
       ...friendInfo,
       coopStatus: friends.find(findFriendCondition)?.coopStatus || '',
-      lastActiveTime: coopInfo[friendId]?.latestActiveTimeSecond || 0,
+      lastActiveTime:
+        coopInfo[friendId]?.fadeOutTimeSecond ||
+        coopInfo[friendId]?.latestActiveTimeSecond ||
+        0,
       coopCityId,
       coopCityName: cityNames[coopCityId] || '',
     };
@@ -104,7 +95,7 @@ export const Social: React.FC = () => {
           >
             {friendInfoCollection.length !== 0 &&
               friendInfoCollection.map(
-                (friendInfo, index) =>
+                (friendInfo) =>
                   friendInfo.coopStatus === 'coorperated' && (
                     <FriendInfo key={friendInfo.userId}>
                       <UserBasics
@@ -161,7 +152,7 @@ export const Social: React.FC = () => {
           <FriendInfoWrap $isClosed={socialSectionClosed.includes('inviting')}>
             {friendInfoCollection.length !== 0 &&
               friendInfoCollection.map(
-                (friendInfo, index) =>
+                (friendInfo) =>
                   friendInfo.coopStatus === 'inviting' && (
                     <FriendInfo key={friendInfo.userId}>
                       <UserBasics
@@ -174,10 +165,10 @@ export const Social: React.FC = () => {
                       />
                       <FriendCityWrap>
                         <WaitingButton>協作邀請中</WaitingButton>
-                        <p style={{ fontSize: '12px' }}>邀請城市：</p>
-                        <p style={{ fontSize: '12px' }}>
+                        <CoopCityText>邀請城市：</CoopCityText>
+                        <CoopCityText>
                           {cityNames[friendInfo.coopCityId]}
-                        </p>
+                        </CoopCityText>
                       </FriendCityWrap>
                     </FriendInfo>
                   )
@@ -206,11 +197,11 @@ export const Social: React.FC = () => {
                       />
                       <FriendCityWrap>
                         <FriendCityInfoTitle>協作邀請</FriendCityInfoTitle>
-                        <p style={{ fontSize: '12px' }}>受邀城市：</p>
-                        <p style={{ fontSize: '12px' }}>
+                        <CoopCityText>受邀城市：</CoopCityText>
+                        <CoopCityText>
                           記帳小城
                           {cityNames[friendInfo.coopCityId]}
-                        </p>
+                        </CoopCityText>
                         <ButtonWrap>
                           <AgreeButton
                             onClick={() => {
@@ -248,71 +239,55 @@ export const Social: React.FC = () => {
             查詢好友
           </FriendListTitle>
           <FriendInfoWrap $isClosed={socialSectionClosed.includes('search')}>
-            <p>輸入好友 gmail</p>
-            <input
+            <FriendSearchTitle>輸入好友 gmail</FriendSearchTitle>
+            <FriendSearchInput
               type="text"
               value={emailInput}
               onChange={(event) => {
                 dispatch(TYPE_FRIEND_EMAIL(event.target.value));
               }}
             />
-            <span>@gmail.com</span>
+            <FriendSearchInputPrefix>@gmail.com</FriendSearchInputPrefix>
 
-            <button
+            <FriendSearchButton
               onClick={() => {
                 dispatch(SEARCH_FRIEND(emailInput));
               }}
             >
               查詢
-            </button>
+            </FriendSearchButton>
             {queryResult.length !== 0 && queryResult[0].userId === userId && (
-              <p>這是你自己的帳號喔</p>
+              <FriendSearchText>這是你自己的帳號喔</FriendSearchText>
             )}
             {queryResult.length !== 0 && queryResult[0].userId !== userId && (
               <>
-                <p>{`名字：${queryResult[0].userName}`}</p>
-                <p>{`暱稱：${
+                <FriendSearchText>{`名字：${queryResult[0].userName}`}</FriendSearchText>
+                <FriendSearchText>{`暱稱：${
                   queryResult[0]?.userNickName || queryResult[0].userName
-                }`}</p>
+                }`}</FriendSearchText>
                 {queryResult[0]?.userPortraitUrl && (
                   <img
                     src={queryResult[0].userPortraitUrl}
                     alt={`portait of ${queryResult[0].userName}`}
                   />
                 )}
-                <br />
-                <p>{`要與他共同管理城市嗎？`}</p>
-                <p>{`預計共同管理城市：`}</p>
-                <p
+                <FriendSearchBlank />
+                <FriendSearchText>{`要與他共同管理城市嗎？`}</FriendSearchText>
+                <FriendSearchText>{`預計共同管理城市：`}</FriendSearchText>
+                <FriendSearchCityOption
                   onClick={() => dispatch(SWITCH_COOP_CITY_OPTION())}
-                  style={{
-                    cursor: 'pointer',
-                    padding: '5px 10px',
-                    color: '#aa9d7a',
-                    border: '1px brown solid',
-                    width: '200px',
-                  }}
-                >{`${cityNames[cityList[chosenCoopCityIndex]]}`}</p>
-                <p
-                  style={{
-                    fontSize: '12px',
-                  }}
-                >{`目前協作人數：${
+                >{`${
+                  cityNames[cityList[chosenCoopCityIndex]]
+                }`}</FriendSearchCityOption>
+                <FriendSearchNotice>{`目前協作人數：${
                   cityAccessUsers[cityList[chosenCoopCityIndex]].length
-                }人`}</p>
+                }人`}</FriendSearchNotice>
                 {cityAccessUsers[cityList[chosenCoopCityIndex]].length === 2 ? (
-                  <p
-                    style={{
-                      fontSize: '12px',
-                      color: 'darkred',
-                    }}
-                  >
-                    協作人數已達上限
-                  </p>
+                  <FriendSearchWarn>協作人數已達上限</FriendSearchWarn>
                 ) : (
                   ''
                 )}
-                <button
+                <FriendSearchSubmit
                   onClick={() => {
                     const cityId = cityList[chosenCoopCityIndex];
                     if (cityAccessUsers[cityId].length > 1) {
@@ -326,7 +301,7 @@ export const Social: React.FC = () => {
                   }}
                 >
                   成為協作好友，共同管理城市
-                </button>
+                </FriendSearchSubmit>
               </>
             )}
           </FriendInfoWrap>
@@ -388,7 +363,6 @@ const FriendListsWrap = styled.div`
 const FriendListWrap = styled.div`
   width: 100%;
   padding: 0 10px;
-  /* padding-bottom: 30px; */
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -414,7 +388,6 @@ const FriendListTitle = styled.p`
 const FriendInfoWrap = styled.div<FriendInfoWrapProps>`
   width: 100%;
   transform: ${({ $isClosed }) => ($isClosed ? 'rotateX(90deg)' : '')};
-  /* TODO: normal height */
   height: ${({ $isClosed }) => ($isClosed ? '0' : '100px')};
   overflow: ${({ $isClosed }) => ($isClosed ? 'overflow' : 'scroll')};
   transition: height 1s ease, transform 0.7s ease;
@@ -423,7 +396,6 @@ const FriendInfoWrap = styled.div<FriendInfoWrapProps>`
 const FriendInfo = styled.div`
   display: flex;
   width: 100%;
-  /* justify-content: center; */
   align-items: center;
   gap: 10px;
   position: relative;
@@ -540,3 +512,38 @@ const WaitingButton = styled(ButtonTemplate)`
     filter: brightness(1);
   }
 `;
+
+const CoopCityText = styled.p`
+  font-size: 12px;
+`;
+
+const FriendSearchTitle = styled.p``;
+
+const FriendSearchInput = styled.input``;
+
+const FriendSearchInputPrefix = styled.span``;
+
+const FriendSearchButton = styled.button``;
+
+const FriendSearchText = styled.p``;
+
+const FriendSearchCityOption = styled.p`
+  padding: 5px 10px;
+  color: #aa9d7a;
+  border: 1px brown solid;
+  width: 200px;
+  cursor: pointer;
+`;
+
+const FriendSearchBlank = styled.br``;
+
+const FriendSearchNotice = styled.p`
+  font-size: 12px;
+`;
+
+const FriendSearchWarn = styled.p`
+  font-size: 12px;
+  color: darkred;
+`;
+
+const FriendSearchSubmit = styled.button``;

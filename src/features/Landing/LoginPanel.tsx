@@ -94,8 +94,8 @@ export const LoginPanel: React.FC = () => {
     >
       <LoginSlogan $isFocusing={isFocusingLogin} src={loginSlogan} />
       <CityImage src={cityLandScape} />
-      {loginForm.map((form) => (
-        <InputWrap>
+      {loginForm.map((form, index) => (
+        <InputWrap key={index}>
           <InputTitle>{form.ch}</InputTitle>
           <LoginInput
             value={loginInput[form.field]}
@@ -216,7 +216,7 @@ const CityImage = styled.img`
   display: block;
 `;
 
-const InputWrap = styled.p`
+const InputWrap = styled.div`
   display: flex;
   margin-top: 20px;
   align-items: center;

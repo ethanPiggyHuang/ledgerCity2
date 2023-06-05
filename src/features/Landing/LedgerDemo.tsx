@@ -194,8 +194,6 @@ const ConfirmRow = styled.div`
   position: relative;
   width: 100%;
   padding-bottom: 10px;
-
-  /* opacity: 0.5; */
   &:hover {
     filter: brightness(1.1);
   }
@@ -205,7 +203,6 @@ const ConfirmButton = styled.div`
   width: 30%;
   margin: auto;
   height: 100%;
-  /* position: absolute; */
   bottom: 2%;
   margin-left: auto;
   border-radius: 5px;

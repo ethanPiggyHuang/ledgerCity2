@@ -25,8 +25,6 @@ export const BarChart: React.FC = () => {
   const { chosenYear } = useAppSelector((state) => state.ledgerList.choices);
   const [hasCategory, setHasCategory] = useState(false);
   const [labelsDisplay, setLabelsDisplay] = useState(new Array(10).fill(true));
-  const [displayMonths, setDisplayMonths] = useState(12);
-  const currentMonth = new Date().getMonth() + 1;
 
   const dispatch = useAppDispatch();
 
@@ -65,11 +63,7 @@ export const BarChart: React.FC = () => {
   ];
 
   let months: { xLabel: string; monthValue: number }[];
-  if (displayMonths === 12) {
-    months = totalMonths;
-  } else {
-    months = totalMonths.slice(currentMonth - displayMonths, displayMonths + 1);
-  }
+  months = totalMonths;
 
   const datas = months.map((month) => {
     const { xLabel, monthValue } = month;

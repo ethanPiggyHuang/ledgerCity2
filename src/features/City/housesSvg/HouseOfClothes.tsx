@@ -48,6 +48,10 @@ const InteractiveGroup = styled.g`
   }
 `;
 
+const StyledGroupMultiply = styled.g`
+  mix-blend-mode: multiply;
+`;
+
 export const HouseOfClothes: React.FC = () => {
   const { scale } = useAppSelector((state) => state.city);
   const { houseLength } = citySetting;
@@ -257,32 +261,24 @@ export const HouseOfClothes: React.FC = () => {
                   d="M73.47 103.46H41.2V104.41H73.47V103.46Z"
                   fill="#F7F7F7"
                 />
-                <g
-                  id="Vector_35"
-                  style={{ mixBlendMode: 'multiply' }}
-                  opacity="0.29"
-                >
+                <StyledGroupMultiply id="Vector_35" opacity="0.29">
                   <path
                     d="M76.07 124.48C76.06 124.24 75.92 124.03 75.72 123.9C76.01 122.15 76.2 119 76.21 116.24C76.22 111.76 76.07 109.49 75.84 108.37C75.98 108.23 76.07 108.05 76.07 107.84V107.29C76.32 107.07 76.47 106.75 76.47 106.39C76.47 105.71 75.93 105.17 75.25 105.17C74.57 105.17 74.04 105.72 74.04 106.39C74.04 106.75 74.19 107.07 74.44 107.29V107.84C74.44 108.08 74.56 108.29 74.74 108.43C74.51 109.64 74.36 112.04 74.3 116.24C74.26 119 74.47 122.16 74.77 123.91C74.58 124.04 74.45 124.25 74.44 124.48C74.08 124.74 73.84 125.16 73.84 125.64C73.84 126.42 74.47 127.06 75.25 127.06C76.03 127.06 76.66 126.42 76.66 125.64C76.66 125.16 76.42 124.74 76.06 124.48H76.07Z"
                     fill="#050000"
                   />
-                </g>
+                </StyledGroupMultiply>
                 <path
                   id="Vector_36"
                   opacity="0.15"
                   d="M84.77 57.3V109.97L145.28 57.3H84.77Z"
                   fill="#F5F5F5"
                 />
-                <g
-                  id="Vector_37"
-                  style={{ mixBlendMode: 'multiply' }}
-                  opacity="0.29"
-                >
+                <StyledGroupMultiply id="Vector_37" opacity="0.29">
                   <path
                     d="M45.09 49.32H37.67V163.11H45.09V49.32Z"
                     fill="#050000"
                   />
-                </g>
+                </StyledGroupMultiply>
                 <g id="Group_11">
                   <path
                     id="Vector_38"
@@ -352,16 +348,12 @@ export const HouseOfClothes: React.FC = () => {
                     fill="#76BC39"
                   />
                 </g>
-                <g
-                  id="Vector_51"
-                  style={{ mixBlendMode: 'multiply' }}
-                  opacity="0.29"
-                >
+                <StyledGroupMultiply id="Vector_51" opacity="0.29">
                   <path
                     d="M170.51 35.08H33.51V60.2H170.51V35.08Z"
                     fill="#050000"
                   />
-                </g>
+                </StyledGroupMultiply>
                 <path
                   id="Vector_52"
                   d="M177.13 29.57H26.12L49.41 0H153.84L177.13 29.57Z"

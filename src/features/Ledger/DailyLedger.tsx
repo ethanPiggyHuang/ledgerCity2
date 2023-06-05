@@ -256,7 +256,6 @@ const LedgerAmount = styled.div`
   align-items: center;
   justify-content: end;
   font-size: 18px;
-  /* margin-left: auto; */
   margin-right: 30px;
   color: #6b6b6b;
 `;

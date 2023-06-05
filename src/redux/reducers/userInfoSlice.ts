@@ -208,7 +208,6 @@ export const REDIRECT_CITY = createAsyncThunk(
     const { userId, cityId } = payload;
     const allStates = getState() as RootState;
     const cityList = allStates.userInfo.data.cityList;
-    //TODO!!!!  要避免亂入別人城市
     const newCityList = [cityId, ...cityList.filter((city) => city !== cityId)];
     await updateCityList(userId, newCityList);
     return newCityList;

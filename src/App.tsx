@@ -31,10 +31,10 @@ export default App;
 const GlobalStyle = createGlobalStyle`
   * {
     box-sizing: border-box;
-    -webkit-user-select: none; /* Safari */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* Edge */
-    user-select: none; /* Standard */
+    -webkit-user-select: none; 
+    -moz-user-select: none; 
+    -ms-user-select: none;
+    user-select: none;
     
   }
   body {
@@ -55,6 +55,7 @@ const GlobalStyle = createGlobalStyle`
       border: none;
     }
     -webkit-user-select:text;
+    user-select:text;
   }
   
   #root {
