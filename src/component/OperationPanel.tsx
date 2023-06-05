@@ -36,11 +36,8 @@ export const OperationPanel: React.FC<Props> = ({ props }) => {
   const { gridLength, cityPadding } = citySetting;
   const dispatch = useAppDispatch();
   const [isMusicPlay, setIsMusicPlay] = useState(false);
-  const [playHammer, { stop }] = useSound(hammer_2, { volume: 0.8 });
-
+  const [playHammer] = useSound(hammer_2, { volume: 0.8 });
   const audioRef = useRef<HTMLAudioElement>(null);
-
-  const [show, setShow] = useState(true);
 
   const handleConstruction = () => {
     if (dragMode === 'houses') {
@@ -65,11 +62,9 @@ export const OperationPanel: React.FC<Props> = ({ props }) => {
 
   const handleRescale = () => {
     const scaleOptions = [0.5, 1, 2];
-
     const nextScaleIndex =
       (scaleOptions.findIndex((option) => option === scale) + 1) %
       scaleOptions.length;
-
     dispatch(SET_SCALE(scaleOptions[nextScaleIndex]));
   };
 
@@ -156,50 +151,46 @@ export const OperationPanel: React.FC<Props> = ({ props }) => {
   return (
     <>
       <Wrapper $isFolded={isTouring}>
-        {show && (
-          <>
-            <Title>城市經營</Title>
-            <IconsWrapper>
-              <IconBack $isActivate={false} onClick={handleRescale}>
-                <ScaleText>{`${scale} x`}</ScaleText>
-              </IconBack>
-              <IconBack
-                $isActivate={false}
-                onClick={() => {
-                  handleFocusCityHall(scale);
-                }}
-              >
-                <Icon icon={faLandmarkDome} />
-              </IconBack>
-              <IconBackLongActive
-                $isActivate={dragMode === 'houses'}
-                onClick={handleConstruction}
-              >
-                {dragMode === 'houses' ? (
-                  <Icon icon={faFloppyDisk} />
-                ) : (
-                  <IconImg src={reconstruct} />
-                )}
-              </IconBackLongActive>
-              <IconBackLongActive
-                $isActivate={isTouring}
-                onClick={() => {
-                  if (!isTouring) {
-                    handleStartCityTour();
-                  } else {
-                    handleEndCityTour();
-                  }
-                }}
-              >
-                <Icon icon={faPersonThroughWindow} />
-              </IconBackLongActive>
+        <Title>城市經營</Title>
+        <IconsWrapper>
+          <IconBack $isActivate={false} onClick={handleRescale}>
+            <ScaleText>{`${scale} x`}</ScaleText>
+          </IconBack>
+          <IconBack
+            $isActivate={false}
+            onClick={() => {
+              handleFocusCityHall(scale);
+            }}
+          >
+            <Icon icon={faLandmarkDome} />
+          </IconBack>
+          <IconBackLongActive
+            $isActivate={dragMode === 'houses'}
+            onClick={handleConstruction}
+          >
+            {dragMode === 'houses' ? (
+              <Icon icon={faFloppyDisk} />
+            ) : (
+              <IconImg src={reconstruct} />
+            )}
+          </IconBackLongActive>
+          <IconBackLongActive
+            $isActivate={isTouring}
+            onClick={() => {
+              if (!isTouring) {
+                handleStartCityTour();
+              } else {
+                handleEndCityTour();
+              }
+            }}
+          >
+            <Icon icon={faPersonThroughWindow} />
+          </IconBackLongActive>
 
-              <IconBack $isActivate={isMusicPlay} onClick={handleMusicToggle}>
-                <Icon icon={isMusicPlay ? faVolumeHigh : faVolumeXmark} />
-              </IconBack>
-            </IconsWrapper>
-          </>
-        )}
+          <IconBack $isActivate={isMusicPlay} onClick={handleMusicToggle}>
+            <Icon icon={isMusicPlay ? faVolumeHigh : faVolumeXmark} />
+          </IconBack>
+        </IconsWrapper>
         {isShown && <Alert title="hi" text="hi" handleAlert={handleAlert} />}
         <audio src={chocolate_world} preload={'metadata'} loop ref={audioRef} />
       </Wrapper>

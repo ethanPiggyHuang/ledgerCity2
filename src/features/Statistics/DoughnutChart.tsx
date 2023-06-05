@@ -82,6 +82,7 @@ export const DoughnutChart: React.FC<Props> = ({ setting, data, title }) => {
             ''
           ) : (
             <DoughnutSector
+              key={data.label}
               data={data}
               index={index}
               setting={{ ...setting, svgWidth, svgHeight }}

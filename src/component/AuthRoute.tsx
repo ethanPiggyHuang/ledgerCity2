@@ -17,14 +17,12 @@ const AuthRoute: React.FunctionComponent<IAuthRouteProps> = (props) => {
   const { children } = props;
   const { isAuthing } = useAppSelector((state) => state.userInfo.loginStatus);
   const dispatch = useAppDispatch();
-
   const navigate = useNavigate();
   const auth = getAuth();
 
   useEffect(() => {
     const AuthCheck = onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log('user', user);
         const { uid, displayName, email, photoURL } = user;
         const isNewUser =
           user.metadata.creationTime === user.metadata.lastSignInTime;
@@ -45,7 +43,6 @@ const AuthRoute: React.FunctionComponent<IAuthRouteProps> = (props) => {
   }, []);
 
   if (isAuthing) return <Loading />;
-
   return <div>{children}</div>;
 };
 

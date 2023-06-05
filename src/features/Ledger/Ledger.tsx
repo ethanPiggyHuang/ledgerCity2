@@ -147,7 +147,6 @@ export const Ledger: React.FC = () => {
                       200
                     );
                     setTimeout(() => dispatch(SUBMIT_LEDGER()), 1000);
-
                     setTimeout(
                       () =>
                         dispatch(
@@ -242,7 +241,6 @@ const Header = styled.div<HeaderProps>`
 const SecondRow = styled.div`
   height: 12%;
   margin: 0 15px;
-  /* width: 100%; */
   border-bottom: 3px solid #e6e6e6;
   display: flex;
   align-items: center;

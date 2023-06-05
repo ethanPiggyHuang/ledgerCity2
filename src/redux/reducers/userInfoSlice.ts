@@ -208,7 +208,6 @@ export const REDIRECT_CITY = createAsyncThunk(
     const { userId, cityId } = payload;
     const allStates = getState() as RootState;
     const cityList = allStates.userInfo.data.cityList;
-    //TODO!!!!  要避免亂入別人城市
     const newCityList = [cityId, ...cityList.filter((city) => city !== cityId)];
     await updateCityList(userId, newCityList);
     return newCityList;
@@ -285,7 +284,6 @@ export const userInfo = createSlice({
       state.loginStatus.isLogin = true;
     },
     LOG_OUT: (state) => {
-      console.log('log out');
       state.data = initialState.data;
       state.loginStatus = initialState.loginStatus;
       state.friends = initialState.friends;
@@ -383,7 +381,6 @@ export const userInfo = createSlice({
         state.status = 'idle';
         state.editStatus.isNickNameEdit = false;
         state.data.userNickName = action.payload;
-        console.log('nickname updated');
       })
       .addCase(UPDATE_NICKNAME.rejected, (state) => {
         state.status = 'failed';

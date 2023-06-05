@@ -48,6 +48,14 @@ const InteractiveGroup = styled.g`
   }
 `;
 
+const StyledGroupMultiply = styled.g`
+  mix-blend-mode: multiply;
+`;
+
+const StyledMask = styled.mask`
+  mask-type: luminance;
+`;
+
 export const HouseOfDrinks: React.FC = () => {
   const { scale } = useAppSelector((state) => state.city);
   const { houseLength } = citySetting;
@@ -317,26 +325,18 @@ export const HouseOfDrinks: React.FC = () => {
                   d="M49.35 72.79V88.5L66.58 72.79H49.35Z"
                   fill="#F5F5F5"
                 />
-                <g
-                  id="Vector_44"
-                  style={{ mixBlendMode: 'multiply' }}
-                  opacity="0.29"
-                >
+                <StyledGroupMultiply id="Vector_44" opacity="0.29">
                   <path
                     d="M49.82 161.22V179.73H77.64V161.22H49.82ZM75.89 177.44H51.58V163.5H75.89V177.44Z"
                     fill="#050000"
                   />
-                </g>
-                <g
-                  id="Vector_45"
-                  style={{ mixBlendMode: 'multiply' }}
-                  opacity="0.29"
-                >
+                </StyledGroupMultiply>
+                <StyledGroupMultiply id="Vector_45" opacity="0.29">
                   <path
                     d="M83.24 144.95C83.23 144.7 83.09 144.48 82.88 144.35C83.17 142.54 83.37 139.29 83.38 136.44C83.4 131.81 83.24 129.47 83 128.32C83.15 128.18 83.24 127.99 83.24 127.77V127.2C83.49 126.97 83.65 126.64 83.65 126.27C83.65 125.57 83.09 125.01 82.4 125.01C81.71 125.01 81.14 125.58 81.14 126.27C81.14 126.64 81.3 126.97 81.56 127.2V127.77C81.56 128.02 81.68 128.23 81.87 128.38C81.63 129.63 81.47 132.11 81.42 136.44C81.38 139.29 81.6 142.55 81.91 144.36C81.71 144.49 81.58 144.71 81.57 144.95C81.19 145.21 80.95 145.65 80.95 146.15C80.95 146.96 81.6 147.62 82.41 147.62C83.22 147.62 83.87 146.96 83.87 146.15C83.87 145.65 83.62 145.22 83.25 144.95H83.24Z"
                     fill="#050000"
                   />
-                </g>
+                </StyledGroupMultiply>
                 <g id="Group_20">
                   <path
                     id="Vector_46"
@@ -370,9 +370,8 @@ export const HouseOfDrinks: React.FC = () => {
                   fill="#37210C"
                 />
                 <g id="Clip path group">
-                  <mask
+                  <StyledMask
                     id="mask0_0_1"
-                    style={{ maskType: 'luminance' }}
                     maskUnits="userSpaceOnUse"
                     x="92"
                     y="74"
@@ -386,7 +385,7 @@ export const HouseOfDrinks: React.FC = () => {
                         fill="white"
                       />
                     </g>
-                  </mask>
+                  </StyledMask>
                   <g mask="url(#mask0_0_1)">
                     <g id="Group_21">
                       <g id="Group_22">
@@ -1256,16 +1255,12 @@ export const HouseOfDrinks: React.FC = () => {
                     fill="#D0B292"
                   />
                 </g>
-                <g
-                  id="Vector_211"
-                  style={{ mixBlendMode: 'multiply' }}
-                  opacity="0.37"
-                >
+                <StyledGroupMultiply id="Vector_211" opacity="0.37">
                   <path
                     d="M180.83 69.25H39.16V80.64C39.77 79.82 40.14 78.81 40.14 77.7C40.14 80.4 42.32 82.59 45 82.59H45.17C47.85 82.59 50.03 80.4 50.03 77.7C50.03 80.4 52.2 82.59 54.89 82.59H55.06C57.74 82.59 59.92 80.4 59.92 77.7C59.92 80.4 62.09 82.59 64.78 82.59H64.95C67.63 82.59 69.81 80.4 69.81 77.7C69.81 80.4 71.98 82.59 74.67 82.59H74.84C77.52 82.59 79.7 80.4 79.7 77.7C79.7 80.4 81.88 82.59 84.56 82.59H84.73C87.41 82.59 89.59 80.4 89.59 77.7C89.59 80.4 91.76 82.59 94.45 82.59H94.62C97.25 82.59 99.39 80.48 99.47 77.85C99.55 80.48 101.69 82.59 104.32 82.59H104.49C107.17 82.59 109.35 80.4 109.35 77.7C109.35 80.4 111.52 82.59 114.21 82.59H114.38C117.06 82.59 119.24 80.4 119.24 77.7C119.24 80.4 121.42 82.59 124.1 82.59H124.27C126.95 82.59 129.13 80.4 129.13 77.7C129.13 80.4 131.3 82.59 133.99 82.59H134.16C136.84 82.59 139.02 80.4 139.02 77.7C139.02 80.4 141.19 82.59 143.88 82.59H144.05C146.73 82.59 148.91 80.4 148.91 77.7C148.91 80.4 151.08 82.59 153.77 82.59H153.94C156.2 82.59 158.1 81.03 158.64 78.92C159.18 81.03 161.08 82.59 163.34 82.59H163.5C166.18 82.59 168.36 80.4 168.36 77.7C168.36 80.4 170.53 82.59 173.22 82.59H173.39C176.07 82.59 178.25 80.4 178.25 77.7C178.25 79.62 179.35 81.27 180.94 82.07V69.24L180.83 69.25Z"
                     fill="#442B1A"
                   />
-                </g>
+                </StyledGroupMultiply>
                 <InteractiveGroup id="cup">
                   <path
                     id="Vector_212"

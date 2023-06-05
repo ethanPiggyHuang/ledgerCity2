@@ -27,15 +27,16 @@ export const LoginPanel: React.FC = () => {
     (state) => state.landingIntro
   );
   const dispatch = useAppDispatch();
-
   const auth = getAuth();
 
   const GoogleLogin = async () => {
     dispatch(TOGGLE_AUTHING(true));
     try {
       await signInWithPopup(auth, new GoogleAuthProvider());
-    } catch (error: any) {
-      console.log(error.code);
+    } catch (error) {
+      if (error instanceof FirebaseError) {
+        console.log('message', error.code);
+      }
     }
   };
   const nativeRegister = async () => {
@@ -45,8 +46,10 @@ export const LoginPanel: React.FC = () => {
         loginInput.email,
         loginInput.password
       );
-    } catch (error: any) {
-      console.log(error.code);
+    } catch (error) {
+      if (error instanceof FirebaseError) {
+        console.log('message', error.code);
+      }
     }
   };
   const nativeLogin = async () => {
@@ -56,8 +59,10 @@ export const LoginPanel: React.FC = () => {
         loginInput.email,
         loginInput.password
       );
-    } catch (error: any) {
-      console.log(error.code);
+    } catch (error) {
+      if (error instanceof FirebaseError) {
+        console.log('message', error.code);
+      }
     }
   };
 
@@ -89,8 +94,8 @@ export const LoginPanel: React.FC = () => {
     >
       <LoginSlogan $isFocusing={isFocusingLogin} src={loginSlogan} />
       <CityImage src={cityLandScape} />
-      {loginForm.map((form) => (
-        <InputWrap>
+      {loginForm.map((form, index) => (
+        <InputWrap key={index}>
           <InputTitle>{form.ch}</InputTitle>
           <LoginInput
             value={loginInput[form.field]}
@@ -211,7 +216,7 @@ const CityImage = styled.img`
   display: block;
 `;
 
-const InputWrap = styled.p`
+const InputWrap = styled.div`
   display: flex;
   margin-top: 20px;
   align-items: center;

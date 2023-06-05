@@ -16,12 +16,10 @@ export const City: React.FC = () => {
     width: gridLength * housesPosition[0].length * scale + 2 * cityPadding.x,
     height: gridLength * housesPosition.length * scale + 2 * cityPadding.y,
   };
-  // const cityWidth =
-  // const cityHeight = gridLength * housesPosition.length;
 
   useEffect(() => {
     dispatch(SET_SCALE(1));
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(RENDER_CITY(cityBasicInfo));

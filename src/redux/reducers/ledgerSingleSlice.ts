@@ -54,7 +54,7 @@ const initialState: LedgerSingleState = {
 
 export const SUBMIT_LEDGER = createAsyncThunk(
   'ledger/SUBMIT_LEDGER',
-  async (arg, { getState }) => {
+  async (_, { getState }) => {
     const allStates = getState() as RootState;
     const ledgerSingle = allStates.ledgerSingle;
     const data = ledgerSingle.data;
@@ -73,7 +73,7 @@ export const SUBMIT_LEDGER = createAsyncThunk(
 
 export const UPDATE_LEDGER = createAsyncThunk(
   'ledger/UPDATE_LEDGER',
-  async (arg, { getState }) => {
+  async (_, { getState }) => {
     const allStates = getState() as RootState;
     const ledgerBookId = allStates.city.basicInfo.ledgerBookId;
     const { userId } = allStates.userInfo.data;

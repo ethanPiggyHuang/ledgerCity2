@@ -1,11 +1,7 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components/macro';
 import { useAppSelector } from '../../../redux/hooks';
-import {
-  citySetting,
-  labelColorCodes,
-  mainLabels,
-} from '../../../utils/gameSettings';
+import { citySetting, mainLabels } from '../../../utils/gameSettings';
 
 const landing = keyframes`
   0% {
@@ -41,9 +37,9 @@ export const HouseGround: React.FC<{ houseType: string }> = ({ houseType }) => {
   const { gridLength } = citySetting;
   const { scale } = useAppSelector((state) => state.city);
   const widthNormalize = gridLength / 160;
-
-  const labelIndex = mainLabels.findIndex((label) => label === houseType);
-  const floorColor = labelColorCodes[labelIndex] || '#9DA6A5';
+  const floorColor =
+    mainLabels.find((label) => label.name === houseType)?.colorCode ||
+    '#9DA6A5';
 
   return (
     <Wrapper>

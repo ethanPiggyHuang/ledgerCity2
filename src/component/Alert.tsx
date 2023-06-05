@@ -9,7 +9,7 @@ import {
 interface Props {
   title: string;
   text: string;
-  handleAlert: any;
+  handleAlert: () => void;
 }
 
 export const Alert: React.FC<Props> = ({ title, text, handleAlert }) => {
@@ -23,6 +23,7 @@ export const Alert: React.FC<Props> = ({ title, text, handleAlert }) => {
       <BlackCurtain></BlackCurtain>
       <Dialogue $isShown={dialogueOpen}>
         <p>{title}</p>
+        <p>{text}</p>
         <button
           onClick={() => {
             dispatch(TOGGLE_ALERT_DIALOUGE());

@@ -1,11 +1,5 @@
-import {
-  faPlane,
-  faPlaneArrival,
-  faPlaneDeparture,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect } from 'react';
-import styled, { keyframes } from 'styled-components/macro';
+import styled from 'styled-components/macro';
 import sloganCooperation from '../../assets/intro_slogan_coop.png';
 import sloganLedger from '../../assets/intro_slogan_ledger.png';
 import sloganStatistics from '../../assets/intro_slogan_statistics.png';
@@ -25,7 +19,6 @@ import { LedgerDemo } from './LedgerDemo';
 import { LoginPanel } from './LoginPanel';
 import { StatisticsDemo } from './StatisticsDemo';
 import { useNavigate } from 'react-router-dom';
-import Loading from '../../component/Loading';
 
 export const Landing: React.FC = () => {
   const { introSection, isPlayingCarousel, isFocusingLogin } = useAppSelector(
@@ -51,7 +44,7 @@ export const Landing: React.FC = () => {
       );
       return () => clearInterval(carouselInterval);
     }
-  }, [introSection, isPlayingCarousel]);
+  }, [introSection, isPlayingCarousel, dispatch]);
 
   useEffect(() => {
     if (userId) navigate('/city');
