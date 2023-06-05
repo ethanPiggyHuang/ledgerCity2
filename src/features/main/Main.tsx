@@ -73,7 +73,6 @@ export const Main: React.FC = () => {
         $isShown={['statistics', 'profile', 'ledger'].includes(pageActivity)}
         $invisible={pageActivity === 'ledger'}
         onClick={() => {
-          console.log('hi');
           dispatch(SWITCH_SECTION_FOCUSED({ userId, pageActivity: 'city' }));
           dispatch(CONTROL_PANEL_DISPLAYED('none'));
           dispatch(TOGGLE_HOUSE_ADDING_MODE(false));

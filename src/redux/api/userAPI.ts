@@ -153,14 +153,6 @@ export async function postFadeOutTimeRT(userId: string, enableType: string) {
   });
 }
 
-export async function getCooperatorLocation(userId: string) {
-  console.log('userId', userId);
-  const docSnap = await getDoc(doc(db, 'allUserStatus', userId));
-  if (docSnap) {
-    console.log(new Date(docSnap.data()?.fadeOutTime.seconds * 1000));
-  }
-}
-
 export async function updateActivity(userId: string, pageActivity: string) {
   await updateDoc(doc(db, 'allUserStatus', userId), {
     currentActivity: pageActivity,

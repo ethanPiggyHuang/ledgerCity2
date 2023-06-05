@@ -285,7 +285,6 @@ export const userInfo = createSlice({
       state.loginStatus.isLogin = true;
     },
     LOG_OUT: (state) => {
-      console.log('log out');
       state.data = initialState.data;
       state.loginStatus = initialState.loginStatus;
       state.friends = initialState.friends;
@@ -383,7 +382,6 @@ export const userInfo = createSlice({
         state.status = 'idle';
         state.editStatus.isNickNameEdit = false;
         state.data.userNickName = action.payload;
-        console.log('nickname updated');
       })
       .addCase(UPDATE_NICKNAME.rejected, (state) => {
         state.status = 'failed';

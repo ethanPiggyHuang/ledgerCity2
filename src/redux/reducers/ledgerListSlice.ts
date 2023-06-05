@@ -37,7 +37,6 @@ export const DELETE_SINGLE_LEDGER = createAsyncThunk(
     const ledgerBookId = allStates.city.basicInfo.ledgerBookId;
     const houses = allStates.city.basicInfo.houses;
     const newHouses = houses.filter((house) => house.ledgerId !== ledgerId);
-    houses.forEach((house) => console.log(house.ledgerId !== ledgerId));
     await deleteSingleLedger(cityId, newHouses, ledgerBookId, ledgerId);
     return ledgerId;
   }
@@ -99,7 +98,6 @@ export const ledgerList = createSlice({
         state.dataList = state.dataList.filter(
           (ledger) => ledger.ledgerId !== action.payload
         );
-        console.log('delete ledger complete');
       })
       .addCase(DELETE_SINGLE_LEDGER.rejected, (state) => {
         state.status = 'failed';

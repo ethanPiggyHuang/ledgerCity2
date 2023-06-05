@@ -61,9 +61,9 @@ export const GridRow: React.FC<Props> = ({ row, yIndex }) => {
                 $isdraggable={dragMode === 'houses'}
                 draggable={dragMode === 'houses'}
                 onDragStart={(event) =>
-                  handleHouseDragStart(event, house, xIndex, yIndex, houseRef)
+                  handleHouseDragStart(event, house, xIndex, yIndex)
                 }
-                onDragEnd={(event) => handleHouseDragEnd(event, houseRef)}
+                onDragEnd={(event) => handleHouseDragEnd(event)}
                 ref={houseRef}
                 id={`${yIndex},${xIndex}`}
               >
